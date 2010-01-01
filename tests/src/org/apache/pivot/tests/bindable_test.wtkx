@@ -16,27 +16,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<GridPane columnCount="3"
-    styles="{verticalSpacing:1, showHorizontalGridLines:true,
-    horizontalSpacing:1, showVerticalGridLines:true}"
+<tests:BindableWindow title="Bindable Test" maximized="true"
     xmlns:wtkx="http://pivot.apache.org/wtkx"
+    xmlns:tests="org.apache.pivot.tests"
     xmlns="org.apache.pivot.wtk">
-    <rows>
-        <GridPane.Row>
-            <GridPane.Filler/>
-            <GridPane.Filler/>
-            <GridPane.Filler/>
-        </GridPane.Row>
-        <GridPane.Row>
-            <GridPane.Filler/>
-            <Label text="Hello World!" styles="{horizontalAlignment:'center',
-                verticalAlignment:'center', wrapText:true}"/>
-            <GridPane.Filler/>
-        </GridPane.Row>
-        <GridPane.Row>
-            <GridPane.Filler/>
-            <GridPane.Filler/>
-            <GridPane.Filler/>
-        </GridPane.Row>
-    </rows>
-</GridPane>
+    <content>
+        <Label wtkx:id="label" styles="{horizontalAlignment:'center', verticalAlignment:'center'}"/>
+    </content>
+</tests:BindableWindow>
