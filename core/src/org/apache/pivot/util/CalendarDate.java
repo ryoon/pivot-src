@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,10 @@ import org.apache.pivot.serialization.SerializationException;
 /**
  * <tt>CalendarDate</tt> allows a specific day to be identified within the
  * Gregorian calendar system. This identification has no association with any
- * particular time zone and no notion of the time of day.
+ * particular time zone and no notion of the time of day, except that
+ * conversions to/from Gregorian calendar may be affected by time zone, so
+ * the zone may be set during construction if desired, and the time of day
+ * can also be set for such conversions.
  */
 public final class CalendarDate implements Comparable<CalendarDate>, Serializable {
     private static final long serialVersionUID = 3974393986540543704L;
@@ -238,6 +242,19 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      */
     public final int day;
 
+    /**
+     * The {@link TimeZone} associated with this calendar date (if any).
+     * <p> By default this is not set, which means using the local timezone.
+     * <p> This is only meaningful for conversions to/from Gregorian calendar
+     * (and implicitly then for difference calculations which use a calculated
+     * calendar value). Can be set in the non-default constructor
+     * (for instance to GMT for the <tt>CalendarDateSpinnerData</tt> class).
+     * <p> Note: difference calculations will only be affected by the timezone
+     * if the two dates are in different ones, otherwise the calculations
+     * will be the same no matter what zone is used.
+     */
+    public final TimeZone timeZone;
+
     private static final int[] MONTH_LENGTHS = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     private static final Pattern PATTERN = Pattern.compile("^(\\d{4})-(\\d{2})-(\\d{2})$");
@@ -249,12 +266,30 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     /** Maximum supported year (must be less or equal). */
     public static final int MAX_CALENDAR_YEAR = 9999;
 
+    /** The number of milliseconds in a day. Used by various pieces of code. */
+    public static final long MILLIS_PER_DAY = 1000L * 60 * 60 * 24;
+
+    /** The timezone of the (universal) GMT zone (at the prime meridian). */
+    public static final TimeZone TIMEZONE_GMT = TimeZone.getTimeZone("GMT");
+    /** The midnight time of day {@code Time(0,0,0)}. */
+    public static final Time MIDNIGHT_TIME = new Time(0, 0, 0);
+
     /**
      * Creates a new <tt>CalendarDate</tt> representing the current day in the
      * default timezone and the default locale.
      */
     public CalendarDate() {
         this(new GregorianCalendar());
+    }
+
+    /**
+     * Creates a new <tt>CalendarDate</tt> representing the current day in the
+     * given timezone and the default locale.
+     *
+     * @param timeZone The timezone to use for this calendar date.
+     */
+    public CalendarDate(final TimeZone timeZone) {
+        this(new GregorianCalendar(timeZone));
     }
 
     /**
@@ -267,7 +302,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     public CalendarDate(final GregorianCalendar calendar) {
         this(calendar.get(Calendar.YEAR),
              calendar.get(Calendar.MONTH),
-             calendar.get(Calendar.DAY_OF_MONTH) - 1);
+             calendar.get(Calendar.DAY_OF_MONTH) - 1,
+             calendar.getTimeZone());
     }
 
     /**
@@ -280,7 +316,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     public CalendarDate(final LocalDate localDate) {
         this(localDate.getYear(),
              localDate.getMonthValue() - 1,
-             localDate.getDayOfMonth() - 1);
+             localDate.getDayOfMonth() - 1,
+             null);
     }
 
     /**
@@ -294,6 +331,22 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * @see #MAX_CALENDAR_YEAR
      */
     public CalendarDate(final int year, final int month, final int day) {
+        this(year, month, day, null);
+    }
+
+    /**
+     * Creates a new <tt>CalendarDate</tt> representing the specified year,
+     * month, day of month, and timezone.
+     *
+     * @param year The year field. (e.g. <tt>2008</tt>)
+     * @param month The month field, 0-based. (e.g. <tt>2</tt> for March)
+     * @param day The day of the month, 0-based. (e.g. <tt>14</tt> for the 15th)
+     * @param timeZone The timezone to assume for conversions and differences (if
+     * <tt>null</tt> then the default TimeZone will be used).
+     * @see #MIN_CALENDAR_YEAR
+     * @see #MAX_CALENDAR_YEAR
+     */
+    public CalendarDate(final int year, final int month, final int day, final TimeZone timeZone) {
         if (year < MIN_CALENDAR_YEAR || year > MAX_CALENDAR_YEAR) {
             throw new IllegalArgumentException("Invalid year: " + year);
         }
@@ -315,6 +368,27 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
         this.year = year;
         this.month = month;
         this.day = day;
+
+        // Can be null to use the default
+        this.timeZone = timeZone;
+    }
+
+    /**
+     * This is used to get a new instance from the given calendar value
+     * EXCEPT that we use the existing time zone value instead of the
+     * calendar one so that we will remain in the same zone for future
+     * conversions.
+     *
+     * @param newCalendar A Gregorian calendar value adjusted from
+     * our current values.
+     * @return The new instance with the calendar values and our
+     * existing (probably null) time zone value.
+     */
+    private CalendarDate newDate(final GregorianCalendar newCalendar) {
+        return new CalendarDate(newCalendar.get(Calendar.YEAR),
+                                newCalendar.get(Calendar.MONTH),
+                                newCalendar.get(Calendar.DAY_OF_MONTH) - 1,
+                                this.timeZone);
     }
 
     /**
@@ -322,8 +396,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * resulting calendar date. The number of days may be negative, in which
      * case the result will be a date before this calendar date. <p> More
      * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return <tt>true</tt>: <pre>
-     * c1.add(c2.subtract(c1)).equals(c2); </pre>
+     * <tt>c2</tt>, the following will return <tt>true</tt>:
+     * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param days The number of days to add to (or subtract from if negative)
      * this calendar date.
@@ -332,7 +406,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     public CalendarDate add(final int days) {
         GregorianCalendar calendar = toCalendar();
         calendar.add(Calendar.DAY_OF_YEAR, days);
-        return new CalendarDate(calendar);
+        return newDate(calendar);
     }
 
     /**
@@ -340,8 +414,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * resulting calendar date. The number of months may be negative, in which
      * case the result will be a date before this calendar date. <p> More
      * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return <tt>true</tt>: <pre>
-     * c1.add(c2.subtract(c1)).equals(c2); </pre>
+     * <tt>c2</tt>, the following will return <tt>true</tt>:
+     * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param months The number of months to add to (or subtract from if negative)
      * this calendar date.
@@ -350,7 +424,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     public CalendarDate addMonths(final int months) {
         GregorianCalendar calendar = toCalendar();
         calendar.add(Calendar.MONTH, months);
-        return new CalendarDate(calendar);
+        return newDate(calendar);
     }
 
     /**
@@ -358,8 +432,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * resulting calendar date. The number of years may be negative, in which
      * case the result will be a date before this calendar date. <p> More
      * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return <tt>true</tt>: <pre>
-     * c1.add(c2.subtract(c1)).equals(c2); </pre>
+     * <tt>c2</tt>, the following will return <tt>true</tt>:
+     * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param years The number of years to add to (or subtract from if negative)
      * this calendar date.
@@ -368,7 +442,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     public CalendarDate addYears(final int years) {
         GregorianCalendar calendar = toCalendar();
         calendar.add(Calendar.YEAR, years);
-        return new CalendarDate(calendar);
+        return newDate(calendar);
     }
 
     /**
@@ -377,12 +451,12 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * calendar date, the difference will be positive. If this calendar date
      * represents a day before the specified calendar date, the difference will
      * be negative. If the two calendar dates represent the same day, the
-     * difference will be zero. <p> More formally, it is defined that given
-     * calendar dates <tt>c1</tt> and <tt>c2</tt>, the following will return
-     * <tt>true</tt>: <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
+     * difference will be zero.
+     * <p> More formally, it is defined that given calendar dates <tt>c1</tt>
+     * and <tt>c2</tt>, the following will return <tt>true</tt>:
+     * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
-     * @param calendarDate The calendar date to subtract from this calendar
-     * date.
+     * @param calendarDate The calendar date to subtract from this calendar date.
      * @return The number of days in between this calendar date and
      * <tt>calendarDate</tt>.
      */
@@ -393,25 +467,25 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
         long t1 = c1.getTimeInMillis();
         long t2 = c2.getTimeInMillis();
 
-        return (int) ((t1 - t2) / (1000L * 60 * 60 * 24));
+        return (int) ((t1 - t2) / MILLIS_PER_DAY);
     }
 
     /**
      * Translates this calendar date to an instance of
      * <tt>GregorianCalendar</tt>, with the <tt>year</tt>, <tt>month</tt>, and
-     * <tt>dayOfMonth</tt> fields set in the default time zone with the default
-     * locale.
+     * <tt>dayOfMonth</tt> fields set in the time zone set at construction with
+     * the default locale.
      *
      * @return This calendar date as a <tt>GregorianCalendar</tt>.
      */
     public GregorianCalendar toCalendar() {
-        return toCalendar(new Time(0, 0, 0));
+        return toCalendar(MIDNIGHT_TIME);
     }
 
     /**
-     * Translates this calendar date to an instance of
+     * Translates this calendar date along with the given time of day to an instance of
      * <tt>GregorianCalendar</tt>, with the <tt>year</tt>, <tt>month</tt>, and
-     * <tt>dayOfMonth</tt> fields set in the default time zone with the default
+     * <tt>dayOfMonth</tt> fields set in the time zone set at construction with the default
      * locale.
      *
      * @param time The time of day.
@@ -421,6 +495,9 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
         GregorianCalendar calendar = new GregorianCalendar(this.year, this.month, this.day + 1,
             time.hour, time.minute, time.second);
         calendar.set(Calendar.MILLISECOND, time.millisecond);
+        if (timeZone != null) {
+            calendar.setTimeZone(timeZone);
+        }
 
         return calendar;
     }

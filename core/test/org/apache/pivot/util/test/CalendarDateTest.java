@@ -18,6 +18,7 @@ package org.apache.pivot.util.test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +33,9 @@ public class CalendarDateTest {
     private static final String D1 = "1941-12-07";
     private static final String D2 = "1929-10-29";
     private static final String D3 = "2008-09-29";
+    private static final String D4 = "1945-08-14";
+    private static final String D5 = "2019-12-06";
+    private static final int DAYS_FROM_D1_TO_D5 = 28_488;
 
     @Test
     public void test1() {
@@ -78,5 +82,47 @@ public class CalendarDateTest {
         LocalDateTime dt1a = cd1.toLocalDateTime(t1);
 
         assertEquals(dt1, dt1a);
+    }
+
+    @Test
+    public void test3() {
+        // Testing new stuff in CalendarDate that tries to deal with time zones
+        // more effectively
+        TimeZone gmtZone = CalendarDate.TIMEZONE_GMT;
+        TimeZone pstZone = TimeZone.getTimeZone("America/Los_Angeles");
+        CalendarDate d1 = new CalendarDate(1941, 11, 6, gmtZone);
+        CalendarDate d2 = new CalendarDate(1941, 11, 6, pstZone);
+        CalendarDate d3 = new CalendarDate(1945, 7, 13, gmtZone);
+        CalendarDate d4 = d1.add(1346);
+        CalendarDate d5 = d2.add(1346);
+
+        // First we should establish that dates don't depend on timezone for equality
+        // nor do their string representations
+        assertTrue(d1.equals(d2));
+        assertEquals(d1.toString(), d2.toString());
+
+        // Now, establish whether (or not) timezones might make a difference in durations
+        assertEquals(d3.subtract(d1), 1346);
+        // Surprise! they do!
+        assertEquals(d3.subtract(d2), 1345);
+        assertEquals(d4, d5);
+    }
+
+    @Test
+    public void test4() {
+        // Now let's test some of the other duration-related methods
+        CalendarDate d1 = CalendarDate.decode(D1);
+        CalendarDate d2 = d1.addMonths(44).add(7);
+        CalendarDate d3 = d1.addYears(3).addMonths(8).add(7);
+        CalendarDate d4 = CalendarDate.decode(D4);
+        CalendarDate d5 = CalendarDate.decode(D5);
+
+        assertEquals(d2, d3);
+        assertEquals(d2, d4);
+        assertEquals(d3, d4);
+
+        assertEquals(d5.subtract(d1), DAYS_FROM_D1_TO_D5);
+        assertEquals(d1.add(DAYS_FROM_D1_TO_D5), d5);
+        assertEquals(d1.add(DAYS_FROM_D1_TO_D5).add(-DAYS_FROM_D1_TO_D5), d1);
     }
 }

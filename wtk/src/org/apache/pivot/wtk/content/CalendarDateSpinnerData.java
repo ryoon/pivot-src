@@ -16,16 +16,14 @@
  */
 package org.apache.pivot.wtk.content;
 
-import java.util.Calendar;
 import java.util.Comparator;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.TimeZone;
 
+import org.apache.pivot.annotations.UnsupportedOperation;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.ListListener;
-import org.apache.pivot.collections.Sequence;
+import org.apache.pivot.collections.ReadOnlySequence;
 import org.apache.pivot.util.CalendarDate;
 import org.apache.pivot.util.ListenerList;
 import org.apache.pivot.util.Utils;
@@ -36,7 +34,9 @@ import org.apache.pivot.util.Utils;
  * calendar instance from which <tt>CalendarDate</tt> instances are created on
  * demand.
  */
-public class CalendarDateSpinnerData implements List<CalendarDate> {
+public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> implements List<CalendarDate> {
+    private static final long serialVersionUID = 8422963466022375674L;
+
     /**
      * Iterator that simply wraps calls to the list. Since the internal list
      * data is spoofed, each accessor runs in constant time, so there's no
@@ -60,19 +60,22 @@ public class CalendarDateSpinnerData implements List<CalendarDate> {
             return get(index++);
         }
 
+        @UnsupportedOperation
         @Override
         public void remove() {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException(unsupportedOperationMsg);
         }
     }
 
-    private GregorianCalendar calendar;
+    /** The current date of this set of data (offset by {@link #calendarIndex} from the base date of the range). */
+    private CalendarDate currentDate;
+    /** The current offset from the base date. */
     private int calendarIndex;
 
     // Calculated during construction
     private transient int length;
 
-    private ListListenerList<CalendarDate> listListeners = new ListListenerList<>();
+    private transient ListListenerList<CalendarDate> listListeners = new ListListenerList<>();
 
     /**
      * Creates a new <tt>CalendarDateSpinnerData</tt> bounded from
@@ -89,7 +92,7 @@ public class CalendarDateSpinnerData implements List<CalendarDate> {
      * @param lowerBound The earliest date to include in this spinner data.
      * @param upperBound The latest date to include in this spinner data.
      */
-    public CalendarDateSpinnerData(CalendarDate lowerBound, CalendarDate upperBound) {
+    public CalendarDateSpinnerData(final CalendarDate lowerBound, final CalendarDate upperBound) {
         Utils.checkNull(lowerBound, "lowerBound");
         Utils.checkNull(upperBound, "upperBound");
 
@@ -97,59 +100,11 @@ public class CalendarDateSpinnerData implements List<CalendarDate> {
             throw new IllegalArgumentException("lowerBound is after upperBound.");
         }
 
-        calendar = new GregorianCalendar(lowerBound.year, lowerBound.month, lowerBound.day + 1);
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+        currentDate = lowerBound;
         calendarIndex = 0;
 
-        // Calculate our length and cache it, since it is guaranteed to
-        // remain fixed
-        GregorianCalendar upperBoundCalendar = new GregorianCalendar(upperBound.year,
-            upperBound.month, upperBound.day + 1);
-        upperBoundCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        long lowerBoundMilliseconds = calendar.getTimeInMillis();
-        long upperBoundMilliseconds = upperBoundCalendar.getTimeInMillis();
-        long indexDiff = (upperBoundMilliseconds - lowerBoundMilliseconds) / (1000L * 60 * 60 * 24);
-        length = (int) indexDiff + 1;
-    }
-
-    /**
-     * Throws <tt>UnsupportedOperationException</tt>.
-     */
-    @Override
-    public int add(CalendarDate item) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Throws <tt>UnsupportedOperationException</tt>.
-     */
-    @Override
-    public void insert(CalendarDate item, int index) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Throws <tt>UnsupportedOperationException</tt>.
-     */
-    @Override
-    public CalendarDate update(int index, CalendarDate item) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Throws <tt>UnsupportedOperationException</tt>.
-     */
-    @Override
-    public int remove(CalendarDate item) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Throws <tt>UnsupportedOperationException</tt>.
-     */
-    @Override
-    public Sequence<CalendarDate> remove(int index, int count) {
-        throw new UnsupportedOperationException();
+        // Calculate our length and cache it, since it is guaranteed to remain fixed
+        length = upperBound.subtract(lowerBound) + 1;
     }
 
     /**
@@ -158,33 +113,22 @@ public class CalendarDateSpinnerData implements List<CalendarDate> {
      * @param index The index of the calendar date to retrieve.
      */
     @Override
-    public CalendarDate get(int index) {
+    public final CalendarDate get(final int index) {
         if (index < 0 || index >= length) {
             throw new IndexOutOfBoundsException("Index out of bounds: " + index);
         }
 
         // Move the calendar's fields to match the specified index
-        calendar.add(Calendar.DAY_OF_YEAR, index - calendarIndex);
+        currentDate = currentDate.add(index - calendarIndex);
         calendarIndex = index;
 
-        // Calculate the desired fields
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH) - 1;
-
-        return new CalendarDate(year, month, day);
+        return currentDate;
     }
 
     @Override
-    public int indexOf(CalendarDate item) {
-        long currentMilliseconds = calendar.getTimeInMillis();
-
-        GregorianCalendar tmpCalendar = new GregorianCalendar(item.year, item.month, item.day + 1);
-        tmpCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-        long itemMilliseconds = tmpCalendar.getTimeInMillis();
-
-        long indexDiff = (itemMilliseconds - currentMilliseconds) / (1000L * 60 * 60 * 24);
-        int index = calendarIndex + (int) indexDiff;
+    public final int indexOf(final CalendarDate item) {
+        int indexDiffDays = item.subtract(this.currentDate);
+        int index = calendarIndex + indexDiffDays;
 
         return (index < 0 || index >= length) ? -1 : index;
     }
@@ -192,13 +136,14 @@ public class CalendarDateSpinnerData implements List<CalendarDate> {
     /**
      * Throws <tt>UnsupportedOperationException</tt>.
      */
+    @UnsupportedOperation
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(unsupportedOperationMsg);
     }
 
     @Override
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return (length == 0);
     }
 
@@ -214,8 +159,8 @@ public class CalendarDateSpinnerData implements List<CalendarDate> {
 
     /**
      * Gets the comparator for this list, which is guaranteed to always be
-     * <tt>null</tt>. This class does not support comparators since there's no
-     * real data to sort (it's all spoofed).
+     * <tt>null</tt>. The generated data is inherently in date order, thus
+     * sorting doesn't make sense.
      */
     @Override
     public Comparator<CalendarDate> getComparator() {
@@ -223,20 +168,22 @@ public class CalendarDateSpinnerData implements List<CalendarDate> {
     }
 
     /**
-     * Throws <tt>UnsupportedOperationException</tt>.
+     * Throws {@link UnsupportedOperationException} because the generated data
+     * is inherently in date order, thus sorting makes no sense.
      */
+    @UnsupportedOperation
     @Override
-    public void setComparator(Comparator<CalendarDate> comparator) {
-        throw new UnsupportedOperationException();
+    public final void setComparator(final Comparator<CalendarDate> comparator) {
+        throw new UnsupportedOperationException(unsupportedOperationMsg);
     }
 
     @Override
-    public Iterator<CalendarDate> iterator() {
+    public final Iterator<CalendarDate> iterator() {
         return new DataIterator();
     }
 
     @Override
-    public ListenerList<ListListener<CalendarDate>> getListListeners() {
+    public final ListenerList<ListListener<CalendarDate>> getListListeners() {
         return listListeners;
     }
 }
