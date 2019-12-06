@@ -17,10 +17,10 @@
 package org.apache.pivot.demos.json;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Comparator;
+import java.nio.file.Files;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.BXMLSerializer;
@@ -50,19 +50,26 @@ import org.apache.pivot.wtk.effects.OverlayDecorator;
  * Utility application that allows the user to browse a JSON structure using a
  * tree view component.
  */
-public class JSONViewer implements Application {
+public final class JSONViewer implements Application {
+    /** The main application window. */
     private Window window = null;
 
+    /** The {@link TreeView} used to display the JSON data. */
     @BXML
     private TreeView treeView = null;
 
+    /** A prompt displayed over the tree until some content is displayed. */
     private OverlayDecorator promptDecorator = new OverlayDecorator();
 
+    /** Key used by the serializer to reference this application object
+     * during serialization.
+     */
     public static final String APPLICATION_KEY = "application";
+    /** The static window title. */
     public static final String WINDOW_TITLE = "JSON Viewer";
 
     @Override
-    public void startup(Display display, Map<String, String> properties) throws Exception {
+    public void startup(final Display display, final Map<String, String> properties) throws Exception {
         BXMLSerializer bxmlSerializer = new BXMLSerializer();
         bxmlSerializer.getNamespace().put(APPLICATION_KEY, this);
 
@@ -74,6 +81,8 @@ public class JSONViewer implements Application {
         prompt.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
         promptDecorator.setOverlay(prompt);
         treeView.getDecorators().add(promptDecorator);
+        treeView.getStyles().put(Style.showGridLines, true);
+        treeView.getStyles().put(Style.showHighlight, true);
 
         window.setTitle(WINDOW_TITLE);
         window.open(display);
@@ -90,7 +99,7 @@ public class JSONViewer implements Application {
     }
 
     @Override
-    public boolean shutdown(boolean optional) {
+    public boolean shutdown(final boolean optional) {
         if (window != null) {
             window.close();
         }
@@ -98,6 +107,9 @@ public class JSONViewer implements Application {
         return false;
     }
 
+    /**
+     * Process "paste" request to view a JSON snippet copied from another application.
+     */
     public void paste() {
         Manifest clipboardContent = Clipboard.getContent();
 
@@ -115,7 +127,15 @@ public class JSONViewer implements Application {
         }
     }
 
-    public DropAction drop(Manifest dragContent) {
+    /**
+     * Process a "drop" action where a JSON file is dragged from somewhere and dropped
+     * into this program for viewing.
+     *
+     * @param dragContent The object manifest that is being "dropped" to us.
+     * @return What to do with this "drop" action -- {@link DropAction#COPY} for a single
+     * file drop, or {@code null} for anything else.
+     */
+    public DropAction drop(final Manifest dragContent) {
         DropAction dropAction = null;
 
         try {
@@ -124,17 +144,8 @@ public class JSONViewer implements Application {
                 File file = fileList.get(0);
 
                 JSONSerializer jsonSerializer = new JSONSerializer();
-                @SuppressWarnings("resource")
-                FileInputStream fileInputStream = null;
-                try {
-                    try {
-                        fileInputStream = new FileInputStream(file);
-                        setValue(jsonSerializer.readObject(fileInputStream));
-                    } finally {
-                        if (fileInputStream != null) {
-                            fileInputStream.close();
-                        }
-                    }
+                try (InputStream fileInputStream = Files.newInputStream(file.toPath())) {
+                    setValue(jsonSerializer.readObject(fileInputStream));
                 } catch (Exception exception) {
                     Prompt.prompt(exception.getMessage(), window);
                 }
@@ -152,7 +163,13 @@ public class JSONViewer implements Application {
         return dropAction;
     }
 
-    private void setValue(Object value) {
+    /**
+     * Private method to set the content to be viewed; builds the {@link TreeView}
+     * to display the data.
+     *
+     * @param value Should be either a {@link Map} or a {@link List} to be viewed.
+     */
+    private void setValue(final Object value) {
         assert (value instanceof Map<?, ?> || value instanceof List<?>);
         // Remove prompt decorator
         if (promptDecorator != null) {
@@ -166,18 +183,22 @@ public class JSONViewer implements Application {
         treeView.expandBranch(new Path(0));
     }
 
+    /**
+     * Build the {@link TreeView} from the data. This is a recursive function.
+     *
+     * @param value The root object of the data.
+     * @return The root {@link TreeNode} of the built tree.
+     */
     @SuppressWarnings("unchecked")
-    private static TreeNode build(Object value) {
+    private static TreeNode build(final Object value) {
         TreeNode treeNode;
 
-        if (value instanceof Map<?, ?>) {
-            TreeBranch treeBranch = new TreeBranch("{}");
-            treeBranch.setComparator(new Comparator<TreeNode>() {
-                @Override
-                public int compare(TreeNode treeNode1, TreeNode treeNode2) {
-                    return treeNode1.getText().compareTo(treeNode2.getText());
-                }
-            });
+        if (value == null) {
+            treeNode = new TreeNode("<null>");
+        } else if (value instanceof Map<?, ?>) {
+            TreeBranch treeBranch = new TreeBranch("{ }");
+            // Set the branch comparator to alphabetize the nodes underneath
+            treeBranch.setComparator((node1, node2) -> node1.getText().compareTo(node2.getText()));
 
             Map<String, Object> map = (Map<String, Object>) value;
             for (String key : map) {
@@ -195,7 +216,7 @@ public class JSONViewer implements Application {
 
             treeNode = treeBranch;
         } else if (value instanceof List<?>) {
-            TreeBranch treeBranch = new TreeBranch("[]");
+            TreeBranch treeBranch = new TreeBranch("[ ]");
 
             List<Object> list = (List<Object>) value;
             for (int i = 0, n = list.getLength(); i < n; i++) {
@@ -214,18 +235,21 @@ public class JSONViewer implements Application {
             treeNode = treeBranch;
         } else if (value instanceof String) {
             treeNode = new TreeNode("\"" + value.toString() + "\"");
-        } else if (value instanceof Number) {
-            treeNode = new TreeNode(value.toString());
-        } else if (value instanceof Boolean) {
-            treeNode = new TreeNode(value.toString());
         } else {
-            treeNode = new TreeNode("null");
+            // Misc object type should use "toString()" to get the object text
+            // (includes Number, Boolean, or anything else we forgot about)
+            treeNode = new TreeNode(value.toString());
         }
 
         return treeNode;
     }
 
-    public static void main(String[] args) {
+    /**
+     * Main method of the desktop application.
+     *
+     * @param args The parsed command line arguments.
+     */
+    public static void main(final String[] args) {
         DesktopApplicationContext.main(JSONViewer.class, args);
     }
 
