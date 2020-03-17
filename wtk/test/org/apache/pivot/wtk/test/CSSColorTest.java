@@ -17,12 +17,14 @@
 package org.apache.pivot.wtk.test;
 
 import java.awt.Color;
+import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import org.apache.pivot.util.ClassUtils;
 import org.apache.pivot.wtk.CSSColor;
 import org.apache.pivot.wtk.GraphicsUtilities;
 import org.apache.pivot.wtk.util.ColorUtilities;
@@ -35,10 +37,18 @@ public class CSSColorTest {
     private void testColors(CSSColor original, CSSColor lookup) {
         // Doing an exact match here is problematic because many of the
         // CSS colors have duplicate color values, even synonyms
-        // (vis. DarkGray and DarkGrey), so do some clever checking
-        if (!original.equals(lookup)) {
+        // (vis. DarkGray and DarkGrey), so do some clever checking.
+        if (original != lookup) {
             if (!original.getColor().equals(lookup.getColor())) {
-                fail("CSSColor " + original.toString() + " gets wrong color by lookup " + lookup.toString());
+                String message = String.format("CSS Color %1$s (%2$s) gets wrong color by lookup %3$s (%4$s)!",
+                        original, ClassUtils.defaultToString(original),
+                        lookup, ClassUtils.defaultToString(lookup));
+                fail(message);
+            } else {
+                // Log the "failures" for the record
+                String message = String.format("Note: CSS Color %1$s matches %2$s by color (%3$s), but not by value.",
+                        original, lookup, lookup.getColor());
+                System.out.println(message);
             }
         }
     }
@@ -63,6 +73,19 @@ public class CSSColorTest {
             String enumName = ((Object)css).toString();
             CSSColor lookupByEnumName = CSSColor.fromString(enumName);
             assertEquals(css, lookupByEnumName);
+        }
+    }
+
+    @Test
+    public void test2() throws IllegalAccessException {
+        // Now, test to make sure the CSS and regular Java colors work "right".
+        for (Field f : Color.class.getDeclaredFields()) {
+            Class<?> clazz = f.getType();
+            if (clazz.equals(Color.class)) {
+                String javaColorName = f.getName();
+                CSSColor cssEquivalent = CSSColor.fromString(javaColorName);
+                assertEquals(f.getName() + " does not match in CSSColor lookup", cssEquivalent.getColor(), (Color)f.get(null));
+            }
         }
     }
 }

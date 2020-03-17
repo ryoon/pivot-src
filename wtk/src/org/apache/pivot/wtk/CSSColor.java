@@ -29,6 +29,23 @@ import org.apache.pivot.wtk.util.ColorUtilities;
  * <a href="http://www.w3.org/TR/css3-color/">http://www.w3.org/TR/css3-color/</a>,
  * and including the Java {@link Color} names (with all British/American
  * spelling variants).
+ * <p> Ugly note: Several of these colors including (but not limited to), "pink",
+ * "green", the "grays", etc. are different between the Java colors and these CSS
+ * definitions. So, to support everything, the following conventions have been
+ * established:
+ * <ol><li>The color names are (more-or-less) case-sensitive.</li>
+ * <li>Where there are CSS colors and Java colors with similar names (except for
+ * case differences), the Java colors are found using all lower case (e.g., "green")
+ * or all UPPER case (e.g., "GREEN") and the CSS value with a mixed-case name
+ * (e.g., "Green").</li>
+ * <li>If there is no duplicate (e.g., "AliceBlue") then the value can be found
+ * using any of these variants.</li>
+ * <li>NOTE: this means that other combinations (e.g., "gReEn") which might have
+ * worked in the past will now fail and throw an exception.
+ * </ol>
+ * <p> This list also contains the Java versions of the names (complete with spelling
+ * variations) for complete compatibility, and we put the Java variants in first
+ * for the sake of the lookup maps.
  * <p> Note: these are available through the
  * {@link GraphicsUtilities#decodeColor GraphicsUtilities.decodeColor()}
  * and {@link org.apache.pivot.wtk.content.ColorItem#allCSSColors} methods.
@@ -41,9 +58,13 @@ public enum CSSColor {
     Azure               (240, 255, 255),
     Beige               (245, 245, 220),
     Bisque              (255, 228, 196),
-    Black               (Color.BLACK),
+    black               (Color.black),
+    BLACK               (Color.BLACK),
+    Black               (  0,   0,   0),
     BlanchedAlmond      (255, 235, 205),
-    Blue                (Color.BLUE),
+    blue                (Color.blue),
+    BLUE                (Color.BLUE),
+    Blue                (  0,   0, 255),
     BlueViolet          (138,  43, 226),
     Brown               (165,  42,  42),
     Burlywood           (222, 184, 135),
@@ -54,13 +75,17 @@ public enum CSSColor {
     CornflowerBlue      (100, 149, 237),
     Cornsilk            (255, 248, 220),
     Crimson             (220,  20,  60),
-    Cyan                (Color.CYAN),
+    cyan                (Color.cyan),
+    CYAN                (Color.CYAN),
+    Cyan                (  0, 255, 255),
     DarkBlue            (  0,   0, 139),
     DarkCyan            (  0, 139, 139),
     DarkGoldenrod       (184, 134,  11),
-    DarkGray            (Color.DARK_GRAY),
+    darkGray            (Color.darkGray),
+    DARK_GRAY           (Color.DARK_GRAY),
+    DarkGray            (169, 169, 169),
     DarkGreen           (  0, 100,   0),
-    DarkGrey            (Color.DARK_GRAY),
+    DarkGrey            (169, 169, 169),
     DarkKhaki           (189, 183, 107),
     DarkMagenta         (139,   0, 139),
     DarkOliveGreen      ( 85, 107,  47),
@@ -87,10 +112,14 @@ public enum CSSColor {
     GhostWhite          (248, 248, 255),
     Gold                (255, 215,   0),
     Goldenrod           (218, 165,  32),
-    Gray                (Color.GRAY),
-    Green               (Color.GREEN),
+    gray                (Color.gray),
+    GRAY                (Color.GRAY),
+    Gray                (128, 128, 128),
+    green               (Color.green),
+    GREEN               (Color.GREEN),
+    Green               (  0, 128,   0),
     GreenYellow         (173, 255,  47),
-    Grey                (Color.GRAY),
+    Grey                (128, 128, 128),
     Honeydew            (240, 255, 240),
     HotPink             (255, 105, 180),
     IndianRed           (205,  92,  92),
@@ -105,9 +134,11 @@ public enum CSSColor {
     LightCoral          (240, 128, 128),
     LightCyan           (224, 255, 255),
     LightGoldenrodYellow(250, 250, 210),
-    LightGray           (Color.LIGHT_GRAY),
+    lightGray           (Color.lightGray),
+    LIGHT_GRAY          (Color.LIGHT_GRAY),
+    LightGray           (211, 211, 211),
     LightGreen          (144, 238, 144),
-    LightGrey           (Color.LIGHT_GRAY),
+    LightGrey           (211, 211, 211),
     LightPink           (255, 182, 193),
     LightSalmon         (255, 160, 122),
     LightSeaGreen       ( 32, 178, 170),
@@ -119,7 +150,9 @@ public enum CSSColor {
     Lime                (  0, 255,   0),
     LimeGreen           ( 50, 205,  50),
     Linen               (250, 240, 230),
-    Magenta             (Color.MAGENTA),
+    magenta             (Color.magenta),
+    MAGENTA             (Color.MAGENTA),
+    Magenta             (255,   0, 255),
     Maroon              (128,   0,   0),
     MediumAquamarine    (102, 205, 170),
     MediumBlue          (  0,   0, 205),
@@ -139,7 +172,9 @@ public enum CSSColor {
     OldLace             (253, 245, 230),
     Olive               (128, 128,   0),
     OliveDrab           (107, 142,  35),
-    Orange              (Color.ORANGE),
+    orange              (Color.orange),
+    ORANGE              (Color.ORANGE),
+    Orange              (255, 165,   0),
     OrangeRed           (255,  69,   0),
     Orchid              (218, 112, 214),
     PaleGoldenrod       (238, 232, 170),
@@ -149,11 +184,15 @@ public enum CSSColor {
     PapayaWhip          (255, 239, 213),
     PeachPuff           (255, 218, 185),
     Peru                (205, 133,  63),
-    Pink                (Color.PINK),
+    pink                (Color.pink),
+    PINK                (Color.PINK),
+    Pink                (255, 192, 203),
     Plum                (221, 160, 221),
     PowderBlue          (176, 224, 230),
     Purple              (128,   0, 128),
-    Red                 (Color.RED),
+    red                 (Color.red),
+    RED                 (Color.RED),
+    Red                 (255,   0,   0),
     RosyBrown           (188, 143, 143),
     RoyalBlue           ( 65, 105, 225),
     SaddleBrown         (139,  69,  19),
@@ -177,14 +216,19 @@ public enum CSSColor {
     Turquoise           ( 64, 224, 208),
     Violet              (238, 130, 238),
     Wheat               (245, 222, 179),
-    White               (Color.WHITE),
+    white               (Color.white),
+    WHITE               (Color.WHITE),
+    White               (255, 255, 255),
     WhiteSmoke          (245, 245, 245),
-    Yellow              (Color.YELLOW),
+    yellow              (Color.yellow),
+    YELLOW              (Color.YELLOW),
+    Yellow              (255, 255,   0),
     YellowGreen         (154, 205,  50);
 
     /** The color value associated with this CSS color name. */
     private Color color;
-    /** A standardized (lower-case) name for this color for matching. */
+    /** The enum name for this color for matching (note: this value, plus the upper- or lower-case
+     * equivalent can be used). */
     private String colorName;
 
     /**
@@ -214,8 +258,23 @@ public enum CSSColor {
      */
     CSSColor(final Color color) {
         this.color = color;
-        this.colorName = super.toString().toLowerCase(Locale.ENGLISH);
-        Lookup.colorNameMap.put(this.colorName, this);
+        // Okay, this is ugly, BUT Color.GREEN isn't the same color as our "Green"
+        // (0,255,0) vs. (0,128,0), so make an ugly hack involving case, such that
+        // "Green" is our color, but "green" or "GREEN" is the Java version.
+        String cssName = super.toString();
+        this.colorName = cssName;
+        String lowerName = cssName.toLowerCase(Locale.ENGLISH);
+        String upperName = cssName.toUpperCase(Locale.ENGLISH);
+        // Put the value in as both the native version and the lower- and
+        // upper-case variants, if they differ.
+        // Note: this generally means the Java equivalents (in lower- and
+        // upper-case) must come before the CSS version in mixed-case in
+        // the enum list.
+        Lookup.colorNameMap.put(cssName, this);
+        Lookup.colorNameMap.putIfAbsent(lowerName, this);
+        Lookup.colorNameMap.putIfAbsent(upperName, this);
+        // Note: this reverse map WILL have values replaced by later enums
+        // since many of these colors have the same RGB values.
         Lookup.colorValueMap.put(this.color, this);
     }
 
@@ -228,22 +287,23 @@ public enum CSSColor {
     }
 
     /**
-     * @return The lowercase name of this color (as defined in the
-     * W3C CSS color spec).
+     * @return The name of this color (as defined in the
+     * W3C CSS color spec), or the Java {@link Color} name.
      */
     public String getColorName() {
         return this.colorName;
     }
 
     /**
-     * @return The enum value of the given color name (compared in
-     * lower case) if it can be found.
+     * @return The enum value of the given color name (which can be upper-, lower-,
+     * or mixed-case) if it can be found.
      * @param colorName The name of a color to match with one of our values.
      * @throws IllegalArgumentException if the color name cannot be found.
      */
     public static CSSColor fromString(final String colorName) {
-        String lowerName = colorName.toLowerCase(Locale.ENGLISH);
-        CSSColor color = Lookup.colorNameMap.get(lowerName);
+        // Note: we entered names as lower-, upper-, or mixed-case values
+        // (for the "green" confusion), so one of the variants should match.
+        CSSColor color = Lookup.colorNameMap.get(colorName);
         if (color == null) {
             throw new IllegalArgumentException("Incorrect Color format.  "
                 + "Color name \"" + colorName + "\" is not valid.");

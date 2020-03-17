@@ -19,6 +19,7 @@ package org.apache.pivot.wtk.test;
 import java.awt.Color;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class ColorUtilitiesTest {
                     + almostBlack.toString() + " does not match any CSS color.");
         }
 
-        Color translucentOrange = ColorUtilities.toTransparentColor(CSSColor.Orange, 128);
+        Color translucentOrange = ColorUtilities.toTransparentColor(CSSColor.ORANGE, 128);
         assertEquals(ColorUtilities.toStringValue(translucentOrange), "0xFFC80080");
         try {
             CSSColor resultOrange = CSSColor.fromColor(translucentOrange);
@@ -61,14 +62,27 @@ public class ColorUtilitiesTest {
             fail("Didn't expect ORANGE not to match!");
         }
 
+        // Make sure some of the weirder Java colors work right
         Color lightGray = Color.LIGHT_GRAY;
         Color darkGray = Color.DARK_GRAY;
-        assertEquals(lightGray, CSSColor.LightGray.getColor());
-        assertEquals(lightGray, CSSColor.LightGrey.getColor());
-        assertEquals(darkGray, CSSColor.DarkGray.getColor());
-        assertEquals(darkGray, CSSColor.DarkGrey.getColor());
-        CSSColor lightGrey = CSSColor.fromString("lightgrey");
+        assertEquals(lightGray, CSSColor.LIGHT_GRAY.getColor());
+        assertEquals(lightGray, CSSColor.lightGray.getColor());
+        assertEquals(darkGray, CSSColor.DARK_GRAY.getColor());
+        assertEquals(darkGray, CSSColor.darkGray.getColor());
+        CSSColor lightGrey = CSSColor.fromString("lightGray");
         assertEquals(lightGrey.getColor(), lightGray);
+
+        // Now, highlight some of the differences between CSS and Java colors with similar names
+        Color javaGreen = Color.green;
+        assertEquals(javaGreen, Color.GREEN);
+        assertNotSame(javaGreen, CSSColor.Green.getColor());
+        assertNotSame(lightGray, CSSColor.LightGrey.getColor());
+        assertNotSame(Color.orange, CSSColor.Orange.getColor());
+        assertNotSame(Color.PINK, CSSColor.Pink.getColor());
+
+        // And test that some of the CSS and Java colors have the same values and different names
+        assertEquals(Color.cyan, CSSColor.Aqua.getColor());
+        assertEquals(Color.GREEN, CSSColor.Lime.getColor());
 
         try {
             Color lg2 = GraphicsUtilities.decodeColor("lightGray");

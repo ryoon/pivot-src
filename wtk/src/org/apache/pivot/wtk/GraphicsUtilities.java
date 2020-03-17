@@ -243,10 +243,14 @@ public final class GraphicsUtilities {
      * green, and blue.</li>
      * <li>Any of the names of the static colors in the Java {@link Color} class.</li>
      * <li>Any of the CSS3/X11 color names from here:
-     * <a href="http://www.w3.org/TR/css3-color/">http://www.w3.org/TR/css3-color/</a>
-     * (except the Java color values will be used for the standard Java names).</li>
+     * <a href="http://www.w3.org/TR/css3-color/">http://www.w3.org/TR/css3-color/</a></li>
+     * <li>Any of the standard Java color names given by the fields in the {@link Color} class
+     * (such as {@code LIGHT_GRAY} and the like).</li>
      * <li>null - case-insensitive</li>
      * </ul>
+     * <p> Note: Since the RGB color value of the CSS color "Green" (or "Pink" and some others)
+     * is different than the Java {@link Color#green} or {@link Color#GREEN}, we decode color names
+     * in a case-sensitive way. See the notes in {@link CSSColor} for more information.
      * @param argument A name for this color value (for the exception if it can't be decoded).
      * @return A {@link Color} on successful decoding, which could be {@code null} for an input
      * of {@code "null"}.
@@ -289,7 +293,7 @@ public final class GraphicsUtilities {
             // PIVOT-985: new fix:  use the new CSSColor lookup for the name, which
             // has the spelling variants already included in the X11/CSS3 list, as well
             // as all the standard Java Color names, so we can do this without doing
-            // the expensive reflection on the Color class. The lookup here is case-insensitive.
+            // the expensive reflection on the Color class. The lookup here is case-sensitive-ish.
             // This method will throw if the name isn't valid.
             color = CSSColor.fromString(value).getColor();
         }
