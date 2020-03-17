@@ -17,9 +17,11 @@
 package org.apache.pivot.wtk;
 
 import java.awt.Color;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.pivot.wtk.util.ColorUtilities;
 
@@ -326,6 +328,23 @@ public enum CSSColor {
                 + color.toString() + " does not match any CSS color.");
         }
         return cssColor;
+    }
+
+    /**
+     * Return the set of all these colors with the same RGB value as the given color.
+     * <p> This could be a bit time-consuming because we have to search all the values.
+     * @param color An RGB (solid) color to match with these values.
+     * @return The complete set (could be empty) of these colors with the same RGB values.
+     */
+    public static Set<CSSColor> getMatchingColors(Color color) {
+        Set<CSSColor> matches = EnumSet.noneOf(CSSColor.class);
+        Color solidColor = ColorUtilities.toSolidColor(color);
+        for (CSSColor cssColor : values()) {
+            if (cssColor.color.equals(solidColor)) {
+                matches.add(cssColor);
+            }
+        }
+        return matches;
     }
 
 }

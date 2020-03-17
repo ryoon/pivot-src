@@ -18,8 +18,11 @@ package org.apache.pivot.wtk.test;
 
 import java.awt.Color;
 import java.lang.reflect.Field;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -87,5 +90,32 @@ public class CSSColorTest {
                 assertEquals(f.getName() + " does not match in CSSColor lookup", cssEquivalent.getColor(), (Color)f.get(null));
             }
         }
+    }
+
+    @Test
+    public void test3() {
+        Set<CSSColor> matchingColors = CSSColor.getMatchingColors(Color.black);
+        assertEquals(3, matchingColors.size());
+        assertTrue(matchingColors.contains(CSSColor.black));
+        assertTrue(matchingColors.contains(CSSColor.BLACK));
+        assertTrue(matchingColors.contains(CSSColor.Black));
+
+        Set<CSSColor> match2 = CSSColor.getMatchingColors(Color.GREEN);
+        assertEquals(3, match2.size());
+        assertTrue(match2.contains(CSSColor.green));
+        assertTrue(match2.contains(CSSColor.GREEN));
+        assertTrue(match2.contains(CSSColor.Lime));
+        assertFalse(match2.contains(CSSColor.Green));
+
+        Set<CSSColor> match3 = CSSColor.getMatchingColors(CSSColor.SandyBrown.getColor());
+        assertEquals(1, match3.size());
+        assertTrue(match3.contains(CSSColor.SandyBrown));
+
+        Set<CSSColor> match4 = CSSColor.getMatchingColors(new Color(255, 239, 213));
+        assertEquals(1, match4.size());
+        assertTrue(match4.contains(CSSColor.PapayaWhip));
+
+        Set<CSSColor> matchEmpty = CSSColor.getMatchingColors(new Color(3, 3, 3));
+        assertEquals(0, matchEmpty.size());
     }
 }
