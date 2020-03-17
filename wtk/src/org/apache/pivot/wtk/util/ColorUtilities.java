@@ -240,4 +240,16 @@ public final class ColorUtilities {
         }
     }
 
+    /**
+     * @return An encoded value for the given {@link CSSColor} in the form of:
+     * <tt>#RRGGBB</tt> only (since these are always solid colors by definition),
+     * which is suitable for lookup in the
+     * {@link org.apache.pivot.wtk.GraphicsUtilities#decodeColor(String)} method.
+     * @param color The input color to convert.
+     * @see #toStringValue(Color)
+     */
+    public static String toStringValue(final CSSColor color) {
+        return toStringValue(color.getColor());
+    }
+
 }
