@@ -32,6 +32,17 @@ import org.apache.pivot.wtk.util.ColorUtilities;
  * Tests the {@link CSSColor} enum and various {@link ColorUtilities} methods.
  */
 public class CSSColorTest {
+    private void testColors(CSSColor original, CSSColor lookup) {
+        // Doing an exact match here is problematic because many of the
+        // CSS colors have duplicate color values, even synonyms
+        // (vis. DarkGray and DarkGrey), so do some clever checking
+        if (!original.equals(lookup)) {
+            if (!original.getColor().equals(lookup.getColor())) {
+                fail("CSSColor " + original.toString() + " gets wrong color by lookup " + lookup.toString());
+            }
+        }
+    }
+
     @Test
     public void test() {
         // We're going to do a full round-trip cycle to test everything
@@ -42,12 +53,12 @@ public class CSSColorTest {
             assertEquals(css, lookupByName);
 
             CSSColor lookupByColor = CSSColor.fromColor(underlyingColor);
-            assertEquals(css, lookupByColor);
+            testColors(css, lookupByColor);
 
             String stringValue = ColorUtilities.toStringValue(css);
             Color decodedColor = GraphicsUtilities.decodeColor(stringValue, name);
             CSSColor lookupByDecodedValue = CSSColor.fromColor(decodedColor);
-            assertEquals(css, lookupByDecodedValue);
+            testColors(css, lookupByDecodedValue);
 
             String enumName = ((Object)css).toString();
             CSSColor lookupByEnumName = CSSColor.fromString(enumName);
