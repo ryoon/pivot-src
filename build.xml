@@ -401,6 +401,9 @@ limitations under the License.
                 <link href="http://download.oracle.com/javaee/7/api/"/>
 
                 <arg value="-html4" if:true="${java_modules}"/>
+                <arg value="--frames" if:true="${java_modules}"/>
+                <arg value="--module-path" if:true="${java_modules}"/>
+                <arg value="wtk/lib/javax.activation-1.2.0.jar" if:true="${java_modules}"/>
                 <arg value="--add-modules" if:true="${java_modules}"/>
                 <arg value="java.activation" if:true="${java_modules}"/>
             </javadoc>
@@ -579,6 +582,9 @@ limitations under the License.
             <link href="http://download.oracle.com/javaee/7/api/"/>
 
             <arg value="-html4" if:true="${java_modules}"/>
+            <arg value="--frames" if:true="${java_modules}"/>
+            <arg value="--module-path" if:true="${java_modules}"/>
+            <arg value="wtk/lib/javax.activation-1.2.0.jar" if:true="${java_modules}"/>
             <arg value="--add-modules" if:true="${java_modules}"/>
             <arg value="java.activation" if:true="${java_modules}"/>
         </javadoc>
