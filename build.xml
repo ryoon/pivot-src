@@ -452,6 +452,7 @@ limitations under the License.
         <echo message="OS: ${os.name}, version ${os.version}, architecture ${os.arch}"/>
         <echo message=""/>
         <echo message="Java: home at '${java.home}', version ${java.version}, vendor ${java.vendor}"/>
+        <echo message="  needs module flags? ${java_modules}"/>
         <echo message=""/>
     </target>
 
