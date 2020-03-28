@@ -17,8 +17,10 @@
 package org.apache.pivot.wtk;
 
 /**
- * Dialog close listener interface.
+ * Dialog close listener interface. Used to notify listeners that the
+ * dialog has now closed, so that any cleanup actions can be performed.
  */
+@FunctionalInterface
 public interface DialogCloseListener {
     /**
      * Called when a dialog has closed.
@@ -26,6 +28,5 @@ public interface DialogCloseListener {
      * @param dialog The dialog that has been closed.
      * @param modal  Whether this was a modal dialog or not.
      */
-    default void dialogClosed(Dialog dialog, boolean modal) {
-    }
+    void dialogClosed(Dialog dialog, boolean modal);
 }

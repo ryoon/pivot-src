@@ -19,6 +19,7 @@ package org.apache.pivot.wtk.validation;
  * background would be typical), and events are fired by the TextInput if the
  * programmer wishes to take further action.
  */
+@FunctionalInterface
 public interface Validator {
     /**
      * Determines if a text value is valid based on the rules of the validator.
@@ -26,5 +27,5 @@ public interface Validator {
      * @param text The text to test.
      * @return <tt>true</tt> if the value is valid; <tt>false</tt>, otherwise.
      */
-    public boolean isValid(String text);
+    boolean isValid(String text);
 }
