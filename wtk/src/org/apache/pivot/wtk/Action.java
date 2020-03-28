@@ -38,12 +38,12 @@ public abstract class Action {
         }
 
         @Override
-        public Action get(String id) {
+        public Action get(final String id) {
             return namedActions.get(id);
         }
 
         @Override
-        public Action put(String id, Action action) {
+        public Action put(final String id, final Action action) {
             Utils.checkNull(action, "action");
 
             boolean update = containsKey(id);
@@ -59,7 +59,7 @@ public abstract class Action {
         }
 
         @Override
-        public Action remove(String id) {
+        public Action remove(final String id) {
             Action action = null;
 
             if (containsKey(id)) {
@@ -71,7 +71,7 @@ public abstract class Action {
         }
 
         @Override
-        public boolean containsKey(String id) {
+        public boolean containsKey(final String id) {
             return namedActions.containsKey(id);
         }
 
@@ -81,11 +81,14 @@ public abstract class Action {
         }
     }
 
+    /**
+     * A callback for the GUI thread to perform the given action there.
+     */
     public static class Callback implements Runnable {
         private Action action;
         private Component source;
 
-        public Callback(Action action, Component source) {
+        public Callback(final Action action, final Component source) {
             Utils.checkNull(action, "action");
 
             this.action = action;
@@ -107,11 +110,18 @@ public abstract class Action {
 
     private static ActionClassListener.Listeners actionClassListeners = new ActionClassListener.Listeners();
 
+    /**
+     * Constructor which builds the action and sets it enabled to begin with.
+     */
     public Action() {
         this(true);
     }
 
-    public Action(boolean enabled) {
+    /**
+     * Constructor to build the action and set the enabled state at the beginning.
+     * @param enabled Whether the action is to be initially enabled.
+     */
+    public Action(final boolean enabled) {
         setEnabled(enabled);
     }
 
@@ -136,7 +146,7 @@ public abstract class Action {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         if (this.enabled != enabled) {
             this.enabled = enabled;
             actionListeners.enabledChanged(this);
