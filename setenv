@@ -1,0 +1,21 @@
+#!/bin/bash
+if [ -z "$CLASSPATH_OLD" ]
+then
+    export CLASSPATH_OLD=$CLASSPATH
+    for F in $(ls `pwd`/lib/pivot*.jar)
+    do
+        CLASSPATH=$CLASSPATH:$F
+    done
+    for F in $(ls `pwd`/wtk/lib/*.jar)
+    do
+        CLASSPATH=$CLASSPATH:$F
+    done
+    export CLASSPATH
+fi
+echo CLASSPATH=$CLASSPATH
+if [ -n "$1" ]
+then
+    pushd $1/ant-bin
+    pwd
+fi
+

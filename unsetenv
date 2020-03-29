@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ -n "$CLASSPATH_OLD" ]
+then
+    export CLASSPATH=$CLASSPATH_OLD
+    export -n CLASSPATH_OLD=
+fi
+echo CLASSPATH=$CLASSPATH
+
