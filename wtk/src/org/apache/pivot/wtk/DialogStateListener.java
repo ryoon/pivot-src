@@ -90,4 +90,7 @@ public interface DialogStateListener extends DialogCloseListener {
      */
     default void dialogCloseVetoed(Dialog dialog, Vote reason) {
     }
+
+    default void dialogClosed(Dialog dialog, boolean modal) {
+    }
 }
