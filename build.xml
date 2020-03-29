@@ -201,6 +201,8 @@ limitations under the License.
                 includejavaruntime="no"
                 includeantruntime="no"
                 deprecation="${compiler.deprecation}"
+                source="${compiler.source}"
+                target="${compiler.target}"
                 debug="${compiler.debug}"
                 bootclasspath="${compiler.bootstrap.path}"
                 encoding="${compiler.encoding}"
@@ -213,9 +215,6 @@ limitations under the License.
                     </dirset>
                 </src>
                 <compilerarg line="${compiler.arg}"/>
-                <compilerarg line="-source ${compiler.source}" unless:true="${java_modules}"/>
-                <compilerarg line="-target ${compiler.target}" unless:true="${java_modules}"/>
-                <compilerarg line="--release ${compiler.release}" if:true="${java_modules}"/>
                 <classpath>
                     <path refid="classpath.general"/>
                     <dirset dir="${basedir}" includes="**/${folder.bin}"/>
@@ -406,10 +405,6 @@ limitations under the License.
 
                 <arg value="-html4" if:true="${java_modules}"/>
                 <arg value="--frames" if:true="${java_modules}"/>
-                <arg value="--module-path" if:true="${java_modules}"/>
-                <arg value="wtk/lib/javax.activation-1.2.0.jar" if:true="${java_modules}"/>
-                <arg value="--add-modules" if:true="${java_modules}"/>
-                <arg value="java.activation" if:true="${java_modules}"/>
             </javadoc>
 
             <package-maven-source-or-javadoc-jar
@@ -451,8 +446,7 @@ limitations under the License.
         <echo message="Compile environment for ${ant.project.name}-${version} is:"/>
         <echo message="  show deprecation ${compiler.deprecation}"/>
         <echo message="  debug ${compiler.debug}"/>
-        <echo message="  source ${compiler.source}, target ${compiler.target}" unless:true="${java_modules}"/>
-        <echo message="  release ${compiler.release}" if:true="${java_modules}"/>
+        <echo message="  source ${compiler.source}, target ${compiler.target}"/>
         <echo message="  encoding ${compiler.encoding}"/>
         <echo message="  indexJars ${compiler.indexJars}"/>
         <echo message="  arg ${compiler.arg}"/>
@@ -591,10 +585,6 @@ limitations under the License.
 
             <arg value="-html4" if:true="${java_modules}"/>
             <arg value="--frames" if:true="${java_modules}"/>
-            <arg value="--module-path" if:true="${java_modules}"/>
-            <arg value="wtk/lib/javax.activation-1.2.0.jar" if:true="${java_modules}"/>
-            <arg value="--add-modules" if:true="${java_modules}"/>
-            <arg value="java.activation" if:true="${java_modules}"/>
         </javadoc>
     </target>
 
