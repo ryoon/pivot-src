@@ -22,12 +22,27 @@ limitations under the License.
     xmlns:if="ant:if"
     xmlns:unless="ant:unless"
 >
+    <!-- Get the main properties for this build. -->
+    <property file="build.properties"/>
+
+    <!-- Ant version check -->
+    <fail>
+        <condition>
+            <not>
+                <antversion atleast="${min.ant.version}"/>
+            </not>
+        </condition>
+        <![CDATA[
+        Error:
+
+        Building Pivot requires Apache Ant ${min.ant.version} or greater. Please see the BUILD
+        file for more information.
+        ]]>
+    </fail>
+
     <!-- Java-version-related properties -->
     <condition property="java_modules" value="true" else="false">
-        <not>
-            <!-- Since we only support Java 8 or above here, anything not 8 must be 9 or above -->
-            <equals arg1="${ant.java.version}" arg2="1.8"/>
-        </not>
+        <javaversion atleast="9"/>
     </condition>
 
     <!-- Classpath-related properties -->
@@ -64,7 +79,6 @@ limitations under the License.
     <property name="keystore.passwd" value="apache"/>
 
     <!-- Dynamic properties -->
-    <property file="build.properties"/>
     <property name="release" value="apache-${ant.project.name}-${version}"/>
     <exec executable="svn" dir="." output="svnlog">
         <arg value="info"/>
@@ -77,12 +91,16 @@ limitations under the License.
             <replacestring from="Last Changed Rev:" to="lastchangedrev="/>
         </filterchain>
     </loadproperties>
-    <echo message="Last Changed Revision: ${lastchangedrev}"/>
+    <tstamp>
+        <format property="build_date" pattern="yyyy-MM-dd" locale="en" timezone="UTC"/>
+        <format property="build_time" pattern="HH:mm:ss z" locale="en" timezone="UTC"/>
+    </tstamp>
     <propertyfile file="build.number" comment="## Auto generated build number. DO NOT MODIFY!">
-        <entry key="build.number" type="string" operation="=" value="${lastchangedrev}"/>
+        <entry key="build.number" value="${lastchangedrev}"/>
+        <entry key="build.date" value="${build_date}"/>
+        <entry key="build.time" value="${build_time}"/>
     </propertyfile>
     <property file="build.number"/>
-    <echo message="Build Number: ${build.number}"/>
 
     <!-- Compiler properties and Test properties have been moved into build.properties -->
 
@@ -136,21 +154,6 @@ limitations under the License.
         <include name="**/src/**/TerraVFSBrowserSkin*.json"/>
     </patternset>
 
-    <!-- Ant version check -->
-    <fail>
-        <condition>
-            <not>
-                <antversion atleast="1.10.2"/>
-            </not>
-        </condition>
-        <![CDATA[
-        Error:
-
-        Building Pivot requires Apache Ant 1.10.2 or greater. Please see the BUILD
-        file for more information.
-        ]]>
-    </fail>
-
     <!-- Compile macro -->
     <macrodef name="compile">
         <attribute name="project"/>
@@ -162,7 +165,7 @@ limitations under the License.
                 <condition>
                     <not>
                         <or>
-                            <equals arg1="${ant.java.version}" arg2="1.8"/>
+                            <equals arg1="${ant.java.version}" arg2="${compiler.target}"/>
                             <javaversion atleast="9"/>
                         </or>
                     </not>
@@ -170,7 +173,7 @@ limitations under the License.
                 <![CDATA[
                 Error:
 
-                Building Pivot requires JDK 1.8 or greater. Please see the
+                Building Pivot requires JDK ${compiler.target} or greater. Please see the
                 BUILD file for more information.
                 ]]>
             </fail>
@@ -199,8 +202,6 @@ limitations under the License.
                 includeantruntime="no"
                 deprecation="${compiler.deprecation}"
                 debug="${compiler.debug}"
-                source="${compiler.source}"
-                target="${compiler.target}"
                 bootclasspath="${compiler.bootstrap.path}"
                 encoding="${compiler.encoding}"
                 failonerror="true"
@@ -212,6 +213,9 @@ limitations under the License.
                     </dirset>
                 </src>
                 <compilerarg line="${compiler.arg}"/>
+                <compilerarg line="-source ${compiler.source}" unless:true="${java_modules}"/>
+                <compilerarg line="-target ${compiler.target}" unless:true="${java_modules}"/>
+                <compilerarg line="--release ${compiler.release}" if:true="${java_modules}"/>
                 <classpath>
                     <path refid="classpath.general"/>
                     <dirset dir="${basedir}" includes="**/${folder.bin}"/>
@@ -440,19 +444,22 @@ limitations under the License.
         depends=""
     >
         <echo message=""/>
-        <echo message="${ant.version}"/>
-        <echo message="Compile environment for ${ant.project.name}-${version} is:"/>
-        <echo message="show deprecation ${compiler.deprecation}"/>
-        <echo message="debug ${compiler.debug}"/>
-        <echo message="source ${compiler.source}, target ${compiler.target}"/>
-        <echo message="encoding ${compiler.encoding}"/>
-        <echo message="indexJars ${compiler.indexJars}"/>
-        <echo message="arg ${compiler.arg}"/>
-        <echo message=""/>
-        <echo message="OS: ${os.name}, version ${os.version}, architecture ${os.arch}"/>
-        <echo message=""/>
+        <echo message="O/S: ${os.name}, version ${os.version}, architecture ${os.arch}"/>
         <echo message="Java: home at '${java.home}', version ${java.version}, vendor ${java.vendor}"/>
-        <echo message="  needs module flags? ${java_modules}"/>
+        <echo message="Ant: ${ant.version}"/>
+        <echo message=""/>
+        <echo message="Compile environment for ${ant.project.name}-${version} is:"/>
+        <echo message="  show deprecation ${compiler.deprecation}"/>
+        <echo message="  debug ${compiler.debug}"/>
+        <echo message="  source ${compiler.source}, target ${compiler.target}" unless:true="${java_modules}"/>
+        <echo message="  release ${compiler.release}" if:true="${java_modules}"/>
+        <echo message="  encoding ${compiler.encoding}"/>
+        <echo message="  indexJars ${compiler.indexJars}"/>
+        <echo message="  arg ${compiler.arg}"/>
+        <echo message="needs module flags? ${java_modules}"/>
+        <echo message=""/>
+        <echo message="Last Changed Revision: ${lastchangedrev}"/>
+        <echo message="Build Number: ${build.number} started on ${build.date} at ${build.time}"/>
         <echo message=""/>
     </target>
 
