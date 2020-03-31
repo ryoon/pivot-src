@@ -152,6 +152,7 @@ public final class StyleErrors {
             System.out.format(UNDER_FORMAT, "----------------------------", "-----");
             System.out.format(FORMAT, "Grand Total", total);
             System.out.format(FORMAT, "Total Files With Errors", fileNameSet.size());
+            System.out.format(FORMAT, "Number of Error Categories", sortedList.size());
             System.out.println();
         }
     }
