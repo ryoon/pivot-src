@@ -116,7 +116,7 @@ public class BXMLSerializer implements Serializer<Object>, Resolvable {
             System.out.format("key: %1$s, value: %2$s [%3$s]%n",
                 key, value, Integer.toHexString(System.identityHashCode(value)));
             if (key.equals(NASHORN_GLOBAL)) {
-                Bindings globalBindings = (Bindings)value;
+                Bindings globalBindings = (Bindings) value;
                 for (String globalKey : globalBindings.keySet()) {
                     Object globalValue = globalBindings.get(globalKey);
                     System.out.format("    global key: %1$s, value: %2$s [%3$s]%n",

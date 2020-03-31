@@ -36,9 +36,19 @@ public interface Dictionary<K, V> {
     public static final class Pair<K, V> implements Serializable {
         private static final long serialVersionUID = 5010958035775950649L;
 
+        /** The &quot;key&quot; of this key-value pair. */
         public final K key;
+        /** The &quot;value&quot; of this key-value pair. */
         public final V value;
 
+        /**
+         * The only constructor for this class that takes both the
+         * key and the value to be stored, ensuring they are both set
+         * all the time.
+         * @param key The &quot;key&quot; to be stored.
+         * @param value The &quot;value&quot; to be associated with that key.
+         * @throws IllegalArgumentException if the key value is {@code null}.
+         */
         public Pair(final K key, final V value) {
             Utils.checkNull(key, "key");
 
@@ -53,8 +63,9 @@ public interface Dictionary<K, V> {
 
             if (object instanceof Pair<?, ?>) {
                 Pair<K, V> pair = (Pair<K, V>) object;
-                equals = (key.equals(pair.key) && ((value == null && pair.value == null)
-                    || (value != null && value.equals(pair.value))));
+                equals = (key.equals(pair.key)
+                     && ((value == null && pair.value == null)
+                     || (value != null && value.equals(pair.value))));
             }
 
             return equals;

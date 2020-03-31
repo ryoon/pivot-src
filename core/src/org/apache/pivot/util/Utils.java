@@ -130,6 +130,22 @@ public final class Utils {
     }
 
     /**
+     * If the first argument given is {@code null} then substitute the second argument
+     * for it, else just return the given argument.
+     *
+     * @param value The argument to check for &quot;null-ness&quot;.
+     * @param substituteForNull The value to use instead of the {@code null} value.
+     * @return Either the value or the substituted one (which could be null, but then
+     * why would you call this method?).
+     */
+    public static Object ifNull(final Object value, final Object substituteForNull) {
+        if (value == null) {
+            return substituteForNull;
+        }
+        return value;
+    }
+
+    /**
      * Check if the input argument is negative (less than zero), and throw an
      * {@link IllegalArgumentException} with or without a descriptive message,
      * depending on the {@code argument} supplied.
@@ -219,7 +235,7 @@ public final class Utils {
 
     /**
      * Check that the given value falls within the range of a non-negative "short" value, that is
-     * between 0 and 0x7FFF (inclusive).
+     * between 0 and {@link Short#MAX_VALUE} (inclusive).
      *
      * @param value The value to check.
      * @param argument The optional argument used to describe the value in case it is out of range
@@ -228,7 +244,7 @@ public final class Utils {
      */
     public static void checkInRangeOfShort(final int value, final String argument) {
         if (value < 0 || value > (int) Short.MAX_VALUE) {
-            String valueMsg = isNullOrEmpty(argument) ? "value" : argument;
+            String valueMsg = (String) ifNull(argument, "value");
             throw new IllegalArgumentException(valueMsg + " must be less than or equal "
                 + Short.MAX_VALUE + ".");
         }
@@ -277,10 +293,10 @@ public final class Utils {
      * @param start  The start of the acceptable range (inclusive).
      * @param end    The end of the acceptable range (inclusive).
      *
-     * @throws IllegalArgumentException if {@code end} is &lt; {@code start}, or if {@code count}
-     * or {@code start} are &lt; zero.
-     * @throws IndexOutOfBoundsException if {@code index} is &lt; {@code start} or {@code index + start}
-     * is &gt; {@code end}.
+     * @throws IllegalArgumentException if {@code end} is &lt; {@code start}, or
+     * if {@code count} or {@code start} are &lt; zero.
+     * @throws IndexOutOfBoundsException if {@code index} is &lt; {@code start} or
+     * if {@code index + start} is &gt; {@code end}.
      */
     public static void checkIndexBounds(final int index, final int count, final int start, final int end) {
         if (end < start) {

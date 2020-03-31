@@ -26,7 +26,7 @@ public final class TestUtils {
     private TestUtils() {
     }
 
-    static final void testJavaSecurity() {
+    static void testJavaSecurity() {
         try {
             System.out.println("The current SecurityManager is: " + System.getSecurityManager());
 
