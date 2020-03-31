@@ -272,7 +272,7 @@ public abstract class Theme {
      * @return The current theme, as determined by the {@linkplain #PROVIDER_NAME
      * theme provider}.
      *
-     * @throws IllegalStateException If a theme has not been installed.
+     * @throws ThemeNotFoundException If a theme has not been installed.
      */
     public static Theme getTheme() {
         if (theme == null) {
