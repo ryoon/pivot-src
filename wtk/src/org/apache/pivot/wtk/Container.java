@@ -825,44 +825,41 @@ public abstract class Container extends Component implements Sequence<Component>
         assertEventDispatchThread(this);
     }
 
-    private static EDTChecker EDT_CHECKER = new EDTChecker() {
-        @Override
-        public void check(Component component) {
-            String threadName = Thread.currentThread().getName();
-            /*
-             * Currently, application startup happens on the main thread, so we
-             * need to allow that thread to modify WTK state.
-             */
-            if (threadName.equals("main") || threadName.equals("javawsApplicationMain")) {
-                return;
-            }
-            // Allow components to be constructed from outside the event thread
-            if (component.getDisplay() == null) {
-                return;
-            }
-            /*
-             * See Sun/Oracle bug 6424157. There is a race condition where we
-             * can be running on the event thread but isDispatchThread() will
-             * return false.
-             */
-            if (threadName.startsWith("AWT-EventQueue-")) {
-                return;
-            }
-            if (!java.awt.EventQueue.isDispatchThread()) {
-                throw new IllegalStateException(
-                    "this method can only be called from the AWT event dispatch thread"
-                        + ", and not from \"" + threadName + "\"");
-            }
+    private static EDTChecker edtChecker = (component) -> {
+        String threadName = Thread.currentThread().getName();
+        /*
+         * Currently, application startup happens on the main thread, so we
+         * need to allow that thread to modify WTK state.
+         */
+        if (threadName.equals("main") || threadName.equals("javawsApplicationMain")) {
+            return;
+        }
+        // Allow components to be constructed from outside the event thread
+        if (component.getDisplay() == null) {
+            return;
+        }
+        /*
+         * See Sun/Oracle bug 6424157. There is a race condition where we
+         * can be running on the event thread but isDispatchThread() will
+         * return false.
+         */
+        if (threadName.startsWith("AWT-EventQueue-")) {
+            return;
+        }
+        if (!java.awt.EventQueue.isDispatchThread()) {
+            throw new IllegalStateException(
+                "this method can only be called from the AWT event dispatch thread"
+                    + ", and not from \"" + threadName + "\"");
         }
     };
 
     public static final void assertEventDispatchThread(Component component) {
-        if (EDT_CHECKER != null) {
-            EDT_CHECKER.check(component);
+        if (edtChecker != null) {
+            edtChecker.check(component);
         }
     }
 
-    public static final void setEventDispatchThreadChecker(EDTChecker runnable) {
-        EDT_CHECKER = runnable;
+    public static final void setEventDispatchThreadChecker(EDTChecker checker) {
+        edtChecker = checker;
     }
 }

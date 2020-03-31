@@ -48,7 +48,7 @@ import org.apache.pivot.wtk.Window;
 import org.apache.pivot.wtk.content.TableViewRowComparator;
 
 public class LargeData implements Application {
-    private static String USER_HOME; // useful for local tests as Java Application
+    private static String userHome; // useful for local tests as Java Application
 
     URL origin = null;
 
@@ -151,10 +151,10 @@ public class LargeData implements Application {
         origin = ApplicationContext.getOrigin();
         if (origin == null) {
             System.out.println("Running as a Standalone Java Application, with user home: \""
-                + USER_HOME + "\"");
-            if (USER_HOME != null) {
+                + userHome + "\"");
+            if (userHome != null) {
                 System.out.println("Set as origin the user home");
-                origin = (new File(USER_HOME).toURI()).toURL();
+                origin = (new File(userHome).toURI()).toURL();
             }
         }
 
@@ -292,10 +292,10 @@ public class LargeData implements Application {
         try {
             // moved here because in some cases (for example when running as
             // unsigned code via Web Start) this would not be accessible
-            USER_HOME = System.getProperty("user.home");
+            userHome = System.getProperty("user.home");
         } catch (Exception e) {
             // e.printStackTrace(); // ignore the exception, and set a fallback
-            USER_HOME = null;
+            userHome = null;
         }
 
         DesktopApplicationContext.main(LargeData.class, args);
