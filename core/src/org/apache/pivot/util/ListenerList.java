@@ -89,6 +89,41 @@ public abstract class ListenerList<T> implements Iterable<T> {
     }
 
     /**
+     * Inserts a new listener to the specified position in the list.
+     *
+     * @param index The 0-based position in the list where to add the new listener.
+     * @param listener New listener to add there.
+     */
+    public void add(int index, T listener) {
+        Utils.checkZeroBasedIndex(index, last);
+
+        if (indexOf(listener) >= 0) {
+            System.err.println("Duplicate listener " + listener + " added to " + this);
+            return;
+        }
+
+        // If no slot is available, increase the size of the array
+        if (last >= list.length) {
+            @SuppressWarnings({ "unchecked" })
+            T[] newList = (T[]) new Object[list.length + DEFAULT_SIZE];
+            if (index > 0) {
+                System.arraycopy(list, 0, newList, 0, index);
+            }
+            if (last > index) {
+                System.arraycopy(list, index, newList, index + 1, last - index);
+            }
+            list = newList;
+        } else {
+            if (last > index) {
+                System.arraycopy(list, index, list, index + 1, last - index);
+            }
+        }
+
+        list[index] = listener;
+        last++;
+    }
+    
+    /**
      * Removes a listener from the list, if it has previously been added.
      *
      * @param listener The listener to remove from the list.
