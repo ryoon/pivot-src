@@ -65,22 +65,16 @@ public final class Service {
             InputStream serviceInputStream = classLoader.getResourceAsStream(serviceName);
 
             if (serviceInputStream != null) {
-                try {
-                    BufferedReader reader = null;
-                    try {
-                        reader = new BufferedReader(new InputStreamReader(serviceInputStream,
-                            StandardCharsets.UTF_8));
-                        String line = reader.readLine();
-                        while (line != null && (line.length() == 0 || line.startsWith("#"))) {
-                            line = reader.readLine();
-                        }
+                try (BufferedReader reader = new BufferedReader(
+                                        new InputStreamReader(serviceInputStream,
+                                                              StandardCharsets.UTF_8))) {
+                    String line;
+                    do {
+                        line = reader.readLine();
+                    } while (line != null && (line.isEmpty() || line.startsWith("#")));
 
-                        providerClassName = line;
-                    } finally {
-                        if (reader != null) {
-                            reader.close();
-                        }
-                    }
+                    // First non-blank, non-comment line should be the provider class name
+                    providerClassName = line;
                 } catch (IOException exception) {
                     // No-op
                 }
