@@ -1078,4 +1078,6 @@ limitations under the License.
         <echo message="Style check results in &quot;style_errors.log&quot; and &quot;style_summary.log&quot;"/>
     </target>
 
+    <!-- Do the "normal" clean build stuff -->
+    <target name="build" depends="clean, package, doc, test, check-style" description="Do a &quot;normal&quot; build."/>
 </project>
