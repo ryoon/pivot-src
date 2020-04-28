@@ -90,12 +90,12 @@ public class ListenerListTest {
         assertEquals(l2, listeners.get(0));
         assertEquals(l3, listeners.get(1));
         assertEquals(l4, listeners.get(2));
-        
+
         listeners.changed();
     }
 
-    private static int LIMIT = 30;
-    private static int expectedValues[] = {
+    private static final int LIMIT = 30;
+    private static final int[] expectedValues = {
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         11, 12, 13, 14, 15, 16, 32, 17, 34, 31,
         36, 33, 38, 35, 40, 37, 42, 39, 44, 41,
@@ -116,7 +116,7 @@ public class ListenerListTest {
 
         for (int i = 1; i <= LIMIT; i++) {
             TestListener listener = new NumberedListener(i + LIMIT);
-            int index = (((i % 2) == 0) ? i - 1 : i + 1) + (LIMIT / 2);;
+            int index = (((i % 2) == 0) ? i - 1 : i + 1) + (LIMIT / 2);
             listeners.add(index, listener);
         }
         assertEquals(listeners.getLength(), LIMIT * 2);
@@ -124,7 +124,7 @@ public class ListenerListTest {
         listeners.changed();
 
         for (int i = 0; i < expectedValues.length; i++) {
-            NumberedListener listener = (NumberedListener)listeners.get(i);
+            NumberedListener listener = (NumberedListener) listeners.get(i);
             assertEquals(listener.whichOne(), expectedValues[i]);
         }
     }

@@ -122,7 +122,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
         list[index] = listener;
         last++;
     }
-    
+
     /**
      * Removes a listener from the list, if it has previously been added.
      *
