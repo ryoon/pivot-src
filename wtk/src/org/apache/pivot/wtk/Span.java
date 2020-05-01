@@ -271,6 +271,14 @@ public final class Span {
     }
 
     /**
+     * @return <tt>true</tt> if the span is "normal", meaning the start is
+     * less or equal the end.
+     */
+    public boolean isNormal() {
+        return start <= end;
+    }
+
+    /**
      * Create a span where the start value is less than or equal to the end value.
      *
      * @param start The new proposed start value.
@@ -278,15 +286,25 @@ public final class Span {
      * @return A span containing the normalized range.
      */
     public static Span normalize(final int start, final int end) {
-        return new Span(Math.min(start, end), Math.max(start, end));
+        if (start <= end) {
+            return new Span(start, end);
+        } else {
+            return new Span(end, start);
+        }
     }
 
     /**
      * @return A normalized equivalent of the span in which <tt>start</tt> is
-     * guaranteed to be less than <tt>end</tt>.
+     * guaranteed to be less or equal to <tt>end</tt>.
+     * <p> Note: if the span is already "normal", then no new object is
+     * created.
      */
     public Span normalize() {
-        return normalize(start, end);
+        if (start <= end) {
+            return this;
+        } else {
+            return new Span(end, start);
+        }
     }
 
     /**
@@ -300,7 +318,7 @@ public final class Span {
      * @return A new {@link Span} with updated values.
      */
     public Span offset(final int offset) {
-        return new Span(this.start + offset, this.end + offset);
+        return new Span(start + offset, end + offset);
     }
 
     /**
@@ -311,7 +329,7 @@ public final class Span {
      * @return A new {@link Span} with updated value.
      */
     public Span lengthen(final int offset) {
-        return new Span(this.start, this.end + offset);
+        return new Span(start, end + offset);
     }
 
     /**
@@ -322,7 +340,7 @@ public final class Span {
      * @return A new {@link Span} with updated value.
      */
     public Span move(final int offset) {
-        return new Span(this.start + offset, this.end);
+        return new Span(start + offset, end);
     }
 
     /**

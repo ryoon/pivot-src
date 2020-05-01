@@ -86,6 +86,13 @@ public class SpanTest {
         assertEquals(sp6.toString(), "Span {start:4, end:6}");
         assertEquals(sp6b, sp5b);
         assertEquals(sp6d, sp3a);
+
+        Span s9 = new Span(5, 6);
+        Span s9a = new Span(6, 5);
+        assertTrue(s9.isNormal());
+        assertFalse(s9a.isNormal());
+        assertEquals(s9, s9a.normalize());
+        assertEquals(s9, Span.normalize(6, 5));
     }
 
 }

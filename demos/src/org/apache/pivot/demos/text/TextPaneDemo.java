@@ -42,6 +42,7 @@ import org.apache.pivot.wtk.ColorChooserButtonSelectionListener;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.FileBrowserSheet;
+import org.apache.pivot.wtk.FontUtilities;
 import org.apache.pivot.wtk.HorizontalAlignment;
 import org.apache.pivot.wtk.ListButton;
 import org.apache.pivot.wtk.ListButtonSelectionListener;
@@ -91,7 +92,7 @@ public class TextPaneDemo implements Application {
     }
 
     @Override
-    public void startup(Display display, Map<String, String> properties) throws Exception {
+    public void startup(final Display display, final Map<String, String> properties) throws Exception {
         System.out.println("startup(...)");
         System.out.println("\n"
             + "In this test application as a sample for setting the display scale on startup,\n"
@@ -143,174 +144,114 @@ public class TextPaneDemo implements Application {
         fontSizeListButton.setListData(new NumericSpinnerData(12, 30, 1));
         fontSizeListButton.setSelectedItem(12);
 
-        openFileButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                final FileBrowserSheet fileBrowserSheet = new FileBrowserSheet();
+        openFileButton.getButtonPressListeners().add(button -> {
+            final FileBrowserSheet fileBrowserSheet = new FileBrowserSheet();
 
-                fileBrowserSheet.setMode(FileBrowserSheet.Mode.OPEN);
-                fileBrowserSheet.open(window, new SheetCloseListener() {
-                    @Override
-                    public void sheetClosed(Sheet sheet) {
-                        if (sheet.getResult()) {
-                            loadedFile = fileBrowserSheet.getSelectedFile();
-
-                            try {
-                                BufferedReader reader = new BufferedReader(new FileReader(
-                                    loadedFile));
-                                PlainTextSerializer serializer = new PlainTextSerializer();
-                                textPane.setDocument(serializer.readObject(reader));
-                                reader.close();
-                                window.setTitle(loadedFile.getCanonicalPath());
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                                Alert.alert(ex.getMessage(), window);
-                            }
-                        }
+            fileBrowserSheet.setMode(FileBrowserSheet.Mode.OPEN);
+            fileBrowserSheet.open(window, sheet -> {
+                if (sheet.getResult()) {
+                    loadedFile = fileBrowserSheet.getSelectedFile();
+                    try (BufferedReader reader = new BufferedReader(new FileReader(loadedFile))) {
+                        PlainTextSerializer serializer = new PlainTextSerializer();
+                        textPane.setDocument(serializer.readObject(reader));
+                        window.setTitle(loadedFile.getCanonicalPath());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        Alert.alert(ex.getMessage(), window);
                     }
-                });
-            }
-        });
-
-        saveFileButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                final FileBrowserSheet fileBrowserSheet = new FileBrowserSheet();
-
-                if (loadedFile != null) {
-                    fileBrowserSheet.setSelectedFile(loadedFile);
                 }
-
-                fileBrowserSheet.setMode(FileBrowserSheet.Mode.SAVE_AS);
-                fileBrowserSheet.open(window, new SheetCloseListener() {
-                    @Override
-                    public void sheetClosed(Sheet sheet) {
-                        if (sheet.getResult()) {
-                            File selectedFile = fileBrowserSheet.getSelectedFile();
-
-                            try {
-                                FileWriter writer = new FileWriter(selectedFile);
-                                PlainTextSerializer serializer = new PlainTextSerializer();
-                                serializer.writeObject(textPane.getDocument(), writer);
-                                writer.close();
-                                loadedFile = selectedFile;
-                                window.setTitle(loadedFile.getCanonicalPath());
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                                Alert.alert(ex.getMessage(), window);
-                            }
-                        }
-                    }
-                });
-            }
+            });
         });
 
-        boldButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                applyStyleToSelection(new StyleApplicator() {
-                    @Override
-                    public void apply(TextSpan span) {
-                        if (span.getFont() != null) {
-                            Font font = span.getFont();
-                            if (font.getStyle() == Font.PLAIN) {
-                                font = font.deriveFont(Font.BOLD);
-                            } else if (font.getStyle() == Font.BOLD) {
-                                font = font.deriveFont(Font.PLAIN);
-                            } else {
-                                // the font is BOLD+ITALIC
-                                font = font.deriveFont(Font.ITALIC);
-                            }
-                            span.setFont(font);
-                        } else {
-                            span.setFont("Arial BOLD 12");
-                        }
-                    }
-                });
-                requestTextPaneFocus();
+        saveFileButton.getButtonPressListeners().add(button -> {
+            final FileBrowserSheet fileBrowserSheet = new FileBrowserSheet();
+
+            if (loadedFile != null) {
+                fileBrowserSheet.setSelectedFile(loadedFile);
             }
+
+            fileBrowserSheet.setMode(FileBrowserSheet.Mode.SAVE_AS);
+            fileBrowserSheet.open(window, sheet -> {
+                if (sheet.getResult()) {
+                    File selectedFile = fileBrowserSheet.getSelectedFile();
+
+                    try (FileWriter writer = new FileWriter(selectedFile)) {
+                        PlainTextSerializer serializer = new PlainTextSerializer();
+                        serializer.writeObject(textPane.getDocument(), writer);
+                        loadedFile = selectedFile;
+                        window.setTitle(loadedFile.getCanonicalPath());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        Alert.alert(ex.getMessage(), window);
+                    }
+                }
+            });
         });
 
-        italicButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                applyStyleToSelection(new StyleApplicator() {
-                    @Override
-                    public void apply(TextSpan span) {
-                        if (span.getFont() != null) {
-                            Font font = span.getFont();
-                            if (font.getStyle() == Font.PLAIN) {
-                                font = font.deriveFont(Font.ITALIC);
-                            } else if (font.getStyle() == Font.ITALIC) {
-                                font = font.deriveFont(Font.PLAIN);
-                            } else {
-                                // the font is BOLD+ITALIC
-                                font = font.deriveFont(Font.BOLD);
-                            }
-                            span.setFont(font);
-                        } else {
-                            span.setFont("Arial ITALIC 12");
-                        }
+        boldButton.getButtonPressListeners().add(button -> {
+            applyStyleToSelection(span -> {
+                if (span.getFont() != null) {
+                    Font font = span.getFont();
+                    if (font.getStyle() == Font.PLAIN) {
+                        font = font.deriveFont(Font.BOLD);
+                    } else if (font.getStyle() == Font.BOLD) {
+                        font = font.deriveFont(Font.PLAIN);
+                    } else {
+                        // the font is BOLD+ITALIC
+                        font = font.deriveFont(Font.ITALIC);
                     }
-                });
-                requestTextPaneFocus();
-            }
+                    span.setFont(font);
+                } else {
+                    span.setFont(FontUtilities.ARIAL, Font.BOLD, 12);
+                }
+            });
+            requestTextPaneFocus();
         });
 
-        underlineButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                applyStyleToSelection(new StyleApplicator() {
-                    @Override
-                    public void apply(TextSpan span) {
-                        span.setUnderline(!span.isUnderline());
+        italicButton.getButtonPressListeners().add(button -> {
+            applyStyleToSelection(span -> {
+                if (span.getFont() != null) {
+                    Font font = span.getFont();
+                    if (font.getStyle() == Font.PLAIN) {
+                        font = font.deriveFont(Font.ITALIC);
+                    } else if (font.getStyle() == Font.ITALIC) {
+                        font = font.deriveFont(Font.PLAIN);
+                    } else {
+                        // the font is BOLD+ITALIC
+                        font = font.deriveFont(Font.BOLD);
                     }
-                });
-                requestTextPaneFocus();
-            }
+                    span.setFont(font);
+                } else {
+                    span.setFont(FontUtilities.ARIAL, Font.ITALIC, 12);
+                }
+            });
+            requestTextPaneFocus();
         });
 
-        strikethroughButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                applyStyleToSelection(new StyleApplicator() {
-                    @Override
-                    public void apply(TextSpan span) {
-                        span.setStrikethrough(!span.isStrikethrough());
-                    }
-                });
-                requestTextPaneFocus();
-            }
+        underlineButton.getButtonPressListeners().add(button -> {
+            applyStyleToSelection(span -> span.setUnderline(!span.isUnderline()));
+            requestTextPaneFocus();
+        });
+
+        strikethroughButton.getButtonPressListeners().add(button -> {
+            applyStyleToSelection(span -> span.setStrikethrough(!span.isStrikethrough()));
+            requestTextPaneFocus();
         });
 
         foregroundColorChooserButton.getColorChooserButtonSelectionListeners().add(
-            new ColorChooserButtonSelectionListener() {
-                @Override
-                public void selectedColorChanged(ColorChooserButton colorChooserButton,
-                    Color previousSelectedColor) {
-                    applyStyleToSelection(new StyleApplicator() {
-                        @Override
-                        public void apply(TextSpan span) {
-                            span.setForegroundColor(foregroundColorChooserButton.getSelectedColor());
-                        }
-                    });
-                    requestTextPaneFocus();
-                }
+            (colorChooserButton, previousSelectedColor) -> {
+                applyStyleToSelection(span -> {
+                    span.setForegroundColor(foregroundColorChooserButton.getSelectedColor());
+                });
+                requestTextPaneFocus();
             });
 
         backgroundColorChooserButton.getColorChooserButtonSelectionListeners().add(
-            new ColorChooserButtonSelectionListener() {
-                @Override
-                public void selectedColorChanged(ColorChooserButton colorChooserButton,
-                    Color previousSelectedColor) {
-                    applyStyleToSelection(new StyleApplicator() {
-                        @Override
-                        public void apply(TextSpan span) {
-                            span.setBackgroundColor(backgroundColorChooserButton.getSelectedColor());
-                        }
-                    });
-                    requestTextPaneFocus();
-                }
+            (colorChooserButton, previousSelectedColor) -> {
+                applyStyleToSelection(span -> {
+                    span.setBackgroundColor(backgroundColorChooserButton.getSelectedColor());
+                });
+                requestTextPaneFocus();
             });
 
         ListButtonSelectionListener fontButtonPressListener = new ListButtonSelectionListener() {
@@ -320,48 +261,31 @@ public class TextPaneDemo implements Application {
                 String selectedFontFamily = (String) fontFamilyListButton.getSelectedItem();
                 final Font derivedFont = Font.decode(selectedFontFamily + " " + selectedFontSize);
 
-                applyStyleToSelection(new StyleApplicator() {
-                    @Override
-                    public void apply(TextSpan span) {
-                        span.setFont(derivedFont);
-                    }
-                });
+                applyStyleToSelection(span -> span.setFont(derivedFont));
                 requestTextPaneFocus();
             }
         };
         fontFamilyListButton.getListButtonSelectionListeners().add(fontButtonPressListener);
         fontSizeListButton.getListButtonSelectionListeners().add(fontButtonPressListener);
 
-        wrapTextCheckbox.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                textPane.getStyles().put(Style.wrapText, wrapTextCheckbox.isSelected());
-                requestTextPaneFocus();
-            }
+        wrapTextCheckbox.getButtonPressListeners().add(button -> {
+            textPane.getStyles().put(Style.wrapText, wrapTextCheckbox.isSelected());
+            requestTextPaneFocus();
         });
 
-        alignLeftButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                applyAlignmentStyle(HorizontalAlignment.LEFT);
-                requestTextPaneFocus();
-            }
+        alignLeftButton.getButtonPressListeners().add(button -> {
+            applyAlignmentStyle(HorizontalAlignment.LEFT);
+            requestTextPaneFocus();
         });
 
-        alignCentreButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                applyAlignmentStyle(HorizontalAlignment.CENTER);
-                requestTextPaneFocus();
-            }
+        alignCentreButton.getButtonPressListeners().add(button -> {
+            applyAlignmentStyle(HorizontalAlignment.CENTER);
+            requestTextPaneFocus();
         });
 
-        alignRightButton.getButtonPressListeners().add(new ButtonPressListener() {
-            @Override
-            public void buttonPressed(Button button) {
-                applyAlignmentStyle(HorizontalAlignment.RIGHT);
-                requestTextPaneFocus();
-            }
+        alignRightButton.getButtonPressListeners().add(button -> {
+            applyAlignmentStyle(HorizontalAlignment.RIGHT);
+            requestTextPaneFocus();
         });
 
         String scaleProperty = properties.get("scale");
@@ -379,28 +303,21 @@ public class TextPaneDemo implements Application {
         requestTextPaneFocus();
     }
 
+    @FunctionalInterface
     private interface StyleApplicator {
         void apply(TextSpan span);
     }
 
-    private void applyAlignmentStyle(HorizontalAlignment horizontalAlignment) {
+    private void applyAlignmentStyle(final HorizontalAlignment horizontalAlignment) {
         Node node = textPane.getDocument().getDescendantAt(textPane.getSelectionStart());
-        while (node != null && !(node instanceof Paragraph)) {
-            node = node.getParent();
-        }
-        if (node != null) {
-            Paragraph paragraph = (Paragraph) node;
+        Paragraph paragraph = node.getParagraph();
+        if (paragraph != null) {
             paragraph.setHorizontalAlignment(horizontalAlignment);
         }
     }
 
     private void requestTextPaneFocus() {
-        ApplicationContext.scheduleCallback(new Runnable() {
-            @Override
-            public void run() {
-                textPane.requestFocus();
-            }
-        }, 200L);
+        ApplicationContext.scheduleCallback(() -> textPane.requestFocus(), 200L);
     }
 
     /** Debugging tools. */
@@ -410,7 +327,7 @@ public class TextPaneDemo implements Application {
     }
 
     /** Debugging tools. */
-    private void dumpDocumentNode(Node node, PrintStream printStream, final int indent) {
+    private void dumpDocumentNode(final Node node, final PrintStream printStream, final int indent) {
         for (int i = 0; i < indent; i++) {
             printStream.append("  ");
         }
@@ -441,16 +358,15 @@ public class TextPaneDemo implements Application {
         }
     }
 
-    private void applyStyleToSelection(StyleApplicator styleApplicator) {
+    private void applyStyleToSelection(final StyleApplicator styleApplicator) {
         Span span = textPane.getSelection();
-        if (span == null) {
-            return;
+        if (span != null) {
+            applyStyle(textPane.getDocument(), span, styleApplicator);
         }
-        applyStyle(textPane.getDocument(), span, styleApplicator);
     }
 
-    private void applyStyle(Document document, Span selectionSpan,
-        StyleApplicator styleApplicator) {
+    private void applyStyle(final Document document, final Span selectionSpan,
+        final StyleApplicator styleApplicator) {
         // I can't apply the styles while iterating over the tree, because I
         // need to update the tree.
         // So first collect a list of all the nodes in the tree.
@@ -471,8 +387,8 @@ public class TextPaneDemo implements Application {
                         textSpan);
                 }
             }
-            if (node instanceof org.apache.pivot.wtk.text.TextNode) {
-                org.apache.pivot.wtk.text.TextNode textNode = (org.apache.pivot.wtk.text.TextNode) node;
+            if (node instanceof TextNode) {
+                TextNode textNode = (TextNode) node;
                 int documentOffset = node.getDocumentOffset();
                 int characterCount = node.getCharacterCount();
                 Span textSpan = new Span(documentOffset, documentOffset + characterCount - 1);
@@ -487,9 +403,9 @@ public class TextPaneDemo implements Application {
         textPane.setSelection(selectionStart, selectionLength);
     }
 
-    private static void applyStyleToTextNode(Span selectionSpan,
-        StyleApplicator styleApplicator, org.apache.pivot.wtk.text.TextNode textNode,
-        int characterCount, Span textSpan) {
+    private static void applyStyleToTextNode(final Span selectionSpan,
+        final StyleApplicator styleApplicator, final TextNode textNode,
+        final int characterCount, final Span textSpan) {
         if (selectionSpan.contains(textSpan)) {
             // if the text-node is contained wholly inside the selection, remove
             // the text-node, replace it with a Span, and apply the style
@@ -550,9 +466,9 @@ public class TextPaneDemo implements Application {
         }
     }
 
-    private static void applyStyleToSpanNode(Span selectionSpan,
-        StyleApplicator styleApplicator, TextSpan spanNode, int characterCount,
-        Span textSpan) {
+    private static void applyStyleToSpanNode(final Span selectionSpan,
+        final StyleApplicator styleApplicator, final TextSpan spanNode, final int characterCount,
+        final Span textSpan) {
         if (selectionSpan.contains(textSpan)) {
             // if the span-node is contained wholly inside the
             // selection, apply the style
@@ -601,12 +517,12 @@ public class TextPaneDemo implements Application {
         }
     }
 
-    private void collectNodes(org.apache.pivot.wtk.text.Node node, List<Node> nodeList) {
+    private void collectNodes(Node node, List<Node> nodeList) {
         // don't worry about the text-nodes that are children of Span nodes.
         if (node instanceof TextSpan) {
             return;
         }
-        if (node instanceof org.apache.pivot.wtk.text.Element) {
+        if (node instanceof Element) {
             Element element = (Element) node;
             for (Node child : element) {
                 nodeList.add(child);
@@ -616,7 +532,7 @@ public class TextPaneDemo implements Application {
     }
 
     @Override
-    public boolean shutdown(boolean optional) {
+    public boolean shutdown(final boolean optional) {
         System.out.println("shutdown(" + optional + ")");
         if (window != null) {
             window.close();
@@ -625,7 +541,7 @@ public class TextPaneDemo implements Application {
         return false;
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         DesktopApplicationContext.main(TextPaneDemo.class, args);
     }
 

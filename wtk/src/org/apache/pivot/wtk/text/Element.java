@@ -565,6 +565,10 @@ public abstract class Element extends Node implements Sequence<Node>, Iterable<N
         setFont(FontUtilities.decodeFont(font));
     }
 
+    public final void setFont(final String name, final int style, final int size) {
+        setFont(new Font(name, style, size));
+    }
+
     /**
      * @return The current foreground color, or <tt>null</tt> if no color is
      * foreground.

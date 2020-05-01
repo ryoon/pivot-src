@@ -40,7 +40,7 @@ public abstract class Node {
         return parent;
     }
 
-    protected void setParent(Element parent) {
+    protected void setParent(final Element parent) {
         Element previousParent = this.parent;
 
         if (previousParent != parent) {
@@ -64,7 +64,7 @@ public abstract class Node {
      *
      * @param offset The new offset for this node.
      */
-    protected void setOffset(int offset) {
+    protected void setOffset(final int offset) {
         int previousOffset = this.offset;
 
         if (previousOffset != offset) {
@@ -90,6 +90,21 @@ public abstract class Node {
         int nodeLength = getCharacterCount();
         // The "end" of a Span is inclusive, so subtract one here
         return new Span(docOffset, docOffset + nodeLength - 1);
+    }
+
+    /**
+     * Get the parent paragraph of this node.
+     *
+     * @return The paragraph this node is contained within or {@code null}
+     * it there are none (should only be for top-level elements or the document
+     * itself).
+     */
+    public Paragraph getParagraph() {
+        Node node = this;
+        while (node != null && !(node instanceof Paragraph)) {
+            node = node.parent;
+        }
+        return (Paragraph) node;
     }
 
     /**
@@ -120,7 +135,7 @@ public abstract class Node {
      * @return The removed range. This will be a copy of the node structure
      * relative to this node.
      */
-    public Node replaceRange(int offsetArgument, int characterCount, Node range) {
+    public Node replaceRange(final int offsetArgument, final int characterCount, final Node range) {
         Node removed = removeRange(offsetArgument, characterCount);
         insertRange(range, offsetArgument);
 
@@ -173,7 +188,7 @@ public abstract class Node {
      * @param offsetArgument Offset relative to this node.
      * @param characterCount Count of characters inserted.
      */
-    protected void rangeInserted(int offsetArgument, int characterCount) {
+    protected void rangeInserted(final int offsetArgument, final int characterCount) {
         if (parent != null) {
             parent.rangeInserted(offsetArgument + this.offset, characterCount);
         }
@@ -196,7 +211,7 @@ public abstract class Node {
      * @param removedChars The optional actual characters removed (only in the case
      * of direct removal from a text node).
      */
-    protected void rangeRemoved(Node node, int offsetArgument, int characterCount,
+    protected void rangeRemoved(final Node node, final int offsetArgument, final int characterCount,
         CharSequence removedChars) {
         if (parent != null) {
             parent.rangeRemoved(node, offsetArgument + this.offset, characterCount, removedChars);
@@ -218,7 +233,7 @@ public abstract class Node {
      * @param removed The actual sequence of nodes removed from that node.
      * @param offsetArgument Offset relative to this node.
      */
-    protected void nodesRemoved(Node node, Sequence<Node> removed, int offsetArgument) {
+    protected void nodesRemoved(final Node node, final Sequence<Node> removed, final int offsetArgument) {
         if (parent != null) {
             parent.nodesRemoved(node, removed, offsetArgument + this.offset);
         }
@@ -236,7 +251,7 @@ public abstract class Node {
      *
      * @param offsetArgument Offset relative to this node.
      */
-    protected void nodeInserted(int offsetArgument) {
+    protected void nodeInserted(final int offsetArgument) {
         if (parent != null) {
             parent.nodeInserted(offsetArgument + this.offset);
         }
@@ -267,7 +282,7 @@ public abstract class Node {
      * @param userData Any piece of data that has meaning to the user
      * application (can be {@code null}).
      */
-    public void setUserData(Object userData) {
+    public void setUserData(final Object userData) {
         this.userData = userData;
     }
 

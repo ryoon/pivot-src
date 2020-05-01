@@ -40,6 +40,7 @@ public enum Style {
     closeTransitionDuration,
     closeTransitionRate,
     color,
+    criticalColor,
     disabledColor,
     editOnMouseDown,
     fill,
@@ -59,6 +60,7 @@ public enum Style {
     margin,
     markerSpacing,
     minimumAspectRatio,
+    onlyMaxColor,
     opacity,
     padding,
     resizable,
@@ -79,6 +81,7 @@ public enum Style {
     spacing,
     tabOrientation,
     tabWidth,
+    textColor,
     textDecoration,
     toolbar,
     units,
@@ -87,5 +90,6 @@ public enum Style {
     verticalAlignment,
     verticalGridColor,
     verticalSpacing,
+    warningColor,
     wrapText
 }

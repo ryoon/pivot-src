@@ -27,6 +27,9 @@ import org.apache.pivot.util.Utils;
  */
 public final class FontUtilities {
 
+    /** The standard name for the {@code Arial} font. */
+    public static final String ARIAL = "Arial";
+
     /**
      * Private constructor for utility class.
      */

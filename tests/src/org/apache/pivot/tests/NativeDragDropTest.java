@@ -27,6 +27,7 @@ import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.DragSource;
 import org.apache.pivot.wtk.DropAction;
 import org.apache.pivot.wtk.DropTarget;
+import org.apache.pivot.wtk.FontUtilities;
 import org.apache.pivot.wtk.Frame;
 import org.apache.pivot.wtk.HorizontalAlignment;
 import org.apache.pivot.wtk.Label;
@@ -43,7 +44,7 @@ public class NativeDragDropTest implements Application {
     @Override
     public void startup(final Display display, Map<String, String> properties) throws Exception {
         final Label label = new Label("http://pivot.apache.org/");
-        label.getStyles().put(Style.font, new Font("Arial", Font.PLAIN, 24));
+        label.getStyles().put(Style.font, new Font(FontUtilities.ARIAL, Font.PLAIN, 24));
         label.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
         label.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
 

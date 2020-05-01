@@ -27,6 +27,7 @@ import org.apache.pivot.wtk.Application;
 import org.apache.pivot.wtk.BoxPane;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
+import org.apache.pivot.wtk.FontUtilities;
 import org.apache.pivot.wtk.HorizontalAlignment;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Orientation;
@@ -47,7 +48,7 @@ public final class LabelAntialiasTest implements Application {
     private Label buildLabel(final double rotation) {
         Label label = new Label();
 
-        Font font = new Font("Arial", Font.BOLD, 64);
+        Font font = new Font(FontUtilities.ARIAL, Font.BOLD, 64);
 
         AffineTransform fontAT = new AffineTransform();
         // Derive a new font using a rotation transform
