@@ -19,6 +19,7 @@ package org.apache.pivot.wtk;
 /**
  * Sheet close listener interface.
  */
+@FunctionalInterface
 public interface SheetCloseListener {
     /**
      * Called when a sheet has closed.
