@@ -390,7 +390,7 @@ limitations under the License.
                                                 editable="false"
                                                 styles="{wrapText:false, font:'Courier 10'}"/>
                                             <columnHeader>
-                                                <NumberRuler orientation="horizontal" styles="{color:6,backgroundColor:5,font:'Courier 10',markerSpacing:6,showMinorNumbers:true,markerInsets:{top:0,bottom:0,left:4,right:4}}"/>
+                                                <NumberRuler orientation="horizontal" styles="{color:6,backgroundColor:5,font:'Courier 10',markerSpacing:6,showZeroNumber:true,showMinorNumbers:true,markerInsets:{top:0,bottom:0,left:4,right:4}}"/>
                                             </columnHeader>
                                             <rowHeader>
                                                 <NumberRuler orientation="vertical" styles="{color:6, backgroundColor:5,font:'Courier 10',markerInsets:{top:3,bottom:3,left:0,right:0}}"/>

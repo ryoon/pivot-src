@@ -29,12 +29,12 @@ public interface NumberRulerListener {
     @Deprecated
     public static class Adapter implements NumberRulerListener {
         @Override
-        public void orientationChanged(NumberRuler ruler) {
+        public void orientationChanged(final NumberRuler ruler) {
             // Empty block
         }
 
         @Override
-        public void textSizeChanged(NumberRuler ruler, int previousSize) {
+        public void textSizeChanged(final NumberRuler ruler, final int previousSize) {
             // Empty block
         }
     }
@@ -45,11 +45,11 @@ public interface NumberRulerListener {
     public static class Listeners extends ListenerList<NumberRulerListener>
         implements NumberRulerListener {
         @Override
-        public void orientationChanged(NumberRuler ruler) {
+        public void orientationChanged(final NumberRuler ruler) {
             forEach(listener -> listener.orientationChanged(ruler));
         }
         @Override
-        public void textSizeChanged(NumberRuler ruler, int previousSize) {
+        public void textSizeChanged(final NumberRuler ruler, final int previousSize) {
             forEach(listener -> listener.textSizeChanged(ruler, previousSize));
         }
     }

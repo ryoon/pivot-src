@@ -63,6 +63,8 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
     // Maps key to corresponding control component
     private HashMap<String, Component> controls = new HashMap<>();
 
+    private static final String ITALIC_STYLE = "{italic:true}";
+
     @Override
     public void install(Component component) {
         super.install(component);
@@ -507,7 +509,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         Label label = new Label("x");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -541,7 +543,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("y");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         return boxPane;
@@ -600,7 +602,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         Label label = new Label("width");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -634,7 +636,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("height");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         return boxPane;
@@ -693,7 +695,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         Label label = new Label("min");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -727,7 +729,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("max");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         return boxPane;
@@ -787,7 +789,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         Label label = new Label("top");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -822,7 +824,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("left");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -857,7 +859,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("bottom");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -892,7 +894,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("right");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         return boxPane;
@@ -939,7 +941,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         Label label = new Label("start");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -975,7 +977,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("end");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         return boxPane;
@@ -1035,7 +1037,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         Label label = new Label("topLeft");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -1070,7 +1072,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("topRight");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -1105,7 +1107,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("bottomLeft");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -1140,7 +1142,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("bottomRight");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         return boxPane;
@@ -1187,7 +1189,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         Label label = new Label("start");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -1223,7 +1225,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("end");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         flowPane = new FlowPane();
@@ -1260,7 +1262,7 @@ abstract class ComponentInspectorSkin extends ContainerSkin implements Component
         });
 
         label = new Label("extent");
-        label.getStyles().put(Style.font, "{italic:true}");
+        label.getStyles().put(Style.font, ITALIC_STYLE);
         flowPane.add(label);
 
         return boxPane;

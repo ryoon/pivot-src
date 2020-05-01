@@ -44,8 +44,11 @@ import org.apache.pivot.wtk.Theme;
  * vertical header for viewports.
  */
 public class NumberRulerSkin extends ComponentSkin implements NumberRulerListener {
+    /** Number of pixels to use for major division tic marks. */
     private static final int MAJOR_SIZE = 10;
+    /** Number of pixels to use for minor division tic marks. */
     private static final int MINOR_SIZE = 8;
+    /** Number of pixels to use for regular tic marks. */
     private static final int REGULAR_SIZE = 5;
 
     private Font font;
@@ -57,6 +60,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
     private Insets rowPadding;
     private int majorDivision;
     private int minorDivision;
+    private boolean showZeroNumber;
     private boolean showMajorNumbers;
     private boolean showMinorNumbers;
     private float charHeight, descent;
@@ -81,6 +85,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
         majorDivision = 10;
         minorDivision = 5;
         // But these are
+        showZeroNumber = false;
         showMajorNumbers = true;
         showMinorNumbers = false;
 
@@ -100,7 +105,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
 
         // Give a little extra height if showing numbers
         return (orientation == Orientation.HORIZONTAL)
-            ? ((showMajorNumbers || showMinorNumbers)
+            ? ((showZeroNumber || showMajorNumbers || showMinorNumbers)
                 ? ((int) Math.ceil(charHeight) + MAJOR_SIZE + 5) : MAJOR_SIZE * 2) : 0;
     }
 
@@ -187,13 +192,12 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
 
                     if (majorDivision != 0 && i % majorDivision == 0) {
                         graphics.drawLine(x, start, x, end2);
-                        // Don't show any numbers at 0 -- make a style for this?
-                        if (showMajorNumbers && i > 0) {
+                        if ((showZeroNumber && i == 0) || (showMajorNumbers && i > 0)) {
                             showNumber(graphics, fontRenderContext, i, x, end2);
                         }
                     } else if (minorDivision != 0 && i % minorDivision == 0) {
                         graphics.drawLine(x, start, x, end3);
-                        if (showMinorNumbers && i > 0) {
+                        if ((showZeroNumber && i == 0) || (showMinorNumbers && i > 0)) {
                             // Show the minor numbers at the same y point as the major
                             showNumber(graphics, fontRenderContext, i, x, end2);
                         }
@@ -334,10 +338,39 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
         invalidateComponent();
     }
 
+    /**
+     * Set the number of pixels interval at which to draw the markers
+     * (for horizontal orientation only).
+     *
+     * @param spacing The integer number of pixels between markers (must be &gt;= 1).
+     */
     public final void setMarkerSpacing(final Number spacing) {
         Utils.checkNull(spacing, "markerSpacing");
 
         setMarkerSpacing(spacing.intValue());
+    }
+
+    /**
+     * @return Whether to display a number at the zero point
+     * (only applicable for horizontal orientation).
+     */
+    public boolean getShowZeroNumber() {
+        return showZeroNumber;
+    }
+
+    /**
+     * Sets the flag to say whether to show a number at the zero point
+     * (only for horizontal orientation).
+     *
+     * @param showZeroNumber Whether a number should be shown for the zero point.
+     */
+    public final void setShowZeroNumber(final boolean showZeroNumber) {
+        this.showZeroNumber = showZeroNumber;
+
+        NumberRuler ruler = (NumberRuler) getComponent();
+        if (ruler.getOrientation() == Orientation.HORIZONTAL) {
+            invalidateComponent();
+        }
     }
 
     /**
@@ -386,6 +419,9 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
         }
     }
 
+    /**
+     * @return The font used to render the Ruler's text.
+     */
     public Font getFont() {
         return font;
     }
@@ -460,6 +496,12 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
         setColor(GraphicsUtilities.decodeColor(color, "color"));
     }
 
+    /**
+     * Sets the foreground color of the text of the ruler to one of the
+     * theme colors.
+     *
+     * @param color Index of the theme color to use.
+     */
     public final void setColor(final int color) {
         Theme theme = currentTheme();
         setColor(theme.getColor(color));
@@ -494,6 +536,11 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
         setBackgroundColor(GraphicsUtilities.decodeColor(backgroundColor, "backgroundColor"));
     }
 
+    /**
+     * Sets the background color of the ruler to one of the theme colors.
+     *
+     * @param backgroundColor Index of the theme color to use for the background.
+     */
     public final void setBackgroundColor(final int backgroundColor) {
         Theme theme = currentTheme();
         setBackgroundColor(theme.getColor(backgroundColor));

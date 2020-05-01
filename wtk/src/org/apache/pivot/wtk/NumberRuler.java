@@ -25,9 +25,26 @@ import org.apache.pivot.util.Utils;
  * ({@link TextArea} or {@link TextPane}).
  */
 public class NumberRuler extends Component {
+    /** Maximum allowed number of digits to display (arbitrary). */
+    private static final int MAX_TEXT_SIZE = 20;
+
+    /** Default number of digits to display for numbers in vertical rulers. */
+    private static final int DEFAULT_TEXT_SIZE = 5;
+
+    /** Default orientation for one of these (most commonly used for line numbering). */
     private Orientation orientation = Orientation.VERTICAL;
-    /** Maximum number of digits expected in the numbering. */
-    private int textSize = 5;
+
+    /**
+     * The expected number of digits to allow for in vertical rulers.
+     * <p> Since we don't know apriori how many rows/lines will be
+     * shown in a vertical ruler, we rely on the user/caller to tell
+     * us how much space to allow for the numbers.
+     * <p> Note: there is probably a better way to figure this out,
+     * but it would require, in general, expensive re-layout as
+     * more and more rows are added, and then what to do if rows
+     * get taken away?
+     */
+    private int textSize = DEFAULT_TEXT_SIZE;
 
     private NumberRulerListener.Listeners rulerListeners = new NumberRulerListener.Listeners();
 
@@ -39,7 +56,7 @@ public class NumberRuler extends Component {
         return orientation;
     }
 
-    public void setOrientation(Orientation orientation) {
+    public void setOrientation(final Orientation orientation) {
         Utils.checkNull(orientation, "orientation");
 
         if (this.orientation != orientation) {
@@ -48,21 +65,47 @@ public class NumberRuler extends Component {
         }
     }
 
+    /**
+     * @return The number of digits of space to allow for the
+     * numbers in a vertical ruler.
+     */
     public int getTextSize() {
         return textSize;
     }
 
-    public void setTextSize(String size) {
+    /**
+     * Set the number of digits of space to allow for the numbers.
+     *
+     * @param size The (integer) number of digits to allow in vertical
+     * ruler numbers. The default of {@link #DEFAULT_TEXT_SIZE} allows
+     * for 99,999 maximum rows.
+     * @throws IllegalArgumentException if the value is negative,
+     * or exceeds {@link #MAX_TEXT_SIZE}.
+     */
+    public void setTextSize(final String size) {
         Utils.checkNullOrEmpty(size, "size");
 
-        int newSize = Integer.parseInt(size);
-        if (newSize <= 0 || newSize > 20) {
-            throw new IllegalArgumentException("Text size must be positive and less or equal to 20.");
+        setTextSize(Integer.parseInt(size));
+    }
+
+    /**
+     * Set the number of digits of space to allow for the numbers.
+     *
+     * @param size The number of digits to allow in vertical ruler numbers.
+     * The default of {@link #DEFAULT_TEXT_SIZE} allows
+     * for 99,999 maximum rows.
+     * @throws IllegalArgumentException if the value is negative,
+     * or exceeds {@link #MAX_TEXT_SIZE}.
+     */
+    public void setTextSize(final int size) {
+        if (size <= 0 || size > MAX_TEXT_SIZE) {
+            throw new IllegalArgumentException(
+                "Text size must be positive and less or equal to " + MAX_TEXT_SIZE + ".");
         }
 
-        if (newSize != textSize) {
+        if (size != textSize) {
             int previousSize = this.textSize;
-            this.textSize = newSize;
+            this.textSize = size;
             rulerListeners.textSizeChanged(this, previousSize);
         }
     }
