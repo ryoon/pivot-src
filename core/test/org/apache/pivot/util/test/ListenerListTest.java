@@ -51,7 +51,7 @@ public class ListenerListTest {
             forEach(listener -> listener.changed());
         }
     }
-        
+
     @Test
     public void test1() {
         TestListenerList listeners = new TestListenerList();
