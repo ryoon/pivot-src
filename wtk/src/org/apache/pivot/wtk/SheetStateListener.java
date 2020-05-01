@@ -27,10 +27,10 @@ public interface SheetStateListener extends SheetCloseListener {
     /**
      * Sheet state listeners.
      */
-    public static class Listeners extends ListenerList<SheetStateListener>
+    public static final class Listeners extends ListenerList<SheetStateListener>
         implements SheetStateListener {
         @Override
-        public Vote previewSheetClose(Sheet sheet, boolean result) {
+        public Vote previewSheetClose(final Sheet sheet, final boolean result) {
             VoteResult vote = new VoteResult(Vote.APPROVE);
 
             forEach(listener -> vote.tally(listener.previewSheetClose(sheet, result)));
@@ -39,12 +39,12 @@ public interface SheetStateListener extends SheetCloseListener {
         }
 
         @Override
-        public void sheetCloseVetoed(Sheet sheet, Vote reason) {
+        public void sheetCloseVetoed(final Sheet sheet, final Vote reason) {
             forEach(listener -> listener.sheetCloseVetoed(sheet, reason));
         }
 
         @Override
-        public void sheetClosed(Sheet sheet) {
+        public void sheetClosed(final Sheet sheet) {
             forEach(listener -> listener.sheetClosed(sheet));
         }
     }
@@ -56,17 +56,17 @@ public interface SheetStateListener extends SheetCloseListener {
     @Deprecated
     public static class Adapter implements SheetStateListener {
         @Override
-        public Vote previewSheetClose(Sheet sheet, boolean result) {
+        public Vote previewSheetClose(final Sheet sheet, final boolean result) {
             return Vote.APPROVE;
         }
 
         @Override
-        public void sheetCloseVetoed(Sheet sheet, Vote reason) {
+        public void sheetCloseVetoed(final Sheet sheet, final Vote reason) {
             // empty block
         }
 
         @Override
-        public void sheetClosed(Sheet sheet) {
+        public void sheetClosed(final Sheet sheet) {
             // empty block
         }
     }
@@ -78,7 +78,7 @@ public interface SheetStateListener extends SheetCloseListener {
      * @param result The proposed result of the close.
      * @return What this listener wants to decide about this proposed close.
      */
-    default Vote previewSheetClose(Sheet sheet, boolean result) {
+    default Vote previewSheetClose(final Sheet sheet, final boolean result) {
         return Vote.APPROVE;
     }
 
@@ -88,6 +88,14 @@ public interface SheetStateListener extends SheetCloseListener {
      * @param sheet The close event source.
      * @param reason The accumulated vote that resulted in the veto.
      */
-    default void sheetCloseVetoed(Sheet sheet, Vote reason) {
+    default void sheetCloseVetoed(final Sheet sheet, final Vote reason) {
+    }
+
+    /**
+     * Called when the sheet has closed.
+     *
+     * @param sheet The sheet that has been closed.
+     */
+    default void sheetClosed(final Sheet sheet) {
     }
 }

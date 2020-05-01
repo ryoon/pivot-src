@@ -25,6 +25,5 @@ public interface SheetCloseListener {
      *
      * @param sheet The sheet that is now closed.
      */
-    default void sheetClosed(Sheet sheet) {
-    }
+    void sheetClosed(Sheet sheet);
 }
