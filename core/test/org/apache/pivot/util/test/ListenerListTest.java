@@ -95,7 +95,7 @@ public class ListenerListTest {
     }
 
     private static final int LIMIT = 30;
-    private static final int[] expectedValues = {
+    private static final int[] EXPECTED_VALUES = {
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         11, 12, 13, 14, 15, 16, 32, 17, 34, 31,
         36, 33, 38, 35, 40, 37, 42, 39, 44, 41,
@@ -123,9 +123,9 @@ public class ListenerListTest {
 
         listeners.changed();
 
-        for (int i = 0; i < expectedValues.length; i++) {
+        for (int i = 0; i < EXPECTED_VALUES.length; i++) {
             NumberedListener listener = (NumberedListener) listeners.get(i);
-            assertEquals(listener.whichOne(), expectedValues[i]);
+            assertEquals(listener.whichOne(), EXPECTED_VALUES[i]);
         }
     }
 
