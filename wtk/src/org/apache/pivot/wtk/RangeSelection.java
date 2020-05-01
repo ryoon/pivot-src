@@ -22,10 +22,23 @@ import org.apache.pivot.collections.immutable.ImmutableList;
 
 /**
  * Class for managing a set of indexed range selections.
+ * <p> Note: Since this class is used for 0-based indexes, there
+ * are checks to make sure no negative values are ever added.
  */
 public class RangeSelection {
-    // The coalesced selected ranges
+    /** The coalesced selected ranges, kept normalized and sorted. */
     private ArrayList<Span> selectedRanges = new ArrayList<>();
+
+    /**
+     * Add a range to the selection, merging and removing intersecting ranges
+     * as needed.
+     *
+     * @param range The new range to add to the selection.
+     * @return A sequence containing the ranges that were added.
+     */
+    public Sequence<Span> addRange(final Span range) {
+        return addRange(range.start, range.end);
+    }
 
     /**
      * Adds a range to the selection, merging and removing intersecting ranges
@@ -35,7 +48,7 @@ public class RangeSelection {
      * @param end The end of the new range.
      * @return A sequence containing the ranges that were added.
      */
-    public Sequence<Span> addRange(int start, int end) {
+    public Sequence<Span> addRange(final int start, final int end) {
         ArrayList<Span> addedRanges = new ArrayList<>();
 
         Span range = Span.normalize(start, end);
@@ -45,7 +58,7 @@ public class RangeSelection {
 
         if (n == 0) {
             // The selection is currently empty; append the new range
-            // and add it to the added range list
+            // and add it to the added range list.
             selectedRanges.add(range);
             addedRanges.add(range);
         } else {
@@ -55,7 +68,7 @@ public class RangeSelection {
                 i = -(i + 1);
             }
 
-            // Merge the selection with the previous range, if necessary
+            // Merge the selection with the previous range, if necessary.
             if (i > 0) {
                 Span previousRange = selectedRanges.get(i - 1);
                 if (range.start == previousRange.end + 1) {
@@ -65,11 +78,11 @@ public class RangeSelection {
 
             if (i == n) {
                 // The new range starts after the last existing selection
-                // ends; append it and add it to the added range list
+                // ends; append it and add it to the added range list.
                 selectedRanges.add(range);
                 addedRanges.add(range);
             } else {
-                // Locate the upper bound of the intersection
+                // Locate the upper bound of the intersection.
                 int j = ArrayList.binarySearch(selectedRanges, range, Span.END_COMPARATOR);
                 if (j < 0) {
                     j = -(j + 1);
@@ -77,7 +90,7 @@ public class RangeSelection {
                     j++;
                 }
 
-                // Merge the selection with the next range, if necessary
+                // Merge the selection with the next range, if necessary.
                 if (j < n) {
                     Span nextRange = selectedRanges.get(j);
                     if (range.end == nextRange.start - 1) {
@@ -89,15 +102,14 @@ public class RangeSelection {
                     selectedRanges.insert(range, i);
                     addedRanges.add(range);
                 } else {
-                    // Create a new range representing the union of the
-                    // intersecting ranges
+                    // Create a new range representing the union of the intersecting ranges.
                     Span lowerRange = selectedRanges.get(i);
                     Span upperRange = selectedRanges.get(j - 1);
 
                     range = new Span(Math.min(range.start, lowerRange.start),
                                      Math.max(range.end, upperRange.end));
 
-                    // Add the gaps to the added list
+                    // Add the gaps to the added list.
                     if (range.start < lowerRange.start) {
                         addedRanges.add(new Span(range.start, lowerRange.start - 1));
                     }
@@ -112,7 +124,7 @@ public class RangeSelection {
                         addedRanges.add(new Span(upperRange.end + 1, range.end));
                     }
 
-                    // Remove all redundant ranges
+                    // Remove all redundant ranges.
                     selectedRanges.update(i, range);
 
                     if (i < j) {
@@ -133,7 +145,7 @@ public class RangeSelection {
      * @param end The end of the range to remove.
      * @return A sequence containing the ranges that were removed.
      */
-    public Sequence<Span> removeRange(int start, int end) {
+    public Sequence<Span> removeRange(final int start, final int end) {
         ArrayList<Span> removedRanges = new ArrayList<>();
 
         Span range = Span.normalize(start, end);
@@ -142,7 +154,7 @@ public class RangeSelection {
         int n = selectedRanges.getLength();
 
         if (n > 0) {
-            // Locate the lower bound of the intersection
+            // Locate the lower bound of the intersection.
             int i = ArrayList.binarySearch(selectedRanges, range, Span.START_COMPARATOR);
             if (i < 0) {
                 i = -(i + 1);
@@ -152,21 +164,20 @@ public class RangeSelection {
                 Span lowerRange = selectedRanges.get(i);
 
                 if (lowerRange.start < range.start && lowerRange.end > range.end) {
-                    // Removing the range will split the intersecting selection
-                    // into two ranges
+                    // Removing the range will split the intersecting selection into two ranges.
                     selectedRanges.update(i, new Span(lowerRange.start, range.start - 1));
                     selectedRanges.insert(new Span(range.end + 1, lowerRange.end), i + 1);
                     removedRanges.add(range);
                 } else {
                     Span leadingRemovedRange = null;
                     if (range.start > lowerRange.start) {
-                        // Remove the tail of this range
+                        // Remove the tail of this range.
                         selectedRanges.update(i, new Span(lowerRange.start, range.start - 1));
                         leadingRemovedRange = new Span(range.start, lowerRange.end);
                         i++;
                     }
 
-                    // Locate the upper bound of the intersection
+                    // Locate the upper bound of the intersection.
                     int j = ArrayList.binarySearch(selectedRanges, range, Span.END_COMPARATOR);
                     if (j < 0) {
                         j = -(j + 1);
@@ -179,16 +190,16 @@ public class RangeSelection {
 
                         Span trailingRemovedRange = null;
                         if (range.end < upperRange.end) {
-                            // Remove the head of this range
+                            // Remove the head of this range.
                             selectedRanges.update(j - 1, new Span(range.end + 1, upperRange.end));
                             trailingRemovedRange = new Span(upperRange.start, range.end);
                             j--;
                         }
 
-                        // Remove all cleared ranges
+                        // Remove all cleared ranges.
                         Sequence<Span> clearedRanges = selectedRanges.remove(i, j - i);
 
-                        // Construct the removed range list
+                        // Construct the removed range list.
                         if (leadingRemovedRange != null) {
                             removedRanges.add(leadingRemovedRange);
                         }
@@ -220,7 +231,7 @@ public class RangeSelection {
      *
      * @param index The index in question.
      */
-    public Span get(int index) {
+    public Span get(final int index) {
         return selectedRanges.get(index);
     }
 
@@ -239,20 +250,45 @@ public class RangeSelection {
     }
 
     /**
+     * @return The smallest start value of this selection, or <tt>-1</tt>
+     * if it is empty.
+     */
+    public int getStart() {
+        if (selectedRanges.getLength() > 0) {
+            return selectedRanges.get(0).start;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * @return The largest end value of this selection, or <tt>-1</tt>
+     * if the range is empty.
+     */
+    public int getEnd() {
+        int len = selectedRanges.getLength();
+        if (len > 0) {
+            return selectedRanges.get(len - 1).end;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
      * Determines the index of a range in the selection.
      *
      * @param range The range to look for.
      * @return The index of the range, if it exists in the selection;
      * <tt>-1</tt>, otherwise.
      */
-    public int indexOf(Span range) {
+    public int indexOf(final Span range) {
         assert (range != null);
 
         int index = -1;
         int i = ArrayList.binarySearch(selectedRanges, range, Span.INTERSECTION_COMPARATOR);
 
-        if (i >= 0) {
-            index = (range.equals(selectedRanges.get(i))) ? i : -1;
+        if (i >= 0 && range.equals(selectedRanges.get(i))) {
+            index = i;
         }
 
         return index;
@@ -264,7 +300,7 @@ public class RangeSelection {
      * @param index The index to look for in the selection.
      * @return <tt>true</tt> if the index is selected; <tt>false</tt>, otherwise.
      */
-    public boolean containsIndex(int index) {
+    public boolean containsIndex(final int index) {
         Span range = new Span(index);
         int i = ArrayList.binarySearch(selectedRanges, range, Span.INTERSECTION_COMPARATOR);
 
@@ -278,32 +314,31 @@ public class RangeSelection {
      * @param index The location to insert into the sequence.
      * @return The number of ranges that were updated.
      */
-    public int insertIndex(int index) {
+    public int insertIndex(final int index) {
         int updated = 0;
 
-        // Get the insertion point for the range corresponding to the given
-        // index
+        // Get the insertion point for the range corresponding to the given index.
         Span range = new Span(index);
         int i = ArrayList.binarySearch(selectedRanges, range, Span.INTERSECTION_COMPARATOR);
 
         if (i < 0) {
-            // The inserted index does not intersect with a selected range
+            // The inserted index does not intersect with a selected range.
             i = -(i + 1);
         } else {
-            // The inserted index intersects with a currently selected range
+            // The inserted index intersects with a currently selected range.
             Span selectedRange = selectedRanges.get(i);
 
             // If the inserted index falls within the current range, increment
-            // the endpoint only
+            // the endpoint only.
             if (selectedRange.start < index) {
                 selectedRanges.update(i, selectedRange.lengthen(1));
 
-                // Start incrementing range bounds beginning at the next range
+                // Start incrementing range bounds beginning at the next range.
                 i++;
             }
         }
 
-        // Increment any subsequent selection indexes
+        // Increment any subsequent selection indexes.
         int n = selectedRanges.getLength();
         while (i < n) {
             Span selectedRange = selectedRanges.get(i);
@@ -323,19 +358,19 @@ public class RangeSelection {
      * @param count Number of indexes to remove.
      * @return The number of ranges that were updated.
      */
-    public int removeIndexes(int index, int count) {
-        // Clear any selections in the given range
+    public int removeIndexes(final int index, final int count) {
+        // Clear any selections in the given range.
         Sequence<Span> removed = removeRange(index, (index + count) - 1);
         int updated = removed.getLength();
 
-        // Decrement any subsequent selection indexes
+        // Decrement any subsequent selection indexes.
         Span range = new Span(index);
         int i = ArrayList.binarySearch(selectedRanges, range, Span.INTERSECTION_COMPARATOR);
         assert (i < 0) : "i should be negative, since index should no longer be selected";
 
         i = -(i + 1);
 
-        // Determine the number of ranges to modify
+        // Determine the number of ranges to modify.
         int n = selectedRanges.getLength();
         while (i < n) {
             Span selectedRange = selectedRanges.get(i);
