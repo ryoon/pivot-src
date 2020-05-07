@@ -183,7 +183,7 @@ public final class StyleErrors {
     /** The list of file names, to be sorted by error counts. */
     private static List<FileInfo> fileCountList = new ArrayList<>();
     /** Number of files to list with least and most errors. */
-    private static final int NUMBER_OF_FILES_TO_REPORT = 10;
+    private static final int NUMBER_OF_FILES_TO_REPORT = 12;
     /** The latest file name we're working on in the current error log. */
     private static String currentFileName;
     /** Whether we are running on a Windows system. */
@@ -315,10 +315,10 @@ public final class StyleErrors {
             // The list is sorted by count, with highest count first
             fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
             System.out.println(verbose ? "File error counts:" : "Files with the most errors:");
-            int num = 0;
+            int num = 1;
             for (FileInfo info : fileCountList) {
                 System.out.format(FORMAT4, info.getName(), info.getCount());
-                if (!verbose && num++ > NUMBER_OF_FILES_TO_REPORT) {
+                if (!verbose && num++ >= NUMBER_OF_FILES_TO_REPORT) {
                     break;
                 }
             }
@@ -328,13 +328,11 @@ public final class StyleErrors {
                 // The list is sorted by count, with lowest count first
                 fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
                 System.out.println("Files with the fewest errors:");
-                num = 0;
-                for (FileInfo info : fileCountList) {
+                for (int i = NUMBER_OF_FILES_TO_REPORT; i > 0; i--) {
+                    FileInfo info = fileCountList.get(i - 1);
                     System.out.format(FORMAT4, info.getName(), info.getCount());
-                    if (num++ > NUMBER_OF_FILES_TO_REPORT) {
-                        break;
-                    }
                 }
+                System.out.println();
             }
         }
     }
