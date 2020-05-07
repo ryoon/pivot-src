@@ -171,7 +171,7 @@ public final class StyleErrors {
     /** Format string used to print the underlines. */
     private static final String UNDER_FORMAT = "%1$3s %2$-30s%3$5s %4$s%n";
     /** Format string for the file vs error count report. */
-    private static final String FORMAT4 = "    %1$-35s %2$5d%n";
+    private static final String FORMAT4 = "    %1$-42s %2$5d%n";
     /** The set of unique file names found in the list. */
     private static Set<String> fileNameSet = new HashSet<>();
     /** For each type of checkstyle error, the name and running count for each. */
@@ -186,6 +186,28 @@ public final class StyleErrors {
     private static final int NUMBER_OF_FILES_TO_REPORT = 10;
     /** The latest file name we're working on in the current error log. */
     private static String currentFileName;
+    /** Whether we are running on a Windows system. */
+    private static final boolean ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
+    /** Whether to report all the file error counts, or just the least/most. */
+    private static boolean verbose = false;
+
+    /**
+     * Process one option from the command line.
+     * @param option The option string to process.
+     */
+    private static void processOption(final String option) {
+        switch (option) {
+            case "v":
+            case "V":
+            case "verbose":
+            case "VERBOSE":
+                verbose = true;
+                break;
+            default:
+                System.err.println("Ignoring unrecognized option: \"--" + option + "\"!");
+                break;
+        }
+    }
 
     /**
      * The main method, executed from the command line, which reads through each file
@@ -193,7 +215,22 @@ public final class StyleErrors {
      * @param args The command line arguments.
      */
     public static void main(final String[] args) {
+        List<File> files = new ArrayList<>(args.length);
+        // Process options and save the straight file names
         for (String arg : args) {
+            if (arg.startsWith("--")) {
+                processOption(arg.substring(2));
+            } else if (arg.startsWith("-")) {
+                processOption(arg.substring(1));
+            } else if (ON_WINDOWS && arg.startsWith("/")) {
+                processOption(arg.substring(1));
+            } else {
+                files.add(new File(arg));
+            }
+        }
+
+        // Now process just the saved file names
+        for (File file : files) {
             int total = 0;
             int totalForThisFile = 0;
             int lineNo = 0;
@@ -202,7 +239,7 @@ public final class StyleErrors {
             sortedList.clear();
             currentFileName = null;
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(new File(arg)))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     lineNo++;
@@ -240,7 +277,7 @@ public final class StyleErrors {
                     fileCounts.put(currentFileName, Integer.valueOf(totalForThisFile));
                 }
             } catch (IOException ioe) {
-                System.err.println("Error reading the \"" + arg + "\" file: " + ioe.getMessage());
+                System.err.println("Error reading the \"" + file.getPath() + "\" file: " + ioe.getMessage());
             }
 
             // Once we're done, resort according to error counts per category
@@ -256,11 +293,11 @@ public final class StyleErrors {
             int categoryNo = 0;
             for (Info info : sortedList) {
                 categoryNo++;
-                Set<String> files = info.getFileSet();
-                if (files.size() > NUMBER_OF_FILES_LIMIT) {
-                    System.out.format(FORMAT1, categoryNo, info.getErrorClass(), info.getCount(), files.size());
+                Set<String> fileSet = info.getFileSet();
+                if (fileSet.size() > NUMBER_OF_FILES_LIMIT) {
+                    System.out.format(FORMAT1, categoryNo, info.getErrorClass(), info.getCount(), fileSet.size());
                 } else {
-                    System.out.format(FORMAT2, categoryNo, info.getErrorClass(), info.getCount(), list(files));
+                    System.out.format(FORMAT2, categoryNo, info.getErrorClass(), info.getCount(), list(fileSet));
                 }
             }
 
@@ -277,24 +314,26 @@ public final class StyleErrors {
 
             // The list is sorted by count, with highest count first
             fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
-            System.out.println("Files with the most errors:");
+            System.out.println(verbose ? "File error counts:" : "Files with the most errors:");
             int num = 0;
             for (FileInfo info : fileCountList) {
                 System.out.format(FORMAT4, info.getName(), info.getCount());
-                if (num++ > NUMBER_OF_FILES_TO_REPORT) {
+                if (!verbose && num++ > NUMBER_OF_FILES_TO_REPORT) {
                     break;
                 }
             }
             System.out.println();
 
-            // The list is sorted by count, with lowest count first
-            fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
-            System.out.println("Files with the fewest errors:");
-            num = 0;
-            for (FileInfo info : fileCountList) {
-                System.out.format(FORMAT4, info.getName(), info.getCount());
-                if (num++ > NUMBER_OF_FILES_TO_REPORT) {
-                    break;
+            if (!verbose) {
+                // The list is sorted by count, with lowest count first
+                fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
+                System.out.println("Files with the fewest errors:");
+                num = 0;
+                for (FileInfo info : fileCountList) {
+                    System.out.format(FORMAT4, info.getName(), info.getCount());
+                    if (num++ > NUMBER_OF_FILES_TO_REPORT) {
+                        break;
+                    }
                 }
             }
         }
