@@ -61,7 +61,7 @@ public class EnumList<E extends Enum<E>> extends ReadOnlySequence<E> implements 
         @Override
         @UnsupportedOperation
         public void remove() {
-            throw new UnsupportedOperationException(unsupportedOperationMsg);
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -87,7 +87,7 @@ public class EnumList<E extends Enum<E>> extends ReadOnlySequence<E> implements 
     @Override
     @UnsupportedOperation
     public void clear() {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class EnumList<E extends Enum<E>> extends ReadOnlySequence<E> implements 
     @Override
     @UnsupportedOperation
     public void setComparator(final Comparator<E> comparator) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override

@@ -67,6 +67,7 @@ public class NumericSpinnerData extends ReadOnlySequence<Integer> implements Lis
         }
 
         @Override
+        @UnsupportedOperation
         public void remove() {
             throw new UnsupportedOperationException();
         }
@@ -180,7 +181,7 @@ public class NumericSpinnerData extends ReadOnlySequence<Integer> implements Lis
     @UnsupportedOperation
     @Override
     public void clear() {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override
@@ -209,7 +210,7 @@ public class NumericSpinnerData extends ReadOnlySequence<Integer> implements Lis
     @UnsupportedOperation
     @Override
     public void setComparator(final Comparator<Integer> comparator) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override

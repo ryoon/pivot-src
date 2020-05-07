@@ -47,7 +47,7 @@ public final class ImmutableList<T> extends ReadOnlySequence<T> implements List<
     @Override
     @UnsupportedOperation
     public void clear() {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override
@@ -78,7 +78,7 @@ public final class ImmutableList<T> extends ReadOnlySequence<T> implements List<
     @Override
     @UnsupportedOperation
     public void setComparator(final Comparator<T> comparator) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override

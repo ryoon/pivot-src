@@ -63,7 +63,7 @@ public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> impl
         @UnsupportedOperation
         @Override
         public void remove() {
-            throw new UnsupportedOperationException(unsupportedOperationMsg);
+            throw defaultException();
         }
     }
 
@@ -139,7 +139,7 @@ public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> impl
     @UnsupportedOperation
     @Override
     public void clear() {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override
@@ -174,7 +174,7 @@ public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> impl
     @UnsupportedOperation
     @Override
     public final void setComparator(final Comparator<CalendarDate> comparator) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     @Override

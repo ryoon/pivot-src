@@ -17,6 +17,7 @@
 package org.apache.pivot.collections;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import org.apache.pivot.annotations.UnsupportedOperation;
 
@@ -32,11 +33,26 @@ import org.apache.pivot.annotations.UnsupportedOperation;
 public abstract class ReadOnlySequence<T> implements Sequence<T>, Serializable {
     private static final long serialVersionUID = -2547032333033014540L;
 
-    /** The message passed to the {@link UnsupportedOperationException} to say this
-     * sequence is read-only and cannot be modified.
+    /** The simple name of our (derived) class, for message purposes. */
+    private final String simpleClassName = this.getClass().getSimpleName();
+
+    /** Format of the default exception message. */
+    private static final String MSG_FORMAT =
+        "The \"%1$s\" method is unsupported because %2$s is read-only (immutable).";
+
+    /**
+     * @return A new {@link UnsupportedOperationException} with a fancy message
+     * detailing the method and class name that was in error.
      */
-    protected final String unsupportedOperationMsg =
-            "A(n) " + this.getClass().getSimpleName() + " is read-only (immutable).";
+    public UnsupportedOperationException defaultException() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement[] modifiedStackTrace = Arrays.copyOfRange(stackTrace, 2, stackTrace.length);
+        String callingMethodName = modifiedStackTrace[0].getMethodName();
+        String message = String.format(MSG_FORMAT, callingMethodName, simpleClassName);
+        UnsupportedOperationException exception = new UnsupportedOperationException(message);
+        exception.setStackTrace(modifiedStackTrace);
+        return exception;
+    }
 
     /**
      * Adding an item to a read-only sequence is unsupported.
@@ -45,7 +61,7 @@ public abstract class ReadOnlySequence<T> implements Sequence<T>, Serializable {
     @Override
     @UnsupportedOperation
     public final int add(final T item) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     /**
@@ -55,7 +71,7 @@ public abstract class ReadOnlySequence<T> implements Sequence<T>, Serializable {
     @Override
     @UnsupportedOperation
     public final void insert(final T item, final int index) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     /**
@@ -65,7 +81,7 @@ public abstract class ReadOnlySequence<T> implements Sequence<T>, Serializable {
     @Override
     @UnsupportedOperation
     public final T update(final int index, final T item) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     /**
@@ -75,7 +91,7 @@ public abstract class ReadOnlySequence<T> implements Sequence<T>, Serializable {
     @Override
     @UnsupportedOperation
     public final int remove(final T item) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
     /**
@@ -85,7 +101,7 @@ public abstract class ReadOnlySequence<T> implements Sequence<T>, Serializable {
     @Override
     @UnsupportedOperation
     public final Sequence<T> remove(final int index, final int count) {
-        throw new UnsupportedOperationException(unsupportedOperationMsg);
+        throw defaultException();
     }
 
 }
