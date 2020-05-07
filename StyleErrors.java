@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,8 @@ import java.util.regex.Pattern;
 
 /**
  * Read the file(s) given on the command line, which are presumed to be
- * the output of the "check styles", and generate a summary of the results
- * for each one.
+ * the output of the "check styles" process, and generate a summary of the
+ * results for each one.
  */
 public final class StyleErrors {
     /** Private constructor because we only use static methods here. */
@@ -89,6 +90,34 @@ public final class StyleErrors {
     }
 
     /**
+     * Keep track of how many errors are in each file.
+     */
+    private static class FileInfo {
+        /** The name (only) of this file. */
+        private String fileName;
+        /** Count of how many style errors were found in it. */
+        private int count;
+
+        /** Construct one from the basic information.
+         * @param name Name (only) of the file (that is, no path).
+         * @param c Count of how many errors were found.
+         */
+        FileInfo(final String name, final int c) {
+            this.fileName = name;
+            this.count = c;
+        }
+
+        /** @return The file name in this object. */
+        String getName() {
+            return fileName;
+        }
+        /** @return The count for this object. */
+        int getCount() {
+            return count;
+        }
+    }
+
+    /**
      * A comparator that sorts first by count and then by the error class name.
      */
     private static Comparator<Info> comparator = new Comparator<Info>() {
@@ -107,13 +136,16 @@ public final class StyleErrors {
 
     /**
      * Get a list of strings as a parenthesized list.
+     * @param strings The set of strings to traverse.
+     * @return A nicely formatted list.
      */
-    private static String list(Set<String> strings) {
+    private static String list(final Set<String> strings) {
         StringBuilder buf = new StringBuilder("(");
         int i = 0;
         for (String s : strings) {
-            if (i++ > 0)
+            if (i++ > 0) {
                 buf.append(", ");
+            }
             buf.append(s);
         }
         buf.append(')');
@@ -121,12 +153,15 @@ public final class StyleErrors {
     }
 
     /** Pattern used to parse each input line. */
-    private static final Pattern LINE_PATTERN =
-        Pattern.compile("^\\[[A-Z]+\\]\\s+(([a-zA-Z]\\:)?([^:]+))(\\:[0-9]+\\:)([0-9]+\\:)?\\s+(.+)\\s+(\\[[a-zA-Z]+\\])$");
+    private static final Pattern LINE_PATTERN = Pattern.compile(
+            "^\\[[A-Z]+\\]\\s+(([a-zA-Z]\\:)?([^:]+))(\\:[0-9]+\\:)([0-9]+\\:)?\\s+(.+)\\s+(\\[[a-zA-Z]+\\])$"
+        );
     /** The group in the {@link #LINE_PATTERN} that contains the file name. */
     private static final int FILE_NAME_GROUP = 1;
     /** The group in the {@link #LINE_PATTERN} that contains the checkstyle error name. */
     private static final int CLASS_NAME_GROUP = 7;
+    /** Limit on the number of files to enumerate vs just give the number. */
+    private static final int NUMBER_OF_FILES_LIMIT = 3;
     /** Format error info with a number of files suffix. */
     private static final String FORMAT1 = "%1$2d. %2$-30s%3$5d (%4$d)%n";
     /** Same as {@link #FORMAT1} except we have a list of file names instead of a number. */
@@ -135,12 +170,22 @@ public final class StyleErrors {
     private static final String FORMAT3 = "    %1$-30s%2$5d (%3$d)%n";
     /** Format string used to print the underlines. */
     private static final String UNDER_FORMAT = "%1$3s %2$-30s%3$5s %4$s%n";
+    /** Format string for the file vs error count report. */
+    private static final String FORMAT4 = "    %1$-35s %2$5d%n";
     /** The set of unique file names found in the list. */
     private static Set<String> fileNameSet = new HashSet<>();
     /** For each type of checkstyle error, the name and running count for each. */
     private static Map<String, Info> workingSet = new TreeMap<>();
     /** At the end of each file, the list used to sort by count and name. */
     private static List<Info> sortedList = new ArrayList<>();
+    /** The count of errors for each file. */
+    private static Map<String, Integer> fileCounts = new HashMap<>();
+    /** The list of file names, to be sorted by error counts. */
+    private static List<FileInfo> fileCountList = new ArrayList<>();
+    /** Number of files to list with least and most errors. */
+    private static final int NUMBER_OF_FILES_TO_REPORT = 10;
+    /** The latest file name we're working on in the current error log. */
+    private static String currentFileName;
 
     /**
      * The main method, executed from the command line, which reads through each file
@@ -150,9 +195,13 @@ public final class StyleErrors {
     public static void main(final String[] args) {
         for (String arg : args) {
             int total = 0;
+            int totalForThisFile = 0;
             int lineNo = 0;
+            fileNameSet.clear();
             workingSet.clear();
             sortedList.clear();
+            currentFileName = null;
+
             try (BufferedReader reader = new BufferedReader(new FileReader(new File(arg)))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -171,6 +220,15 @@ public final class StyleErrors {
                             info.addFile(nameOnly);
                         }
                         total++;
+                        if (nameOnly.equals(currentFileName)) {
+                            totalForThisFile++;
+                        } else {
+                            if (currentFileName != null) {
+                                fileCounts.put(currentFileName, Integer.valueOf(totalForThisFile));
+                            }
+                            currentFileName = nameOnly;
+                            totalForThisFile = 1;
+                        }
                     } else if (line.equals("Starting audit...") || line.equals("Audit done.")) {
                         continue;
                     } else {
@@ -178,11 +236,14 @@ public final class StyleErrors {
                         System.err.println("\t" + line);
                     }
                 }
+                if (currentFileName != null) {
+                    fileCounts.put(currentFileName, Integer.valueOf(totalForThisFile));
+                }
             } catch (IOException ioe) {
                 System.err.println("Error reading the \"" + arg + "\" file: " + ioe.getMessage());
             }
 
-            // Once we're done, resort according to error counts
+            // Once we're done, resort according to error counts per category
             for (String key : workingSet.keySet()) {
                 Info info = workingSet.get(key);
                 sortedList.add(info);
@@ -196,7 +257,7 @@ public final class StyleErrors {
             for (Info info : sortedList) {
                 categoryNo++;
                 Set<String> files = info.getFileSet();
-                if (files.size() > 3) {
+                if (files.size() > NUMBER_OF_FILES_LIMIT) {
                     System.out.format(FORMAT1, categoryNo, info.getErrorClass(), info.getCount(), files.size());
                 } else {
                     System.out.format(FORMAT2, categoryNo, info.getErrorClass(), info.getCount(), list(files));
@@ -206,6 +267,36 @@ public final class StyleErrors {
             System.out.format(UNDER_FORMAT, "---", "----------------------------", "-----", "---------------");
             System.out.format(FORMAT3, "Totals", total, fileNameSet.size());
             System.out.println();
+
+            // Take the file counts and generate a list of the data for sorting
+            fileCountList.clear();
+            for (Map.Entry<String, Integer> entry : fileCounts.entrySet()) {
+                FileInfo info = new FileInfo(entry.getKey(), entry.getValue());
+                fileCountList.add(info);
+            }
+
+            // The list is sorted by count, with highest count first
+            fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
+            System.out.println("Files with the most errors:");
+            int num = 0;
+            for (FileInfo info : fileCountList) {
+                System.out.format(FORMAT4, info.getName(), info.getCount());
+                if (num++ > NUMBER_OF_FILES_TO_REPORT) {
+                    break;
+                }
+            }
+            System.out.println();
+
+            // The list is sorted by count, with lowest count first
+            fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
+            System.out.println("Files with the fewest errors:");
+            num = 0;
+            for (FileInfo info : fileCountList) {
+                System.out.format(FORMAT4, info.getName(), info.getCount());
+                if (num++ > NUMBER_OF_FILES_TO_REPORT) {
+                    break;
+                }
+            }
         }
     }
 

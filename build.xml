@@ -575,6 +575,7 @@ limitations under the License.
                 <fileset dir="wtk/lib" includes="**/*.jar"/>
             </classpath>
 
+            <fileset dir="." includes="*.java"/>
             <packageset dir="charts/src" includes="**/*"/>
             <packageset dir="core/src" includes="**/*"/>
             <packageset dir="web/src" includes="**/*"/>
@@ -1066,6 +1067,7 @@ limitations under the License.
     <target name="check-style">
         <cs:checkstyle config="pivot_checks.xml" failOnViolation="false">
             <fileset dir=".">
+                <include name="StyleErrors.java"/>
                 <include name="**/src/org/**/*.java"/>
                 <include name="**/test/org/**/*.java"/>
             </fileset>
