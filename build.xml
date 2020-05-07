@@ -101,6 +101,8 @@ limitations under the License.
         <entry key="build.time" value="${build_time}"/>
     </propertyfile>
     <property file="build.number"/>
+    <property name="style.errors.log" value="style_errors.log"/>
+    <property name="style.summary.log" value="style_summary.log"/>
 
     <!-- Compiler properties and Test properties have been moved into build.properties -->
 
@@ -1067,15 +1069,17 @@ limitations under the License.
                 <include name="**/src/org/**/*.java"/>
                 <include name="**/test/org/**/*.java"/>
             </fileset>
-            <cs:formatter type="plain" toFile="style_errors.log"/>
+            <cs:formatter type="plain" toFile="${style.errors.log}"/>
         </cs:checkstyle>
         <javac srcdir="." includeantruntime="false">
             <include name="StyleErrors.java"/>
         </javac>
-        <java dir="." classname="StyleErrors" fork="true" output="style_summary.log" logError="true">
-            <arg value="style_errors.log"/>
+        <java dir="." classname="StyleErrors" fork="true" output="${style.summary.log}" outputproperty="style.summary" logError="true">
+            <arg value="${style.errors.log}"/>
         </java>
-        <echo message="Style check results in &quot;style_errors.log&quot; and &quot;style_summary.log&quot;"/>
+        <echo message="Style Check Results"/>
+        <echo message="(full report in &quot;${style.errors.log}&quot;, this summary also in &quot;${style.summary.log}&quot;)"/>
+        <echo message="${style.summary}"/>
     </target>
 
     <!-- Do the "normal" clean build stuff -->
