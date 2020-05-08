@@ -18,6 +18,8 @@ package org.apache.pivot.util;
 
 /**
  * Generic filter interface.
+ *
+ * @param <T> The type of item that is being filtered.
  */
 public interface Filter<T> {
     /**
@@ -27,5 +29,5 @@ public interface Filter<T> {
      * @return <tt>true</tt> if the item should be included; <tt>false</tt>,
      * otherwise.
      */
-    public boolean include(T item);
+    boolean include(T item);
 }

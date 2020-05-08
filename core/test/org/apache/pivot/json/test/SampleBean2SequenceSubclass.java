@@ -16,6 +16,9 @@
  */
 package org.apache.pivot.json.test;
 
+/**
+ * A simple bean that is merely a second-level subclass of a {@code Sequence}.
+ */
 public class SampleBean2SequenceSubclass extends SampleBean2Sequence {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = 0;

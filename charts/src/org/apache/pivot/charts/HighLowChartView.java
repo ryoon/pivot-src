@@ -20,6 +20,7 @@ package org.apache.pivot.charts;
  * Presents chart data using "open/high/low/close" plot.
  */
 public class HighLowChartView extends ChartView {
+    /** Construct and install skin. */
     public HighLowChartView() {
         installSkin(HighLowChartView.class);
     }

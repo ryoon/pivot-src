@@ -21,6 +21,7 @@ package org.apache.pivot.wtk;
  * contents don't fit on a single line.
  */
 public class FlowPane extends Container {
+    /** Construct and install skin. */
     public FlowPane() {
         installSkin(FlowPane.class);
     }

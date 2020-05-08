@@ -26,6 +26,7 @@ import org.apache.pivot.wtk.validation.Validator;
  * Validates that text represents a valid dollar value.
  */
 public final class CurrencyValidator implements Validator {
+    /** The format to use for currency values. */
     protected static final DecimalFormat FORMAT = new DecimalFormat("0.00");
     static {
         FORMAT.setParseBigDecimal(true);

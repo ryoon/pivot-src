@@ -20,6 +20,7 @@ package org.apache.pivot.charts;
  * Presents chart data using a pie plot.
  */
 public class PieChartView extends ChartView {
+    /** Construct and install the skin. */
     public PieChartView() {
         installSkin(PieChartView.class);
     }

@@ -20,6 +20,11 @@ import org.apache.pivot.collections.ArrayList;
 
 /**
  * Represents series data for value chart views.
+ *
+ * <p> Essentially just a list, but with a name that can be displayed
+ * in the chart.
+ *
+ * @param <T> The type of value contained in this data.
  */
 public class ValueSeries<T> extends ArrayList<T> {
     private static final long serialVersionUID = 301207354854079022L;
@@ -30,7 +35,7 @@ public class ValueSeries<T> extends ArrayList<T> {
         this(null);
     }
 
-    public ValueSeries(String name) {
+    public ValueSeries(final String name) {
         setName(name);
     }
 
@@ -38,7 +43,7 @@ public class ValueSeries<T> extends ArrayList<T> {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 }

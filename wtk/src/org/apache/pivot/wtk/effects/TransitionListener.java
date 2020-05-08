@@ -19,11 +19,12 @@ package org.apache.pivot.wtk.effects;
 /**
  * Transition listener interface.
  */
+@FunctionalInterface
 public interface TransitionListener {
     /**
      * Called when a transition has completed.
      *
      * @param transition The transition that has finished.
      */
-    public void transitionCompleted(Transition transition);
+    void transitionCompleted(Transition transition);
 }

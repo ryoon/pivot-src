@@ -22,17 +22,18 @@ import java.lang.reflect.Type;
 /**
  * Represents a generic type {@code T}. Java doesn't yet provide a way to
  * represent generic types, so this class does. Clients create a subclass of
- * this class, which enables retrieval the type information even at runtime. <p>
- * For example, to get a reference to a generic type {@code List<String>}, you
- * create an empty anonymous inner class, like so: <p>
- * {@code Type genericType = (new TypeLiteral<List<String>>() &#123;&#125;).getType();}
+ * this class, which enables retrieving the type information even at runtime.
+ * <p> For example, to get a reference to a generic type {@code List<String>}, you
+ * create an empty anonymous inner class, like so:
+ * <p> {@code Type genericType = (new TypeLiteral<List<String>>(){}).getType();}
  * <p> This class is a drastically reduced derivation from <a
  * href="http://code.google.com/p/google-guice/">Google Guice</a>'s
  * {@code TypeLiteral} class, written by Bob Lee and Jesse Wilson.
  *
- * @param <T> note that in Tree the type parameter currently it's not used
+ * @param <T> note that in Tree the type parameter currently is not used
  */
 public class TypeLiteral<T> {
+    /** The type we represent. */
     private final Type type;
 
     /**

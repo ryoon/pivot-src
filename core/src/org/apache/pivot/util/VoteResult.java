@@ -38,7 +38,7 @@ public class VoteResult {
      *
      * @param initialVote The initial vote value.
      */
-    public VoteResult(Vote initialVote) {
+    public VoteResult(final Vote initialVote) {
         result = initialVote;
     }
 
@@ -51,7 +51,7 @@ public class VoteResult {
      * previous ones.
      * @see Vote#tally
      */
-    public void tally(Vote vote) {
+    public void tally(final Vote vote) {
         result = result.tally(vote);
     }
 

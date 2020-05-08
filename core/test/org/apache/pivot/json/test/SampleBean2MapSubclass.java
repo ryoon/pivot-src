@@ -16,6 +16,9 @@
  */
 package org.apache.pivot.json.test;
 
+/**
+ * Simple bean that is just a subclass of another simple bean.
+ */
 public class SampleBean2MapSubclass extends SampleBean2Map {
     private static final long serialVersionUID = 0;
 }

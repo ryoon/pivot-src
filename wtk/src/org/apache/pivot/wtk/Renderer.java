@@ -69,5 +69,5 @@ public interface Renderer extends ConstrainedVisual {
     /**
      * @return The renderer's style dictionary.
      */
-    public Dictionary<String, Object> getStyles();
+    Dictionary<String, Object> getStyles();
 }

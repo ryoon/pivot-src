@@ -20,6 +20,7 @@ package org.apache.pivot.charts;
  * Presents chart data using a line plot.
  */
 public class LineChartView extends ChartView {
+    /** Construct and install skin. */
     public LineChartView() {
         installSkin(LineChartView.class);
     }

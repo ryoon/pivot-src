@@ -21,6 +21,7 @@ package org.apache.pivot.wtk.content;
  * cell contents as a tri-state checkbox.
  */
 public class TableViewTriStateCellRenderer extends TableViewCheckboxCellRenderer {
+    /** Construct with parents' settings, but setting the checkbox to a tristate. */
     public TableViewTriStateCellRenderer() {
         super();
         checkbox.setTriState(true);

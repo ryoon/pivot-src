@@ -29,18 +29,21 @@ import java.util.Iterator;
  * @param <T> The type of elements we are iterating over.
  */
 public final class ImmutableIterator<T> implements Iterator<T> {
+    /**
+     * The regular iterator we are protecting from change.
+     */
     private Iterator<T> iterator;
 
     /**
      * Construct an immutable iterator over the base iterator given here.
      *
-     * @param iterator The base iterator we want to protect from change.
+     * @param iter The base iterator we want to protect from change.
      * @throws IllegalArgumentException if the iterator is <tt>null</tt>.
      */
-    public ImmutableIterator(final Iterator<T> iterator) {
-        Utils.checkNull(iterator, "iterator");
+    public ImmutableIterator(final Iterator<T> iter) {
+        Utils.checkNull(iter, "iter");
 
-        this.iterator = iterator;
+        this.iterator = iter;
     }
 
     @Override

@@ -20,5 +20,8 @@ package org.apache.pivot.wtk;
  * Enumeration defining a two-dimensional orientation.
  */
 public enum Orientation {
-    HORIZONTAL, VERTICAL
+    /** A horizontal orientation, meaning things go from left to right across the screen. */
+    HORIZONTAL,
+    /** A vertical orientation, meaning things go from top to bottom down the screen. */
+    VERTICAL
 }

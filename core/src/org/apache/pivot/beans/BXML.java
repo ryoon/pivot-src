@@ -35,5 +35,5 @@ public @interface BXML {
      * should be a valid <tt>bxml:id</tt> from the loaded BXML resource. If
      * unspecified, the name of the annotated field will be used.
      */
-    public String id() default "\0";
+    String id() default "\0";
 }

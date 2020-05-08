@@ -20,5 +20,8 @@ package org.apache.pivot.wtk;
  * Enumeration representing text decoration styles.
  */
 public enum TextDecoration {
-    UNDERLINE, STRIKETHROUGH
+    /** Text is underlined beneath the letters. */
+    UNDERLINE,
+    /** Text is struck out (as for deletion) by a line across the middle. */
+    STRIKETHROUGH
 }

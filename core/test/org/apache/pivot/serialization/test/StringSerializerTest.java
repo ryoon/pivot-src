@@ -45,6 +45,13 @@ public final class StringSerializerTest {
     /** The UTF-8 bytes of the {@link #TEST_STRING} for use in comparisons. */
     public static final byte[] TEST_BYTES = TEST_STRING.getBytes(UTF_8);
 
+    /** The bits to isolate a byte (8-bit value) from the lower bits of an int. */
+    private static final int BYTE_BITS = 0xFF;
+    /** Upper bound on number of string positions needed to turn a byte stream into hex. */
+    private static final int HEX_EXPANSION = 4;
+    /** The numeric value where you start to need two hex digits for it. */
+    private static final int TWO_HEX_DIGITS = 16;
+
     /** Log a message to the console.
      * @param msg The message string to display.
      */
@@ -59,15 +66,15 @@ public final class StringSerializerTest {
      * @param b The string of bytes to display.
      */
     public void logBytes(final String msg, final byte[] b) {
-        StringBuilder buf = new StringBuilder(b.length * 4);
+        StringBuilder buf = new StringBuilder(b.length * HEX_EXPANSION);
         buf.append('[');
         for (int i = 0; i < b.length; i++) {
             if (i > 0) {
                 buf.append(',');
             }
-            int ib = ((int) b[i]) & 0xFF;
+            int ib = ((int) b[i]) & BYTE_BITS;
             String hex = Integer.toHexString(ib).toUpperCase();
-            if (hex.length() < 2) {
+            if (ib < TWO_HEX_DIGITS) {
                 buf.append('0');
             }
             buf.append(hex);

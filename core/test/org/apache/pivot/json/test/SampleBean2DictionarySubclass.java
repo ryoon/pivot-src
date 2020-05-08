@@ -16,6 +16,9 @@
  */
 package org.apache.pivot.json.test;
 
+/**
+ * A second-level subclass of a {@code Dictionary}.
+ */
 public class SampleBean2DictionarySubclass extends SampleBean2Dictionary {
     @SuppressWarnings("unused")
     private static final long serialVersionUID = 0;

@@ -38,6 +38,9 @@ public final class FileSizeFormat extends Format {
     /** The singleton instance of this class. */
     private static final FileSizeFormat FILE_SIZE_FORMAT = new FileSizeFormat();
 
+    /** Value size separation for displaying fractions or not. */
+    private static final int FRACTION_BREAK = 10;
+
     /** Private constructor since this is a singleton accessed by the {@link #getInstance} method. */
     private FileSizeFormat() {
     }
@@ -68,7 +71,7 @@ public final class FileSizeFormat extends Format {
             }
 
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
-            if (i > 0 && size >= 10) {
+            if (i > 0 && size >= FRACTION_BREAK) {
                 numberFormat.setMaximumFractionDigits(0);
             } else {
                 numberFormat.setMaximumFractionDigits(1);

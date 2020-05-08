@@ -39,5 +39,5 @@ public interface Bindable {
      * @param resources The resources that were used to localize the deserialized
      * content. May be <tt>null</tt> if no resources were specified.
      */
-    public void initialize(Map<String, Object> namespace, URL location, Resources resources);
+    void initialize(Map<String, Object> namespace, URL location, Resources resources);
 }

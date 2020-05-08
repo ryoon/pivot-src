@@ -16,6 +16,10 @@
  */
 package org.apache.pivot.json.test;
 
+/**
+ * Another simple bean class that is a second-level subclass
+ * of a primitive (in this case, List).
+ */
 public class SampleBean2ListSubclass extends SampleBean2List {
     private static final long serialVersionUID = 0;
 }

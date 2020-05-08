@@ -22,6 +22,9 @@ package org.apache.pivot.charts;
 public class ProviderNotFoundException extends RuntimeException {
     private static final long serialVersionUID = -1357405641135830188L;
 
+    /**
+     * Construct with a default message.
+     */
     public ProviderNotFoundException() {
         super("A chart provider could not be located.");
     }

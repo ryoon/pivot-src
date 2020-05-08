@@ -35,5 +35,5 @@ public @interface IDProperty {
     /**
      * @return The name of the ID property.
      */
-    public String value();
+    String value();
 }

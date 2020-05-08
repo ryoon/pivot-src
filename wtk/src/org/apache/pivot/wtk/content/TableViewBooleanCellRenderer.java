@@ -21,6 +21,7 @@ package org.apache.pivot.wtk.content;
  * contents as a checkbox.
  */
 public class TableViewBooleanCellRenderer extends TableViewCheckboxCellRenderer {
+    /** Construct the renderer, using settings from our parent class. */
     public TableViewBooleanCellRenderer() {
         super();
     }

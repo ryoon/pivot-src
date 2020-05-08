@@ -32,8 +32,7 @@ public enum Vote {
     DENY,
 
     /**
-     * Represents a deferred vote, implying that the vote will be approved
-     * later.
+     * Represents a deferred vote, implying that the vote will be approved later.
      */
     DEFER;
 
@@ -53,7 +52,7 @@ public enum Vote {
      * previously accumulated result.
      * @throws IllegalArgumentException if the new vote is {@code null}.
      */
-    public Vote tally(Vote vote) {
+    public Vote tally(final Vote vote) {
         Utils.checkNull(vote, "vote");
 
         Vote tally;

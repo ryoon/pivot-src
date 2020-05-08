@@ -26,5 +26,5 @@ public interface PropertyChangeListener {
      * @param bean The object in question.
      * @param propertyName The name of the property that has changed.
      */
-    public void propertyChanged(Object bean, String propertyName);
+    void propertyChanged(Object bean, String propertyName);
 }

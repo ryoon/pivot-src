@@ -22,6 +22,7 @@ import org.apache.pivot.util.ListenerList;
  * This is a customized subclass of ListenerList that adds thread-safety checks
  * for the WTK components.
  * @deprecated Since 2.1 because this class has been empty for some years.
+ * @param <T> The listener type contained in this list.
  */
 @Deprecated
 public class WTKListenerList<T> extends ListenerList<T> {

@@ -18,6 +18,9 @@ package org.apache.pivot.json.test;
 
 import org.apache.pivot.collections.HashMap;
 
+/**
+ * A simple bean that is really just a map.
+ */
 public class SampleBean2Map extends HashMap<String, SampleBean2> {
     private static final long serialVersionUID = 0;
 }

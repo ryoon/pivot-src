@@ -23,6 +23,7 @@ import org.apache.pivot.wtk.Style;
  * Default accordion header data renderer.
  */
 public class AccordionHeaderDataRenderer extends ButtonDataRenderer {
+    /** Construct and set the alignment to {@link HorizontalAlignment#LEFT}. */
     public AccordionHeaderDataRenderer() {
         getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
     }

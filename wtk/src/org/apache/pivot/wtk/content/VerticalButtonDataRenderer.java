@@ -23,6 +23,7 @@ import org.apache.pivot.wtk.Orientation;
  * on top of each other.
  */
 public class VerticalButtonDataRenderer extends ButtonDataRenderer {
+    /** Construct using our parent class' settings, but setting {@link Orientation#VERTICAL}. */
     public VerticalButtonDataRenderer() {
         super();
         setOrientation(Orientation.VERTICAL);

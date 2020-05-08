@@ -27,7 +27,7 @@ import org.apache.pivot.wtk.SliderValueListener;
 public abstract class SliderSkin extends ContainerSkin implements SliderListener,
     SliderValueListener {
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         Slider slider = (Slider) component;

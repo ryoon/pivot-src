@@ -20,6 +20,8 @@ package org.apache.pivot.functional.functions;
  * Interface for the definition of a generic procedure that accept n (in this case 0) arguments
  * and returns no value (void).
  */
+@FunctionalInterface
 public interface Procedure0 {
-    public void apply();
+    /** This procedure's functional method to call. */
+    void apply();
 }

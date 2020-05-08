@@ -20,6 +20,7 @@ package org.apache.pivot.charts;
  * Presents chart data using a bar plot.
  */
 public class BarChartView extends ChartView {
+    /** Construct and install skin. */
     public BarChartView() {
         installSkin(BarChartView.class);
     }

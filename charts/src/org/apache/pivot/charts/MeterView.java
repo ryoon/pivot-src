@@ -21,6 +21,7 @@ package org.apache.pivot.charts;
  */
 public class MeterView extends SingleValueChartView {
 
+    /** Construct and install the skin. */
     public MeterView() {
         installSkin(MeterView.class);
     }

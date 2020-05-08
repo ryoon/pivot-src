@@ -18,6 +18,9 @@ package org.apache.pivot.json.test;
 
 import org.apache.pivot.collections.ArrayList;
 
+/**
+ * Simple bean that is really just a list.
+ */
 public class SampleBean2List extends ArrayList<SampleBean2> {
     private static final long serialVersionUID = 0;
 }

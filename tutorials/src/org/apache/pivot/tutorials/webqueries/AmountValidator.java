@@ -23,9 +23,9 @@ import org.apache.pivot.wtk.validation.Validator;
 /**
  * Verifies that text represents a valid dollar value.
  */
-public class AmountValidator implements Validator {
+public final class AmountValidator implements Validator {
     @Override
-    public boolean isValid(String text) {
+    public boolean isValid(final String text) {
         boolean valid = true;
 
         if (text.length() > 0) {
