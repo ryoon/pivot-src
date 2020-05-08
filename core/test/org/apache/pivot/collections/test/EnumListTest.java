@@ -16,7 +16,11 @@
  */
 package org.apache.pivot.collections.test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.apache.pivot.collections.EnumList;
 import org.junit.Test;
@@ -33,5 +37,24 @@ public class EnumListTest {
         assertEquals(enumList.get(0), TestEnum.A);
         assertEquals(enumList.get(1), TestEnum.B);
         assertEquals(enumList.getLength(), 3);
+
+        // Test some of the "immutable" properties of the enum list
+        assertNull(enumList.getComparator());
+        try {
+            enumList.setComparator((o1, o2) -> o1.ordinal() - o2.ordinal());
+            fail("Should have thrown an UnsupportedOperationException before this!");
+        } catch (UnsupportedOperationException uoe) {
+            System.out.println("Caught expected exception: " + uoe.getMessage());
+            uoe.printStackTrace();
+        }
+        for (Iterator<TestEnum> iter = enumList.iterator(); iter.hasNext();) {
+            TestEnum e = iter.next();
+            try {
+                iter.remove();
+                fail("Should have thrown UnsupportedOperationException before this!");
+            } catch (UnsupportedOperationException uoe) {
+                System.out.println("Caught expected exception from iter.remove()");
+            }
+        }
     }
 }
