@@ -170,5 +170,49 @@ public final class StringUtils {
         }
     }
 
+    /**
+     * Given an iterable list of items, construct a string representation of the list
+     * that looks like:
+     * <pre>[item1, item2, ...]</pre>.
+     *
+     * @param <T> The type of items in the list.
+     * @param list The iterable list of items.
+     * @return A string representation of the list.
+     */
+    public static <T> String toString(final Iterable<T> list) {
+        StringBuilder sb = new StringBuilder();
+        append(sb, list);
+        return sb.toString();
+    }
+
+    /**
+     * Given an iterable list of items, construct a string representation of the list
+     * that looks like:
+     * <pre>[item1, item2, ...]</pre>
+     * appending the results to the given string builder for further use.
+     *
+     * @param <T> The type of items in the list.
+     * @param sb The {@link StringBuilder} already in progress.
+     * @param list The iterable list of items.
+     * @return The input {@code StringBuilder} for further use.
+     */
+    public static <T> StringBuilder append(final StringBuilder sb, final Iterable<T> list) {
+        sb.append("[");
+
+        int i = 0;
+        for (T item : list) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+
+            sb.append(item);
+            i++;
+        }
+
+        sb.append("]");
+
+        return sb;
+    }
+
 }
 

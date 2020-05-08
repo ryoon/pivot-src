@@ -27,10 +27,16 @@ import org.apache.pivot.annotations.UnsupportedOperation;
  * thread safe. Subclasses that require thread-safe access should synchronize
  * method access appropriately. Callers must manually synchronize on the
  * listener list instance to ensure thread safety during iteration.
+ *
+ * @param <T> The listener type contained in this list.
  */
 public abstract class ListenerList<T> implements Iterable<T> {
 
-    // Iterator through the current array of elements
+    /**
+     * Iterator through the current array of elements.
+     *
+     * @param <T> The listener type to iterate over.
+     */
     private class NodeIterator implements Iterator<T> {
         private int index;
 
@@ -74,7 +80,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
      *
      * @param listener New listener to add to the list.
      */
-    public void add(T listener) {
+    public void add(final T listener) {
         if (indexOf(listener) >= 0) {
             System.err.println("Duplicate listener " + listener + " added to " + this);
             return;
@@ -94,7 +100,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
      * @param index The 0-based position in the list where to add the new listener.
      * @param listener New listener to add there.
      */
-    public void add(int index, T listener) {
+    public void add(final int index, final T listener) {
         Utils.checkZeroBasedIndex(index, last);
 
         if (indexOf(listener) >= 0) {
@@ -128,7 +134,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
      *
      * @param listener The listener to remove from the list.
      */
-    public void remove(T listener) {
+    public void remove(final T listener) {
         int index = indexOf(listener);
 
         if (index < 0) {
@@ -163,7 +169,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
      * @return <tt>true</tt> if the listener exists in the list; <tt>false</tt>,
      * otherwise.
      */
-    public boolean contains(T listener) {
+    public boolean contains(final T listener) {
         return indexOf(listener) >= 0;
     }
 
@@ -193,7 +199,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
      * @return The element at position <tt>index</tt>.
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
-    public T get(int index) {
+    public T get(final int index) {
         Utils.checkZeroBasedIndex(index, last);
         return list[index];
     }
@@ -208,19 +214,9 @@ public abstract class ListenerList<T> implements Iterable<T> {
         StringBuilder sb = new StringBuilder();
 
         sb.append(getClass().getName());
-        sb.append(" [");
+        sb.append(" ");
 
-        int i = 0;
-        for (T item : this) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-
-            sb.append(item);
-            i++;
-        }
-
-        sb.append("]");
+        StringUtils.append(sb, this);
 
         return sb.toString();
     }
