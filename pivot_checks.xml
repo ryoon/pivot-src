@@ -156,7 +156,9 @@
         <module name="EqualsHashCode"/>
         <module name="HiddenField"/>
         <module name="IllegalInstantiation"/>
-        <module name="InnerAssignment"/>
+        <module name="InnerAssignment">
+            <property name="severity" value="warning"/>
+        </module>
         <module name="MagicNumber"/>
         <module name="MissingSwitchDefault"/>
         <module name="SimplifyBooleanExpression"/>
@@ -174,7 +176,9 @@
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="ArrayTypeStyle"/>
         <module name="FinalParameters"/>
-        <module name="TodoComment"/>
+        <module name="TodoComment">
+            <property name="severity" value="warning"/>
+        </module>
         <module name="UpperEll"/>
 
     </module>

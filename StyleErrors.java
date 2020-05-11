@@ -36,37 +36,67 @@ import java.util.regex.Pattern;
  * results for each one.
  */
 public final class StyleErrors {
+    /**
+     * Enumeration of the severity of a check-style report value.
+     * <p> Corresponds directly to the text found in the report.
+     */
+    private enum Severity {
+        /** Only a warning, that is, not necessarily in need of fixing. */
+        WARN,
+        /** An error, considered something that should be fixed. */
+        ERROR;
+
+        /**
+         * Lookup one of these from the corresponding string value.
+         * @param input The string as found in the report.
+         * @return The corresponding enum value.
+         * @throws IllegalArgumentException if the input can't be matched.
+         */
+        static Severity lookup(final String input) {
+            for (Severity s : values()) {
+                if (s.toString().equalsIgnoreCase(input)) {
+                    return s;
+                }
+            }
+            throw new IllegalArgumentException("Unknown Severity value: " + input);
+        }
+    }
+
     /** Private constructor because we only use static methods here. */
     private StyleErrors() {
     }
 
     /**
-     * A summary object holding one type of error and the number of times
+     * A summary object holding one type of problem and the number of times
      * it was encountered.
      */
     private static class Info {
-        /** The error class from the check styles configuration. */
-        private String errorClass;
-        /** The final count of how many times this error was encountered. */
+        /** The problem class from the check styles configuration. */
+        private String problemClass;
+        /** The severity (ERROR or WARN) of this check. */
+        private Severity severity;
+        /** The final count of how many times this problem was encountered. */
         private Integer count;
         /** A set of the files it was found in. */
         private Set<String> files;
 
         /**
-         * Construct one with a starting count of 1 and the given error class
+         * Construct one with a starting count of 1 and the given problem class
          * and first file name.
-         * @param errClass The checkstyle error.
-         * @param fileName The first file encountered with this error.
+         * @param errClass The checkstyle problem.
+         * @param fileName The first file encountered with this problem.
+         * @param severity Whether this is an error or just a warning.
          */
-        Info(final String errClass, final String fileName) {
-            this.errorClass = errClass;
+        Info(final String problemClass, final String fileName, final String severity) {
+            this.problemClass = problemClass;
+            this.severity = Severity.lookup(severity);
             this.count = Integer.valueOf(1);
             this.files = new HashSet<>();
             this.files.add(fileName);
         }
 
         /**
-         * Record another occurrence of this error in the given file.
+         * Record another occurrence of this problem in the given file.
          * @param fileName The next file name to add (which also
          * increases the count).
          */
@@ -75,32 +105,36 @@ public final class StyleErrors {
             files.add(fileName);
         }
 
-        /** @return The saved checkstyle error name. */
-        String getErrorClass() {
-            return errorClass;
+        /** @return The saved checkstyle problem name. */
+        String getProblemClass() {
+            return problemClass;
         }
-        /** @return The final count of this error type. */
+        /** @return The severity of this problem. */
+        Severity getSeverity() {
+            return severity;
+        }
+        /** @return The final count of this problem type. */
         Integer getCount() {
             return count;
         }
-        /** @return The set of files this error was found in. */
+        /** @return The set of files this problem was found in. */
         Set<String> getFileSet() {
             return files;
         }
     }
 
     /**
-     * Keep track of how many errors are in each file.
+     * Keep track of how many problems are in each file.
      */
     private static class FileInfo {
         /** The name (only) of this file. */
         private String fileName;
-        /** Count of how many style errors were found in it. */
+        /** Count of how many style problems were found in it. */
         private int count;
 
         /** Construct one from the basic information.
          * @param name Name (only) of the file (that is, no path).
-         * @param c Count of how many errors were found.
+         * @param c Count of how many problems were found.
          */
         FileInfo(final String name, final int c) {
             this.fileName = name;
@@ -118,7 +152,7 @@ public final class StyleErrors {
     }
 
     /**
-     * A comparator that sorts first by count and then by the error class name.
+     * A comparator that sorts first by count and then by the problem class name.
      */
     private static Comparator<Info> comparator = new Comparator<Info>() {
         @Override
@@ -127,7 +161,7 @@ public final class StyleErrors {
             int c1 = o1.count.intValue();
             int c2 = o2.count.intValue();
             if (c1 == c2) {
-                return o1.errorClass.compareTo(o2.errorClass);
+                return o1.problemClass.compareTo(o2.problemClass);
             } else {
                 return Integer.signum(c1 - c2);
             }
@@ -154,41 +188,43 @@ public final class StyleErrors {
 
     /** Pattern used to parse each input line. */
     private static final Pattern LINE_PATTERN = Pattern.compile(
-            "^\\[[A-Z]+\\]\\s+(([a-zA-Z]\\:)?([^:]+))(\\:[0-9]+\\:)([0-9]+\\:)?\\s+(.+)\\s+(\\[[a-zA-Z]+\\])$"
+            "^\\[([A-Z]+)\\]\\s+(([a-zA-Z]\\:)?([^:]+))(\\:[0-9]+\\:)([0-9]+\\:)?\\s+(.+)\\s+(\\[[a-zA-Z]+\\])$"
         );
+    /** The group in the {@link #LINE_PATTERN} that contains the severity of the problem. */
+    private static final int SEVERITY_GROUP = 1;
     /** The group in the {@link #LINE_PATTERN} that contains the file name. */
-    private static final int FILE_NAME_GROUP = 1;
-    /** The group in the {@link #LINE_PATTERN} that contains the checkstyle error name. */
-    private static final int CLASS_NAME_GROUP = 7;
+    private static final int FILE_NAME_GROUP = 2;
+    /** The group in the {@link #LINE_PATTERN} that contains the checkstyle problem name. */
+    private static final int CLASS_NAME_GROUP = 8;
     /** Limit on the number of files to enumerate vs just give the number. */
     private static final int NUMBER_OF_FILES_LIMIT = 3;
-    /** Format error info with a number of files suffix. */
-    private static final String FORMAT1 = "%1$2d. %2$-30s%3$5d (%4$d)%n";
+    /** Format problem info with a number of files suffix. */
+    private static final String FORMAT1 = "%1$2d. %2$5s %3$-30s%4$5d (%5$d)%n";
     /** Same as {@link #FORMAT1} except we have a list of file names instead of a number. */
-    private static final String FORMAT2 = "%1$2d. %2$-30s%3$5d %4$s%n";
+    private static final String FORMAT2 = "%1$2d. %2$5s %3$-30s%4$5d %5$s%n";
     /** Format postreport info. */
-    private static final String FORMAT3 = "    %1$-30s%2$5d (%3$d)%n";
+    private static final String FORMAT3 = "          %1$-30s%2$5d (%3$d)%n";
     /** Format string used to print the underlines. */
-    private static final String UNDER_FORMAT = "%1$3s %2$-30s%3$5s %4$s%n";
-    /** Format string for the file vs error count report. */
+    private static final String UNDER_FORMAT = "%1$3s %2$5s %3$-30s%4$5s %5$s%n";
+    /** Format string for the file vs problem count report. */
     private static final String FORMAT4 = "    %1$-42s %2$5d%n";
     /** The set of unique file names found in the list. */
     private static Set<String> fileNameSet = new HashSet<>();
-    /** For each type of checkstyle error, the name and running count for each. */
+    /** For each type of checkstyle problem, the name and running count for each. */
     private static Map<String, Info> workingSet = new TreeMap<>();
     /** At the end of each file, the list used to sort by count and name. */
     private static List<Info> sortedList = new ArrayList<>();
-    /** The count of errors for each file. */
+    /** The count of problems for each file. */
     private static Map<String, Integer> fileCounts = new HashMap<>();
-    /** The list of file names, to be sorted by error counts. */
+    /** The list of file names, to be sorted by problem counts. */
     private static List<FileInfo> fileCountList = new ArrayList<>();
-    /** Number of files to list with least and most errors. */
+    /** Number of files to list with least and most problems. */
     private static final int NUMBER_OF_FILES_TO_REPORT = 12;
-    /** The latest file name we're working on in the current error log. */
+    /** The latest file name we're working on in the current log file. */
     private static String currentFileName;
     /** Whether we are running on a Windows system. */
     private static final boolean ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
-    /** Whether to report all the file error counts, or just the least/most. */
+    /** Whether to report all the file problem counts, or just the least/most. */
     private static boolean verbose = false;
 
     /**
@@ -206,6 +242,25 @@ public final class StyleErrors {
             default:
                 System.err.println("Ignoring unrecognized option: \"--" + option + "\"!");
                 break;
+        }
+    }
+
+    /**
+     * Report on this particular piece of information.
+     * @param num Which category this is in the list.
+     * @param info The summary information for the category.
+     * @see #FORMAT1
+     * @see #FORMAT2
+     */
+    private static void reportInfo(final int num, final Info info) {
+        Set<String> fileSet = info.getFileSet();
+        int size = fileSet.size();
+        if (size > NUMBER_OF_FILES_LIMIT) {
+            System.out.format(FORMAT1, num, info.getSeverity(), info.getProblemClass(),
+                    info.getCount(), size);
+        } else {
+            System.out.format(FORMAT2, num, info.getSeverity(), info.getProblemClass(),
+                    info.getCount(), list(fileSet));
         }
     }
 
@@ -245,14 +300,15 @@ public final class StyleErrors {
                     lineNo++;
                     Matcher m = LINE_PATTERN.matcher(line);
                     if (m.matches()) {
+                        String severity = m.group(SEVERITY_GROUP);
                         String fileName = m.group(FILE_NAME_GROUP);
                         fileNameSet.add(fileName);
                         File f = new File(fileName);
                         String nameOnly = f.getName();
-                        String errorClass = m.group(CLASS_NAME_GROUP);
-                        Info info = workingSet.get(errorClass);
+                        String problemClass = m.group(CLASS_NAME_GROUP);
+                        Info info = workingSet.get(problemClass);
                         if (info == null) {
-                            workingSet.put(errorClass, new Info(errorClass, nameOnly));
+                            workingSet.put(problemClass, new Info(problemClass, nameOnly, severity));
                         } else {
                             info.addFile(nameOnly);
                         }
@@ -280,7 +336,7 @@ public final class StyleErrors {
                 System.err.println("Error reading the \"" + file.getPath() + "\" file: " + ioe.getMessage());
             }
 
-            // Once we're done, resort according to error counts per category
+            // Once we're done, resort according to problem counts per category
             for (String key : workingSet.keySet()) {
                 Info info = workingSet.get(key);
                 sortedList.add(info);
@@ -288,20 +344,14 @@ public final class StyleErrors {
             Collections.sort(sortedList, comparator);
 
             // Output the final summary report for this input file
-            System.out.format(UNDER_FORMAT, " # ", "Category", "Count", "File(s)");
-            System.out.format(UNDER_FORMAT, "---", "----------------------------", "-----", "---------------");
+            System.out.format(UNDER_FORMAT, " # ", " Sev ", "Category", "Count", "File(s)");
+            System.out.format(UNDER_FORMAT, "---", "-----", "----------------------------", "-----", "---------------");
             int categoryNo = 0;
             for (Info info : sortedList) {
-                categoryNo++;
-                Set<String> fileSet = info.getFileSet();
-                if (fileSet.size() > NUMBER_OF_FILES_LIMIT) {
-                    System.out.format(FORMAT1, categoryNo, info.getErrorClass(), info.getCount(), fileSet.size());
-                } else {
-                    System.out.format(FORMAT2, categoryNo, info.getErrorClass(), info.getCount(), list(fileSet));
-                }
+                reportInfo(++categoryNo, info);
             }
 
-            System.out.format(UNDER_FORMAT, "---", "----------------------------", "-----", "---------------");
+            System.out.format(UNDER_FORMAT, "---", "-----", "----------------------------", "-----", "---------------");
             System.out.format(FORMAT3, "Totals", total, fileNameSet.size());
             System.out.println();
 
@@ -314,7 +364,7 @@ public final class StyleErrors {
 
             // The list is sorted by count, with highest count first
             fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
-            System.out.println(verbose ? "File error counts:" : "Files with the most errors:");
+            System.out.println(verbose ? "File problem counts:" : "Files with the most problems:");
             int num = 1;
             for (FileInfo info : fileCountList) {
                 System.out.format(FORMAT4, info.getName(), info.getCount());
@@ -327,7 +377,7 @@ public final class StyleErrors {
             if (!verbose) {
                 // The list is sorted by count, with lowest count first
                 fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
-                System.out.println("Files with the fewest errors:");
+                System.out.println("Files with the fewest problems:");
                 for (int i = NUMBER_OF_FILES_TO_REPORT; i > 0; i--) {
                     FileInfo info = fileCountList.get(i - 1);
                     System.out.format(FORMAT4, info.getName(), info.getCount());
