@@ -25,7 +25,7 @@ import org.apache.pivot.util.Utils;
  */
 public final class Mouse {
     /**
-     * Private constructor for utility class.
+     * Private constructor since this is a utility class (all static methods).
      */
     private Mouse() {
     }
@@ -156,74 +156,10 @@ public final class Mouse {
             throw new IllegalStateException("Mouse is not currently captured.");
         }
 
-        Cursor cursor = null;
-
         Display display = capturer.getDisplay();
         ApplicationContext.DisplayHost displayHost = display.getDisplayHost();
 
-        int cursorID = displayHost.getCursor().getType();
-        switch (cursorID) {
-            case java.awt.Cursor.DEFAULT_CURSOR:
-                cursor = Cursor.DEFAULT;
-                break;
-
-            case java.awt.Cursor.HAND_CURSOR:
-                cursor = Cursor.HAND;
-                break;
-
-            case java.awt.Cursor.TEXT_CURSOR:
-                cursor = Cursor.TEXT;
-                break;
-
-            case java.awt.Cursor.WAIT_CURSOR:
-                cursor = Cursor.WAIT;
-                break;
-
-            case java.awt.Cursor.CROSSHAIR_CURSOR:
-                cursor = Cursor.CROSSHAIR;
-                break;
-
-            case java.awt.Cursor.MOVE_CURSOR:
-                cursor = Cursor.MOVE;
-                break;
-
-            case java.awt.Cursor.N_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_NORTH;
-                break;
-
-            case java.awt.Cursor.S_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_SOUTH;
-                break;
-
-            case java.awt.Cursor.E_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_EAST;
-                break;
-
-            case java.awt.Cursor.W_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_WEST;
-                break;
-
-            case java.awt.Cursor.NE_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_NORTH_EAST;
-                break;
-
-            case java.awt.Cursor.SW_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_SOUTH_WEST;
-                break;
-
-            case java.awt.Cursor.NW_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_NORTH_WEST;
-                break;
-
-            case java.awt.Cursor.SE_RESIZE_CURSOR:
-                cursor = Cursor.RESIZE_SOUTH_EAST;
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown mouse cursor type " + cursorID);
-        }
-
-        return cursor;
+        return Cursor.getCursor(displayHost.getCursor().getType());
     }
 
     /**
@@ -242,7 +178,7 @@ public final class Mouse {
 
         Display display = capturer.getDisplay();
         ApplicationContext.DisplayHost displayHost = display.getDisplayHost();
-        displayHost.setCursor(getCursor(cursor));
+        displayHost.setCursor(cursor.getAWTCursor());
     }
 
     /**
@@ -277,74 +213,7 @@ public final class Mouse {
             Display display = componentOrParent.getDisplay();
             ApplicationContext.DisplayHost displayHost = display.getDisplayHost();
             displayHost.setCursor((cursor == null) ? java.awt.Cursor.getDefaultCursor()
-                : getCursor(cursor));
+                : cursor.getAWTCursor());
         }
-    }
-
-    private static java.awt.Cursor getCursor(final Cursor cursor) {
-        int cursorID = -1;
-
-        switch (cursor) {
-            case DEFAULT:
-                cursorID = java.awt.Cursor.DEFAULT_CURSOR;
-                break;
-
-            case HAND:
-                cursorID = java.awt.Cursor.HAND_CURSOR;
-                break;
-
-            case TEXT:
-                cursorID = java.awt.Cursor.TEXT_CURSOR;
-                break;
-
-            case WAIT:
-                cursorID = java.awt.Cursor.WAIT_CURSOR;
-                break;
-
-            case CROSSHAIR:
-                cursorID = java.awt.Cursor.CROSSHAIR_CURSOR;
-                break;
-
-            case MOVE:
-                cursorID = java.awt.Cursor.MOVE_CURSOR;
-                break;
-
-            case RESIZE_NORTH:
-                cursorID = java.awt.Cursor.N_RESIZE_CURSOR;
-                break;
-
-            case RESIZE_SOUTH:
-                cursorID = java.awt.Cursor.S_RESIZE_CURSOR;
-                break;
-
-            case RESIZE_EAST:
-                cursorID = java.awt.Cursor.E_RESIZE_CURSOR;
-                break;
-
-            case RESIZE_WEST:
-                cursorID = java.awt.Cursor.W_RESIZE_CURSOR;
-                break;
-
-            case RESIZE_NORTH_EAST:
-                cursorID = java.awt.Cursor.NE_RESIZE_CURSOR;
-                break;
-
-            case RESIZE_SOUTH_WEST:
-                cursorID = java.awt.Cursor.SW_RESIZE_CURSOR;
-                break;
-
-            case RESIZE_NORTH_WEST:
-                cursorID = java.awt.Cursor.NW_RESIZE_CURSOR;
-                break;
-
-            case RESIZE_SOUTH_EAST:
-                cursorID = java.awt.Cursor.SE_RESIZE_CURSOR;
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown mouse cursor type " + cursor.toString());
-        }
-
-        return new java.awt.Cursor(cursorID);
     }
 }

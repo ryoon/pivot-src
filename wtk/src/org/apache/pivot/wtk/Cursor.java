@@ -16,22 +16,59 @@
  */
 package org.apache.pivot.wtk;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Enumeration defining the supported mouse cursor types.
+ * Enumeration defining the supported mouse cursor types, and
+ * providing a mapping to the underlying {@link java.awt.Cursor} values.
  */
 public enum Cursor {
-    DEFAULT,
-    HAND,
-    TEXT,
-    WAIT,
-    CROSSHAIR,
-    MOVE,
-    RESIZE_NORTH,
-    RESIZE_SOUTH,
-    RESIZE_EAST,
-    RESIZE_WEST,
-    RESIZE_NORTH_EAST,
-    RESIZE_NORTH_WEST,
-    RESIZE_SOUTH_EAST,
-    RESIZE_SOUTH_WEST
+    DEFAULT(java.awt.Cursor.DEFAULT_CURSOR),
+    HAND(java.awt.Cursor.HAND_CURSOR),
+    TEXT(java.awt.Cursor.TEXT_CURSOR),
+    WAIT(java.awt.Cursor.WAIT_CURSOR),
+    CROSSHAIR(java.awt.Cursor.CROSSHAIR_CURSOR),
+    MOVE(java.awt.Cursor.MOVE_CURSOR),
+    RESIZE_NORTH(java.awt.Cursor.N_RESIZE_CURSOR),
+    RESIZE_SOUTH(java.awt.Cursor.S_RESIZE_CURSOR),
+    RESIZE_EAST(java.awt.Cursor.E_RESIZE_CURSOR),
+    RESIZE_WEST(java.awt.Cursor.W_RESIZE_CURSOR),
+    RESIZE_NORTH_EAST(java.awt.Cursor.NE_RESIZE_CURSOR),
+    RESIZE_NORTH_WEST(java.awt.Cursor.NW_RESIZE_CURSOR),
+    RESIZE_SOUTH_EAST(java.awt.Cursor.SE_RESIZE_CURSOR),
+    RESIZE_SOUTH_WEST(java.awt.Cursor.SW_RESIZE_CURSOR);
+
+    private int cursorID;
+
+    /** Facilitate lookup of one of our values given the AWT equivalent. */
+    private static class Lookup {
+        /** Correspondence from the AWT cursor ID to our own. */
+        private static Map<Integer, Cursor> map = new HashMap<>();
+    }
+
+    Cursor(final int id) {
+        this.cursorID = id;
+        Lookup.map.put(id, this);
+    }
+
+    /**
+     * @return A {@link java.awt.Cursor} object corresponding to this {@code Cursor}.
+     */
+    public java.awt.Cursor getAWTCursor() {
+        return new java.awt.Cursor(cursorID);
+    }
+
+    /**
+     * @return One of our {@code Cursor} values given the {@link java.awt.Cursor} ID value.
+     * @param cursorID One of the {@link java.awt.Cursor} ID values to lookup.
+     */
+    public static Cursor getCursor(final int cursorID) {
+        Cursor cursor = Lookup.map.get(cursorID);
+        if (cursor != null) {
+            return cursor;
+        }
+        throw new IllegalArgumentException("Unknown mouse cursor type " + cursorID);
+
+    }
 }
