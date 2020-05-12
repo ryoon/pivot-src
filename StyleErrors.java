@@ -226,6 +226,14 @@ public final class StyleErrors {
     private static final boolean ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
     /** Whether to report all the file problem counts, or just the least/most. */
     private static boolean verbose = false;
+    /** A list of bare file names that are used to filter the summary report. */
+    private static List<String> filterFileNames = new ArrayList<>();
+    /** Whether the next file name on the command line is a filter name or not. */
+    private static boolean filter = false;
+    /** Whether we filter the file names by any file names (if {@link #filterFileNames} list
+     * is non-empty.
+     */
+    private static boolean filtered = false;
 
     /**
      * Process one option from the command line.
@@ -238,8 +246,16 @@ public final class StyleErrors {
             case "verbose":
             case "VERBOSE":
                 verbose = true;
+                filter = false;
+                break;
+            case "f":
+            case "F":
+            case "filter":
+            case "FILTER":
+                filter = true;
                 break;
             default:
+                filter = false;
                 System.err.println("Ignoring unrecognized option: \"--" + option + "\"!");
                 break;
         }
@@ -280,9 +296,21 @@ public final class StyleErrors {
             } else if (ON_WINDOWS && arg.startsWith("/")) {
                 processOption(arg.substring(1));
             } else {
-                files.add(new File(arg));
+                if (filter) {
+                    if (arg.endsWith(".java")) {
+                        filterFileNames.add(arg);
+                    } else if (arg.indexOf(".") >= 0) {
+                        filterFileNames.add(arg);
+                    } else {
+                        filterFileNames.add(arg + ".java");
+                    }
+                    filter = false;
+                } else {
+                    files.add(new File(arg));
+                }
             }
         }
+        filtered = filterFileNames.size() != 0;
 
         // Now process just the saved file names
         for (File file : files) {
@@ -302,9 +330,14 @@ public final class StyleErrors {
                     if (m.matches()) {
                         String severity = m.group(SEVERITY_GROUP);
                         String fileName = m.group(FILE_NAME_GROUP);
-                        fileNameSet.add(fileName);
                         File f = new File(fileName);
                         String nameOnly = f.getName();
+                        if (filtered) {
+                            if (!filterFileNames.contains(nameOnly)) {
+                                continue;
+                            }
+                        }
+                        fileNameSet.add(fileName);
                         String problemClass = m.group(CLASS_NAME_GROUP);
                         Info info = workingSet.get(problemClass);
                         if (info == null) {
@@ -375,14 +408,18 @@ public final class StyleErrors {
             System.out.println();
 
             if (!verbose) {
-                // The list is sorted by count, with lowest count first
-                fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
-                System.out.println("Files with the fewest problems:");
-                for (int i = NUMBER_OF_FILES_TO_REPORT; i > 0; i--) {
-                    FileInfo info = fileCountList.get(i - 1);
-                    System.out.format(FORMAT4, info.getName(), info.getCount());
+                int leastRemaining = Math.min(fileCountList.size() - NUMBER_OF_FILES_TO_REPORT,
+                    NUMBER_OF_FILES_TO_REPORT);
+                if (leastRemaining > 0) {
+                    // The list is sorted by count, with lowest count first
+                    fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
+                    System.out.println("Files with the fewest problems:");
+                    for (int i = leastRemaining; i > 0; i--) {
+                        FileInfo info = fileCountList.get(i - 1);
+                        System.out.format(FORMAT4, info.getName(), info.getCount());
+                    }
+                    System.out.println();
                 }
-                System.out.println();
             }
         }
     }
