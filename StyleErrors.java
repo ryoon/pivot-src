@@ -236,22 +236,35 @@ public final class StyleErrors {
     private static String currentFileName;
     /** Whether we are running on a Windows system. */
     private static final boolean ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
+    /** The system file separator string. */
+    private static final String SEPARATOR = System.getProperty("file.separator");
+    /** The starting directory (used to strip off the leading part of the file paths). */
+    private static final String CURRENT_DIR = new File(System.getProperty("user.dir")).getPath() + SEPARATOR;
+    /** Our package name prefix. */
+    private static final String PACKAGE_PREFIX = "org.apache.pivot";
     /** Whether to report all the file problem counts, or just the least/most. */
     private static boolean verbose = false;
     /** A list of bare file names that are used to filter the summary report. */
     private static List<String> filterFileNames = new ArrayList<>();
     /** A list of problem categories that are used to filter the summary report. */
     private static List<String> filterCategories = new ArrayList<>();
+    /** A list of package names that are used to filter the summary report. */
+    private static List<String> filterPackages = new ArrayList<>();
     /** Whether the next file name on the command line is a filter name or not. */
     private static boolean filter = false;
     /** Whether the next field on the command line is a category name or not. */
     private static boolean category = false;
+    /** Whehter the next field is a package name. */
+    private static boolean packages = false;
     /** Whether we filter the file names by any file names (if {@link #filterFileNames} list
      * is non-empty. */
     private static boolean filteredByFile = false;
     /** Whether we filter the results by problem categories (if {@link #filterCategories} list
      * is non-empty. */
     private static boolean filteredByCategory = false;
+    /** Whether we filter the results by package names (if {@link #filterPackages} list
+     * is non-empty. */
+    private static boolean filteredByPackage = false;
 
     /**
      * Process one option from the command line.
@@ -278,8 +291,14 @@ public final class StyleErrors {
             case "CATEGORY":
                 category = true;
                 break;
+            case "p":
+            case "P":
+            case "package":
+            case "PACKAGE":
+                packages = true;
+                break;
             default:
-                filter = category = false;
+                filter = category = packages = false;
                 System.err.println("Ignoring unrecognized option: \"--" + option + "\"!");
                 break;
         }
@@ -319,13 +338,25 @@ public final class StyleErrors {
     }
 
     /**
-     * The main method, executed from the command line, which reads through each file
-     * and processes it.
-     * @param args The command line arguments.
+     * Strip off the first N pieces of a file path.
+     * @param path The incoming path to edit.
+     * @param n The number of pieces to elide.
+     * @return The edited path string.
      */
-    public static void main(final String[] args) {
-        List<File> files = new ArrayList<>(args.length);
+    private static String removeNDirs(final String path, final int n) {
+        int start = 0;
+        for (int i = 0; start >= 0 && i < n; i++) {
+            start = path.indexOf(SEPARATOR, start) + 1;
+        }
+        return start > 0 ? path.substring(start) : path;
+    }
 
+    /**
+     * Process all the command-line arguments.
+     * @param files The list of actual files to process (to add to).
+     * @param args The command line arguments to process.
+     */
+    private static void processArguments(final List<File> files, final String[] args) {
         // Process options and save the straight file names
         for (String arg : args) {
             if (arg.startsWith("--")) {
@@ -359,6 +390,19 @@ public final class StyleErrors {
                         }
                     }
                     category = false;
+                } else if (packages) {
+                    // One or more package names (same as above)
+                    String[] values = arg.split("[;,]");
+                    for (String value : values) {
+                        if (value.startsWith(PACKAGE_PREFIX)) {
+                            filterPackages.add(value);
+                        } else if (value.startsWith(".")) {
+                            filterPackages.add(PACKAGE_PREFIX + value);
+                        } else {
+                            filterPackages.add(PACKAGE_PREFIX + "." + value);
+                        }
+                    }
+                    packages = false;
                 } else {
                     addFile(files, arg);
                 }
@@ -366,6 +410,18 @@ public final class StyleErrors {
         }
         filteredByFile = filterFileNames.size() != 0;
         filteredByCategory = filterCategories.size() != 0;
+        filteredByPackage = filterPackages.size() != 0;
+    }
+
+    /**
+     * The main method, executed from the command line, which reads through each file
+     * and processes it.
+     * @param args The command line arguments.
+     */
+    public static void main(final String[] args) {
+        List<File> files = new ArrayList<>(args.length);
+
+        processArguments(files, args);
 
         // Try to process the default error log if none was specified on the command line
         if (files.isEmpty()) {
@@ -389,9 +445,9 @@ public final class StyleErrors {
                     Matcher m = LINE_PATTERN.matcher(line);
                     if (m.matches()) {
                         String severity = m.group(SEVERITY_GROUP);
-                        String fileName = m.group(FILE_NAME_GROUP);
+                        String fullFileName = m.group(FILE_NAME_GROUP);
                         String problemCategory = m.group(CATEGORY_NAME_GROUP);
-                        File f = new File(fileName);
+                        File f = new File(fullFileName);
                         String nameOnly = f.getName();
                         if (filteredByFile) {
                             if (!filterFileNames.contains(nameOnly)) {
@@ -403,7 +459,15 @@ public final class StyleErrors {
                                 continue;
                             }
                         }
-                        fileNameSet.add(fileName);
+                        String parent = removeNDirs(f.getParent().replace(CURRENT_DIR, ""), 2);
+                        String packageName = parent.replace(SEPARATOR, ".");
+                        if (filteredByPackage) {
+                            if (!filterPackages.contains(packageName)) {
+                                continue;
+                            }
+                        }
+                        String relativeFileName = f.getPath().replace(CURRENT_DIR, "");
+                        fileNameSet.add(relativeFileName);
                         Info info = workingSet.get(problemCategory);
                         if (info == null) {
                             workingSet.put(problemCategory, new Info(problemCategory, severity, nameOnly));
@@ -441,16 +505,28 @@ public final class StyleErrors {
             }
 
             if (sortedList.isEmpty()) {
-                if (filteredByFile && filteredByCategory) {
-                    System.out.println("No results for the filtered files " + list(filterFileNames)
-                        + " or categories " + list(filterCategories) + "!");
-                } else if (filteredByFile) {
-                    System.out.println("No results for the filtered files " + list(filterFileNames) + "!");
-                } else if (filteredByCategory) {
-                    System.out.println("No results for the filtered categories " + list(filterCategories) + "!");
-                } else {
-                    System.out.println("No results to show!");
+                StringBuilder buf = new StringBuilder("No results ");
+                boolean anyFilters = false;
+                if (filteredByFile) {
+                    buf.append(anyFilters ? " or " : " for ");
+                    buf.append("the filtered files ").append(list(filterFileNames));
+                    anyFilters = true;
                 }
+                if (filteredByCategory) {
+                    buf.append(anyFilters ? " or " : " for ");
+                    buf.append("the filtered categories ").append(list(filterCategories));
+                    anyFilters = true;
+                }
+                if (filteredByPackage) {
+                    buf.append(anyFilters ? " or " : " for ");
+                    buf.append("the filtered packages ").append(list(filterPackages));
+                    anyFilters = true;
+                }
+                if (!anyFilters) {
+                    buf.append(" to show");
+                }
+                buf.append("!");
+                System.out.println(buf.toString());
             } else {
                 Collections.sort(sortedList, comparator);
 
