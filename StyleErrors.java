@@ -475,21 +475,23 @@ public final class StyleErrors {
             }
 
             if (fileCountList.size() > 1) {
+                int remaining = fileCountList.size() - NUMBER_OF_FILES_TO_REPORT;
+                int leastRemaining = Math.min(remaining, NUMBER_OF_FILES_TO_REPORT);
+                boolean twoReports = !verbose && remaining > NUMBER_OF_FILES_TO_REPORT;
+
                 // The list is sorted by count, with highest count first
                 fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
-                System.out.println(verbose ? "File problem counts:" : "Files with the most problems:");
+                System.out.println(twoReports ? "Files with the most problems:" : "File problem counts:");
                 int num = 1;
                 for (FileInfo info : fileCountList) {
                     System.out.format(FORMAT4, info.getName(), info.getCount());
-                    if (!verbose && num++ >= NUMBER_OF_FILES_TO_REPORT) {
+                    if (twoReports && num++ >= NUMBER_OF_FILES_TO_REPORT) {
                         break;
                     }
                 }
                 System.out.println();
 
-                if (!verbose) {
-                    int leastRemaining = Math.min(fileCountList.size() - NUMBER_OF_FILES_TO_REPORT,
-                        NUMBER_OF_FILES_TO_REPORT);
+                if (twoReports) {
                     if (leastRemaining > 0) {
                         // The list is sorted by count, with lowest count first
                         fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
