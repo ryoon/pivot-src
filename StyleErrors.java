@@ -34,6 +34,8 @@ import java.util.regex.Pattern;
  * Read the file(s) given on the command line, which are presumed to be
  * the output of the "check styles" process, and generate a summary of the
  * results for each one.
+ * <p> Results can be filtered on one or more file names, and on one or more
+ * of the checkstyle category names.
  */
 public final class StyleErrors {
     /**
@@ -71,8 +73,8 @@ public final class StyleErrors {
      * it was encountered.
      */
     private static class Info {
-        /** The problem class from the check styles configuration. */
-        private String problemClass;
+        /** The problem category from the check styles configuration. */
+        private String problemCategory;
         /** The severity (ERROR or WARN) of this check. */
         private Severity severity;
         /** The final count of how many times this problem was encountered. */
@@ -81,14 +83,14 @@ public final class StyleErrors {
         private Set<String> files;
 
         /**
-         * Construct one with a starting count of 1 and the given problem class
+         * Construct one with a starting count of 1 and the given problem category
          * and first file name.
          * @param problem The checkstyle problem.
          * @param sev Whether this is an error or just a warning.
          * @param fileName The first file encountered with this problem.
          */
         Info(final String problem, final String sev, final String fileName) {
-            this.problemClass = problem;
+            this.problemCategory = problem;
             this.severity = Severity.lookup(sev);
             this.count = Integer.valueOf(1);
             this.files = new HashSet<>();
@@ -106,8 +108,8 @@ public final class StyleErrors {
         }
 
         /** @return The saved checkstyle problem name. */
-        String getProblemClass() {
-            return problemClass;
+        String getProblemCategory() {
+            return problemCategory;
         }
         /** @return The severity of this problem. */
         Severity getSeverity() {
@@ -152,16 +154,16 @@ public final class StyleErrors {
     }
 
     /**
-     * A comparator that sorts first by count and then by the problem class name.
+     * A comparator that sorts first by count and then by the problem category name.
      */
     private static Comparator<Info> comparator = new Comparator<Info>() {
         @Override
         public int compare(final Info o1, final Info o2) {
-            // Order first by count, then by class name
+            // Order first by count, then by category name
             int c1 = o1.count.intValue();
             int c2 = o2.count.intValue();
             if (c1 == c2) {
-                return o1.problemClass.compareTo(o2.problemClass);
+                return o1.problemCategory.compareTo(o2.problemCategory);
             } else {
                 return Integer.signum(c1 - c2);
             }
@@ -197,7 +199,7 @@ public final class StyleErrors {
     /** The group in the {@link #LINE_PATTERN} that contains the file name. */
     private static final int FILE_NAME_GROUP = 2;
     /** The group in the {@link #LINE_PATTERN} that contains the checkstyle problem name. */
-    private static final int CLASS_NAME_GROUP = 8;
+    private static final int CATEGORY_NAME_GROUP = 8;
     /** Limit on the number of files to enumerate vs just give the number. */
     private static final int NUMBER_OF_FILES_LIMIT = 3;
     /** Format problem info with a number of files suffix. */
@@ -238,12 +240,18 @@ public final class StyleErrors {
     private static boolean verbose = false;
     /** A list of bare file names that are used to filter the summary report. */
     private static List<String> filterFileNames = new ArrayList<>();
+    /** A list of problem categories that are used to filter the summary report. */
+    private static List<String> filterCategories = new ArrayList<>();
     /** Whether the next file name on the command line is a filter name or not. */
     private static boolean filter = false;
+    /** Whether the next field on the command line is a category name or not. */
+    private static boolean category = false;
     /** Whether we filter the file names by any file names (if {@link #filterFileNames} list
-     * is non-empty.
-     */
-    private static boolean filtered = false;
+     * is non-empty. */
+    private static boolean filteredByFile = false;
+    /** Whether we filter the results by problem categories (if {@link #filterCategories} list
+     * is non-empty. */
+    private static boolean filteredByCategory = false;
 
     /**
      * Process one option from the command line.
@@ -264,8 +272,14 @@ public final class StyleErrors {
             case "FILTER":
                 filter = true;
                 break;
+            case "c":
+            case "C":
+            case "category":
+            case "CATEGORY":
+                category = true;
+                break;
             default:
-                filter = false;
+                filter = category = false;
                 System.err.println("Ignoring unrecognized option: \"--" + option + "\"!");
                 break;
         }
@@ -282,10 +296,10 @@ public final class StyleErrors {
         Set<String> fileSet = info.getFileSet();
         int size = fileSet.size();
         if (size > NUMBER_OF_FILES_LIMIT) {
-            System.out.format(FORMAT1, num, info.getSeverity(), info.getProblemClass(),
+            System.out.format(FORMAT1, num, info.getSeverity(), info.getProblemCategory(),
                     info.getCount(), size);
         } else {
-            System.out.format(FORMAT2, num, info.getSeverity(), info.getProblemClass(),
+            System.out.format(FORMAT2, num, info.getSeverity(), info.getProblemCategory(),
                     info.getCount(), list(fileSet));
         }
     }
@@ -334,12 +348,24 @@ public final class StyleErrors {
                         }
                     }
                     filter = false;
+                } else if (category) {
+                    // One or more of the category names (with or without [ ])
+                    String[] values = arg.split("[;,]");
+                    for (String value : values) {
+                        if (value.startsWith("[") && value.endsWith("]")) {
+                            filterCategories.add(value);
+                        } else {
+                            filterCategories.add("[" + value + "]");
+                        }
+                    }
+                    category = false;
                 } else {
                     addFile(files, arg);
                 }
             }
         }
-        filtered = filterFileNames.size() != 0;
+        filteredByFile = filterFileNames.size() != 0;
+        filteredByCategory = filterCategories.size() != 0;
 
         // Try to process the default error log if none was specified on the command line
         if (files.isEmpty()) {
@@ -364,18 +390,23 @@ public final class StyleErrors {
                     if (m.matches()) {
                         String severity = m.group(SEVERITY_GROUP);
                         String fileName = m.group(FILE_NAME_GROUP);
+                        String problemCategory = m.group(CATEGORY_NAME_GROUP);
                         File f = new File(fileName);
                         String nameOnly = f.getName();
-                        if (filtered) {
+                        if (filteredByFile) {
                             if (!filterFileNames.contains(nameOnly)) {
                                 continue;
                             }
                         }
+                        if (filteredByCategory) {
+                            if (!filterCategories.contains(problemCategory)) {
+                                continue;
+                            }
+                        }
                         fileNameSet.add(fileName);
-                        String problemClass = m.group(CLASS_NAME_GROUP);
-                        Info info = workingSet.get(problemClass);
+                        Info info = workingSet.get(problemCategory);
                         if (info == null) {
-                            workingSet.put(problemClass, new Info(problemClass, severity, nameOnly));
+                            workingSet.put(problemCategory, new Info(problemCategory, severity, nameOnly));
                         } else {
                             info.addFile(nameOnly);
                         }
@@ -410,8 +441,13 @@ public final class StyleErrors {
             }
 
             if (sortedList.isEmpty()) {
-                if (filtered) {
+                if (filteredByFile && filteredByCategory) {
+                    System.out.println("No results for the filtered files " + list(filterFileNames)
+                        + " or categories " + list(filterCategories) + "!");
+                } else if (filteredByFile) {
                     System.out.println("No results for the filtered files " + list(filterFileNames) + "!");
+                } else if (filteredByCategory) {
+                    System.out.println("No results for the filtered categories " + list(filterCategories) + "!");
                 } else {
                     System.out.println("No results to show!");
                 }
