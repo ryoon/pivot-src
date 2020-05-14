@@ -487,8 +487,8 @@ public final class StyleErrors {
                     } else if (line.equals("Starting audit...") || line.equals("Audit done.")) {
                         continue;
                     } else {
-                        System.err.println("Line " + lineNo + ". Doesn't match the pattern.");
-                        System.err.println("\t" + line);
+                        System.err.println("Line " + lineNo + ". Doesn't match the expected pattern.");
+                        System.err.println("\t\"" + line + "\"");
                     }
                 }
                 if (currentFileName != null) {
@@ -505,7 +505,7 @@ public final class StyleErrors {
             }
 
             if (sortedList.isEmpty()) {
-                StringBuilder buf = new StringBuilder("No results ");
+                StringBuilder buf = new StringBuilder("No results");
                 boolean anyFilters = false;
                 if (filteredByFile) {
                     buf.append(anyFilters ? " or " : " for ");
