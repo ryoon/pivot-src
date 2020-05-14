@@ -735,6 +735,10 @@ public class TextArea extends Component {
         }
     }
 
+    public void removeText(CharSpan charSelection) {
+        removeText(charSelection.start, charSelection.length, true);
+    }
+
     public void removeText(int index, int count) {
         removeText(index, count, true);
     }

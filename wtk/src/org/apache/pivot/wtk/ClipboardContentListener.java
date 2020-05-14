@@ -20,5 +20,16 @@ package org.apache.pivot.wtk;
  * Clipboard content listener interface.
  */
 public interface ClipboardContentListener {
-    public void contentChanged(LocalManifest previousContent);
+    /**
+     * Called when the content of the clipboard has been changed.
+     *
+     * @param previousContent What used to be on the clipboard before
+     * the content changed. Note that this is a {@link LocalManifest}
+     * because the only time this listener is registered is via
+     * the {@link Clipboard#setContent(LocalManifest, ClipboardContentListener)}
+     * method and so the previous content will always be "local" (that is,
+     * generated/set by a Pivot application).
+     * <p> The current content can be accessed using {@link Clipboard#getContent}.
+     */
+    void contentChanged(LocalManifest previousContent);
 }
