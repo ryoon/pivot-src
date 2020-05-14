@@ -83,13 +83,13 @@ public final class StyleErrors {
         /**
          * Construct one with a starting count of 1 and the given problem class
          * and first file name.
-         * @param errClass The checkstyle problem.
+         * @param problem The checkstyle problem.
+         * @param sev Whether this is an error or just a warning.
          * @param fileName The first file encountered with this problem.
-         * @param severity Whether this is an error or just a warning.
          */
-        Info(final String problemClass, final String fileName, final String severity) {
-            this.problemClass = problemClass;
-            this.severity = Severity.lookup(severity);
+        Info(final String problem, final String sev, final String fileName) {
+            this.problemClass = problem;
+            this.severity = Severity.lookup(sev);
             this.count = Integer.valueOf(1);
             this.files = new HashSet<>();
             this.files.add(fileName);
@@ -173,7 +173,7 @@ public final class StyleErrors {
      * @param strings The set of strings to traverse.
      * @return A nicely formatted list.
      */
-    private static String list(final Set<String> strings) {
+    private static String list(final Iterable<String> strings) {
         StringBuilder buf = new StringBuilder("(");
         int i = 0;
         for (String s : strings) {
@@ -186,6 +186,8 @@ public final class StyleErrors {
         return buf.toString();
     }
 
+    /** Default name of the input file if none is given on the command line. */
+    private static final String DEFAULT_INPUT_FILE = "style_errors.log";
     /** Pattern used to parse each input line. */
     private static final Pattern LINE_PATTERN = Pattern.compile(
             "^\\[([A-Z]+)\\]\\s+(([a-zA-Z]\\:)?([^:]+))(\\:[0-9]+\\:)([0-9]+\\:)?\\s+(.+)\\s+(\\[[a-zA-Z]+\\])$"
@@ -206,6 +208,14 @@ public final class StyleErrors {
     private static final String FORMAT3 = "          %1$-30s%2$5d (%3$d)%n";
     /** Format string used to print the underlines. */
     private static final String UNDER_FORMAT = "%1$3s %2$5s %3$-30s%4$5s %5$s%n";
+    /** Three character underline. */
+    private static final String THREE = "---";
+    /** Five character underline. */
+    private static final String FIVE = "-----";
+    /** File name underline. */
+    private static final String FILE = "-------------------";
+    /** Category name underline. */
+    private static final String CATEGORY = "----------------------------";
     /** Format string for the file vs problem count report. */
     private static final String FORMAT4 = "    %1$-42s %2$5d%n";
     /** The set of unique file names found in the list. */
@@ -281,12 +291,27 @@ public final class StyleErrors {
     }
 
     /**
+     * Add a file to the list of input files to process, if possible.
+     * @param files The existing file list to add to.
+     * @param arg The candidate input file name.
+     */
+    private static void addFile(final List<File> files, final String arg) {
+        File file = new File(arg);
+        if (!file.exists() || !file.isFile() || file.isHidden() || !file.canRead()) {
+            System.err.println("Unable to find or read the input file: \"" + file.getPath() + "\"!");
+        } else {
+            files.add(file);
+        }
+    }
+
+    /**
      * The main method, executed from the command line, which reads through each file
      * and processes it.
      * @param args The command line arguments.
      */
     public static void main(final String[] args) {
         List<File> files = new ArrayList<>(args.length);
+
         // Process options and save the straight file names
         for (String arg : args) {
             if (arg.startsWith("--")) {
@@ -297,20 +322,29 @@ public final class StyleErrors {
                 processOption(arg.substring(1));
             } else {
                 if (filter) {
-                    if (arg.endsWith(".java")) {
-                        filterFileNames.add(arg);
-                    } else if (arg.indexOf(".") >= 0) {
-                        filterFileNames.add(arg);
-                    } else {
-                        filterFileNames.add(arg + ".java");
+                    // The argument could be a comma or semicolon separated list
+                    String[] values = arg.split("[;,]");
+                    for (String value : values) {
+                        if (value.endsWith(".java")) {
+                            filterFileNames.add(value);
+                        } else if (value.indexOf(".") >= 0) {
+                            filterFileNames.add(value);
+                        } else {
+                            filterFileNames.add(value + ".java");
+                        }
                     }
                     filter = false;
                 } else {
-                    files.add(new File(arg));
+                    addFile(files, arg);
                 }
             }
         }
         filtered = filterFileNames.size() != 0;
+
+        // Try to process the default error log if none was specified on the command line
+        if (files.isEmpty()) {
+            addFile(files, DEFAULT_INPUT_FILE);
+        }
 
         // Now process just the saved file names
         for (File file : files) {
@@ -341,7 +375,7 @@ public final class StyleErrors {
                         String problemClass = m.group(CLASS_NAME_GROUP);
                         Info info = workingSet.get(problemClass);
                         if (info == null) {
-                            workingSet.put(problemClass, new Info(problemClass, nameOnly, severity));
+                            workingSet.put(problemClass, new Info(problemClass, severity, nameOnly));
                         } else {
                             info.addFile(nameOnly);
                         }
@@ -374,19 +408,28 @@ public final class StyleErrors {
                 Info info = workingSet.get(key);
                 sortedList.add(info);
             }
-            Collections.sort(sortedList, comparator);
 
-            // Output the final summary report for this input file
-            System.out.format(UNDER_FORMAT, " # ", " Sev ", "Category", "Count", "File(s)");
-            System.out.format(UNDER_FORMAT, "---", "-----", "----------------------------", "-----", "---------------");
-            int categoryNo = 0;
-            for (Info info : sortedList) {
-                reportInfo(++categoryNo, info);
+            if (sortedList.isEmpty()) {
+                if (filtered) {
+                    System.out.println("No results for the filtered files " + list(filterFileNames) + "!");
+                } else {
+                    System.out.println("No results to show!");
+                }
+            } else {
+                Collections.sort(sortedList, comparator);
+
+                // Output the final summary report for this input file
+                System.out.format(UNDER_FORMAT, " # ", " Sev ", "Category", "Count", "File(s)");
+                System.out.format(UNDER_FORMAT, THREE, FIVE, CATEGORY, FIVE, FILE);
+                int categoryNo = 0;
+                for (Info info : sortedList) {
+                    reportInfo(++categoryNo, info);
+                }
+
+                System.out.format(UNDER_FORMAT, THREE, FIVE, CATEGORY, FIVE, FILE);
+                System.out.format(FORMAT3, "Totals", total, fileNameSet.size());
+                System.out.println();
             }
-
-            System.out.format(UNDER_FORMAT, "---", "-----", "----------------------------", "-----", "---------------");
-            System.out.format(FORMAT3, "Totals", total, fileNameSet.size());
-            System.out.println();
 
             // Take the file counts and generate a list of the data for sorting
             fileCountList.clear();
@@ -395,30 +438,32 @@ public final class StyleErrors {
                 fileCountList.add(info);
             }
 
-            // The list is sorted by count, with highest count first
-            fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
-            System.out.println(verbose ? "File problem counts:" : "Files with the most problems:");
-            int num = 1;
-            for (FileInfo info : fileCountList) {
-                System.out.format(FORMAT4, info.getName(), info.getCount());
-                if (!verbose && num++ >= NUMBER_OF_FILES_TO_REPORT) {
-                    break;
-                }
-            }
-            System.out.println();
-
-            if (!verbose) {
-                int leastRemaining = Math.min(fileCountList.size() - NUMBER_OF_FILES_TO_REPORT,
-                    NUMBER_OF_FILES_TO_REPORT);
-                if (leastRemaining > 0) {
-                    // The list is sorted by count, with lowest count first
-                    fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
-                    System.out.println("Files with the fewest problems:");
-                    for (int i = leastRemaining; i > 0; i--) {
-                        FileInfo info = fileCountList.get(i - 1);
-                        System.out.format(FORMAT4, info.getName(), info.getCount());
+            if (fileCountList.size() > 1) {
+                // The list is sorted by count, with highest count first
+                fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
+                System.out.println(verbose ? "File problem counts:" : "Files with the most problems:");
+                int num = 1;
+                for (FileInfo info : fileCountList) {
+                    System.out.format(FORMAT4, info.getName(), info.getCount());
+                    if (!verbose && num++ >= NUMBER_OF_FILES_TO_REPORT) {
+                        break;
                     }
-                    System.out.println();
+                }
+                System.out.println();
+
+                if (!verbose) {
+                    int leastRemaining = Math.min(fileCountList.size() - NUMBER_OF_FILES_TO_REPORT,
+                        NUMBER_OF_FILES_TO_REPORT);
+                    if (leastRemaining > 0) {
+                        // The list is sorted by count, with lowest count first
+                        fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
+                        System.out.println("Files with the fewest problems:");
+                        for (int i = leastRemaining; i > 0; i--) {
+                            FileInfo info = fileCountList.get(i - 1);
+                            System.out.format(FORMAT4, info.getName(), info.getCount());
+                        }
+                        System.out.println();
+                    }
                 }
             }
         }
