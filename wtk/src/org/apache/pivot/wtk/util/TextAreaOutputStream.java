@@ -20,6 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Bounds;
 import org.apache.pivot.wtk.TextArea;
@@ -34,16 +36,65 @@ public final class TextAreaOutputStream extends OutputStream {
     /** The TextArea we are going to stream to. */
     private TextArea textArea;
 
+    /** Default line buffer size (can be overridden through a constructor). */
+    private static final int DEFAULT_BUFFER_SIZE = 256;
+
+    /** Buffer size to use for incoming lines of text. */
+    private int lineBufferSize;
+
+    /** The charset to use for converting incoming bytes to characters. */
+    private Charset incomingCharset;
+
     /** The buffered line for this stream. */
-    private ByteArrayOutputStream lineBuffer = new ByteArrayOutputStream(256);
+    private ByteArrayOutputStream lineBuffer;
 
     /**
-     * Only constructor given the {@link TextArea} to stream to.
+     * Simple constructor given the {@link TextArea} to stream to.
      *
      * @param textAreaToUse The TextArea to use for output.
      */
     public TextAreaOutputStream(final TextArea textAreaToUse) {
+        this(textAreaToUse, null, DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * Constructor given the {@link TextArea} to stream to, and the
+     * non-default line buffer size to use.
+     *
+     * @param textAreaToUse The TextArea to use for output.
+     * @param lineBufferSizeToUse The non-default size for the input line buffer.
+     */
+    public TextAreaOutputStream(final TextArea textAreaToUse, final int lineBufferSizeToUse) {
+        this(textAreaToUse, null, lineBufferSizeToUse);
+    }
+
+    /**
+     * Constructor given the {@link TextArea} to stream to, and the charset to use
+     * for decoding the incoming bytes into characters.
+     *
+     * @param textAreaToUse The TextArea to use for output.
+     * @param charsetToUse The charset used to convert incoming bytes to characters
+     * (can be {@code null} to use the platform standard charset).
+     */
+    public TextAreaOutputStream(final TextArea textAreaToUse, final Charset charsetToUse) {
+        this(textAreaToUse, charsetToUse, DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * Constructor given the {@link TextArea} to stream to, the charset to use
+     * for decoding the incoming bytes into characters, and the line buffer size to use.
+     *
+     * @param textAreaToUse The TextArea to use for output.
+     * @param charsetToUse The charset used to convert incoming bytes to characters
+     * (can be {@code null} to use the platform standard charset).
+     * @param lineBufferSizeToUse The size for the input line buffer.
+     */
+    public TextAreaOutputStream(final TextArea textAreaToUse, final Charset charsetToUse,
+        final int lineBufferSizeToUse) {
         this.textArea = textAreaToUse;
+        this.incomingCharset = (charsetToUse == null) ? Charset.defaultCharset() : charsetToUse;
+        this.lineBufferSize = lineBufferSizeToUse;
+        this.lineBuffer = new ByteArrayOutputStream(lineBufferSize);
     }
 
     /**
@@ -63,8 +114,7 @@ public final class TextAreaOutputStream extends OutputStream {
     private void flushLineBuffer(final boolean addNewLine) {
         if (lineBuffer.size() > 0) {
             byte[] bytes = lineBuffer.toByteArray();
-            // TODO: should we have a charset to use here??
-            String text = new String(bytes);
+            String text = new String(bytes, incomingCharset);
             int length = textArea.getCharacterCount();
             textArea.insertText(text, length);
             if (addNewLine) {
@@ -81,6 +131,7 @@ public final class TextAreaOutputStream extends OutputStream {
     public void close() throws IOException {
         flush();
         this.textArea = null;
+        this.incomingCharset = null;
         this.lineBuffer = null;
     }
 
@@ -100,10 +151,15 @@ public final class TextAreaOutputStream extends OutputStream {
     }
 
     /**
-     * @return A new {@link PrintStream} using this object as the basis.
+     * @return A new {@link PrintStream} using this object as the basis (and the
+     * same charset specified by one of the constructors).
      */
     public PrintStream toPrintStream() {
-        return new PrintStream(this);
+        try {
+            return new PrintStream(this, false, incomingCharset.name());
+        } catch (UnsupportedEncodingException uee) {
+            throw new RuntimeException("Impossible unsupported encoding error!", uee);
+        }
     }
 
 }

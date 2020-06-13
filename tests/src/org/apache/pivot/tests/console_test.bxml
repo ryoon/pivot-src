@@ -33,8 +33,8 @@ limitations under the License.
       </TablePane.Row>
       <TablePane.Row height="1*">
         <Border title="Console">
-          <ScrollPane>
-            <TextArea bxml:id="consoleArea" editable="false"/>
+          <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="auto">
+            <TextArea bxml:id="consoleArea" editable="false" styles="{wrapText:true}"/>
           </ScrollPane>
         </Border>
       </TablePane.Row>
