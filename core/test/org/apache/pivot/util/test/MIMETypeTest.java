@@ -21,6 +21,9 @@ import static org.junit.Assert.assertEquals;
 import org.apache.pivot.util.MIMEType;
 import org.junit.Test;
 
+/**
+ * Testing the {@link MIMEType} decoding method.
+ */
 public class MIMETypeTest {
     @Test
     public void testMIMEType() {

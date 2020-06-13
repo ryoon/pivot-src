@@ -20,57 +20,60 @@ import org.apache.pivot.util.ListenerList;
 
 /**
  * Query listener interface.
+ * @param <V> The type associated with the query.
  */
 public interface QueryListener<V> {
     /**
      * Query listener listeners list.
+     * @param <V> The type associated with the query.
      */
-    public static class Listeners<V> extends ListenerList<QueryListener<V>>
+    class Listeners<V> extends ListenerList<QueryListener<V>>
         implements QueryListener<V> {
         @Override
-        public synchronized void connected(Query<V> query) {
+        public synchronized void connected(final Query<V> query) {
             forEach(listener -> listener.connected(query));
         }
 
         @Override
-        public synchronized void requestSent(Query<V> query) {
+        public synchronized void requestSent(final Query<V> query) {
             forEach(listener -> listener.requestSent(query));
         }
 
         @Override
-        public synchronized void responseReceived(Query<V> query) {
+        public synchronized void responseReceived(final Query<V> query) {
             forEach(listener -> listener.responseReceived(query));
         }
 
         @Override
-        public synchronized void failed(Query<V> query) {
+        public synchronized void failed(final Query<V> query) {
             forEach(listener -> listener.failed(query));
         }
     }
 
     /**
      * Query listener adapter.
+     * @param <V> The type associated with the query.
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter<V> implements QueryListener<V> {
+    class Adapter<V> implements QueryListener<V> {
         @Override
-        public void connected(Query<V> query) {
+        public void connected(final Query<V> query) {
             // empty block
         }
 
         @Override
-        public void requestSent(Query<V> query) {
+        public void requestSent(final Query<V> query) {
             // empty block
         }
 
         @Override
-        public void responseReceived(Query<V> query) {
+        public void responseReceived(final Query<V> query) {
             // empty block
         }
 
         @Override
-        public void failed(Query<V> query) {
+        public void failed(final Query<V> query) {
             // empty block
         }
     }

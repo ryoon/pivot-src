@@ -18,6 +18,8 @@ package org.apache.pivot.functional.monad;
 
 /**
  * Definition of generic Monadic methods.
+ *
+ * @param <T> The wrapped type to which this operation is to be applied.
  */
 @SuppressWarnings("unused")
 public interface MonadicOperations<T> {

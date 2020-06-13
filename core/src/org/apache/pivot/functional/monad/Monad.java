@@ -18,6 +18,7 @@ package org.apache.pivot.functional.monad;
 
 /**
  * Definition of a generic Monad.
+ * @param <T> The underlying type wrapped by this Monad.
  */
 public abstract class Monad<T> implements MonadicOperations<T> {
 
@@ -28,7 +29,7 @@ public abstract class Monad<T> implements MonadicOperations<T> {
 
     @Override
     public String toString() {
-        return "Monad()";
+        return "Monad(" + getClass().getTypeParameters()[0].getName() + ")";
     }
 
 }

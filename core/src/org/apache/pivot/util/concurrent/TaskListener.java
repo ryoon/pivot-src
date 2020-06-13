@@ -27,12 +27,12 @@ public interface TaskListener<V> {
      *
      * @param task The source of the task event.
      */
-    public void taskExecuted(Task<V> task);
+    void taskExecuted(Task<V> task);
 
     /**
      * Called when task execution has failed.
      *
      * @param task The source of the task event.
      */
-    public void executeFailed(Task<V> task);
+    void executeFailed(Task<V> task);
 }

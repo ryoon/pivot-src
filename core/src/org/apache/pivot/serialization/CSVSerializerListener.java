@@ -26,7 +26,7 @@ public interface CSVSerializerListener {
     /**
      * CSV Serializer listeners.
      */
-    static final class Listeners extends ListenerList<CSVSerializerListener>
+    final class Listeners extends ListenerList<CSVSerializerListener>
         implements CSVSerializerListener {
         @Override
         public void beginList(final CSVSerializer csvSerializer, final List<?> list) {
@@ -49,7 +49,7 @@ public interface CSVSerializerListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    static class Adapter implements CSVSerializerListener {
+    class Adapter implements CSVSerializerListener {
         @Override
         public void beginList(final CSVSerializer csvSerializer, final List<?> list) {
             // empty block

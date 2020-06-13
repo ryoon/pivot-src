@@ -20,8 +20,10 @@ package org.apache.pivot.util;
  * Utility class for dealing with classes.
  */
 public final class ClassUtils {
+    /** The "caller name" to use if there is no entry at that depth in the call stack. */
     public static final String UNKNOWN_CALLER = "<unknown caller>";
 
+    /** Private constructor since this is a static class. */
     private ClassUtils() {
     }
 

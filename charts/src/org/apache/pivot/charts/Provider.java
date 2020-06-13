@@ -22,5 +22,10 @@ import org.apache.pivot.wtk.Skin;
  * Provides a mapping from a concrete component class to a skin class.
  */
 public interface Provider {
-    public abstract Class<? extends Skin> getSkinClass(Class<? extends ChartView> componentClass);
+    /**
+     * Find the skin class associated with the given chart component.
+     * @param componentClass Class of the chart component whose skin we need.
+     * @return The skin class associated with the chart component.
+     */
+    Class<? extends Skin> getSkinClass(Class<? extends ChartView> componentClass);
 }

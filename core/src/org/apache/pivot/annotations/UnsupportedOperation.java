@@ -31,5 +31,9 @@ import java.lang.annotation.Target;
 @Documented
 public @interface UnsupportedOperation {
 
+     /**
+      * The (unused) value for this annotation, defaults to {@code true}.
+      * @return true
+      */
      boolean value() default true;
 }

@@ -23,16 +23,17 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Color chooser button selection listener interface.
  */
+@FunctionalInterface
 public interface ColorChooserButtonSelectionListener {
     /**
-     * ColorChooser button selection listener listeners list.
+     * ColorChooser button selection listeners list.
      */
-    public static class Listeners extends ListenerList<ColorChooserButtonSelectionListener>
+    final class Listeners extends ListenerList<ColorChooserButtonSelectionListener>
         implements ColorChooserButtonSelectionListener {
 
         @Override
-        public void selectedColorChanged(ColorChooserButton colorChooserButton,
-            Color previousSelectedColor) {
+        public void selectedColorChanged(final ColorChooserButton colorChooserButton,
+            final Color previousSelectedColor) {
             forEach(listener -> listener.selectedColorChanged(colorChooserButton, previousSelectedColor));
         }
     }
@@ -43,6 +44,5 @@ public interface ColorChooserButtonSelectionListener {
      * @param colorChooserButton    The color chooser button that changed.
      * @param previousSelectedColor The previously selected color.
      */
-    public void selectedColorChanged(ColorChooserButton colorChooserButton,
-        Color previousSelectedColor);
+    void selectedColorChanged(ColorChooserButton colorChooserButton, Color previousSelectedColor);
 }

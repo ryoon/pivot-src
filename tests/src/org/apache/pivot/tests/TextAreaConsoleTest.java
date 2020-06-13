@@ -146,11 +146,11 @@ public class TextAreaConsoleTest implements Application {
     private static final int NUM_PARAGRAPHS = PARAGRAPHS.length;
 
     private static int randomInt(final int max) {
-        return (int)Math.floor(Math.random() * (double)max);
+        return (int) Math.floor(Math.random() * (double) max);
     }
 
     @Override
-    public void startup(Display display, Map<String, String> properties) {
+    public void startup(final Display display, final Map<String, String> properties) {
         BXMLSerializer serializer = new BXMLSerializer();
         try {
             serializer.readObject(TextAreaConsoleTest.class, "console_test.bxml");
@@ -165,14 +165,14 @@ public class TextAreaConsoleTest implements Application {
     }
 
     @Override
-    public boolean shutdown(boolean optional) {
+    public boolean shutdown(final boolean optional) {
         if (window != null) {
             window.close();
         }
         return false;
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         DesktopApplicationContext.main(TextAreaConsoleTest.class, args);
     }
 }

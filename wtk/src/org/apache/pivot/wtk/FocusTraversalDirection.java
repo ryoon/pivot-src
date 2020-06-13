@@ -20,5 +20,10 @@ package org.apache.pivot.wtk;
  * Enumeration representing a focus traversal direction.
  */
 public enum FocusTraversalDirection {
-    FORWARD, BACKWARD
+    /** Traverse the focusable elements in a forward direction, that is,
+     * left-to-right and top-to-bottom. */
+    FORWARD,
+    /** Traverse the focusable elements in a backward direction, that is,
+      * bottom-to-top, right-to-left. */
+    BACKWARD
 }

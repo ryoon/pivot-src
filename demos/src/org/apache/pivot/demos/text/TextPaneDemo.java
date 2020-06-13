@@ -16,7 +16,6 @@
  */
 package org.apache.pivot.demos.text;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
@@ -35,10 +34,8 @@ import org.apache.pivot.wtk.Alert;
 import org.apache.pivot.wtk.Application;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Button;
-import org.apache.pivot.wtk.ButtonPressListener;
 import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.ColorChooserButton;
-import org.apache.pivot.wtk.ColorChooserButtonSelectionListener;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.FileBrowserSheet;
@@ -48,8 +45,6 @@ import org.apache.pivot.wtk.ListButton;
 import org.apache.pivot.wtk.ListButtonSelectionListener;
 import org.apache.pivot.wtk.ListView;
 import org.apache.pivot.wtk.PushButton;
-import org.apache.pivot.wtk.Sheet;
-import org.apache.pivot.wtk.SheetCloseListener;
 import org.apache.pivot.wtk.Span;
 import org.apache.pivot.wtk.Style;
 import org.apache.pivot.wtk.TextPane;
@@ -91,23 +86,7 @@ public class TextPaneDemo implements Application {
     public TextPaneDemo() {
     }
 
-    @Override
-    public void startup(final Display display, final Map<String, String> properties) throws Exception {
-        System.out.println("startup(...)");
-        System.out.println("\n"
-            + "In this test application as a sample for setting the display scale on startup,\n"
-            + "use startup argument \"--scale=n\" property; \n"
-            + "For instance, using \"--scale=2.0\" will set double scale on the whole application.\n"
-            + "\n"
-            + "Anyway, using Ctrl-Shift-MouseWheel will scale the display up and down as well,\n"
-            + "for the user of your application.\n");
-
-        BXMLSerializer bxmlSerializer = new BXMLSerializer();
-        window = (Window) bxmlSerializer.readObject(TextPaneDemo.class, "text_pane_demo.bxml");
-        bxmlSerializer.bind(this, TextPaneDemo.class);
-
-        window.setTitle("Apache Pivot Rich Text Editor Demo");
-
+    private void setupFontControls() {
         // make the text on the "bold" button bold
         Font boldButtonFont = boldButton.getStyles().getFont(Style.font);
         boldButton.getStyles().put(Style.font, boldButtonFont.deriveFont(Font.BOLD));
@@ -121,8 +100,9 @@ public class TextPaneDemo implements Application {
         fontSizeListButton.setSelectedItem(fontFamilyListButton.getListData().get(0));
         fontFamilyListButton.setItemRenderer(new ListViewItemRenderer() {
             @Override
-            public void render(Object item, int index, ListView listView, boolean selected,
-                Button.State state, boolean highlighted, boolean disabled) {
+            public void render(final Object item, final int index, final ListView listView,
+                final boolean selected, final Button.State state, final boolean highlighted,
+                final boolean disabled) {
                 super.render(item, index, listView, selected, state, highlighted, disabled);
                 if (item != null) {
                     String fontFamilyName = (String) item;
@@ -132,7 +112,7 @@ public class TextPaneDemo implements Application {
         });
         fontFamilyListButton.setDataRenderer(new ListButtonDataRenderer() {
             @Override
-            public void render(Object data, Button button, boolean highlight) {
+            public void render(final Object data, final Button button, final boolean highlight) {
                 super.render(data, button, highlight);
                 if (data != null) {
                     String fontFamilyName = (String) data;
@@ -144,6 +124,22 @@ public class TextPaneDemo implements Application {
         fontSizeListButton.setListData(new NumericSpinnerData(12, 30, 1));
         fontSizeListButton.setSelectedItem(12);
 
+        ListButtonSelectionListener fontButtonPressListener = new ListButtonSelectionListener() {
+            @Override
+            public void selectedItemChanged(final ListButton listButton, final Object previousSelectedItem) {
+                int selectedFontSize = ((Integer) fontSizeListButton.getSelectedItem()).intValue();
+                String selectedFontFamily = (String) fontFamilyListButton.getSelectedItem();
+                final Font derivedFont = Font.decode(selectedFontFamily + " " + selectedFontSize);
+
+                applyStyleToSelection(span -> span.setFont(derivedFont));
+                requestTextPaneFocus();
+            }
+        };
+        fontFamilyListButton.getListButtonSelectionListeners().add(fontButtonPressListener);
+        fontSizeListButton.getListButtonSelectionListeners().add(fontButtonPressListener);
+    }
+
+    private void setupFileButtons() {
         openFileButton.getButtonPressListeners().add(button -> {
             final FileBrowserSheet fileBrowserSheet = new FileBrowserSheet();
 
@@ -187,7 +183,9 @@ public class TextPaneDemo implements Application {
                 }
             });
         });
+    }
 
+    private void setupStyleControls() {
         boldButton.getButtonPressListeners().add(button -> {
             applyStyleToSelection(span -> {
                 if (span.getFont() != null) {
@@ -254,20 +252,6 @@ public class TextPaneDemo implements Application {
                 requestTextPaneFocus();
             });
 
-        ListButtonSelectionListener fontButtonPressListener = new ListButtonSelectionListener() {
-            @Override
-            public void selectedItemChanged(ListButton listButton, Object previousSelectedItem) {
-                int selectedFontSize = ((Integer) fontSizeListButton.getSelectedItem()).intValue();
-                String selectedFontFamily = (String) fontFamilyListButton.getSelectedItem();
-                final Font derivedFont = Font.decode(selectedFontFamily + " " + selectedFontSize);
-
-                applyStyleToSelection(span -> span.setFont(derivedFont));
-                requestTextPaneFocus();
-            }
-        };
-        fontFamilyListButton.getListButtonSelectionListeners().add(fontButtonPressListener);
-        fontSizeListButton.getListButtonSelectionListeners().add(fontButtonPressListener);
-
         wrapTextCheckbox.getButtonPressListeners().add(button -> {
             textPane.getStyles().put(Style.wrapText, wrapTextCheckbox.isSelected());
             requestTextPaneFocus();
@@ -287,6 +271,28 @@ public class TextPaneDemo implements Application {
             applyAlignmentStyle(HorizontalAlignment.RIGHT);
             requestTextPaneFocus();
         });
+    }
+
+    @Override
+    public void startup(final Display display, final Map<String, String> properties) throws Exception {
+        System.out.println("startup(...)");
+        System.out.println("\n"
+            + "In this test application as a sample for setting the display scale on startup,\n"
+            + "use startup argument \"--scale=n\" property; \n"
+            + "For instance, using \"--scale=2.0\" will set double scale on the whole application.\n"
+            + "\n"
+            + "Anyway, using Ctrl-Shift-MouseWheel will scale the display up and down as well,\n"
+            + "for the user of your application.\n");
+
+        BXMLSerializer bxmlSerializer = new BXMLSerializer();
+        window = (Window) bxmlSerializer.readObject(TextPaneDemo.class, "text_pane_demo.bxml");
+        bxmlSerializer.bind(this, TextPaneDemo.class);
+
+        window.setTitle("Apache Pivot Rich Text Editor Demo");
+
+        setupFontControls();
+        setupFileButtons();
+        setupStyleControls();
 
         String scaleProperty = properties.get("scale");
         if (scaleProperty != null && !scaleProperty.isEmpty()) {
@@ -517,7 +523,7 @@ public class TextPaneDemo implements Application {
         }
     }
 
-    private void collectNodes(Node node, List<Node> nodeList) {
+    private void collectNodes(final Node node, final List<Node> nodeList) {
         // don't worry about the text-nodes that are children of Span nodes.
         if (node instanceof TextSpan) {
             return;

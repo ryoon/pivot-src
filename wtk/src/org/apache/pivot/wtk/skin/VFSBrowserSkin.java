@@ -26,7 +26,7 @@ import org.apache.pivot.wtk.VFSBrowserListener;
 public abstract class VFSBrowserSkin extends ContainerSkin implements VFSBrowser.Skin,
     VFSBrowserListener {
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         VFSBrowser fileBrowser = (VFSBrowser) component;

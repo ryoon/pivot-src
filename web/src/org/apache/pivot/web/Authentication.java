@@ -20,5 +20,10 @@ package org.apache.pivot.web;
  * Interface for attaching authentication information to a web query.
  */
 public interface Authentication {
-    public void authenticate(Query<?> query);
+    /**
+     * Called to authenticate the query with the server.
+     *
+     * @param query The query needing authentication.
+     */
+    void authenticate(Query<?> query);
 }

@@ -412,10 +412,7 @@ public abstract class Query<V> extends IOTask<V> {
 
             // Notify listeners that the response has been received
             queryListeners.responseReceived(this);
-        } catch (IOException exception) {
-            queryListeners.failed(this);
-            throw new QueryException(exception);
-        } catch (SerializationException exception) {
+        } catch (IOException | SerializationException exception) {
             queryListeners.failed(this);
             throw new QueryException(exception);
         } catch (RuntimeException exception) {

@@ -21,5 +21,8 @@ package org.apache.pivot.wtk;
  * assumed to mean "no sort".
  */
 public enum SortDirection {
-    ASCENDING, DESCENDING
+    /** Sort in ascending order, from lowest value first to highest value. */
+    ASCENDING,
+    /** Sort in descending order, from highest value first to lowest value. */
+    DESCENDING
 }
