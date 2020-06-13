@@ -279,7 +279,8 @@ public class BeanAdapter implements Map<String, Object> {
 
             if (field == null) {
                 throw new PropertyNotFoundException("Property \"" + key + "\""
-                    + " does not exist or is read-only.");
+                    + " does not exist or is read-only for type "
+                    + bean.getClass().getName() + ".");
             }
 
             Class<?> fieldType = field.getType();
