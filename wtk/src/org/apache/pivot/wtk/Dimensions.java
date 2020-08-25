@@ -30,29 +30,47 @@ import org.apache.pivot.util.Utils;
 public final class Dimensions implements Serializable {
     private static final long serialVersionUID = -3644511824857807902L;
 
+    /** The width value of the dimension. */
     public final int width;
+    /** The height value of the dimension. */
     public final int height;
 
+    /** The map key to retrieve the width value. */
     public static final String WIDTH_KEY = "width";
+    /** The map key to retrieve the height value. */
     public static final String HEIGHT_KEY = "height";
 
+    /** An empty (zero size) dimension value. */
     public static final Dimensions ZERO = new Dimensions(0);
 
     /**
      * Construct a "square" dimensions that has the same width
      * as height.
      *
-     * @param side The width and height of this dimensions.
+     * @param size The width and height of this dimension.
      */
-    public Dimensions(final int side) {
-        this.width = this.height = side;
+    public Dimensions(final int size) {
+        this.width = size;
+        this.height = size;
     }
 
-    public Dimensions(final int width, final int height) {
-        this.width = width;
-        this.height = height;
+    /**
+     * Construct a dimension with the given values.
+     *
+     * @param widthValue The width of the new dimension.
+     * @param heightValue The height of the new dimension.
+     */
+    public Dimensions(final int widthValue, final int heightValue) {
+        this.width = widthValue;
+        this.height = heightValue;
     }
 
+    /**
+     * Construct new dimensions from the given dimensions.
+     *
+     * @param dimensions The existing dimensions to copy.
+     * @throws IllegalArgumentException if the given dimensions is {@code null}.
+     */
     public Dimensions(final Dimensions dimensions) {
         Utils.checkNull(dimensions, "dimensions");
 
@@ -60,6 +78,14 @@ public final class Dimensions implements Serializable {
         this.height = dimensions.height;
     }
 
+    /**
+     * Construct new dimensions from the given dictionary.
+     *
+     * @param dimensions The dictionary to lookup the new values from.
+     * @throws IllegalArgumentException if the dictionary value is {@code null}.
+     * @see #WIDTH_KEY
+     * @see #HEIGHT_KEY
+     */
     public Dimensions(final Dictionary<String, ?> dimensions) {
         Utils.checkNull(dimensions, "dimensions");
 
@@ -67,6 +93,12 @@ public final class Dimensions implements Serializable {
         height = dimensions.getInt(HEIGHT_KEY, 0);
     }
 
+    /**
+     * Construct new dimensions from the given sequence of {@link Number} values.
+     *
+     * @param dimensions The sequence of dimension values in [width, height] order.
+     * @throws IllegalArgumentException if the sequence value is {@code null}.
+     */
     public Dimensions(final Sequence<?> dimensions) {
         Utils.checkNull(dimensions, "dimensions");
 
@@ -78,11 +110,11 @@ public final class Dimensions implements Serializable {
      * Expand this dimensions by the given amount (positive or
      * negative) in both width and height directions.
      *
-     * @param factor The amount to add to/subtract from both the width and height.
+     * @param delta The amount to add to/subtract from both the width and height.
      * @return The new dimensions with the changed values.
      */
-    public Dimensions expand(final int factor) {
-        return new Dimensions(width + factor, height + factor);
+    public Dimensions expand(final int delta) {
+        return new Dimensions(width + delta, height + delta);
     }
 
     /**

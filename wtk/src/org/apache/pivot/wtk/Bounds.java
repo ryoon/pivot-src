@@ -32,30 +32,39 @@ import org.apache.pivot.util.Utils;
 public final class Bounds implements Serializable {
     private static final long serialVersionUID = -2473226417628417475L;
 
+    /** The X-position of the bounding area. */
     public final int x;
+    /** The Y-position of the bounding area. */
     public final int y;
+    /** The width of the area. */
     public final int width;
+    /** The height of the area. */
     public final int height;
 
+    /** The map key to retrieve the X position. */
     public static final String X_KEY = "x";
+    /** The map key to retrieve the Y position. */
     public static final String Y_KEY = "y";
+    /** The map key to retrieve the width. */
     public static final String WIDTH_KEY = "width";
+    /** The map key to retrieve the height. */
     public static final String HEIGHT_KEY = "height";
 
+    /** An empty (zero position and size) area. */
     public static final Bounds EMPTY = new Bounds(0, 0, 0, 0);
 
     /**
      * Construct a bounds object given all four values for it.
-     * @param x      The starting X-position of the area.
-     * @param y      The starting Y-position.
-     * @param width  The width of the bounded area.
-     * @param height The height of the area.
+     * @param xPos        The starting X-position of the area.
+     * @param yPos        The starting Y-position.
+     * @param widthValue  The width of the bounded area.
+     * @param heightValue The height of the area.
      */
-    public Bounds(final int x, final int y, final int width, final int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    public Bounds(final int xPos, final int yPos, final int widthValue, final int heightValue) {
+        this.x = xPos;
+        this.y = yPos;
+        this.width = widthValue;
+        this.height = heightValue;
     }
 
     /**
@@ -183,10 +192,10 @@ public final class Bounds implements Serializable {
      * the given arguments.
      */
     public Bounds union(final int xValue, final int yValue, final int widthValue, final int heightValue) {
-        int x1 = Math.min(this.x, xValue);
-        int y1 = Math.min(this.y, yValue);
-        int x2 = Math.max(this.x + this.width, xValue + widthValue);
-        int y2 = Math.max(this.y + this.height, yValue + heightValue);
+        int x1 = Math.min(x, xValue);
+        int y1 = Math.min(y, yValue);
+        int x2 = Math.max(x + width, xValue + widthValue);
+        int y2 = Math.max(y + height, yValue + heightValue);
 
         return new Bounds(x1, y1, x2 - x1, y2 - y1);
 
@@ -217,10 +226,10 @@ public final class Bounds implements Serializable {
      * @return The new bounds that is the intersection of this one and the given area.
      */
     public Bounds intersect(final int xValue, final int yValue, final int widthValue, final int heightValue) {
-        int x1 = Math.max(this.x, xValue);
-        int y1 = Math.max(this.y, yValue);
-        int x2 = Math.min(this.x + this.width, xValue + widthValue);
-        int y2 = Math.min(this.y + this.height, yValue + heightValue);
+        int x1 = Math.max(x, xValue);
+        int y1 = Math.max(y, yValue);
+        int x2 = Math.min(x + width, xValue + widthValue);
+        int y2 = Math.min(y + height, yValue + heightValue);
 
         return new Bounds(x1, y1, x2 - x1, y2 - y1);
     }
@@ -248,6 +257,19 @@ public final class Bounds implements Serializable {
         Utils.checkNull(rect, "rect");
 
         return intersect(rect.x, rect.y, rect.width, rect.height);
+    }
+
+    /**
+     * @return A new bounds object that is the intersection of this one with the given
+     * area defined by (0,0) to (width, height) of the size value.
+     * @param size The dimensions to intersect with (must not be {@code null}).
+     * @throws IllegalArgumentException if the dimension is {@code null}.
+     * @see #intersect(int, int, int, int)
+     */
+    public Bounds intersect(final Dimensions size) {
+        Utils.checkNull(size, "size");
+
+        return intersect(0, 0, size.width, size.height);
     }
 
     /**
@@ -307,10 +329,8 @@ public final class Bounds implements Serializable {
      * @return Whether this bounds contains the given point.
      */
     public boolean contains(final int xValue, final int yValue) {
-        return (xValue >= this.x
-             && yValue >= this.y
-             && xValue < this.x + width
-             && yValue < this.y + height);
+        return (xValue >= x && yValue >= y
+             && xValue < x + width && yValue < y + height);
     }
 
     /**
@@ -336,12 +356,27 @@ public final class Bounds implements Serializable {
      */
     public boolean contains(final int xValue, final int yValue, final int widthValue, final int heightValue) {
         return (!isEmpty()
-             && xValue >= this.x
-             && yValue >= this.y
-             && xValue + widthValue <= this.x + this.width
-             && yValue + heightValue <= this.y + this.height);
+             && xValue >= x && yValue >= y
+             && xValue + widthValue <= x + width && yValue + heightValue <= y + height);
     }
 
+    /**
+     * Does this bounded area contain the X point defined by the given value?
+     * @param xValue The X-position to test.
+     * @return Whether this bounds contains the given X point.
+     */
+    public boolean containsX(final int xValue) {
+        return (xValue >= x && xValue < x + width);
+    }
+
+    /**
+     * Does this bounded area contain the Y point defined by the given value?
+     * @param yValue The Y-position to test.
+     * @return Whether this bounds contains the given Y point.
+     */
+    public boolean containsY(final int yValue) {
+        return (yValue >= y && yValue < y + height);
+    }
     /**
      * @return Does this bounded area intersect with the bounded area given by the argument?
      * @param bounds The other area to test (must not be {@code null}).
@@ -363,10 +398,8 @@ public final class Bounds implements Serializable {
      */
     public boolean intersects(final int xValue, final int yValue, final int widthValue, final int heightValue) {
         return (!isEmpty()
-             && xValue + widthValue > this.x
-             && yValue + heightValue > this.y
-             && xValue < this.x + this.width
-             && yValue < this.y + this.height);
+             && xValue + widthValue > x && yValue + heightValue > y
+             && xValue < x + width && yValue < y + height);
     }
 
     /**

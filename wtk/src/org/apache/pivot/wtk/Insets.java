@@ -31,14 +31,22 @@ import org.apache.pivot.util.Utils;
 public final class Insets implements Serializable {
     private static final long serialVersionUID = -8528862892185591370L;
 
+    /** Value for the top inset (or above the object). */
     public final int top;
+    /** Value for the left inset (or to the left of the object). */
     public final int left;
+    /** Value for the bottom inset (or below the object). */
     public final int bottom;
+    /** Value for the right inset (or to the right of the object). */
     public final int right;
 
+    /** Map key name for the "top" value. */
     public static final String TOP_KEY = "top";
+    /** Map key name for the "left" value. */
     public static final String LEFT_KEY = "left";
+    /** Map key name for the "bottom" value. */
     public static final String BOTTOM_KEY = "bottom";
+    /** Map key name for the "right" value. */
     public static final String RIGHT_KEY = "right";
 
     /**
@@ -46,14 +54,24 @@ public final class Insets implements Serializable {
      */
     public static final Insets NONE = new Insets(0);
 
-    public Insets(int inset) {
+    /**
+     * Construct insets with all the same value.
+     *
+     * @param inset The pixel inset to use on all four sides.
+     */
+    public Insets(final int inset) {
         this.top = inset;
         this.left = inset;
         this.bottom = inset;
         this.right = inset;
     }
 
-    public Insets(Number inset) {
+    /**
+     * Construct insets with all the same integer value.
+     *
+     * @param inset The pixel value for all the insets (truncated to an integer).
+     */
+    public Insets(final Number inset) {
         Utils.checkNull(inset, "padding/margin");
 
         int value = inset.intValue();
@@ -63,11 +81,19 @@ public final class Insets implements Serializable {
         this.right = value;
     }
 
-    public Insets(int top, int left, int bottom, int right) {
-        this.top = top;
-        this.left = left;
-        this.bottom = bottom;
-        this.right = right;
+    /**
+     * Construct with different values for each side.
+     *
+     * @param topV The top inset value.
+     * @param leftV The left inset value.
+     * @param bottomV The bottom inset value.
+     * @param rightV The right inset value.
+     */
+    public Insets(final int topV, final int leftV, final int bottomV, final int rightV) {
+        this.top = topV;
+        this.left = leftV;
+        this.bottom = bottomV;
+        this.right = rightV;
     }
 
     /**
@@ -83,7 +109,7 @@ public final class Insets implements Serializable {
      * @see #getHeight
      * @see #getWidth
      */
-    public Insets(int height, int width) {
+    public Insets(final int height, final int width) {
         this.top = height / 2;
         // For odd height, assign the excess to the bottom
         this.bottom = height - this.top;
@@ -103,11 +129,17 @@ public final class Insets implements Serializable {
      * @param size The total size (height and width) to assign.
      * @see #getSize
      */
-    public Insets(Dimensions size) {
+    public Insets(final Dimensions size) {
         this(size.height, size.width);
     }
 
-    public Insets(Insets insets) {
+    /**
+     * Copy an insets structure to a new one with the same values.
+     *
+     * @param insets The existing insets to copy (must not be null).
+     * @throws IllegalArgumentException if the input is null.
+     */
+    public Insets(final Insets insets) {
         Utils.checkNull(insets, "padding/margin");
 
         this.top = insets.top;
@@ -116,7 +148,13 @@ public final class Insets implements Serializable {
         this.right = insets.right;
     }
 
-    public Insets(Dictionary<String, ?> insets) {
+    /**
+     * Construct a new set of insets given a dictionary with the values to use.
+     *
+     * @param insets The dictionary of values to use.
+     * @throws IllegalArgumentException if the input is null.
+     */
+    public Insets(final Dictionary<String, ?> insets) {
         Utils.checkNull(insets, "padding/margin");
 
         this.top = insets.getInt(TOP_KEY);
@@ -125,7 +163,14 @@ public final class Insets implements Serializable {
         this.right = insets.getInt(RIGHT_KEY);
     }
 
-    public Insets(Sequence<?> insets) {
+    /**
+     * Construct a new set of insets given a sequence of values to use.
+     *
+     * @param insets The sequence of values to use in the order of [top, left,
+     * bottom, right].
+     * @throws IllegalArgumentException if the input is null.
+     */
+    public Insets(final Sequence<?> insets) {
         Utils.checkNull(insets, "padding/margin");
 
         this.top = ((Number) insets.get(0)).intValue();
@@ -164,7 +209,7 @@ public final class Insets implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         boolean equals = false;
 
         if (object instanceof Insets) {
@@ -211,7 +256,7 @@ public final class Insets implements Serializable {
      * @see #Insets(int, int, int, int)
      * @see #Insets(int)
      */
-    public static Insets decode(String value) {
+    public static Insets decode(final String value) {
         Utils.checkNullOrEmpty(value, "padding/margin");
 
         Insets insets;
