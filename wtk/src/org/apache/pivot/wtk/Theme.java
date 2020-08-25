@@ -72,9 +72,13 @@ public abstract class Theme {
      */
     private static Theme theme = null;
 
+    /** Key for the font name in a font dictionary. */
     public static final String NAME_KEY = "name";
+    /** Key for the font size in a font dictionary. */
     public static final String SIZE_KEY = "size";
+    /** Key for the font bold style in a font dictionary. */
     public static final String BOLD_KEY = "bold";
+    /** Key for the font italic style in a font dictionary. */
     public static final String ITALIC_KEY = "italic";
 
     /**
@@ -86,7 +90,7 @@ public abstract class Theme {
         theme = (Theme) Service.getProvider(PROVIDER_NAME);
 
         if (theme == null) {
-            throw new ThemeNotFoundException();
+            throw new ThemeNotFoundException("Unable to find a service provider for " + PROVIDER_NAME + "!");
         }
     }
 
@@ -120,8 +124,7 @@ public abstract class Theme {
     }
 
     /**
-     * Returns the skin class responsible for skinning the specified component
-     * class.
+     * Returns the skin class responsible for skinning the specified component class.
      *
      * @param componentClass The component class.
      * @return The skin class, or <tt>null</tt> if no skin mapping exists for
@@ -129,6 +132,8 @@ public abstract class Theme {
      * @throws IllegalArgumentException if the given component class is <tt>null</tt>.
      */
     public final Class<? extends Skin> getSkinClass(final Class<? extends Component> componentClass) {
+        Utils.checkNull(componentClass, "Component class");
+
         return componentSkinMap.get(componentClass);
     }
 
@@ -179,8 +184,8 @@ public abstract class Theme {
     /**
      * Sets a color in the theme's base color palette.
      *
-     * @param index the index of the color, starting from 0
-     * @param baseColor the color to set
+     * @param index The index of the color, starting from 0.
+     * @param baseColor The color value to set.
      */
     public abstract void setBaseColor(int index, Color baseColor);
 
@@ -196,8 +201,8 @@ public abstract class Theme {
      * Sets a value in the theme's complete color palette (including derived
      * colors, if any).
      *
-     * @param index the index of the color, starting from 0
-     * @param color the color to set
+     * @param index The index of the color, starting from 0.
+     * @param color The color value to set.
      */
     public abstract void setColor(int index, Color color);
 
@@ -309,20 +314,7 @@ public abstract class Theme {
 
         int size = font.getSize();
         if (dictionary.containsKey(SIZE_KEY)) {
-            Object value = dictionary.get(SIZE_KEY);
-
-            if (value instanceof String) {
-                String string = (String) value;
-
-                if (string.endsWith("%")) {
-                    float percentage = Float.parseFloat(string.substring(0, string.length() - 1)) / 100f;
-                    size = Math.round(font.getSize() * percentage);
-                } else {
-                    throw new IllegalArgumentException(value + " is not a valid font size.");
-                }
-            } else {
-                size = ((Integer) value).intValue();
-            }
+            size = FontUtilities.decodeFontSize(dictionary.get(SIZE_KEY), size);
         }
 
         int style = font.getStyle();

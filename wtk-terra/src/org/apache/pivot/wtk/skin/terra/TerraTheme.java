@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.HashMap;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Map;
@@ -96,38 +95,72 @@ import org.apache.pivot.wtk.util.ColorUtilities;
  * as far as color and style using configuration files and runtime attributes.
  */
 public final class TerraTheme extends Theme {
+    /** The current font used by this theme. */
     private Font font = null;
-    private List<Color> colors = null;
+    /** The current color palette for the theme. */
+    private Color[] colors = null;
+    /** The number of base colors in the theme palette. */
     private int numberOfPaletteColors = 0;
+    /** Map of message type to icon images. */
     private Map<MessageType, Image> messageIcons = null;
+    /** Map of message types to small icon images. */
     private Map<MessageType, Image> smallMessageIcons = null;
 
-    private static float colorMultiplier = 0.1f;
+    /** The default color multiplier (in HSV space) to use for {@link #brighten} and {@link #darken}. */
+    private static final float DEFAULT_COLOR_MULTIPLIER = 0.1f;
+    /** Number of columns in the theme's color table (darker, base, lighter). */
+    private static final int COLOR_TABLE_COLUMNS = 3;
+
+    /** Current multiplier (HSV space) for brightening colors. */
+    private static float brightenColorMultiplier = DEFAULT_COLOR_MULTIPLIER;
+    /** Current multiplier (HSV space) for darkening colors. */
+    private static float darkenColorMultiplier;
+    /** Whether this theme is a "dark" theme -- meaning bright colors on a dark background. */
     private static boolean themeIsDark = false;
+    /** Whether this theme is "flat" -- meaning no shadows or depth effect for buttons, etc. */
     private static boolean themeIsFlat = false;
+    /** Whether this theme allows animations during transitions. */
     private static boolean transitionEnabled = true;
 
+    /** What the default background of a component should be according to this theme. */
     private Color defaultBackgroundColor;
+    /** What the default foreground color of a component should be in this theme. */
     private Color defaultForegroundColor;
 
+    /** Property map key for the location of the theme classes. */
     public static final String LOCATION_PROPERTY = "location";
 
+    /** Property map key for the default font for the theme. */
     public static final String FONT_PROPERTY = "font";
+    /** Property map key for the default color multiplier to use for the theme. */
     public static final String COLOR_MULTIPLIER_PROPERTY = "colorMultiplier";
+    /** Property map key for the "isDark" flag for the theme. */
     public static final String THEME_IS_DARK_PROPERTY = "themeIsDark";
+    /** Property map key for the "isFlat" flag for this theme. */
     public static final String THEME_IS_FLAT_PROPERTY = "themeIsFlat";
+    /** Property map key for the "transitionEnabled" flag for the theme. */
     public static final String TRANSITION_ENABLED_PROPERTY = "transitionEnabled";
+    /** Property map key for the list of base colors for the theme. */
     public static final String COLORS_PROPERTY = "colors";
+    /** Property map key for the name of the default styles file. */
     public static final String DEFAULT_STYLES_PROPERTY = "defaultStylesFile";
+    /** Property map key for the name of the named styles file. */
     public static final String NAMED_STYLES_PROPERTY = "namedStylesFile";
+    /** Property map key for the message icons. */
     public static final String MESSAGE_ICONS_PROPERTY = "messageIcons";
+    /** Property map key for the small message icons. */
     public static final String SMALL_MESSAGE_ICONS_PROPERTY = "smallMessageIcons";
+    /** Property map key for the default background color for this theme. */
     public static final String DEFAULT_BACKGROUND_COLOR_PROPERTY = "defaultBackgroundColor";
+    /** Property map key for the default foreground color for the theme. */
     public static final String DEFAULT_FOREGROUND_COLOR_PROPERTY = "defaultForegroundColor";
 
+    /** The style name for our "command" buttons (such as "OK" and "Cancel"). */
     public static final String COMMAND_BUTTON_STYLE = "commandButton";
 
+    /** Name of the file to read for setting default styles for each component skin. */
     public static final String DEFAULT_STYLES_FILE = "terra_theme_defaults.json";
+    /** Name of the file containing our theme's default style definitions. */
     public static final String NAMED_STYLES_FILE = "terra_theme_styles.json";
 
     /** Can be overridden by {@link #DEFAULT_STYLES_PROPERTY} property. */
@@ -135,6 +168,7 @@ public final class TerraTheme extends Theme {
     /** Can be overridden by {@link #NAMED_STYLES_PROPERTY} property. */
     private String namedStylesFile = NAMED_STYLES_FILE;
 
+    /** The loaded default styles map (key is the skin's simple name). */
     private Map<String, Map<String, ?>> themeDefaultStyles = null;
 
 
@@ -272,6 +306,22 @@ public final class TerraTheme extends Theme {
 
     /**
      * Get the given color property from the color properties map, doing the color decode from
+     * the string property value. If the property is not found, return the given default value.
+     *
+     * @param properties The color properties map.
+     * @param colorPropertyName Name of the color property to get.
+     * @param defaultColor The value to use if the property is not found in the map.
+     * @return The decoded color value or the default value if not found.
+     * @see GraphicsUtilities#decodeColor
+     */
+    private Color getColorProperty(final Map<String, ?> properties, final String colorPropertyName,
+        final Color defaultColor) {
+        Color propertyColor = getColorProperty(properties, colorPropertyName);
+        return propertyColor == null ? defaultColor : propertyColor;
+    }
+
+    /**
+     * Get the given color property from the color properties map, doing the color decode from
      * the string property value.
      *
      * @param properties The color properties map.
@@ -314,34 +364,39 @@ public final class TerraTheme extends Theme {
             @SuppressWarnings("unchecked")
             List<String> colorCodes = (List<String>) properties.get(COLORS_PROPERTY);
             numberOfPaletteColors = colorCodes.getLength();
-            int numberOfColors = numberOfPaletteColors * 3;
-            colors = new ArrayList<>(numberOfColors);
+            int numberOfColors = numberOfPaletteColors * COLOR_TABLE_COLUMNS;
+            colors = new Color[numberOfColors];
 
             Double mult = (Double) properties.get(COLOR_MULTIPLIER_PROPERTY);
             if (mult != null) {
-                colorMultiplier = mult.floatValue();
+                brightenColorMultiplier = mult.floatValue();
             }
 
             themeIsDark = properties.getBoolean(THEME_IS_DARK_PROPERTY, false);
             themeIsFlat = properties.getBoolean(THEME_IS_FLAT_PROPERTY, false);
             transitionEnabled = properties.getBoolean(TRANSITION_ENABLED_PROPERTY, true);
 
+            // For dark themes, reverse the brighten/darken multipliers so "darker" -> brighter, and vice-versa
+            if (themeIsDark) {
+                brightenColorMultiplier = -brightenColorMultiplier;
+            }
+            // So, "darken" is always the reverse direction of "brighten" (whichever way that goes)
+            darkenColorMultiplier = -brightenColorMultiplier;
+
+            int colorIndex = 0;
             for (String colorCode : colorCodes) {
                 Color baseColor = GraphicsUtilities.decodeColor(colorCode, "baseColor");
-                colors.add(darken(baseColor));
-                colors.add(baseColor);
-                colors.add(brighten(baseColor));
+                setBaseColor(colorIndex++, baseColor);
             }
 
             messageIcons = loadMessageIcons(properties, MESSAGE_ICONS_PROPERTY);
             smallMessageIcons = loadMessageIcons(properties, SMALL_MESSAGE_ICONS_PROPERTY);
 
-            if ((defaultBackgroundColor = getColorProperty(properties, DEFAULT_BACKGROUND_COLOR_PROPERTY)) == null) {
-                defaultBackgroundColor = super.getDefaultBackgroundColor();
-            }
-            if ((defaultForegroundColor = getColorProperty(properties, DEFAULT_FOREGROUND_COLOR_PROPERTY)) == null) {
-                defaultForegroundColor = super.getDefaultForegroundColor();
-            }
+            defaultBackgroundColor = getColorProperty(properties, DEFAULT_BACKGROUND_COLOR_PROPERTY,
+                super.getDefaultBackgroundColor());
+            defaultForegroundColor = getColorProperty(properties, DEFAULT_FOREGROUND_COLOR_PROPERTY,
+                super.getDefaultForegroundColor());
+
         } catch (IOException | SerializationException exception) {
             throw new RuntimeException(exception);
         }
@@ -385,13 +440,13 @@ public final class TerraTheme extends Theme {
     /**
      * Sets the theme's font.
      *
-     * @param font the font
+     * @param newFont The new font to use for this theme.
      */
     @Override
-    public void setFont(final Font font) {
-        Utils.checkNull(font, "Font");
+    public void setFont(final Font newFont) {
+        Utils.checkNull(newFont, "Font");
 
-        this.font = font;
+        this.font = newFont;
     }
 
     /**
@@ -425,7 +480,7 @@ public final class TerraTheme extends Theme {
     public Color getColor(final int index) {
         checkColorIndex(index);
 
-        return colors.get(index);
+        return colors[index];
     }
 
     /**
@@ -440,7 +495,7 @@ public final class TerraTheme extends Theme {
         checkColorIndex(index);
         Utils.checkNull(color, "Color");
 
-        colors.update(index, color);
+        colors[index] = color;
     }
 
     /**
@@ -452,7 +507,7 @@ public final class TerraTheme extends Theme {
     public Color getBaseColor(final int index) {
         checkColorIndex(index, numberOfPaletteColors);
 
-        return colors.get(index * 3 + 1);
+        return colors[index * COLOR_TABLE_COLUMNS + 1];
     }
 
     /**
@@ -466,10 +521,10 @@ public final class TerraTheme extends Theme {
         checkColorIndex(index, numberOfPaletteColors);
         Utils.checkNull(baseColor, "Base color");
 
-        int offset = index * 3;
-        colors.update(offset, darken(baseColor));
-        colors.update(offset + 1, baseColor);
-        colors.update(offset + 2, brighten(baseColor));
+        int offset = index * COLOR_TABLE_COLUMNS + 1;
+        colors[offset - 1] = darken(baseColor);
+        colors[offset] = baseColor;
+        colors[offset + 1] = brighten(baseColor);
     }
 
     /**
@@ -485,11 +540,11 @@ public final class TerraTheme extends Theme {
     /**
      * Gets the total number of Colors (including derived colors, if any).
      *
-     * @return the number
+     * @return Total number of theme colors.
      */
     @Override
     public int getNumberOfColors() {
-        return colors == null ? 0 : colors.getLength();
+        return colors == null ? 0 : colors.length;
     }
 
     /**
@@ -604,10 +659,7 @@ public final class TerraTheme extends Theme {
      * @param color The color to brighten.
      */
     public static Color brighten(final Color color) {
-        if (!themeIsDark) {
-            return ColorUtilities.adjustBrightness(color, colorMultiplier);
-        }
-        return ColorUtilities.adjustBrightness(color, (colorMultiplier * -1.0f));
+        return ColorUtilities.adjustBrightness(color, brightenColorMultiplier);
     }
 
     /**
@@ -617,10 +669,7 @@ public final class TerraTheme extends Theme {
      * @param color The color to darken.
      */
     public static Color darken(final Color color) {
-        if (!themeIsDark) {
-            return ColorUtilities.adjustBrightness(color, (colorMultiplier * -1.0f));
-        }
-        return ColorUtilities.adjustBrightness(color, colorMultiplier);
+        return ColorUtilities.adjustBrightness(color, darkenColorMultiplier);
     }
 
     /**
