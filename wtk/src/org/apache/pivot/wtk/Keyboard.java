@@ -46,6 +46,19 @@ public final class Keyboard {
         }
 
         /**
+         * Determine the complete mask for all the given modifiers.
+         * @param modifiers The set of modifiers to test.
+         * @return The complete mask corresponding to the set.
+         */
+        public static getCompleteMask(final Set<Modifier> modifiers) {
+           int mask = 0;
+           for (Modifier mod : modifiers) {
+               mask |= mod.getMask();
+           }
+           return mask;
+        }
+
+        /**
          * The set of all possible keyboard modifiers (for use with {@link #isPressed}
          * or {@link #areAnyPressed}).
          */
@@ -307,35 +320,43 @@ public final class Keyboard {
      * if none are pressed.
      */
     public static boolean areAnyPressed(final Set<Modifier> modifiers) {
-        boolean result = false;
-        for (Modifier modifier : modifiers) {
-            if (isPressed(modifier)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+        int completeMask = Modifier.getCompleteMask(modifiers);
+        return (modifiers & completeMask) > 0;
     }
 
     /**
      * Returns the current drop action.
      *
-     * @return The drop action corresponding to the currently pressed modifier
-     * keys, or <tt>null</tt> if no modifiers are pressed.
+     * @return The drop action corresponding to the currently pressed modifier keys.
      */
     public static DropAction getDropAction() {
-        // TODO Return an appropriate action for OS:
-        // Windows: no modifier - move; control - copy; control-shift - link
-        // Mac OS X: no modifier - move; option - copy; option-command - link
-
         DropAction dropAction = null;
 
-        if (isPressed(Modifier.CTRL) && isPressed(Modifier.SHIFT)) {
-            dropAction = DropAction.LINK;
-        } else if (isPressed(Modifier.CTRL)) {
-            dropAction = DropAction.COPY;
+        if (Platform.isOSX()) {
+            if (isPressed(Modifier.ALT) && isPressed(Modifier.META)) {
+                dropAction = DropAction.LINK;
+            } else if (isPressed(Modifier.ALT)) {
+                dropAction = DropAction.COPY;
+            } else {
+                dropAction = DropAction.MOVE;
+            }
+        } else if (Platform.isWindows()) {
+            if (isPressed(Modifier.CTRL) && isPressed(Modifier.SHIFT)) {
+                dropAction = DropAction.LINK;
+            } else if (isPressed(Modifier.CTRL)) {
+                dropAction = DropAction.COPY;
+            } else {
+                dropAction = DropAction.MOVE;
+            }
         } else {
-            dropAction = DropAction.MOVE;
+            // TODO: is this correct for Linux / Unix / ???
+            if (isPressed(Modifier.CTRL) && isPressed(Modifier.SHIFT)) {
+                dropAction = DropAction.LINK;
+            } else if (isPressed(Modifier.CTRL)) {
+                dropAction = DropAction.COPY;
+            } else {
+                dropAction = DropAction.MOVE;
+            }
         }
 
         return dropAction;

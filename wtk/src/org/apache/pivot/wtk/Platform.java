@@ -31,6 +31,11 @@ import org.apache.pivot.wtk.Keyboard.Modifier;
 public final class Platform {
     private static FontRenderContext fontRenderContext;
 
+    private static final String OS_NAME;
+    private static final boolean osIsWindows;
+    private static final boolean osIsOSX;
+    private static final boolean osIsLinux;
+
     private static final int DEFAULT_MULTI_CLICK_INTERVAL = 400;
     private static final int DEFAULT_CURSOR_BLINK_RATE = 600;
 
@@ -39,13 +44,17 @@ public final class Platform {
     private static final String KEYSTROKE_MODIFIER_SEPARATOR;
 
     static {
-        String osName = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
+        OS_NAME = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 
-        if (osName.startsWith("mac os x")) {
+        osIsWindows = OS_NAME.startsWith("windows");
+        osIsOSX     = OS_NAME.startsWith("mac os x");
+        osIsLinux   = OS_NAME.startsWith("linux");
+
+        if (osIsOSX) {
             COMMAND_MODIFIER = Modifier.META;
             WORD_NAVIGATION_MODIFIER = Modifier.ALT;
             KEYSTROKE_MODIFIER_SEPARATOR = "";
-        } else if (osName.startsWith("windows")) {
+        } else if (osIsWindows) {
             COMMAND_MODIFIER = Modifier.CTRL;
             WORD_NAVIGATION_MODIFIER = Modifier.CTRL;
             KEYSTROKE_MODIFIER_SEPARATOR = "+";
@@ -71,6 +80,27 @@ public final class Platform {
 
     /** Private constructor because this is a utility class. */
     private Platform() {
+    }
+
+    /**
+     * @return true if this is a Windows platform we're running on.
+     */
+    public static boolean isWindows() {
+        return osIsWindows;
+    }
+
+    /**
+     * @return true if this is a Mac OS X platform we're running on.
+     */
+    public static boolean isOSX() {
+        return osIsOSX;
+    }
+
+    /**
+     * @return true if this is a Linux platform we're running on.
+     */
+    public static boolean isLinux() {
+        return osIsLinux;
     }
 
     /**
