@@ -156,6 +156,30 @@ limitations under the License.
         <include name="**/src/**/TerraVFSBrowserSkin*.json"/>
     </patternset>
 
+    <!-- Definitions of the various files that need whitespace and/or line ending fixups -->
+    <patternset id="trimfiles">
+        <include name="BUILD"/>
+        <include name="LICENSE"/>
+        <include name="NOTICE"/>
+        <include name="README"/>
+        <include name="RELEASE-NOTES"/>
+        <include name="**/*.java"/>
+        <include name="**/*.html"/>
+        <include name="**/*.css"/>
+        <include name="**/*.csv"/>
+        <include name="**/*.js"/>
+        <include name="**/*.jsp"/>
+        <include name="**/*.txt"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.bxml"/>
+        <include name="**/*.xsl"/>
+        <include name="**/*.json"/>
+        <include name="**/*.groovy"/>
+        <include name="**/*.scala"/>
+        <include name="**/*.sql"/>
+    </patternset>
+
     <!-- Compile macro -->
     <macrodef name="compile">
         <attribute name="project"/>
@@ -1033,34 +1057,22 @@ limitations under the License.
 
     <!-- Remove trailing white space in all source files -->
     <target name="trim-whitespace" depends="environment-info">
-        <fileset id="trimfiles" dir=".">
-            <include name="BUILD"/>
-            <include name="LICENSE"/>
-            <include name="NOTICE"/>
-            <include name="README"/>
-            <include name="RELEASE-NOTES"/>
-            <include name="**/*.java"/>
-            <include name="**/*.html"/>
-            <include name="**/*.css"/>
-            <include name="**/*.csv"/>
-            <include name="**/*.js"/>
-            <include name="**/*.jsp"/>
-            <include name="**/*.txt"/>
-            <include name="**/*.properties"/>
-            <include name="**/*.xml"/>
-            <include name="**/*.bxml"/>
-            <include name="**/*.xsl"/>
-            <include name="**/*.json"/>
-            <include name="**/*.groovy"/>
-            <include name="**/*.scala"/>
-            <include name="**/*.sql"/>
+        <fileset id="trimfileset" dir=".">
+            <patternset refid="trimfiles"/>
         </fileset>
         <replaceregexp match="[\t]" replace="    " flags="gm" byline="true">
-            <fileset refid="trimfiles"/>
+            <fileset refid="trimfileset"/>
         </replaceregexp>
         <replaceregexp match="[\t ]+$" replace="" flags="gm" byline="true">
-            <fileset refid="trimfiles"/>
+            <fileset refid="trimfileset"/>
         </replaceregexp>
+    </target>
+
+    <!-- Fix line endings to be standard for the platform in all source files -->
+    <target name="fix-line-endings" depends="environment-info">
+        <fixcrlf srcdir=".">
+            <patternset refid="trimfiles"/>
+        </fixcrlf>
     </target>
 
     <!-- Run our custom checkstyle on all the source -->
