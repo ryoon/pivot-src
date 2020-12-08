@@ -50,7 +50,7 @@ public final class Keyboard {
          * @param modifiers The set of modifiers to test.
          * @return The complete mask corresponding to the set.
          */
-        public static getCompleteMask(final Set<Modifier> modifiers) {
+        public static int getCompleteMask(final Set<Modifier> modifiers) {
            int mask = 0;
            for (Modifier mod : modifiers) {
                mask |= mod.getMask();
@@ -309,7 +309,7 @@ public final class Keyboard {
      * otherwise.
      */
     public static boolean isPressed(final Modifier modifier) {
-        return (modifiers & modifier.getMask()) > 0;
+        return (Keyboard.modifiers & modifier.getMask()) > 0;
     }
 
     /**
@@ -321,7 +321,7 @@ public final class Keyboard {
      */
     public static boolean areAnyPressed(final Set<Modifier> modifiers) {
         int completeMask = Modifier.getCompleteMask(modifiers);
-        return (modifiers & completeMask) > 0;
+        return (Keyboard.modifiers & completeMask) > 0;
     }
 
     /**
