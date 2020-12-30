@@ -41,8 +41,17 @@ limitations under the License.
     </fail>
 
     <!-- Java-version-related properties -->
-    <condition property="java_modules" value="true" else="false">
+    <condition property="java.modules" value="true" else="false">
         <javaversion atleast="9"/>
+    </condition>
+    <condition property="html4.output" value="true" else="false">
+        <and>
+            <javaversion atleast="9"/>
+            <not><javaversion atleast="14"/></not>
+        </and>
+    </condition>
+    <condition property="no.browser.support" value="true" else="false">
+        <javaversion atleast="14"/>
     </condition>
 
     <!-- Classpath-related properties -->
@@ -54,7 +63,7 @@ limitations under the License.
         <fileset dir="${java.home}/lib">
             <include name="**/*.jar"/>
             <exclude name="**/jfxrt.jar"/>
-            <exclude name="missioncontrol/**/*.jar" if:true="${java_modules}"/>
+            <exclude name="missioncontrol/**/*.jar" if:true="${java.modules}"/>
         </fileset>
     </path>
     <property name="classpath_env" refid="classpath.env"/>
@@ -235,8 +244,11 @@ limitations under the License.
                 failonerror="true"
             >
                 <src>
+                    <fileset dir="@{project}/src">
+                        <include name="**/*.java"/>
+                        <exclude name="**/Browser*.java" if:true="${no.browser.support}"/>
+                    </fileset>
                     <dirset dir="@{project}">
-                        <include name="src"/>
                         <include name="test"/>
                     </dirset>
                 </src>
@@ -429,8 +441,8 @@ limitations under the License.
                 <link href="http://download.oracle.com/javase/8/docs/api"/>
                 <link href="http://download.oracle.com/javaee/7/api/"/>
 
-                <arg value="-html4" if:true="${java_modules}"/>
-                <arg value="--frames" if:true="${java_modules}"/>
+                <arg value="-html4" if:true="${html4.output}"/>
+                <arg value="--frames" if:true="${html4.output}"/>
             </javadoc>
 
             <package-maven-source-or-javadoc-jar
@@ -476,7 +488,7 @@ limitations under the License.
         <echo message="  encoding ${compiler.encoding}"/>
         <echo message="  indexJars ${compiler.indexJars}"/>
         <echo message="  arg ${compiler.arg}"/>
-        <echo message="needs module flags? ${java_modules}"/>
+        <echo message="needs module flags? ${java.modules}"/>
         <echo message=""/>
         <echo message="Last Changed Revision: ${lastchangedrev}"/>
         <echo message="Build Number: ${build.number} started on ${build.date} at ${build.time}"/>
@@ -610,8 +622,8 @@ limitations under the License.
             <link href="https://docs.oracle.com/javase/8/docs/api/"/>
             <link href="http://download.oracle.com/javaee/7/api/"/>
 
-            <arg value="-html4" if:true="${java_modules}"/>
-            <arg value="--frames" if:true="${java_modules}"/>
+            <arg value="-html4" if:true="${html4.output}"/>
+            <arg value="--frames" if:true="${html4.output}"/>
         </javadoc>
     </target>
 
