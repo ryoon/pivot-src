@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.pivot.util.ListenerList;
+import org.apache.pivot.util.StringUtils;
 import org.apache.pivot.util.Utils;
 
 /**
@@ -609,19 +610,7 @@ public class ArrayList<T> implements List<T>, Serializable {
         StringBuilder sb = new StringBuilder();
 
         sb.append(getClass().getSimpleName());
-        sb.append(" [");
-
-        int i = 0;
-        for (T item : this) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-
-            sb.append(item);
-            i++;
-        }
-
-        sb.append("]");
+        StringUtils.append(sb, this);
 
         return sb.toString();
     }

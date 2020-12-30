@@ -25,6 +25,7 @@ import java.math.BigInteger;
  * functions.
  */
 public final class StringUtils {
+    /** Private constructor since this is a utility class. */
     private StringUtils() {
     }
 
@@ -190,6 +191,8 @@ public final class StringUtils {
      * that looks like:
      * <pre>[item1, item2, ...]</pre>
      * appending the results to the given string builder for further use.
+     * <p> If the {@link StringBuilder} has any preceding text (that is, length &gt; 0)
+     * then append a blank before the list representation.
      *
      * @param <T> The type of items in the list.
      * @param sb The {@link StringBuilder} already in progress.
@@ -197,7 +200,11 @@ public final class StringUtils {
      * @return The input {@code StringBuilder} for further use.
      */
     public static <T> StringBuilder append(final StringBuilder sb, final Iterable<T> list) {
-        sb.append("[");
+        // Separate this text from any preceding text
+        if (sb.length() > 0) {
+            sb.append(' ');
+        }
+        sb.append('[');
 
         int i = 0;
         for (T item : list) {
@@ -209,7 +216,7 @@ public final class StringUtils {
             i++;
         }
 
-        sb.append("]");
+        sb.append(']');
 
         return sb;
     }
