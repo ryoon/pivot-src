@@ -32,9 +32,10 @@ public final class Platform {
     private static FontRenderContext fontRenderContext;
 
     private static final String OS_NAME;
-    private static final boolean osIsWindows;
-    private static final boolean osIsOSX;
-    private static final boolean osIsLinux;
+
+    private static final boolean OS_IS_WINDOWS;
+    private static final boolean OS_IS_OSX;
+    private static final boolean OS_IS_LINUX;
 
     private static final int DEFAULT_MULTI_CLICK_INTERVAL = 400;
     private static final int DEFAULT_CURSOR_BLINK_RATE = 600;
@@ -46,15 +47,15 @@ public final class Platform {
     static {
         OS_NAME = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 
-        osIsWindows = OS_NAME.startsWith("windows");
-        osIsOSX     = OS_NAME.startsWith("mac os x");
-        osIsLinux   = OS_NAME.startsWith("linux");
+        OS_IS_WINDOWS = OS_NAME.startsWith("windows");
+        OS_IS_OSX     = OS_NAME.startsWith("mac os x");
+        OS_IS_LINUX   = OS_NAME.startsWith("linux");
 
-        if (osIsOSX) {
+        if (OS_IS_OSX) {
             COMMAND_MODIFIER = Modifier.META;
             WORD_NAVIGATION_MODIFIER = Modifier.ALT;
             KEYSTROKE_MODIFIER_SEPARATOR = "";
-        } else if (osIsWindows) {
+        } else if (OS_IS_WINDOWS) {
             COMMAND_MODIFIER = Modifier.CTRL;
             WORD_NAVIGATION_MODIFIER = Modifier.CTRL;
             KEYSTROKE_MODIFIER_SEPARATOR = "+";
@@ -86,21 +87,21 @@ public final class Platform {
      * @return true if this is a Windows platform we're running on.
      */
     public static boolean isWindows() {
-        return osIsWindows;
+        return OS_IS_WINDOWS;
     }
 
     /**
      * @return true if this is a Mac OS X platform we're running on.
      */
     public static boolean isOSX() {
-        return osIsOSX;
+        return OS_IS_OSX;
     }
 
     /**
      * @return true if this is a Linux platform we're running on.
      */
     public static boolean isLinux() {
-        return osIsLinux;
+        return OS_IS_LINUX;
     }
 
     /**
