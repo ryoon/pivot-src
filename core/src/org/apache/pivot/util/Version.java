@@ -162,4 +162,15 @@ public class Version implements Comparable<Version>, Serializable {
 
         return version;
     }
+
+    /**
+     * Decode the implementation version found in our jar file manifest into
+     * a {@link Version} object.
+     *
+     * @return Our version.
+     */
+    public static Version ourVersion() {
+        return decode(Version.class.getPackage().getImplementationVersion());
+    }
 }
+

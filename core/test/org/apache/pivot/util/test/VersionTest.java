@@ -112,6 +112,8 @@ public class VersionTest {
         Version jvmVersionExplicit = new Version(8, 1, 28, 0, PIVOT_996_SUFFIX);
         String parsedToString = jvmVersionParsed.toString();
 
+        System.out.println("Information only: our version = " + Version.ourVersion());
+
         assertEquals("PIVOT-996 test case", jvmVersionParsed, jvmVersionExplicit);
         System.out.format("PIVOT-996 parsed/toString: %1$s, expected: %2$s%n",
             parsedToString, PIVOT_996_OUTPUT);
