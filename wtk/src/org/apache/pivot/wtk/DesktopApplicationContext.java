@@ -882,6 +882,26 @@ public final class DesktopApplicationContext extends ApplicationContext {
      * into applications. For example:
      * <pre> public class MyApp implements Application {
      *   public static void main(String[] args) throws Exception {
+     *     DesktopApplicationContext.main(MyApp.class);
+     *   }
+     * } </pre>
+     *
+     * @param applicationClass the class of Application entry point
+     */
+    public static final void main(Class<? extends Application> applicationClass) {
+        String[] args = new String[1];
+
+        args[0] = applicationClass.getName();
+
+        main(args);
+    }
+
+    /**
+    /**
+     * Utility method to make it easier to define <tt>main()</tt> entry-points
+     * into applications. For example:
+     * <pre> public class MyApp implements Application {
+     *   public static void main(String[] args) throws Exception {
      *     DesktopApplicationContext.main(MyApp.class, args);
      *   }
      * } </pre>
@@ -892,8 +912,32 @@ public final class DesktopApplicationContext extends ApplicationContext {
     public static final void main(Class<? extends Application> applicationClass,
         String[] applicationArgs) {
         String[] args = new String[applicationArgs.length + 1];
-        System.arraycopy(applicationArgs, 0, args, 1, applicationArgs.length);
+
         args[0] = applicationClass.getName();
+
+        System.arraycopy(applicationArgs, 0, args, 1, applicationArgs.length);
+
+        main(args);
+    }
+
+    /**
+     * Utility method to make it easier to define <tt>main()</tt> entry-points
+     * into applications.<br> This is useful if application instance has
+     * already been created, for example from a scripting environment and I set
+     * some external properties in the application for later reuse, so I must
+     * use that instance.<br> But it's important to NOT call usual methods of
+     * application lifecycle before passing it here, to avoid side effects.
+     *
+     * @param applicationInstance an instance of Application entry point
+     */
+    public static final void main(Application applicationInstance) {
+        String[] args = new String[2];
+
+        args[0] = applicationInstance.getClass().getName();
+        args[1] = "--" + USE_APPLICATION_INSTANCE_ARGUMENT + "=true";
+
+        this.application = applicationInstance;
+
         main(args);
     }
 
@@ -910,10 +954,13 @@ public final class DesktopApplicationContext extends ApplicationContext {
      */
     public static final void main(Application applicationInstance, String[] applicationArgs) {
         String[] args = new String[applicationArgs.length + 2];
-        System.arraycopy(applicationArgs, 0, args, 1, applicationArgs.length);
+
         args[0] = applicationInstance.getClass().getName();
-        args[applicationArgs.length + 1] = "--" + USE_APPLICATION_INSTANCE_ARGUMENT + "=" + "true";
-        application = applicationInstance;
+        args[1] = "--" + USE_APPLICATION_INSTANCE_ARGUMENT + "=true";
+
+        System.arraycopy(applicationArgs, 0, args, 2, applicationArgs.length);
+        this.application = applicationInstance;
+
         main(args);
     }
 
