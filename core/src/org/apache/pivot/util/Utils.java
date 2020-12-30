@@ -113,20 +113,31 @@ public final class Utils {
      * with an optional message derived from the given string.
      *
      * @param value The argument value to check for {@code null} or empty.
-     * @param argument A description for the argument, used to
+     * @param description A description for the argument, used to
      * construct a message like {@code "xxx must not be null or empty."}.
      * Can be {@code null} or an empty string, in which case a plain
      * {@link IllegalArgumentException} is thrown without any detail message.
      * @throws IllegalArgumentException if the value is {@code null}.
      */
-    public static void checkNullOrEmpty(final Object value, final String argument) {
+    public static void checkNullOrEmpty(final Object value, final String description) {
         if (value == null || (value instanceof String && isNullOrEmpty((String) value))) {
-            if (isNullOrEmpty(argument)) {
+            if (isNullOrEmpty(description)) {
                 throw new IllegalArgumentException();
             } else {
-                throw new IllegalArgumentException(argument + " must not be null or empty.");
+                throw new IllegalArgumentException(description + " must not be null or empty.");
             }
         }
+    }
+
+    /**
+     * Check if the input argument is {@code null} and if it is a string
+     * if it is empty, and throw an {@link IllegalArgumentException} if so.
+     *
+     * @param value The string to check.
+     * @throws IllegalArgumentException if the value is {@code null}.
+     */
+    public static void checkNullOrEmpty(final Object value) {
+        checkNullOrEmpty(value, null);
     }
 
     /**
@@ -145,89 +156,150 @@ public final class Utils {
 
     /**
      * Check if the input argument is negative (less than zero), and throw an
-     * {@link IllegalArgumentException} with or without a descriptive message,
-     * depending on the {@code argument} supplied.
+     * {@link IllegalArgumentException} if so, with or without a descriptive message,
+     * depending on the {@code description} supplied.
      *
      * @param value The value to check.
-     * @param argument A description for the argument, used to
+     * @param description A description for the argument, used to
      * construct a message like {@code "xxx must not be negative."}.
      * Can be {@code null} or an empty string, in which case a plain
      * {@link IllegalArgumentException} is thrown without any detail message.
      * @throws IllegalArgumentException if the value is negative.
      */
-    public static void checkNonNegative(final int value, final String argument) {
+    public static void checkNonNegative(final int value, final String description) {
         if (value < 0) {
-            if (isNullOrEmpty(argument)) {
+            if (isNullOrEmpty(description)) {
                 throw new IllegalArgumentException();
             } else {
-                throw new IllegalArgumentException(argument + " must not be negative.");
+                throw new IllegalArgumentException(description + " must not be negative.");
             }
         }
     }
 
     /**
      * Check if the input argument is negative (less than zero), and throw an
-     * {@link IllegalArgumentException} with or without a descriptive message,
-     * depending on the {@code argument} supplied.
+     * {@link IllegalArgumentException} if so.
      *
      * @param value The value to check.
-     * @param argument A description for the argument, used to
+     * @throws IllegalArgumentException if the value is negative.
+     */
+    public static void checkNonNegative(final int value) {
+        checkNonNegative(value, null);
+    }
+
+    /**
+     * Check if the input argument is negative (less than zero), and throw an
+     * {@link IllegalArgumentException} if so, with or without a descriptive message,
+     * depending on the {@code description} supplied.
+     *
+     * @param value The value to check.
+     * @param description A description for the argument, used to
      * construct a message like {@code "xxx must not be negative."}.
      * Can be {@code null} or an empty string, in which case a plain
      * {@link IllegalArgumentException} is thrown without any detail message.
      * @throws IllegalArgumentException if the value is negative.
      */
-    public static void checkNonNegative(final float value, final String argument) {
+    public static void checkNonNegative(final float value, final String description) {
         if (value < 0.0f) {
-            if (isNullOrEmpty(argument)) {
+            if (isNullOrEmpty(description)) {
                 throw new IllegalArgumentException();
             } else {
-                throw new IllegalArgumentException(argument + " must not be negative.");
+                throw new IllegalArgumentException(description + " must not be negative.");
             }
         }
     }
 
     /**
-     * Check if the input argument is positive (greater than zero), and throw an
-     * {@link IllegalArgumentException} if not, with or without a descriptive message,
-     * depending on the {@code argument} supplied.
+     * Check if the input argument is negative (less than zero), and throw an
+     * {@link IllegalArgumentException} if so.
      *
      * @param value The value to check.
-     * @param argument A description for the argument, used to
+     * @throws IllegalArgumentException if the value is negative.
+     */
+    public static void checkNonNegative(final float value) {
+        checkNonNegative(value, null);
+    }
+
+    /**
+     * Check if the input argument is positive (greater than zero), and throw an
+     * {@link IllegalArgumentException} if not, with or without a descriptive message,
+     * depending on the {@code description} supplied.
+     *
+     * @param value The value to check.
+     * @param description A description for the argument, used to
      * construct a message like {@code "xxx must be positive."}.
      * Can be {@code null} or an empty string, in which case a plain
      * {@link IllegalArgumentException} is thrown without any detail message.
-     * @throws IllegalArgumentException if the value is negative.
+     * @throws IllegalArgumentException if the value is negative or zero.
      */
-    public static void checkPositive(final int value, final String argument) {
+    public static void checkPositive(final int value, final String description) {
         if (value <= 0) {
-            if (isNullOrEmpty(argument)) {
+            if (isNullOrEmpty(description)) {
                 throw new IllegalArgumentException();
             } else {
-                throw new IllegalArgumentException(argument + " must be positive.");
+                throw new IllegalArgumentException(description + " must be positive.");
             }
         }
     }
 
     /**
      * Check if the input argument is positive (greater than zero), and throw an
-     * {@link IllegalArgumentException} if not, with or without a descriptive message,
-     * depending on the {@code argument} supplied.
+     * {@link IllegalArgumentException} if not.
      *
      * @param value The value to check.
-     * @param argument A description for the argument, used to
+     * @throws IllegalArgumentException if the value is negative or zero.
+     */
+    public static void checkPositive(final int value) {
+        checkPositive(value, null);
+    }
+
+    /**
+     * Check if the input argument is positive (greater than zero), and throw an
+     * {@link IllegalArgumentException} if not, with or without a descriptive message,
+     * depending on the {@code description} supplied.
+     *
+     * @param value The value to check.
+     * @param description A description for the argument, used to
      * construct a message like {@code "xxx must be positive."}.
      * Can be {@code null} or an empty string, in which case a plain
      * {@link IllegalArgumentException} is thrown without any detail message.
      * @throws IllegalArgumentException if the value is negative.
      */
-    public static void checkPositive(final float value, final String argument) {
+    public static void checkPositive(final float value, final String description) {
         if (value <= 0.0f) {
-            if (isNullOrEmpty(argument)) {
+            if (isNullOrEmpty(description)) {
                 throw new IllegalArgumentException();
             } else {
-                throw new IllegalArgumentException(argument + " must be positive.");
+                throw new IllegalArgumentException(description + " must be positive.");
             }
+        }
+    }
+
+    /**
+     * Check if the input argument is positive (greater than zero), and throw an
+     * {@link IllegalArgumentException} if not.
+     *
+     * @param value The value to check.
+     * @throws IllegalArgumentException if the value is negative or zero.
+     */
+    public static void checkPositive(final float value) {
+        checkPositive(value, null);
+    }
+
+    /**
+     * Check that the given value falls within the range of a non-negative "short" value, that is
+     * between 0 and {@link Short#MAX_VALUE} (inclusive).
+     *
+     * @param value The value to check.
+     * @param description The optional argument used to describe the value in case it is out of range
+     * (used in the thrown exception).
+     * @throws IllegalArgumentException if the value is out of range.
+     */
+    public static void checkInRangeOfShort(final int value, final String description) {
+        if (value < 0 || value > (int) Short.MAX_VALUE) {
+            String valueMsg = ifNull(description, "value");
+            throw new IllegalArgumentException(valueMsg + " must be less than or equal "
+                + Short.MAX_VALUE + ".");
         }
     }
 
@@ -236,16 +308,10 @@ public final class Utils {
      * between 0 and {@link Short#MAX_VALUE} (inclusive).
      *
      * @param value The value to check.
-     * @param argument The optional argument used to describe the value in case it is out of range
-     * (used in the thrown exception).
      * @throws IllegalArgumentException if the value is out of range.
      */
-    public static void checkInRangeOfShort(final int value, final String argument) {
-        if (value < 0 || value > (int) Short.MAX_VALUE) {
-            String valueMsg = (String) ifNull(argument, "value");
-            throw new IllegalArgumentException(valueMsg + " must be less than or equal "
-                + Short.MAX_VALUE + ".");
-        }
+    public static void checkInRangeOfShort(final int value) {
+        checkInRangeOfShort(value, null);
     }
 
     /**

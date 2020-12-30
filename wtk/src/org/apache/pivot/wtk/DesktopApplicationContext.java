@@ -936,7 +936,7 @@ public final class DesktopApplicationContext extends ApplicationContext {
         args[0] = applicationInstance.getClass().getName();
         args[1] = "--" + USE_APPLICATION_INSTANCE_ARGUMENT + "=true";
 
-        this.application = applicationInstance;
+        application = applicationInstance;
 
         main(args);
     }
@@ -959,7 +959,7 @@ public final class DesktopApplicationContext extends ApplicationContext {
         args[1] = "--" + USE_APPLICATION_INSTANCE_ARGUMENT + "=true";
 
         System.arraycopy(applicationArgs, 0, args, 2, applicationArgs.length);
-        this.application = applicationInstance;
+        application = applicationInstance;
 
         main(args);
     }
