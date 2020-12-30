@@ -244,11 +244,8 @@ limitations under the License.
                 failonerror="true"
             >
                 <src>
-                    <fileset dir="@{project}/src">
-                        <include name="**/*.java"/>
-                        <exclude name="**/Browser*.java" if:true="${no.browser.support}"/>
-                    </fileset>
                     <dirset dir="@{project}">
+                        <include name="src"/>
                         <include name="test"/>
                     </dirset>
                 </src>
