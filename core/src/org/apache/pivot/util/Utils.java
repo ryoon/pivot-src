@@ -28,10 +28,10 @@ public final class Utils {
 
     /**
      * Decide if two strings are the same content (not just the same reference).
-     * <p> Works properly for either string being <tt>null</tt>.
+     * <p> Works properly for either string being {@code null}.
      * @param s1 First string to compare (can be {@code null}).
      * @param s2 Second string to compare (can also be {@code null}).
-     * @return  <tt>true</tt> if both strings are <tt>null</tt> or if
+     * @return  {@code true} if both strings are {@code null} or if
      * <code>s1.equals(s2)</code>.
      */
     public static boolean stringsAreEqual(final String s1, final String s2) {
@@ -133,16 +133,14 @@ public final class Utils {
      * If the first argument given is {@code null} then substitute the second argument
      * for it, else just return the given argument.
      *
+     * @param <T>   Type of value being tested and returned.
      * @param value The argument to check for &quot;null-ness&quot;.
      * @param substituteForNull The value to use instead of the {@code null} value.
      * @return Either the value or the substituted one (which could be null, but then
      * why would you call this method?).
      */
-    public static Object ifNull(final Object value, final Object substituteForNull) {
-        if (value == null) {
-            return substituteForNull;
-        }
-        return value;
+    public static <T> T ifNull(final T value, final T substituteForNull) {
+	return (value == null) ? substituteForNull : value;
     }
 
     /**
