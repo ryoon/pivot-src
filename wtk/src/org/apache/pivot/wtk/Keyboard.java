@@ -50,7 +50,7 @@ public final class Keyboard {
          * @param modifiers The set of modifiers to test.
          * @return The complete mask corresponding to the set.
          */
-        public static int getCompleteMask(final Set<Modifier> modifiers) {
+        public static int getMask(final Set<Modifier> modifiers) {
            int mask = 0;
            for (Modifier mod : modifiers) {
                mask |= mod.getMask();
@@ -59,8 +59,22 @@ public final class Keyboard {
         }
 
         /**
-         * The set of all possible keyboard modifiers (for use with {@link #isPressed}
-         * or {@link #areAnyPressed}).
+         * Determine the complete mask for all the given modifiers.
+         * @param modifiers The list of modifiers to test.
+         * @return The complete mask corresponding to the list.
+         */
+        public static int getMask(final Modifier... modifiers) {
+           int mask = 0;
+           for (Modifier mod : modifiers) {
+               mask |= mod.getMask();
+           }
+           return mask;
+        }
+
+        /**
+         * The set of all possible keyboard modifiers (for use with {@link #isPressed},
+         * or {@link Modifier#getMask(Set)}, {@link #areAllPressed(Set)}, or
+         * {@link #areAnyPressed(Set)}).
          */
         public static final Set<Modifier> ALL_MODIFIERS =
             EnumSet.of(Modifier.SHIFT, Modifier.CTRL, Modifier.ALT, Modifier.META);
@@ -309,19 +323,64 @@ public final class Keyboard {
      * otherwise.
      */
     public static boolean isPressed(final Modifier modifier) {
-        return (Keyboard.modifiers & modifier.getMask()) > 0;
+        return (modifiers & modifier.getMask()) > 0;
     }
 
     /**
      * Are any of the given set of {@link Modifier}s pressed?
      *
-     * @param modifiers The set of modifiers to test.
+     * @param modifierSet The set of modifiers to test.
      * @return <tt>true</tt> if any of them are pressed, <tt>false</tt>
      * if none are pressed.
      */
-    public static boolean areAnyPressed(final Set<Modifier> modifiers) {
-        int completeMask = Modifier.getCompleteMask(modifiers);
-        return (Keyboard.modifiers & completeMask) > 0;
+    public static boolean areAnyPressed(final Set<Modifier> modifierSet) {
+        return (modifiers & Modifier.getMask(modifierSet)) > 0;
+    }
+
+    /**
+     * Are any of the given list of {@link Modifier}s pressed?
+     *
+     * @param modifierList The list of modifiers to test.
+     * @return <tt>true</tt> if any of them are pressed, <tt>false</tt>
+     * if none are pressed.
+     */
+    public static boolean areAnyPressed(final Modifier... modifierList) {
+        return (modifiers & Modifier.getMask(modifierList)) > 0;
+    }
+
+    /**
+     * Are all of the given set of {@link Modifier}s pressed?
+     * <p> This is typically used to test two modifiers (like CTRL and SHIFT).
+     *
+     * @param modifierSet The set of modifiers to test.
+     * @return <tt>true</tt> if all of the modifiers are pressed, <tt>false</tt>
+     * if only some or none are pressed.
+     */
+    public static boolean areAllPressed(final Set<Modifier> modifierSet) {
+        int mask = Modifier.getMask(modifierSet);
+        return (modifiers & mask) == mask;
+    }
+
+    /**
+     * Are all of the given list of {@link Modifier}s pressed?
+     * <p> This is typically used to test two modifiers (like CTRL and SHIFT).
+     *
+     * @param modifierList The list of modifiers to test.
+     * @return <tt>true</tt> if all of the modifiers are pressed, <tt>false</tt>
+     * if only some or none are pressed.
+     */
+    public static boolean areAllPressed(final Modifier... modifierList) {
+        int mask = Modifier.getMask(modifierList);
+        return (modifiers & mask) == mask;
+    }
+
+    /**
+     * Shortcut method to test if the {@link Platform#getCommandModifier} is pressed.
+     *
+     * @return The result of {@code isPressed(Platform.getCommandModifier())}.
+     */
+    public static boolean isCmdPressed() {
+        return isPressed(Platform.getCommandModifier());
     }
 
     /**
@@ -333,7 +392,7 @@ public final class Keyboard {
         DropAction dropAction = null;
 
         if (Platform.isOSX()) {
-            if (isPressed(Modifier.ALT) && isPressed(Modifier.META)) {
+            if (areAllPressed(Modifier.ALT, Modifier.META)) {
                 dropAction = DropAction.LINK;
             } else if (isPressed(Modifier.ALT)) {
                 dropAction = DropAction.COPY;
@@ -341,7 +400,7 @@ public final class Keyboard {
                 dropAction = DropAction.MOVE;
             }
         } else if (Platform.isWindows()) {
-            if (isPressed(Modifier.CTRL) && isPressed(Modifier.SHIFT)) {
+            if (areAllPressed(Modifier.CTRL, Modifier.SHIFT)) {
                 dropAction = DropAction.LINK;
             } else if (isPressed(Modifier.CTRL)) {
                 dropAction = DropAction.COPY;
@@ -350,7 +409,7 @@ public final class Keyboard {
             }
         } else {
             // TODO: is this correct for Linux / Unix / ???
-            if (isPressed(Modifier.CTRL) && isPressed(Modifier.SHIFT)) {
+            if (areAllPressed(Modifier.CTRL, Modifier.SHIFT)) {
                 dropAction = DropAction.LINK;
             } else if (isPressed(Modifier.CTRL)) {
                 dropAction = DropAction.COPY;
