@@ -435,8 +435,8 @@ limitations under the License.
 
                 <packageset dir="@{project}/src" includes="**/*"/>
 
-                <link href="http://download.oracle.com/javase/8/docs/api"/>
-                <link href="http://download.oracle.com/javaee/7/api/"/>
+                <link href="https://docs.oracle.com/javase/8/docs/api"/>
+                <link href="https://docs.oracle.com/javaee/7/api/"/>
 
                 <arg value="-html4" if:true="${html4.output}"/>
                 <arg value="--frames" if:true="${html4.output}"/>
@@ -617,7 +617,7 @@ limitations under the License.
             <packageset dir="wtk-terra/src" includes="**/*"/>
 
             <link href="https://docs.oracle.com/javase/8/docs/api/"/>
-            <link href="http://download.oracle.com/javaee/7/api/"/>
+            <link href="https://docs.oracle.com/javaee/7/api/"/>
 
             <arg value="-html4" if:true="${html4.output}"/>
             <arg value="--frames" if:true="${html4.output}"/>
