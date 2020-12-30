@@ -17,12 +17,16 @@
 package org.apache.pivot.wtk;
 
 import java.awt.Toolkit;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Iterator;
 
 import org.apache.pivot.annotations.UnsupportedOperation;
@@ -493,7 +497,10 @@ public class TextArea extends Component {
 
     private boolean expandTabs = false;
 
-    private int maximumLength = 1048575;
+    /** Default maximum length (~1MB) or 2^20 - 1. */
+    private static final int DEFAULT_MAX_LENGTH = 1048575;
+
+    private int maximumLength = DEFAULT_MAX_LENGTH;
     private boolean editable = true;
 
     private String textKey = null;
@@ -619,6 +626,18 @@ public class TextArea extends Component {
 
         try (InputStream inputStream = textURL.openStream()) {
             setText(new InputStreamReader(inputStream));
+        }
+    }
+
+    public void setText(File f) throws IOException {
+        try (BufferedReader reader = Files.newBufferedReader(f.toPath())) {
+            setText(reader);
+        }
+    }
+
+    public void setText(File f, Charset cs) throws IOException {
+        try (BufferedReader reader = Files.newBufferedReader(f.toPath(), cs)) {
+            setText(reader);
         }
     }
 

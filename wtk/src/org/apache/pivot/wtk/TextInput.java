@@ -74,10 +74,16 @@ public class TextInput extends Component {
         public Object valueOf(String text);
     }
 
+    /**
+     * Interface for a text operation that can be undone.
+     */
     private interface Edit {
         public void undo();
     }
 
+    /**
+     * Description of an "insert text" editing operation.
+     */
     private class InsertTextEdit implements Edit {
         private final int index;
         private final int count;
@@ -93,6 +99,9 @@ public class TextInput extends Component {
         }
     }
 
+    /**
+     * Description of a "remove text" editing operation.
+     */
     private class RemoveTextEdit implements Edit {
         private final int index;
         private final String text;
@@ -172,6 +181,10 @@ public class TextInput extends Component {
     }
 
     public void setText(final String text) {
+        setText(text);
+    }
+
+    public void setText(final CharSequence text) {
         Utils.checkNull(text, "text");
 
         if (text.length() > maximumLength) {
@@ -188,7 +201,7 @@ public class TextInput extends Component {
 
         // Update the valid flag
         boolean previousTextValid = textValid;
-        textValid = (validator == null) ? true : validator.isValid(text);
+        textValid = (validator == null) ? true : validator.isValid(text.toString());
 
         // Clear the edit history
         editHistory.clear();
