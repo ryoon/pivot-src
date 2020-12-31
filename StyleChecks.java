@@ -30,14 +30,17 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.pivot.util.ExceptionUtils;
+
+
 /**
  * Read the file(s) given on the command line, which are presumed to be
  * the output of the "check styles" process, and generate a summary of the
  * results for each one.
  * <p> Results can be filtered on one or more file names, and on one or more
- * of the checkstyle category names.
+ * of the checkstyle category names (can be wildcards with "*" or "?").
  */
-public final class StyleErrors {
+public final class StyleChecks {
     /**
      * Enumeration of the severity of a check-style report value.
      * <p> Corresponds directly to the text found in the report.
@@ -65,7 +68,7 @@ public final class StyleErrors {
     }
 
     /** Private constructor because we only use static methods here. */
-    private StyleErrors() {
+    private StyleChecks() {
     }
 
     /**
@@ -109,7 +112,7 @@ public final class StyleErrors {
 
         /** @return The saved checkstyle problem name. */
         String getProblemCategory() {
-            return problemCategory;
+            return String.format("[%1$s]", problemCategory);
         }
         /** @return The severity of this problem. */
         Severity getSeverity() {
@@ -189,10 +192,10 @@ public final class StyleErrors {
     }
 
     /** Default name of the input file if none is given on the command line. */
-    private static final String DEFAULT_INPUT_FILE = "style_errors.log";
+    private static final String DEFAULT_INPUT_FILE = "style_checks.log";
     /** Pattern used to parse each input line. */
     private static final Pattern LINE_PATTERN = Pattern.compile(
-            "^\\[([A-Z]+)\\]\\s+(([a-zA-Z]\\:)?([^:]+))(\\:[0-9]+\\:)([0-9]+\\:)?\\s+(.+)\\s+(\\[[a-zA-Z]+\\])$"
+            "^\\[([A-Z]+)\\]\\s+(([a-zA-Z]\\:)?([^:]+))(\\:[0-9]+\\:)([0-9]+\\:)?\\s+(.+)\\s+\\[([a-zA-Z]+)\\]$"
         );
     /** The group in the {@link #LINE_PATTERN} that contains the severity of the problem. */
     private static final int SEVERITY_GROUP = 1;
@@ -201,13 +204,21 @@ public final class StyleErrors {
     /** The group in the {@link #LINE_PATTERN} that contains the checkstyle problem name. */
     private static final int CATEGORY_NAME_GROUP = 8;
     /** Limit on the number of files to enumerate vs just give the number. */
-    private static final int NUMBER_OF_FILES_LIMIT = 3;
+    private static final int NUMBER_OF_FILES_LIMIT = 4;
+    /** A severity of "warning". */
+    private static final String SEV_WARN = "WARN";
+    /** A severity of "error". */
+    private static final String SEV_ERROR = "ERROR";
+    /** Report footer title. */
+    private static final String TOTAL = "Total";
     /** Format problem info with a number of files suffix. */
     private static final String FORMAT1 = "%1$2d. %2$5s %3$-30s%4$5d (%5$d)%n";
     /** Same as {@link #FORMAT1} except we have a list of file names instead of a number. */
     private static final String FORMAT2 = "%1$2d. %2$5s %3$-30s%4$5d %5$s%n";
     /** Format postreport info. */
     private static final String FORMAT3 = "          %1$-30s%2$5d (%3$d)%n";
+    /** Format second postreport info. */
+    private static final String FORMAT3A = "    %1$5s %2$-30s%3$5d (%4$d)%n";
     /** Format string used to print the underlines. */
     private static final String UNDER_FORMAT = "%1$3s %2$5s %3$-30s%4$5s %5$s%n";
     /** Three character underline. */
@@ -222,6 +233,10 @@ public final class StyleErrors {
     private static final String FORMAT4 = "    %1$-42s %2$5d%n";
     /** The set of unique file names found in the list. */
     private static Set<String> fileNameSet = new HashSet<>();
+    /** The set of unique file names with warnings in the list. */
+    private static Set<String> fileNameWarnSet = new HashSet<>();
+    /** The set of unique file names with errors in the list. */
+    private static Set<String> fileNameErrorSet = new HashSet<>();
     /** For each type of checkstyle problem, the name and running count for each. */
     private static Map<String, Info> workingSet = new TreeMap<>();
     /** At the end of each file, the list used to sort by count and name. */
@@ -244,18 +259,20 @@ public final class StyleErrors {
     private static final String PACKAGE_PREFIX = "org.apache.pivot";
     /** Whether to report all the file problem counts, or just the least/most. */
     private static boolean verbose = false;
-    /** A list of bare file names that are used to filter the summary report. */
+    /** A list of bare file names (can be wildcards) that are used to filter the summary report. */
     private static List<String> filterFileNames = new ArrayList<>();
-    /** A list of problem categories that are used to filter the summary report. */
+    /** A list of problem categories (can be wildcards) that are used to filter the summary report. */
     private static List<String> filterCategories = new ArrayList<>();
-    /** A list of package names that are used to filter the summary report. */
+    /** A list of package names (can be wildcards) that are used to filter the summary report. */
     private static List<String> filterPackages = new ArrayList<>();
     /** Whether the next file name on the command line is a filter name or not. */
     private static boolean filter = false;
     /** Whether the next field on the command line is a category name or not. */
     private static boolean category = false;
-    /** Whehter the next field is a package name. */
+    /** Whether the next field is a package name. */
     private static boolean packages = false;
+    /** Whether the filtering is case-sensitive or not (defauult not). */
+    private static boolean caseSensitive = false;
     /** Whether we filter the file names by any file names (if {@link #filterFileNames} list
      * is non-empty. */
     private static boolean filteredByFile = false;
@@ -265,41 +282,70 @@ public final class StyleErrors {
     /** Whether we filter the results by package names (if {@link #filterPackages} list
      * is non-empty. */
     private static boolean filteredByPackage = false;
+    /** The list of filter file names converted to regular expression patterns for matching. */
+    private static List<Pattern> fileNameFilterPatterns;
+    /** The list of filter categories converted to regular expression patterns for matching. */
+    private static List<Pattern> categoryFilterPatterns;
+    /** The list of filter packages converted to regular expression patterns for matching. */
+    private static List<Pattern> packageFilterPatterns;
+
+    /**
+     * Output a formatted error message to {@link System#err}.
+     * @param format The format string as input to {@link String#format}.
+     * @param args   The (optional) arguments to be interpolated in the message.
+     */
+    private static void error(final String format, final Object... args) {
+        String message = String.format(format, args);
+        System.err.println(message);
+        System.err.println();
+    }
 
     /**
      * Process one option from the command line.
      * @param option The option string to process.
+     * @param prefix For error messages, the option prefix used.
      */
-    private static void processOption(final String option) {
-        switch (option) {
+    private static void processOption(final String option, final String prefix) {
+        switch (option.toLowerCase()) {
+            case "casesensitive":
+            case "sensitive":
+            case "case":
+            case "sense":
+            case "s":
+                caseSensitive = true;
+                break;
             case "v":
-            case "V":
+            case "ver":
+            case "verb":
             case "verbose":
-            case "VERBOSE":
                 verbose = true;
-                filter = false;
                 break;
             case "f":
-            case "F":
+            case "file":
+            case "files":
             case "filter":
-            case "FILTER":
                 filter = true;
                 break;
             case "c":
-            case "C":
+            case "cat":
+            case "cats":
             case "category":
-            case "CATEGORY":
+            case "categories":
                 category = true;
                 break;
             case "p":
-            case "P":
+            case "pack":
+            case "packs":
             case "package":
-            case "PACKAGE":
+            case "packages":
                 packages = true;
                 break;
             default:
-                filter = category = packages = false;
-                System.err.println("Ignoring unrecognized option: \"--" + option + "\"!");
+                filter   = false;
+                category = false;
+                packages = false;
+
+                error("Ignoring unrecognized option: \"%1$s%2$s\"!", prefix, option);
                 break;
         }
     }
@@ -331,7 +377,7 @@ public final class StyleErrors {
     private static void addFile(final List<File> files, final String arg) {
         File file = new File(arg);
         if (!file.exists() || !file.isFile() || file.isHidden() || !file.canRead()) {
-            System.err.println("Unable to find or read the input file: \"" + file.getPath() + "\"!");
+            error("Unable to find or read the input file: \"%1$s\"!", file.getPath());
         } else {
             files.add(file);
         }
@@ -360,11 +406,11 @@ public final class StyleErrors {
         // Process options and save the straight file names
         for (String arg : args) {
             if (arg.startsWith("--")) {
-                processOption(arg.substring(2));
+                processOption(arg.substring(2), "--");
             } else if (arg.startsWith("-")) {
-                processOption(arg.substring(1));
+                processOption(arg.substring(1), "-");
             } else if (ON_WINDOWS && arg.startsWith("/")) {
-                processOption(arg.substring(1));
+                processOption(arg.substring(1), "/");
             } else {
                 if (filter) {
                     // The argument could be a comma or semicolon separated list
@@ -384,9 +430,9 @@ public final class StyleErrors {
                     String[] values = arg.split("[;,]");
                     for (String value : values) {
                         if (value.startsWith("[") && value.endsWith("]")) {
-                            filterCategories.add(value);
+                            filterCategories.add(value.substring(1, value.length() - 1));
                         } else {
-                            filterCategories.add("[" + value + "]");
+                            filterCategories.add(value);
                         }
                     }
                     category = false;
@@ -408,9 +454,89 @@ public final class StyleErrors {
                 }
             }
         }
-        filteredByFile = filterFileNames.size() != 0;
+        filteredByFile     = filterFileNames.size()  != 0;
         filteredByCategory = filterCategories.size() != 0;
-        filteredByPackage = filterPackages.size() != 0;
+        filteredByPackage  = filterPackages.size()   != 0;
+
+        // For each filter group, convert the strings to regular expressions
+        fileNameFilterPatterns = makePatterns(filterFileNames);
+        categoryFilterPatterns = makePatterns(filterCategories);
+        packageFilterPatterns  = makePatterns(filterPackages);
+    }
+
+    /**
+     * Convert a list of potentially wildcard string patterns into real regular expressions.
+     *
+     * @param filterList The list of filter strings (can be empty).
+     * @return           A new list of compiled patterns, or {@code null} if the input list
+     *                   is empty.
+     */
+    private static List<Pattern> makePatterns(final List<String> filterList) {
+        List<Pattern> patterns = null;
+        if (filterList.size() != 0) {
+            patterns = new ArrayList<>(filterList.size());
+            for (String filterString : filterList) {
+                patterns.add(convertToPattern(filterString));
+            }
+        }
+        return patterns;
+    }
+
+    /**
+     * Convert a conventional wildcard specification (containing only "*" or "?") to a compiled
+     * regular expression pattern for use in filtering the input file.
+     * <p> Note: the compiled pattern is marked as case-insensitive depending on the command-line
+     * option "sensitive".
+     *
+     * @param filterExpr The filter expression as a wildcard.
+     * @return           The filter expression converted to a {@link Pattern}.
+     */
+    private static Pattern convertToPattern(final String filterExpr) {
+        StringBuilder filterRegEx = new StringBuilder(filterExpr.length() * 2);
+
+        // Translate wildcards to regular expression constructs,
+        // and fixup other things
+        for (int i = 0; i < filterExpr.length(); i++) {
+            char ch = filterExpr.charAt(i);
+            switch (ch) {
+                case '*':
+                    filterRegEx.append(".*");
+                    break;
+                case '?':
+                    filterRegEx.append('.');
+                    break;
+                case '.':
+                case '[':
+                case ']':
+                    filterRegEx.append('\\');
+                    filterRegEx.append(ch);
+                    break;
+                default:
+                    filterRegEx.append(ch);
+                    break;
+            }
+        }
+        return Pattern.compile(filterRegEx.toString(),
+                caseSensitive ? 0 : (Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE));
+    }
+
+    /**
+     * Determine whether the given input value is matched by any of the (possibly wildcard)
+     * filter entries in the list. The list entries are converted from "*?" wildcards to
+     * regular expressions before each test.
+     *
+     * @param filterPatterns The list of filter patterns (should not be empty).
+     * @param inputArg       The input argument to be tested against the filters.
+     * @return               Whether or not the input matches any of the filters.
+     */
+    private static boolean matches(final List<Pattern> filterPatterns, final String inputArg) {
+        for (Pattern pattern : filterPatterns) {
+            Matcher m = pattern.matcher(inputArg);
+            if (m.matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -431,9 +557,13 @@ public final class StyleErrors {
         // Now process just the saved file names
         for (File file : files) {
             int total = 0;
+            int totalWarn = 0;
+            int totalError = 0;
             int totalForThisFile = 0;
             int lineNo = 0;
             fileNameSet.clear();
+            fileNameWarnSet.clear();
+            fileNameErrorSet.clear();
             workingSet.clear();
             sortedList.clear();
             currentFileName = null;
@@ -444,25 +574,26 @@ public final class StyleErrors {
                     lineNo++;
                     Matcher m = LINE_PATTERN.matcher(line);
                     if (m.matches()) {
-                        String severity = m.group(SEVERITY_GROUP);
-                        String fullFileName = m.group(FILE_NAME_GROUP);
+                        String severity        = m.group(SEVERITY_GROUP);
+                        String fullFileName    = m.group(FILE_NAME_GROUP);
                         String problemCategory = m.group(CATEGORY_NAME_GROUP);
+
                         File f = new File(fullFileName);
                         String nameOnly = f.getName();
                         if (filteredByFile) {
-                            if (!filterFileNames.contains(nameOnly)) {
+                            if (!matches(fileNameFilterPatterns, nameOnly)) {
                                 continue;
                             }
                         }
                         if (filteredByCategory) {
-                            if (!filterCategories.contains(problemCategory)) {
+                            if (!matches(categoryFilterPatterns, problemCategory)) {
                                 continue;
                             }
                         }
                         String parent = removeNDirs(f.getParent().replace(CURRENT_DIR, ""), 2);
                         String packageName = parent.replace(SEPARATOR, ".");
                         if (filteredByPackage) {
-                            if (!filterPackages.contains(packageName)) {
+                            if (!matches(packageFilterPatterns, packageName)) {
                                 continue;
                             }
                         }
@@ -475,6 +606,14 @@ public final class StyleErrors {
                             info.addFile(nameOnly);
                         }
                         total++;
+                        if (severity.equals(SEV_ERROR)) {
+                            fileNameErrorSet.add(relativeFileName);
+                            totalError++;
+                        }
+                        if (severity.equals(SEV_WARN)) {
+                            fileNameWarnSet.add(relativeFileName);
+                            totalWarn++;
+                        }
                         if (nameOnly.equals(currentFileName)) {
                             totalForThisFile++;
                         } else {
@@ -487,15 +626,14 @@ public final class StyleErrors {
                     } else if (line.equals("Starting audit...") || line.equals("Audit done.")) {
                         continue;
                     } else {
-                        System.err.println("Line " + lineNo + ". Doesn't match the expected pattern.");
-                        System.err.println("\t\"" + line + "\"");
+                        error("Line %1$d. Doesn't match the expected pattern.%n\t\"%2$s\"", lineNo, line);
                     }
                 }
                 if (currentFileName != null) {
                     fileCounts.put(currentFileName, Integer.valueOf(totalForThisFile));
                 }
             } catch (IOException ioe) {
-                System.err.println("Error reading the \"" + file.getPath() + "\" file: " + ioe.getMessage());
+                error("Error reading the \"%1$s\" file: %2$s", file.getPath(), ExceptionUtils.toString(ioe));
             }
 
             // Once we're done, resort according to problem counts per category
@@ -503,6 +641,10 @@ public final class StyleErrors {
                 Info info = workingSet.get(key);
                 sortedList.add(info);
             }
+
+            System.out.println("Style Check Results");
+            System.out.println("-------------------");
+            System.out.println();
 
             if (sortedList.isEmpty()) {
                 StringBuilder buf = new StringBuilder("No results");
@@ -527,6 +669,7 @@ public final class StyleErrors {
                 }
                 buf.append("!");
                 System.out.println(buf.toString());
+                System.out.println();
             } else {
                 Collections.sort(sortedList, comparator);
 
@@ -539,7 +682,9 @@ public final class StyleErrors {
                 }
 
                 System.out.format(UNDER_FORMAT, THREE, FIVE, CATEGORY, FIVE, FILE);
-                System.out.format(FORMAT3, "Totals", total, fileNameSet.size());
+                System.out.format(FORMAT3A, SEV_WARN, TOTAL, totalWarn, fileNameWarnSet.size());
+                System.out.format(FORMAT3A, SEV_ERROR, TOTAL, totalError, fileNameErrorSet.size());
+                System.out.format(FORMAT3, "Total of All", total, fileNameSet.size());
                 System.out.println();
             }
 

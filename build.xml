@@ -110,7 +110,7 @@ limitations under the License.
         <entry key="build.time" value="${build_time}"/>
     </propertyfile>
     <property file="build.number"/>
-    <property name="style.errors.log" value="style_errors.log"/>
+    <property name="style.checks.log" value="style_checks.log"/>
     <property name="style.summary.log" value="style_summary.log"/>
 
     <!-- Compiler properties and Test properties have been moved into build.properties -->
@@ -594,6 +594,9 @@ limitations under the License.
         <delete dir="${folder.doc}"/>
         <delete dir="${folder.install}"/>
         <delete dir="${folder.lib}"/>
+        <delete>
+            <fileset dir="${basedir}" includes="*.class,*.log"/>
+        </delete>
     </target>
 
     <!-- Javadoc -->
@@ -1085,26 +1088,31 @@ limitations under the License.
     </target>
 
     <!-- Run our custom checkstyle on all the source -->
-    <target name="check-style">
-        <cs:checkstyle config="pivot_checks.xml" failOnViolation="false">
+    <target name="checkstyle" description="Run the 'checkstyle' program on all the source">
+        <cs:checkstyle config="pivot_style_checks.xml" failOnViolation="false">
             <fileset dir=".">
-                <include name="StyleErrors.java"/>
+                <include name="StyleChecks.java"/>
                 <include name="**/src/org/**/*.java"/>
                 <include name="**/test/org/**/*.java"/>
             </fileset>
-            <cs:formatter type="plain" toFile="${style.errors.log}"/>
+            <cs:formatter type="plain" toFile="${style.checks.log}"/>
         </cs:checkstyle>
         <javac srcdir="." includeantruntime="false">
-            <include name="StyleErrors.java"/>
+            <include name="StyleChecks.java"/>
+            <classpath>
+                <path refid="classpath.general"/>
+                <dirset dir="${basedir}" includes="**/${folder.bin}"/>
+            </classpath>
         </javac>
-        <java dir="." classname="StyleErrors" fork="true" output="${style.summary.log}" outputproperty="style.summary" logError="true">
-            <arg value="${style.errors.log}"/>
+        <java dir="." classname="StyleChecks" fork="true" output="${style.summary.log}" outputproperty="style.summary" logError="true">
+            <arg value="${style.checks.log}"/>
         </java>
-        <echo message="Style Check Results"/>
-        <echo message="(full report in &quot;${style.errors.log}&quot;, this summary also in &quot;${style.summary.log}&quot;)"/>
+        <echo message="Full report in &quot;${style.checks.log}&quot;."/>
+        <echo message="This summary also in &quot;${style.summary.log}&quot;."/>
+        <echo message=""/>
         <echo message="${style.summary}"/>
     </target>
 
     <!-- Do the "normal" clean build stuff -->
-    <target name="build" depends="clean, package, doc, test, check-style" description="Do a &quot;normal&quot; build."/>
+    <target name="build" depends="clean, package, doc, test, checkstyle" description="Do a &quot;normal&quot; build."/>
 </project>
