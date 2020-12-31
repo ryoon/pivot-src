@@ -34,8 +34,8 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Implementation of the {@link List} interface that is backed by an instance of
- * {@link java.util.List}; in other words, adapting a <tt>java.util.List</tt> to
- * one of our <tt>List</tt>s.
+ * {@link java.util.List}; in other words, adapting a {@code java.util.List} to
+ * one of our {@code List}s.
  *
  * @param <T> Type of elements in the list.
  */
