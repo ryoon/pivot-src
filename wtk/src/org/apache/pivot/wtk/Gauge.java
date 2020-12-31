@@ -38,7 +38,7 @@ public class Gauge<T extends Number> extends Component {
 
     /**
      * Default constructor for this component, with the default {@link Origin}
-     * value (which is <tt>NORTH</tt>).
+     * value (which is <code>NORTH</code>).
      */
     public Gauge() {
        this(Origin.NORTH);
@@ -135,7 +135,7 @@ public class Gauge<T extends Number> extends Component {
      * Sets the current value displayed by the gauge.
      * @param value The new value, of the same type as declared for the gauge.
      * @throws ClassCastException if the type of this value is not what was given
-     * by the {@link #setType setType()} call or any previous call to the <tt>"setXXXValue"</tt>
+     * by the {@link #setType setType()} call or any previous call to the {@code "setXXXValue"}
      * methods (which all call {@link #setOrCheckClass}).
      */
     public void setValue(T value) {

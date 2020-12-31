@@ -121,7 +121,7 @@ public abstract class Viewport extends Container {
     }
 
     /**
-     * Returns the <tt>consumeRepaint</tt> flag, which controls whether the
+     * Returns the {@code consumeRepaint} flag, which controls whether the
      * viewport will propagate repaints to its parent or consume them. This flag
      * enables skins to optimize viewport scrolling by blitting the display to
      * reduce the required repaint area.
@@ -134,7 +134,7 @@ public abstract class Viewport extends Container {
     }
 
     /**
-     * Sets the <tt>consumeRepaint</tt> flag, which controls whether the
+     * Sets the {@code consumeRepaint} flag, which controls whether the
      * viewport will propagate repaints to its parent or consume them. This flag
      * enables skins to optimize viewport scrolling by blitting the display to
      * reduce the required repaint area.

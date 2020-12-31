@@ -444,7 +444,7 @@ public abstract class Button extends Component {
      * transition (for instance), or similar timing.
      *
      * @param delay The delay value (in milliseconds) to use when queuing the action,
-     * or <tt>0</tt> to use no delay.
+     * or <code>0</code> to use no delay.
      */
     public void setQueuedActionDelay(int delay) {
         Utils.checkNonNegative(delay, "delay");

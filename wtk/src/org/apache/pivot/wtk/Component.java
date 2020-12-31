@@ -717,7 +717,7 @@ public abstract class Component implements ConstrainedVisual {
      * Returns the component's constrained preferred width.
      *
      * @param height The height value by which the preferred width should be
-     * constrained, or <tt>-1</tt> for no constraint.
+     * constrained, or <code>-1</code> for no constraint.
      * @return The constrained preferred width.
      */
     @Override
@@ -745,7 +745,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Sets the component's preferred width.
      *
-     * @param preferredWidth The preferred width value, or <tt>-1</tt> to use
+     * @param preferredWidth The preferred width value, or <code>-1</code> to use
      * the default value determined by the skin.
      */
     public void setPreferredWidth(final int preferredWidth) {
@@ -774,7 +774,7 @@ public abstract class Component implements ConstrainedVisual {
      * Returns the component's constrained preferred height.
      *
      * @param width The width value by which the preferred height should be
-     * constrained, or <tt>-1</tt> for no constraint.
+     * constrained, or <code>-1</code> for no constraint.
      * @return The constrained preferred height.
      */
     @Override
@@ -802,7 +802,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Sets the component's preferred height.
      *
-     * @param preferredHeight The preferred height value, or <tt>-1</tt> to use
+     * @param preferredHeight The preferred height value, or <code>-1</code> to use
      * the default value determined by the skin.
      */
     public void setPreferredHeight(final int preferredHeight) {
@@ -868,9 +868,9 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Sets the component's preferred size.
      *
-     * @param preferredWidth The preferred width value, or <tt>-1</tt> to use
+     * @param preferredWidth The preferred width value, or <code>-1</code> to use
      * the default value determined by the skin.
-     * @param preferredHeight The preferred height value, or <tt>-1</tt> to use
+     * @param preferredHeight The preferred height value, or <code>-1</code> to use
      * the default value determined by the skin.
      */
     public void setPreferredSize(final int preferredWidth, final int preferredHeight) {
@@ -1157,7 +1157,7 @@ public abstract class Component implements ConstrainedVisual {
      * Returns the component's baseline.
      *
      * @return The baseline relative to the origin of this component, or
-     * <tt>-1</tt> if this component does not have a baseline.
+     * <code>-1</code> if this component does not have a baseline.
      */
     @Override
     public int getBaseline() {
@@ -1172,7 +1172,7 @@ public abstract class Component implements ConstrainedVisual {
      * Returns the component's baseline for a given width and height.
      *
      * @return The baseline relative to the origin of this component, or
-     * <tt>-1</tt> if this component does not have a baseline.
+     * <code>-1</code> if this component does not have a baseline.
      */
     @Override
     public int getBaseline(final int width, final int height) {
@@ -1180,7 +1180,7 @@ public abstract class Component implements ConstrainedVisual {
     }
 
     /**
-     * @return The component's bounding area. The <tt>x</tt> and <tt>y</tt>
+     * @return The component's bounding area. The <code>x</code> and <code>y</code>
      * values are relative to the parent container.
      */
     public Bounds getBounds() {
@@ -1189,7 +1189,7 @@ public abstract class Component implements ConstrainedVisual {
 
     /**
      * @return The component's bounding area including decorators.
-     * The <tt>x</tt> and <tt>y</tt> values are relative to the parent container.
+     * The <code>x</code> and <code>y</code> values are relative to the parent container.
      */
     public Bounds getDecoratedBounds() {
         Bounds decoratedBounds = new Bounds(0, 0, getWidth(), getHeight());
@@ -2052,7 +2052,7 @@ public abstract class Component implements ConstrainedVisual {
      *
      * @param focused {@code true} if the component has received the input
      * focus; {@code false} if the component has lost the focus.
-     * @param obverseComponent If <tt>focused</tt> is true, the component that
+     * @param obverseComponent If {@code focused} is true, the component that
      * has lost the focus; otherwise, the component that has gained the focus.
      */
     protected void setFocused(final boolean focused, final Component obverseComponent) {
@@ -2379,7 +2379,7 @@ public abstract class Component implements ConstrainedVisual {
 
     /**
      * If the mouse is currently over the component, causes the component to
-     * fire <tt>mouseOut()</tt> and a <tt>mouseMove()</tt> at the current mouse
+     * fire {@code mouseOut()} and a {@code mouseMove()} at the current mouse
      * location. <p> This method is primarily useful when consuming container
      * mouse motion events, since it allows a caller to reset the mouse state
      * based on the event consumption logic.

@@ -131,8 +131,8 @@ public final class Limits implements Serializable {
     }
 
     /**
-     * Determines whether the given value is contained by this Limits, that is,
-     * whether the value is &gt;= the minimum and &lt;= the maximum.
+     * Determines whether the given value is contained by this {@code Limits}, that is,
+     * whether the {@code value >= minimum} and {@code value <= maximum}.
      *
      * @param value The value to test.
      * @return Whether the value is contained within the limits.

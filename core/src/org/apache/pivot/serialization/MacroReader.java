@@ -26,7 +26,7 @@ import java.util.Queue;
 
 /**
  * This is a {@link Reader} that can be instantiated inline with any other
- * <tt>Reader</tt> to provide macro capabilities.
+ * {@code Reader} to provide macro capabilities.
  * <p> We recognize <code>#define <i>NAME value</i></code> as definitions
  * as well as <code>#undef <i>NAME</i></code> to remove a previous definition.
  * <p> The macro name must correspond to the Unicode naming conventions (see

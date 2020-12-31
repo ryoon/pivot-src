@@ -72,8 +72,8 @@ public class ListView extends Component {
          * @param item The item to render, or {@code null} if called to
          * calculate preferred height for skins that assume a fixed renderer
          * height.
-         * @param index The index of the item being rendered, or <tt>-1</tt> if
-         * <tt>item</tt> is {@code null}.
+         * @param index The index of the item being rendered, or <code>-1</code> if
+         * {@code item} is {@code null}.
          * @param listView The host component.
          * @param selected If {@code true}, the item is selected. the item.
          * @param state The selected, unselected or mixed state for the checkmark.
@@ -172,7 +172,7 @@ public class ListView extends Component {
          * @param listData The source list data.
          * @param value The value to locate.
          * @return The index of first occurrence of the value if it exists in the
-         * list; <tt>-1</tt>, otherwise.
+         * list; <code>-1</code>, otherwise.
          */
         public int indexOf(List<?> listData, Object value);
 
@@ -492,8 +492,8 @@ public class ListView extends Component {
     /**
      * Sets the list data.
      *
-     * @param listData A JSON string (must begin with <tt>[</tt> and end with
-     * <tt>]</tt>) denoting the data to be presented by the list view.
+     * @param listData A JSON string (must begin with <code>[</code> and end with
+     * <code>]</code>) denoting the data to be presented by the list view.
      * @throws IllegalArgumentException if the list data argument is {@code null}
      * or cannot be parsed into a list of items.
      */
@@ -596,7 +596,7 @@ public class ListView extends Component {
     /**
      * Sets the selection to a single index.
      *
-     * @param index The index to select, or <tt>-1</tt> to clear the selection.
+     * @param index The index to select, or <code>-1</code> to clear the selection.
      */
     public void setSelectedIndex(int index) {
         if (index == -1) {
@@ -724,7 +724,7 @@ public class ListView extends Component {
     /**
      * Returns the first selected index.
      *
-     * @return The first selected index, or <tt>-1</tt> if nothing is selected.
+     * @return The first selected index, or <code>-1</code> if nothing is selected.
      */
     public int getFirstSelectedIndex() {
         return (rangeSelection.getLength() > 0) ? rangeSelection.get(0).start : -1;
@@ -733,7 +733,7 @@ public class ListView extends Component {
     /**
      * Returns the last selected index.
      *
-     * @return The last selected index, or <tt>-1</tt> if nothing is selected.
+     * @return The last selected index, or <code>-1</code> if nothing is selected.
      */
     public int getLastSelectedIndex() {
         return (rangeSelection.getLength() > 0) ? rangeSelection.get(rangeSelection.getLength() - 1).end
@@ -1044,7 +1044,7 @@ public class ListView extends Component {
     /**
      * Returns the indexes of currently checked items.
      * <p> If the {@link #checkmarksMixedAsChecked} flag is set this method
-     * will return all the checked and <tt>MIXED</tt> state items.
+     * will return all the checked and <code>MIXED</code> state items.
      * @return The complete list of currently checked items.
      */
     public ImmutableList<Integer> getCheckedIndexes() {
@@ -1256,7 +1256,7 @@ public class ListView extends Component {
     }
 
     /**
-     * Get the flag saying whether tri-state checkmarks are allowed in this <tt>ListView</tt>.
+     * Get the flag saying whether tri-state checkmarks are allowed in this {@code ListView}.
      * <p> Tri-state checkmarks show checked, unchecked and mixed states.  For a list view with
      * this property enabled, then there are additional methods to set the mixed state, to get
      * the true state of all the items, and to decide if mixed state should be treated as checked
@@ -1268,7 +1268,7 @@ public class ListView extends Component {
     }
 
     /**
-     * Set the flag saying whether tri-state checkmarks are allowed in this <tt>ListView</tt>.
+     * Set the flag saying whether tri-state checkmarks are allowed in this {@code ListView}.
      * <p> Tri-state checkmarks show checked, unchecked and mixed states.  For a list view with
      * this property enabled, then there are additional methods to set the mixed state, to get
      * the true state of all the items, and to decide if mixed state should be treated as checked
@@ -1857,7 +1857,7 @@ public class ListView extends Component {
      * Returns the index of the item at a given location.
      *
      * @param y The y-coordinate of the item to identify.
-     * @return The item index, or <tt>-1</tt> if there is no item at the given
+     * @return The item index, or <code>-1</code> if there is no item at the given
      * y-coordinate.
      */
     public int getItemAt(int y) {

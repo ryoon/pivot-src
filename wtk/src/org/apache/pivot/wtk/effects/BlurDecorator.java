@@ -26,7 +26,7 @@ import org.apache.pivot.wtk.Component;
 /**
  * Decorator that applies a blur to a component. <p> Blurs are given an integer
  * magnitude, which represents the intensity of the blur. This value translates
- * to a grid of pixels (<tt>blurMagnitude^2</tt>), where each pixel value is
+ * to a grid of pixels (<code>blurMagnitude^2</code>), where each pixel value is
  * calculated by consulting its neighboring pixels according to the grid.
  * Because of this, note that you will get "prettier" blurring if you choose odd
  * values for the blur magnitude; this allows the pixel in question to reside at
@@ -47,7 +47,7 @@ public class BlurDecorator implements Decorator {
     private Graphics2D bufferedImageGraphics = null;
 
     /**
-     * Creates a <tt>BlurDecorator</tt> with the default blur magnitude.
+     * Creates a {@code BlurDecorator} with the default blur magnitude.
      *
      * @see #BlurDecorator(int)
      */
@@ -56,7 +56,7 @@ public class BlurDecorator implements Decorator {
     }
 
     /**
-     * Creates a <tt>BlurDecorator</tt> with the specified blur magnitude.
+     * Creates a {@code BlurDecorator} with the specified blur magnitude.
      *
      * @param blurMagnitude The intensity of the blur.
      */

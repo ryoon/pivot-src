@@ -287,7 +287,7 @@ public class Element extends Node implements List<Node> {
          * Determines the index of an attribute.
          *
          * @param attribute The attribute to look up.
-         * @return The index of the attribute, if found; otherwise <tt>-1</tt>.
+         * @return The index of the attribute, if found; otherwise <code>-1</code>.
          */
         @Override
         public int indexOf(Attribute attribute) {
@@ -729,7 +729,7 @@ public class Element extends Node implements List<Node> {
     /**
      * Determines the index of the given node within this element.
      *
-     * @return The index of the node, or <tt>-1</tt> if the node does not exist
+     * @return The index of the node, or <code>-1</code> if the node does not exist
      * in this element.
      */
     @Override

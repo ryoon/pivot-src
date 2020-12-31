@@ -28,8 +28,8 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Container that arranges components in a two-dimensional grid, optionally
- * spanning multiple rows and columns, much like an HTML <tt>&lt;table&gt;</tt>
- * element. <p> Note that unlike an HTML <tt>&lt;table&gt;</tt>, components that
+ * spanning multiple rows and columns, much like an HTML {@code <table>}
+ * element. <p> Note that unlike an HTML {@code <table>}, components that
  * span multiple rows or columns will not "push" other components out of their
  * way. Instead, the spanning components will simply overlay the cells into
  * which they span. This means that application developers may have to use
@@ -658,14 +658,14 @@ public class TablePane extends Container {
     public static final String RELATIVE_SIZE_INDICATOR = "*";
 
     /**
-     * Creates a new <tt>TablePane</tt> with empty row and column sequences.
+     * Creates a new {@code TablePane} with empty row and column sequences.
      */
     public TablePane() {
         this(new ArrayList<Column>());
     }
 
     /**
-     * Creates a new <tt>TablePane</tt> with the specified columns.
+     * Creates a new {@code TablePane} with the specified columns.
      *
      * @param columns The column sequence to use. A copy of this sequence will
      * be made
@@ -699,7 +699,7 @@ public class TablePane extends Container {
      * Returns the index of the row at a given location.
      *
      * @param y The y-coordinate of the row to identify.
-     * @return The row index, or <tt>-1</tt> if there is no row at the given
+     * @return The row index, or <code>-1</code> if there is no row at the given
      * y-coordinate.
      */
     public int getRowAt(int y) {
@@ -728,7 +728,7 @@ public class TablePane extends Container {
      * Returns the index of the column at a given location.
      *
      * @param x The x-coordinate of the column to identify.
-     * @return The column index, or <tt>-1</tt> if there is no column at the
+     * @return The column index, or <code>-1</code> if there is no column at the
      * given x-coordinate.
      */
     public int getColumnAt(int x) {

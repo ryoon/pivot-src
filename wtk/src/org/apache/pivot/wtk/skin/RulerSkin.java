@@ -324,7 +324,7 @@ public class RulerSkin extends ComponentSkin implements RulerListener {
     /**
      * Set the number of pixels interval at which to draw the markers.
      *
-     * @param spacing The number of pixels between markers (must be &gt;= 1).
+     * @param spacing The number of pixels between markers (must be {@code >= 1}).
      */
     public final void setMarkerSpacing(int spacing) {
         Utils.checkPositive(spacing, "markerSpacing");

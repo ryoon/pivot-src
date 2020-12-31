@@ -878,7 +878,7 @@ public final class DesktopApplicationContext extends ApplicationContext {
     }
 
     /**
-     * Utility method to make it easier to define <tt>main()</tt> entry-points
+     * Utility method to make it easier to define {@code main()} entry-points
      * into applications. For example:
      * <pre> public class MyApp implements Application {
      *   public static void main(String[] args) throws Exception {
@@ -898,7 +898,7 @@ public final class DesktopApplicationContext extends ApplicationContext {
 
     /**
     /**
-     * Utility method to make it easier to define <tt>main()</tt> entry-points
+     * Utility method to make it easier to define {@code main()} entry-points
      * into applications. For example:
      * <pre> public class MyApp implements Application {
      *   public static void main(String[] args) throws Exception {
@@ -921,7 +921,7 @@ public final class DesktopApplicationContext extends ApplicationContext {
     }
 
     /**
-     * Utility method to make it easier to define <tt>main()</tt> entry-points
+     * Utility method to make it easier to define {@code main()} entry-points
      * into applications.<br> This is useful if application instance has
      * already been created, for example from a scripting environment and I set
      * some external properties in the application for later reuse, so I must
@@ -942,7 +942,7 @@ public final class DesktopApplicationContext extends ApplicationContext {
     }
 
     /**
-     * Utility method to make it easier to define <tt>main()</tt> entry-points
+     * Utility method to make it easier to define {@code main()} entry-points
      * into applications.<br> This is useful if application instance has
      * already been created, for example from a scripting environment and I set
      * some external properties in the application for later reuse, so I must

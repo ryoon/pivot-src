@@ -302,7 +302,7 @@ public final class Time implements Comparable<Time>, Serializable {
     }
 
     /**
-     * Construct a <tt>Time</tt> from a {@link LocalTime}, rounding
+     * Construct a {@code Time} from a {@link LocalTime}, rounding
      * up the nanosecond value to our milliseconds.
      *
      * @param localTime The local time to convert.
@@ -335,7 +335,7 @@ public final class Time implements Comparable<Time>, Serializable {
      * represent the same time, the difference will be zero.
      *
      * @param time The time to subtract from this time.
-     * @return The number of milliseconds in between this time and <tt>time</tt>.
+     * @return The number of milliseconds in between this time and {@code time}.
      */
     public int subtract(final Time time) {
         Utils.checkNull(time, "time");
@@ -423,12 +423,12 @@ public final class Time implements Comparable<Time>, Serializable {
 
     /**
      * Creates a new time representing the specified time string. The time
-     * string must be in the full <tt>ISO 8601</tt> extended "time" format,
-     * which is <tt>[hh]:[mm]:[ss]</tt>. An optional millisecond suffix of the
-     * form <tt>.[nnn]</tt> is also supported.
+     * string must be in the full <code>ISO 8601</code> extended "time" format,
+     * which is <code>[hh]:[mm]:[ss]</code>. An optional millisecond suffix of the
+     * form <code>.[nnn]</code> is also supported.
      *
-     * @param value A string in the form of <tt>[hh]:[mm]:[ss]</tt> or
-     * <tt>[hh]:[mm]:[ss].[nnn]</tt> (e.g. 17:19:20 or 17:19:20.412).
+     * @param value A string in the form of <code>[hh]:[mm]:[ss]</code> or
+     * <code>[hh]:[mm]:[ss].[nnn]</code> (e.g. 17:19:20 or 17:19:20.412).
      * @return The {@code Time} value corresponding to the input string.
      */
     public static Time decode(final String value) {

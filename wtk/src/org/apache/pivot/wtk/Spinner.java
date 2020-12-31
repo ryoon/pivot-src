@@ -105,7 +105,7 @@ public class Spinner extends Container {
          * @param spinnerData The source spinner data.
          * @param value The value to locate.
          * @return The index of first occurrence of the value if it exists in the
-         * list; <tt>-1</tt>, otherwise.
+         * list; <code>-1</code>, otherwise.
          */
         public int indexOf(List<?> spinnerData, Object value);
 
@@ -222,8 +222,7 @@ public class Spinner extends Container {
      * contents is an {@link ImmutableList} so that if the default property
      * (which is "spinnerData") is invoked in a BXML file,
      * <code>BXMLSerializer</code> trying to add to this immutable sequence will
-     * catch an exception and will do a {@link #setSpinnerData
-     * setSpinnerData(List&lt;?&gt;)} instead.
+     * catch an exception and will do a {@link #setSpinnerData(List)} instead.
      */
     public Spinner() {
         this(new ImmutableList<>(new ArrayList<>()));
@@ -231,7 +230,7 @@ public class Spinner extends Container {
 
     /**
      * Creates a spinner populated with the given spinner data. <p> Note that
-     * the default renderer uses (as last option) the toString method on list
+     * the default renderer uses (as last option) the {@code toString} method on list
      * elements, so override it to return whatever you want to display as text,
      * or implement your own custom renderer.
      *
@@ -356,7 +355,7 @@ public class Spinner extends Container {
     /**
      * Sets the selection to the specified index.
      *
-     * @param selectedIndex The index to select, or <tt>-1</tt> to clear the
+     * @param selectedIndex The index to select, or <code>-1</code> to clear the
      * selection.
      */
     public void setSelectedIndex(int selectedIndex) {

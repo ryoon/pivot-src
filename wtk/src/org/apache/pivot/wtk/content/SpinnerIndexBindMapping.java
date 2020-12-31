@@ -28,14 +28,14 @@ import org.apache.pivot.wtk.Spinner;
 public class SpinnerIndexBindMapping implements Spinner.ItemBindMapping {
 
     /**
-     * Called during <tt>load</tt>, and <tt>value</tt> is what is
-     * stored in our data object (which is the <tt>Integer</tt>
+     * Called during {@code load}, and {@code value} is what is
+     * stored in our data object (which is the {@code Integer}
      * index value).
      *
-     * @param spinnerData The <tt>Spinner</tt>'s data list.
+     * @param spinnerData The {@code Spinner}'s data list.
      * @param value The object value to map to an index in this list
-     * (which is an <tt>Integer</tt> value).
-     * @return The value converted to an integer, or <tt>-1</tt>
+     * (which is an {@code Integer} value).
+     * @return The value converted to an integer, or <code>-1</code>
      * if the value is out of range of the data list size.
      */
     @Override
@@ -50,13 +50,13 @@ public class SpinnerIndexBindMapping implements Spinner.ItemBindMapping {
     }
 
     /**
-     * Called during <tt>store</tt>, and <tt>index</tt> is the
+     * Called during {@code store}, and {@code index} is the
      * selected item index.  We are going to just return an
-     * <tt>Integer</tt> representing the index itself.
+     * {@code Integer} representing the index itself.
      *
-     * @param spinnerData The underlying data for the <tt>Spinner</tt>.
+     * @param spinnerData The underlying data for the {@code Spinner}.
      * @param index The index value to convert to a "storable" value.
-     * @return The <tt>Integer</tt> value of the index.
+     * @return The {@code Integer} value of the index.
      */
     @Override
     public Object get(final List<?> spinnerData, final int index) {

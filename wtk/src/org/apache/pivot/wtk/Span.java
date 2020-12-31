@@ -27,7 +27,7 @@ import org.apache.pivot.util.Utils;
 /**
  * Class representing a range of integer values. The range includes all values
  * in the interval <i>[start, end]</i>. Values may be negative, and the value of
- * <tt>start</tt> may be less than or equal to the value of <tt>end</tt>.
+ * {@code start} may be less than or equal to the value of {@code end}.
  */
 public final class Span {
     public final int start;
@@ -111,7 +111,7 @@ public final class Span {
     /**
      * Returns the length of the span.
      *
-     * @return The absolute value of (<tt>end</tt> minus <tt>start</tt>) + 1.
+     * @return The absolute value of ({@code end} minus {@code start}) + 1.
      */
     public long getLength() {
         return Math.abs((long) end - (long) start) + 1;
@@ -121,7 +121,7 @@ public final class Span {
      * Determines whether this span contains another span.
      *
      * @param span The span to test for containment.
-     * @return {@code true} if this span contains <tt>span</tt>; {@code false},
+     * @return {@code true} if this span contains {@code span}; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -147,7 +147,7 @@ public final class Span {
      * either end of the other span (since start and end are inclusive).
      *
      * @param span The span to test for adjacency.
-     * @return {@code true} if this span is adjacent <tt>span</tt>; {@code false},
+     * @return {@code true} if this span is adjacent {@code span}; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -169,11 +169,11 @@ public final class Span {
 
     /**
      * Determines whether this span is "before" another span.
-     * <p>"Before" means that the normalized end of this span is &lt; the
+     * <p>"Before" means that the normalized end of this span is {@code <} the
      * normalized start of the other span.
     *
      * @param span The span to test.
-     * @return {@code true} if this span is "before" <tt>span</tt>; {@code false},
+     * @return {@code true} if this span is "before" {@code span}; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -185,11 +185,11 @@ public final class Span {
 
     /**
      * Determines whether this span is "after" another span.
-     * <p>"After" means that the normalized start of this span is &gt; the
+     * <p>"After" means that the normalized start of this span is {@code >} the
      * normalized end of the other span.
     *
      * @param span The span to test.
-     * @return {@code true} if this span is "after" <tt>span</tt>; {@code false},
+     * @return {@code true} if this span is "after" {@code span}; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -203,7 +203,7 @@ public final class Span {
      * Determines whether this span intersects with another span.
      *
      * @param span The span to test for intersection.
-     * @return {@code true} if this span intersects with <tt>span</tt>;
+     * @return {@code true} if this span intersects with {@code span};
      * {@code false}, otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -228,7 +228,7 @@ public final class Span {
      *
      * @param span The span to intersect with this span.
      * @return A new Span instance representing the intersection of this span and
-     * <tt>span</tt>, or {@code null} if the spans do not intersect.
+     * {@code span}, or {@code null} if the spans do not intersect.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
     public Span intersect(final Span span) {
@@ -246,7 +246,7 @@ public final class Span {
      *
      * @param span The span to union with this span.
      * @return A new Span instance representing the union of this span and
-     * <tt>span</tt>.
+     * {@code span}.
      */
     public Span union(final Span span) {
         Utils.checkNull(span, "span");
@@ -294,8 +294,8 @@ public final class Span {
     }
 
     /**
-     * @return A normalized equivalent of the span in which <tt>start</tt> is
-     * guaranteed to be less or equal to <tt>end</tt>.
+     * @return A normalized equivalent of the span in which {@code start} is
+     * guaranteed to be less or equal to {@code end}.
      * <p> Note: if the span is already "normal", then no new object is
      * created.
      */

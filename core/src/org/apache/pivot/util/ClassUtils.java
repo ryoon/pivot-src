@@ -53,7 +53,7 @@ public final class ClassUtils {
      *
      * @param obj Any object.
      * @return The result of what {@link Object#toString} would return without
-     * any alternative implementation of <tt>toString()</tt> that may be implemented
+     * any alternative implementation of {@code toString()} that may be implemented
      * in the class or any intervening superclass.
      */
     public static String defaultToString(final Object obj) {
@@ -66,7 +66,7 @@ public final class ClassUtils {
      *
      * @param obj Any object.
      * @return The result of what {@link Object#toString} would return without
-     * any alternative implementation of <tt>toString()</tt> that may be implemented
+     * any alternative implementation of {@code toString()} that may be implemented
      * in the class or any intervening superclass, except that the simple name
      * of the class is used (without any package designation).
      */
@@ -76,7 +76,7 @@ public final class ClassUtils {
     }
 
     /**
-     * Multi-class version of the <tt>instanceof</tt> operator.
+     * Multi-class version of the {@code instanceof} operator.
      * <p> Specifically checks if the given object is an instance of any of the
      * given classes.
      * @param obj The (non-null) object to test.

@@ -379,7 +379,7 @@ public abstract class Container extends Component implements Sequence<Component>
      *
      * @param component The component to test.
      * @return {@code true} if this container is an ancestor of
-     * <tt>component</tt>; {@code false} otherwise.
+     * {@code component}; {@code false} otherwise.
      */
     public boolean isAncestor(Component component) {
         boolean ancestor = false;

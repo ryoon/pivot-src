@@ -924,7 +924,7 @@ public class TextArea extends Component {
     }
 
     /**
-     * @return The length of the selection; may be <tt>0</tt>.
+     * @return The length of the selection; may be <code>0</code>.
      */
     public int getSelectionLength() {
         return selectionLength;

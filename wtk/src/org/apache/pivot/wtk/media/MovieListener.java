@@ -142,7 +142,7 @@ public interface MovieListener {
 
     /**
      * Called when the movie begins playing. The frame at which the movie is
-     * starting can be obtained via <tt>getCurrentFrame()</tt> (it is not
+     * starting can be obtained via {@code getCurrentFrame()} (it is not
      * guaranteed to be positioned before the first frame when it is started).
      *
      * @param movie The movie that has just started to play.
@@ -152,7 +152,7 @@ public interface MovieListener {
 
     /**
      * Called when the movie stops playing. The frame at which the movie stopped
-     * can be obtained via <tt>getCurrentFrame()</tt> (it is not guaranteed to
+     * can be obtained via {@code getCurrentFrame()} (it is not guaranteed to
      * have completed the last frame when it is stopped).
      *
      * @param movie The movie that has just stopped playing.

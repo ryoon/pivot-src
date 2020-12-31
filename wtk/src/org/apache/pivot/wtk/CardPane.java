@@ -35,7 +35,7 @@ public class CardPane extends Container {
     /**
      * Returns the currently selected card index.
      *
-     * @return The selected card index, or <tt>-1</tt> if no card is selected.
+     * @return The selected card index, or <code>-1</code> if no card is selected.
      */
     public int getSelectedIndex() {
         return selectedIndex;
@@ -44,7 +44,7 @@ public class CardPane extends Container {
     /**
      * Sets the selected card index.
      *
-     * @param selectedIndex The selected card index, or <tt>-1</tt> for no
+     * @param selectedIndex The selected card index, or <code>-1</code> for no
      * selection.
      */
     public void setSelectedIndex(int selectedIndex) {

@@ -45,7 +45,7 @@ public interface ConstrainedVisual extends Visual {
      * constraint.
      *
      * @param height The height by which to constrain the preferred width, or
-     * <tt>-1</tt> for no constraint.
+     * <code>-1</code> for no constraint.
      * @return The preferred width given the height constraint.
      */
     int getPreferredWidth(int height);
@@ -55,7 +55,7 @@ public interface ConstrainedVisual extends Visual {
      * constraint.
      *
      * @param width The width by which to constrain the preferred height, or
-     * <tt>-1</tt> for no constraint.
+     * <code>-1</code> for no constraint.
      * @return The preferred height given the width constraint.
      */
     int getPreferredHeight(int width);
@@ -71,7 +71,7 @@ public interface ConstrainedVisual extends Visual {
      *
      * @param width Constrained width to compute the baseline for.
      * @param height Constrained height to compute the baseline for.
-     * @return The baseline relative to the origin of this visual, or <tt>-1</tt>
+     * @return The baseline relative to the origin of this visual, or <code>-1</code>
      * if this visual does not have a baseline.
      */
     int getBaseline(int width, int height);

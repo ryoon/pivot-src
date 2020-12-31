@@ -41,7 +41,7 @@ is shown below:
 
 <p>
 The font, color palette, and message icons are defined in a JSON file that should contain a
-<tt>Map</tt> containing the following properties:
+<code>Map</code> containing the following properties:
 </p>
 <table border="1" cellpadding="5">
 <tr>
@@ -50,24 +50,24 @@ The font, color palette, and message icons are defined in a JSON file that shoul
 <th>Description</th>
 </tr>
 <tr valign="top">
-<td><tt>font</tt></td>
-<td><tt>String</tt></td>
+<td><code>font</code></td>
+<td><code>String</code></td>
 <td>
 The default theme font; must be understandable by
-<tt>java.awt.Font.decode()</tt>.
+<code>java.awt.Font.decode()</code>.
 </td>
 </tr>
 <tr valign="top">
-<td><tt>colorMultiplier</tt></td>
-<td><tt>Number</tt></td>
+<td><code>colorMultiplier</code></td>
+<td><code>Number</code></td>
 <td>
 The default multiplication delta (+/-) for generating the darker and lighter version
 of any "base color palette", in the range [0.0..1.0].
 </td>
 </tr>
 <tr valign="top">
-<td><tt>themeIsDark</tt></td>
-<td><tt>boolean</tt></td>
+<td><code>themeIsDark</code></td>
+<td><code>boolean</code></td>
 <td>
 Tell if the theme is dark.
 Usually this means that (if true) any color will be transformed in the opposite way
@@ -76,8 +76,8 @@ Set true if dark, false otherwise (default).
 </td>
 </tr>
 <tr valign="top">
-<td><tt>themeIsFlat</tt></td>
-<td><tt>boolean</tt></td>
+<td><code>themeIsFlat</code></td>
+<td><code>boolean</code></td>
 <td>
 Tell if the theme is flat.
 Usually this means that (if true) any border/shadow will not be drawn.
@@ -85,8 +85,8 @@ Set true if flat, false otherwise (default).
 </td>
 </tr>
 <tr valign="top">
-<td><tt>transitionEnabled</tt></td>
-<td><tt>boolean</tt></td>
+<td><code>transitionEnabled</code></td>
+<td><code>boolean</code></td>
 <td>
 Tell if the theme has transitions enabled.
 Usually this means that (if false) any effect/transition will not be drawn.
@@ -94,11 +94,11 @@ Set true if enabled (default), false otherwise.
 </td>
 </tr>
 <tr valign="top">
-<td><tt>colors</tt></td>
-<td><tt>List&lt;String&gt;</tt></td>
+<td><code>colors</code></td>
+<td><code>List&lt;String&gt;</code></td>
 <td>
 This list should contain eight colors in a form understandable by
-<tt>java.awt.Color.decode()</tt>. This list represents the theme's
+<code>java.awt.Color.decode()</code>. This list represents the theme's
 "base color palette", from which the full color palette is
 derived. Each of these eight colors will be expanded to three
 colors in the final palette: a darker version, the color itself,
@@ -108,34 +108,34 @@ colors are the colors in the middle column.
 </td>
 </tr>
 <tr valign="top">
-<td><tt>messageIcons</tt></td>
-<td><tt>Map</tt></td>
+<td><code>messageIcons</code></td>
+<td><code>Map</code></td>
 <td>
 Message icon names; must include values for "error", "warning", "question", and "info".
-Names are specified as resource named relative to the <tt>TerraTheme</tt> class.
+Names are specified as resource named relative to the <code>TerraTheme</code> class.
 </td>
 </tr>
 <tr valign="top">
-<td><tt>smallMessageIcons</tt></td>
-<td><tt>Map</tt></td>
+<td><code>smallMessageIcons</code></td>
+<td><code>Map</code></td>
 <td>
 Small message icon names; must include values for "error", "warning", "question", and "info".
-Names are specified as resource named relative to the <tt>TerraTheme</tt> class.
+Names are specified as resource named relative to the <code>TerraTheme</code> class.
 </td>
 </tr>
 <tr valign="top">
-<td><tt>defaultBackgroundColor</tt></td>
-<td><tt>String</tt></td>
+<td><code>defaultBackgroundColor</code></td>
+<td><code>String</code></td>
 <td>
-The theme's default background color in hexadecimal format, for example <tt>#ffffff</tt>.
+The theme's default background color in hexadecimal format, for example <code>#ffffff</code>.
 If not set, a generic default will be used.
 </td>
 </tr>
 <tr valign="top">
-<td><tt>defaultForegroundColor</tt></td>
-<td><tt>String</tt></td>
+<td><code>defaultForegroundColor</code></td>
+<td><code>String</code></td>
 <td>
-The theme's default foreground color in hexadecimal format, for example <tt>#000000</tt>.
+The theme's default foreground color in hexadecimal format, for example <code>#000000</code>.
 If not set, a generic default will be used.
 </td>
 </tr>
@@ -143,13 +143,13 @@ If not set, a generic default will be used.
 <br>
 
 <p>
-By default, the theme definition in <tt>TerraTheme_default.json</tt> is used,
-but can be overridden via the <tt>org.apache.pivot.wtk.skin.terra.location</tt>
+By default, the theme definition in <code>TerraTheme_default.json</code> is used,
+but can be overridden via the <code>org.apache.pivot.wtk.skin.terra.location</code>
 property.<br>
 For Example, in VM arguments set:<br>
-<tt>-Dorg.apache.pivot.wtk.skin.terra.location=TerraTheme_dark.json</tt><br>
+<code>-Dorg.apache.pivot.wtk.skin.terra.location=TerraTheme_dark.json</code><br>
 or<br>
-<tt>-Dorg.apache.pivot.wtk.skin.terra.location=/org/apache/pivot/tests/TerraTheme_test.json</tt><br>
+<code>-Dorg.apache.pivot.wtk.skin.terra.location=/org/apache/pivot/tests/TerraTheme_test.json</code><br>
 </p>
 <br>
 

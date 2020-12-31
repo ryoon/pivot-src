@@ -99,7 +99,7 @@ public interface TableViewRowListener {
      *
      * @param tableView The source of the event.
      * @param index The first index affected by the event.
-     * @param count The number of rows that were removed, or <tt>-1</tt> if all
+     * @param count The number of rows that were removed, or <code>-1</code> if all
      * rows were removed.
      */
     default void rowsRemoved(TableView tableView, int index, int count) {

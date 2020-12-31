@@ -250,7 +250,7 @@ public class RangeSelection {
     }
 
     /**
-     * @return The smallest start value of this selection, or <tt>-1</tt>
+     * @return The smallest start value of this selection, or <code>-1</code>
      * if it is empty.
      */
     public int getStart() {
@@ -262,7 +262,7 @@ public class RangeSelection {
     }
 
     /**
-     * @return The largest end value of this selection, or <tt>-1</tt>
+     * @return The largest end value of this selection, or <code>-1</code>
      * if the range is empty.
      */
     public int getEnd() {
@@ -279,7 +279,7 @@ public class RangeSelection {
      *
      * @param range The range to look for.
      * @return The index of the range, if it exists in the selection;
-     * <tt>-1</tt>, otherwise.
+     * <code>-1</code>, otherwise.
      */
     public int indexOf(final Span range) {
         assert (range != null);

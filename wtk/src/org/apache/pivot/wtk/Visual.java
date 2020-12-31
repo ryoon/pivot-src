@@ -52,7 +52,7 @@ public interface Visual {
     /**
      * Returns the visual's baseline.
      *
-     * @return The baseline relative to the origin of the visual, or <tt>-1</tt>
+     * @return The baseline relative to the origin of the visual, or <code>-1</code>
      * if this visual does not have a baseline.
      */
     int getBaseline();

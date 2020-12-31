@@ -74,7 +74,7 @@ public class BXMLExplorerDocument extends CardPane implements Bindable {
     private File file;
     private Component loadedComponent;
     /**
-     * Maps the WTK widgets -&gt; bxml:id values.
+     * Maps the WTK widgets {@code -> bxml:id} values.
      */
     private HashMap<Object, String> widgetToID = null;
     private HashMap<Object, TreeNode> componentToTreeNode = null;

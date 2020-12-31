@@ -97,7 +97,7 @@ public final class Insets implements Serializable {
     }
 
     /**
-     * Construct an <tt>Insets</tt> value given the total
+     * Construct an {@code Insets} value given the total
      * height and width values to produce.
      * <p> This will assign half the height to each of the top
      * and bottom, and half the width each to the left and right.
@@ -119,7 +119,7 @@ public final class Insets implements Serializable {
     }
 
     /**
-     * Construct an <tt>Insets</tt> value given the total
+     * Construct an {@code Insets} value given the total
      * dimensions of the value to produce.
      * <p> This will assign half the dimensions height to each of the top
      * and bottom, and half the dimensions width each to the left and right.
@@ -197,7 +197,7 @@ public final class Insets implements Serializable {
 
     /**
      * Return the total size of this insets value as a single
-     * <tt>Dimensions</tt> value.
+     * {@code Dimensions} value.
      *
      * @return The total width and height of this object.
      * @see #getWidth
@@ -248,7 +248,7 @@ public final class Insets implements Serializable {
      * </ul>
      *
      * @param value The string value of the Insets to decode.
-     * @return The parsed <tt>Insets</tt> value.
+     * @return The parsed {@code Insets} value.
      * @throws IllegalArgumentException if the input is not in one of these
      * formats.
      * @see #Insets(Dictionary)

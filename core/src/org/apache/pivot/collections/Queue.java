@@ -25,7 +25,7 @@ import org.apache.pivot.util.ListenerList;
 public interface Queue<T> extends Collection<T> {
     /**
      * Enqueues an item. If the queue is unsorted, the item is added at the tail
-     * of the queue (index <tt>0</tt>). Otherwise, it is inserted at the
+     * of the queue (index <code>0</code>). Otherwise, it is inserted at the
      * appropriate index.
      * <p> If there is a maximum queue length defined and the queue is already at
      * the maximum length this new item will not be queued.
@@ -45,7 +45,7 @@ public interface Queue<T> extends Collection<T> {
     /**
      * Returns the item at the head of the queue without removing it from the
      * queue. Returns null if the queue contains no items. Will also return null
-     * if the head item in the queue is null. <tt>isEmpty()</tt> can be used to
+     * if the head item in the queue is null. {@code isEmpty()} can be used to
      * distinguish between these two cases.
      * @return The object at the head of the queue (not removed from the queue).
      */

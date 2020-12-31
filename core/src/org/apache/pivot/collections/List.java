@@ -89,7 +89,7 @@ public interface List<T> extends Sequence<T>, Collection<T> {
      *
      * @param item The item to be added to the list.
      * @param index The index at which the item should be inserted. Must be a
-     * value between <tt>0</tt> and <tt>getLength()</tt>.
+     * value between <code>0</code> and {@code getLength()}.
      * @throws IllegalArgumentException If the list is sorted and the insertion
      * point of the item does not match the given index.
      * @see ListListener#itemInserted(List, int)

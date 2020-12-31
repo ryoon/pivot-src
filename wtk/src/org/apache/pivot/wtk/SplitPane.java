@@ -21,13 +21,13 @@ import org.apache.pivot.util.ListenerList;
 import org.apache.pivot.util.Utils;
 
 /**
- * A <tt>SplitPane</tt> is a container component that splits its size up into
+ * A {@code SplitPane} is a container component that splits its size up into
  * two regions, each of which is capable of holding one component. A split pane
  * may be setup to support either horizontal or veritcal splits. The area in
  * between the two regions is known as the <i>splitter</i> and typically allows
  * the user to adjust the partitioning between the two regions. <p> Since
- * <tt>SplitPane</tt>s only support a single splitter, multiple
- * <tt>SplitPane</tt>s may be nested to support more complex layouts. In that
+ * {@code SplitPane}s only support a single splitter, multiple
+ * {@code SplitPane}s may be nested to support more complex layouts. In that
  * case, one split pane will "own" the other. The implication of this is noticed
  * when a split pane directly contains a child split pane of the same
  * orientation. The parent pane's separator will be able to travel past that of

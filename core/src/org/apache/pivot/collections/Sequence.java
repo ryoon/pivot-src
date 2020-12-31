@@ -184,10 +184,10 @@ public interface Sequence<T> {
         public interface ItemIterator<T> extends Iterator<T> {
             /**
              * Gets the path within the nested sequence to the item most
-             * recently returned by a call to <tt>next()</tt>.
+             * recently returned by a call to {@code next()}.
              *
              * @return The path (from the root sequence) to the current item.
-             * @throws IllegalStateException If <tt>next()</tt> has not yet been
+             * @throws IllegalStateException If {@code next()} has not yet been
              * called on this iterator.
              */
             public Path getPath();
@@ -238,7 +238,7 @@ public interface Sequence<T> {
             }
 
             /**
-             * Normalizes <tt>stack</tt> and <tt>nextPath</tt> such that the
+             * Normalizes {@code stack} and {@code nextPath} such that the
              * iterator is pointing to a valid item or the end of the nested
              * sequence.
              */
@@ -487,7 +487,7 @@ public interface Sequence<T> {
      * Adds an item to the sequence.
      *
      * @param item The item to be added to the sequence.
-     * @return The index at which the item was added, or <tt>-1</tt> if the item
+     * @return The index at which the item was added, or <code>-1</code> if the item
      * was not added to the sequence.
      */
     int add(T item);
@@ -497,7 +497,7 @@ public interface Sequence<T> {
      *
      * @param item The item to be added to the sequence.
      * @param index The index at which the item should be inserted. Must be a
-     * value between <tt>0</tt> and <tt>getLength()</tt>.
+     * value between <code>0</code> and {@code getLength()}.
      */
     void insert(T item, int index);
 
@@ -515,7 +515,7 @@ public interface Sequence<T> {
      * Removes the first occurrence of the given item from the sequence.
      *
      * @param item The item to remove.
-     * @return The index of the item that was removed, or <tt>-1</tt> if the item
+     * @return The index of the item that was removed, or <code>-1</code> if the item
      * could not be found.
      * @see #remove(int, int)
      */
@@ -525,7 +525,7 @@ public interface Sequence<T> {
      * Removes one or more items from the sequence.
      *
      * @param index The starting index to remove.
-     * @param count The number of items to remove, beginning with <tt>index</tt>.
+     * @param count The number of items to remove, beginning with {@code index}.
      * @return A sequence containing the items that were removed.
      */
     Sequence<T> remove(int index, int count);
@@ -543,7 +543,7 @@ public interface Sequence<T> {
      *
      * @param item The item to locate.
      * @return The index of first occurrence of the item if it exists in the
-     * sequence; <tt>-1</tt>, otherwise.
+     * sequence; <code>-1</code>, otherwise.
      */
     int indexOf(T item);
 

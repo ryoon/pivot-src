@@ -549,7 +549,7 @@ public class TextPane extends Container {
     /**
      * Returns character count of the document.
      *
-     * @return The document's character count, or <tt>0</tt> if the document is
+     * @return The document's character count, or <code>0</code> if the document is
      * {@code null}.
      */
     public int getCharacterCount() {
@@ -557,9 +557,9 @@ public class TextPane extends Container {
     }
 
     /**
-     * Delete the currently selected text (if selection length &gt; 0),
+     * Delete the currently selected text (if {@code selectionLength > 0}),
      * or the character before or after the current cursor position,
-     * depending on the <tt>backspace</tt> flag.
+     * depending on the {@code backspace} flag.
      * @param backspace {@code true} if the single character delete is
      * the character before the current position, or {@code false} for
      * the character after (at) the current position.
@@ -987,7 +987,7 @@ public class TextPane extends Container {
     }
 
     /**
-     * @return The length of the selection; may be <tt>0</tt>.
+     * @return The length of the selection; may be <code>0</code>.
      */
     public int getSelectionLength() {
         return selectionLength;

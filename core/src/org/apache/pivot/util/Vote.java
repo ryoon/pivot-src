@@ -41,10 +41,10 @@ public enum Vote {
      * For a vote tally to work correctly the initial value must be {@link #APPROVE}.
      * <p>The tallying algorithm is as follows:
      * <ul>
-     * <li>New vote is {@link #APPROVE} -&gt; result is previous result.
-     * <li>New vote is {@link #DENY} -&gt; result is new vote (that is, <tt>DENY</tt>).
-     * <li>New vote is {@link #DEFER} -&gt; result is <tt>DENY</tt> if previous was
-     * <tt>DENY</tt>, otherwise <tt>DEFER</tt>.
+     * <li>New vote is {@link #APPROVE} {@code ->} result is previous result.
+     * <li>New vote is {@link #DENY} {@code ->} result is new vote (that is, <code>DENY</code>).
+     * <li>New vote is {@link #DEFER} {@code ->} result is <code>DENY</code> if previous was
+     * <code>DENY</code>, otherwise <code>DEFER</code>.
      * </ul>
      *
      * @param vote The new vote to tally.

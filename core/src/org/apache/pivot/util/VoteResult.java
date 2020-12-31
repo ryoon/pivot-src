@@ -18,7 +18,7 @@ package org.apache.pivot.util;
 
 /**
  * An object holding the result of a {@link Vote#tally} that can be
- * used with a <tt>forEach</tt> or lambda expression, where the value
+ * used with a {@code forEach} or lambda expression, where the value
  * used during the iteration must be final or effectively final.
  */
 public class VoteResult {
@@ -44,7 +44,7 @@ public class VoteResult {
 
     /**
      * Tally the internal vote with the next vote in line.
-     * <p> The internal <tt>Vote</tt> is updated with the
+     * <p> The internal {@code Vote} is updated with the
      * result of the vote tally.
      *
      * @param vote The next vote to tally against all the
@@ -56,7 +56,7 @@ public class VoteResult {
     }
 
     /**
-     * @return The final tallied <tt>Vote</tt> value.
+     * @return The final tallied {@code Vote} value.
      */
     public Vote get() {
         return result;

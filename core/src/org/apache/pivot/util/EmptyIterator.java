@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * <p> This is used (for instance) for {@link org.apache.pivot.collections.HashMap}
  * when a hash bucket list is empty, so that iteration through the bucket list
  * doesn't have to be special-cased.
- * <p>Note: for Java 8 we have taken out the implementation of the <tt>remove()</tt>
+ * <p>Note: for Java 8 we have taken out the implementation of the {@code remove()}
  * method because the interface now implements it as we need it as a default method.
  */
 public class EmptyIterator<T> implements Iterator<T> {

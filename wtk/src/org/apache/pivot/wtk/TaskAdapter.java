@@ -28,7 +28,7 @@ public class TaskAdapter<T> implements TaskListener<T> {
     private TaskListener<T> taskListener;
 
     /**
-     * Creates a new <tt>TaskAdapter</tt> that wraps the specified task listener.
+     * Creates a new {@code TaskAdapter} that wraps the specified task listener.
      *
      * @param taskListener The task listener that will be notified on the UI thread.
      */

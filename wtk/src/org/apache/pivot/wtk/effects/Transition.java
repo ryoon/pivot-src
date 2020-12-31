@@ -262,7 +262,7 @@ public abstract class Transition {
     /**
      * Starts the transition. Calls {@link #update()} to establish the initial
      * state and starts a timer that will repeatedly call {@link #update()} at
-     * the current rate. The specified <tt>TransitionListener</tt> will be
+     * the current rate. The specified {@code TransitionListener} will be
      * notified when the transition completes.
      *
      * @param transitionListenerArgument The listener to get notified when the

@@ -1500,7 +1500,7 @@ public class BXMLSerializer implements Serializer<Object>, Resolvable {
     /**
      * Hook used for standardized reporting of exceptions during this process.
      * <p>Subclasses should override this method in order to do something besides
-     * print to <tt>System.err</tt>.
+     * print to {@code System.err}.
      * @param exception Whatever exception has been thrown during processing.
      */
     protected void reportException(final Throwable exception) {

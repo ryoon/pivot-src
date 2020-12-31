@@ -349,7 +349,7 @@ public class ListButton extends Button {
     /**
      * Returns the current selection.
      *
-     * @return The index of the currently selected list item, or <tt>-1</tt> if
+     * @return The index of the currently selected list item, or <code>-1</code> if
      * nothing is selected.
      */
     public int getSelectedIndex() {
@@ -359,7 +359,7 @@ public class ListButton extends Button {
     /**
      * Sets the selection.
      *
-     * @param selectedIndex The index of the list item to select, or <tt>-1</tt>
+     * @param selectedIndex The index of the list item to select, or <code>-1</code>
      * to clear the selection.
      */
     public void setSelectedIndex(int selectedIndex) {

@@ -171,13 +171,13 @@ public final class GraphicsUtilities {
      * Draws a rectangle with a thickness of one pixel at the specified
      * coordinates whose <u>outer border</u> is the specified width and height.
      * In other words, the distance from the left edge of the leftmost pixel to
-     * the left edge of the rightmost pixel is <tt>width - 1</tt>. <p> This
+     * the left edge of the rightmost pixel is <code>width - 1</code>. <p> This
      * method provides more reliable pixel rounding behavior than
-     * <tt>java.awt.Graphics#drawRect</tt> when scaling is applied because this
+     * {@code java.awt.Graphics#drawRect} when scaling is applied because this
      * method does not stroke the shape but instead explicitly fills the desired
      * pixels with the graphics context's paint. For this reason, and because
      * Pivot supports scaling the display host, it is recommended that skins use
-     * this method over <tt>java.awt.Graphics#drawRect</tt>.
+     * this method over {@code java.awt.Graphics#drawRect}.
      *
      * @param graphics The graphics context that will be used to perform the operation.
      * @param x        The x-coordinate of the upper-left corner of the rectangle.
@@ -195,13 +195,13 @@ public final class GraphicsUtilities {
      * Draws a rectangle with the specified thickness at the specified
      * coordinates whose <u>outer border</u> is the specified width and height.
      * In other words, the distance from the left edge of the leftmost pixel to
-     * the left edge of the rightmost pixel is <tt>width - thickness</tt>. <p>
+     * the left edge of the rightmost pixel is <code>width - thickness</code>. <p>
      * This method provides more reliable pixel rounding behavior than
-     * <tt>java.awt.Graphics#drawRect</tt> when scaling is applied because this
+     * {@code java.awt.Graphics#drawRect} when scaling is applied because this
      * method does not stroke the shape but instead explicitly fills the desired
      * pixels with the graphics context's paint. For this reason, and because
      * Pivot supports scaling the display host, it is recommended that skins use
-     * this method over <tt>java.awt.Graphics#drawRect</tt>.
+     * this method over {@code java.awt.Graphics#drawRect}.
      *
      * @param graphics  The graphics context that will be used to perform the operation.
      * @param x         The x-coordinate of the upper-left corner of the rectangle.

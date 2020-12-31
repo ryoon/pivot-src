@@ -474,7 +474,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
     /**
      * Returns the input method listener for this component.
      * <p> Should be overridden by any component's skin that wants
-     * to handle Input Method events (such as <tt>TextInput</tt>).
+     * to handle Input Method events (such as {@code TextInput}).
      *
      * @return The input method listener (if any) for this
      * component.

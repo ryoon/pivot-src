@@ -25,7 +25,7 @@ import org.apache.pivot.util.ListenerList;
 public interface Stack<T> extends Collection<T> {
     /**
      * "Pushes" an item onto the stack. If the stack is unsorted, the item is
-     * added at the top of the stack (<tt>getLength()</tt>). Otherwise, it is
+     * added at the top of the stack ({@code getLength()}). Otherwise, it is
      * inserted at the appropriate index.
      * <p> If there is a maximum stack depth defined and the stack goes past
      * this maximum depth, the deepest item (which could be this new item,
@@ -46,7 +46,7 @@ public interface Stack<T> extends Collection<T> {
     /**
      * Returns the item on top of the stack without removing it from the stack.
      * Returns null if the stack contains no items. Will also return null if the
-     * top item in the stack is null. <tt>getLength()</tt> can be used to
+     * top item in the stack is null. {@code getLength()} can be used to
      * distinguish between these two cases.
      * @return The top item from the stack (which remains there).
      */

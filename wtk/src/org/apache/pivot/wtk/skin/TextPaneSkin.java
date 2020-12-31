@@ -551,26 +551,26 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
     }
 
     /**
-     * Gets current value of style that determines the behavior of <tt>TAB</tt>
-     * and <tt>Ctrl-TAB</tt> characters.
+     * Gets current value of style that determines the behavior of <code>TAB</code>
+     * and <code>Ctrl-TAB</code> characters.
      *
-     * @return {@code true} if <tt>TAB</tt> inserts an appropriate number of
-     * spaces, while <tt>Ctrl-TAB</tt> shifts focus to next component.
-     * {@code false} (default) means <tt>TAB</tt> shifts focus and
-     * <tt>Ctrl-TAB</tt> inserts spaces.
+     * @return {@code true} if <code>TAB</code> inserts an appropriate number of
+     * spaces, while <code>Ctrl-TAB</code> shifts focus to next component.
+     * {@code false} (default) means <code>TAB</code> shifts focus and
+     * <code>Ctrl-TAB</code> inserts spaces.
      */
     public boolean getAcceptsTab() {
         return acceptsTab;
     }
 
     /**
-     * Sets current value of style that determines the behavior of <tt>TAB</tt>
-     * and <tt>Ctrl-TAB</tt> characters.
+     * Sets current value of style that determines the behavior of <code>TAB</code>
+     * and <code>Ctrl-TAB</code> characters.
      *
-     * @param acceptsTab {@code true} if <tt>TAB</tt> inserts an appropriate
-     * number of spaces, while <tt>Ctrl-TAB</tt> shifts focus to next component.
-     * {@code false} (default) means <tt>TAB</tt> shifts focus and
-     * <tt>Ctrl-TAB</tt> inserts spaces.
+     * @param acceptsTab {@code true} if <code>TAB</code> inserts an appropriate
+     * number of spaces, while <code>Ctrl-TAB</code> shifts focus to next component.
+     * {@code false} (default) means <code>TAB</code> shifts focus and
+     * <code>Ctrl-TAB</code> inserts spaces.
      */
     public void setAcceptsTab(final boolean acceptsTab) {
         this.acceptsTab = acceptsTab;

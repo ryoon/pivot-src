@@ -275,7 +275,7 @@ public abstract class Query<V> extends IOTask<V> {
      * PUT requests, this number will increment in between the
      * {@link QueryListener#connected(Query) connected} and
      * {@link QueryListener#requestSent(Query) requestSent} phases of the
-     * <tt>QueryListener</tt> lifecycle methods. Interested listeners can poll
+     * {@code QueryListener} lifecycle methods. Interested listeners can poll
      * for this value during that phase.
      * @return Number of bytes sent by POST or PUT requests, or 0 for GET and
      * DELETE.
@@ -291,7 +291,7 @@ public abstract class Query<V> extends IOTask<V> {
      * solicit response content from the server. <p> This number will increment
      * in between the {@link QueryListener#requestSent(Query) requestSent} and
      * {@link QueryListener#responseReceived(Query) responseReceived} phases of
-     * the <tt>QueryListener</tt> lifecycle methods. Interested listeners can
+     * the {@code QueryListener} lifecycle methods. Interested listeners can
      * poll for this value during that phase.
      * @return The number of bytes received.
      */
@@ -302,11 +302,11 @@ public abstract class Query<V> extends IOTask<V> {
     /**
      * Gets the number of bytes that are expected to be received from the server
      * in the body of the server's HTTP response. This value reflects the
-     * <tt>Content-Length</tt> HTTP response header and is thus merely an
+     * <code>Content-Length</code> HTTP response header and is thus merely an
      * expectation. The actual total number of bytes that will be received is
      * not known for certain until the full response has been received. <p> If
-     * the server did not specify a <tt>Content-Length</tt> HTTP response
-     * header, a value of <tt>-1</tt> will be returned to indicate that this
+     * the server did not specify a <code>Content-Length</code> HTTP response
+     * header, a value of <code>-1</code> will be returned to indicate that this
      * value is unknown.
      * @return The expected number of bytes to received based on the content length.
      */

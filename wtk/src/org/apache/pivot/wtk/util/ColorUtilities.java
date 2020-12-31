@@ -36,7 +36,7 @@ public final class ColorUtilities {
     /**
      * Returns a brighter version of the specified color. Specifically, it
      * increases the brightness (in the HSB color model) by the given
-     * <tt>adjustment</tt> factor (usually in the range ]0 .. 1[).
+     * {@code adjustment} factor (usually in the range ]0 .. 1[).
      *
      * @param color the color
      * @param adjustment the adjustment factor
@@ -49,7 +49,7 @@ public final class ColorUtilities {
     /**
      * Returns a darker version of the specified color. Specifically, it
      * decreases the brightness (in the HSB color model) by the given
-     * <tt>adjustment</tt> factor (usually in the range ]0 .. 1[).
+     * {@code adjustment} factor (usually in the range ]0 .. 1[).
      *
      * @param color the color
      * @param adjustment the adjustment factor
@@ -221,7 +221,7 @@ public final class ColorUtilities {
 
     /**
      * @return An encoded value for the given color in the form of:
-     * <tt>#RRGGBB</tt> or <tt>0xRRGGBBTT</tt> (where <tt>"TT"</tt> is the
+     * <code>#RRGGBB</code> or <code>0xRRGGBBTT</code> (where <code>"TT"</code> is the
      * alpha transparency value of the color, if not solid),
      * either of which is suitable for lookup in the
      * {@link org.apache.pivot.wtk.GraphicsUtilities#decodeColor(String)} method.
@@ -242,7 +242,7 @@ public final class ColorUtilities {
 
     /**
      * @return An encoded value for the given {@link CSSColor} in the form of:
-     * <tt>#RRGGBB</tt> only (since these are always solid colors by definition),
+     * <code>#RRGGBB</code> only (since these are always solid colors by definition),
      * which is suitable for lookup in the
      * {@link org.apache.pivot.wtk.GraphicsUtilities#decodeColor(String)} method.
      * @param color The input color to convert.

@@ -136,7 +136,7 @@ public class ScriptApplication implements Application {
      * automatic application startup (mainly used for tests, demos, etc.).
      *
      * @param srcArgument The name of a source file that will be used if
-     * the <tt>--src=...</tt> argument is missing from the command line.
+     * the <code>--src=...</code> argument is missing from the command line.
      */
     public ScriptApplication(final String srcArgument) {
         if (srcArgument.startsWith("@")) {

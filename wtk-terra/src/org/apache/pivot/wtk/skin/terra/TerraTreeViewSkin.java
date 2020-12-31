@@ -81,7 +81,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
      * Iterates through the visible nodes. For callers who wish to know the path
      * of each visible node, using this iterator will be much more efficient
      * than manually iterating over the visible nodes and calling
-     * <tt>getPath()</tt> on each node.
+     * {@code getPath()} on each node.
      */
     protected final class VisibleNodeIterator implements Iterator<NodeInfo> {
         private int index;
@@ -168,8 +168,8 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
          * are expanded and collapsed, the row index of any given node in the
          * tree will change.
          *
-         * @return The row index of the current node, or <tt>-1</tt> if
-         * <tt>next()</tt> has not yet been called.
+         * @return The row index of the current node, or <code>-1</code> if
+         * {@code next()} has not yet been called.
          */
         public int getRowIndex() {
             return (path == null ? -1 : index - 1);
@@ -178,7 +178,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
         /**
          * Gets the path of the node last returned by a call to {@link #next()}.
          *
-         * @return The path to the node, or {@code null} if <tt>next()</tt> has
+         * @return The path to the node, or {@code null} if {@code next()} has
          * not yet been called.
          */
         public Path getPath() {
@@ -189,13 +189,13 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
     /**
      * An internal data structure that keeps track of skin-related metadata for
      * a tree node. The justification for the existence of this class lies in
-     * the <tt>visibleNodes</tt> data structure, which is a flat list of nodes
+     * the {@code visibleNodes} data structure, which is a flat list of nodes
      * that are visible at any given time. In this context, visible means that
      * their parent hierarchy is expanded, <b>not</b> that they are being
-     * painted. This list, combined with <tt>getNodeHeight()</tt>, enables us to
+     * painted. This list, combined with {@code getNodeHeight()}, enables us to
      * quickly determine which nodes to paint given a graphics clip rect. It
      * also enables us to quickly traverse the tree view when handling key
-     * events. <p> NOTE: some of this data is managed by <tt>TreeView</tt> and
+     * events. <p> NOTE: some of this data is managed by {@code TreeView} and
      * cached here to provide further optimizations during painting and user
      * input.
      */
@@ -389,9 +389,9 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
         /**
          * Loads this branch info's children. The children list is initialized
          * to {@code null} and loaded lazily to allow the skin to only create
-         * <tt>NodeInfo</tt> objects for the nodes that it actually needs in
+         * {@code NodeInfo} objects for the nodes that it actually needs in
          * order to paint. Thus, it is the responsibility of the skin to check
-         * if <tt>children</tt> is null and call <tt>loadChildren()</tt> if
+         * if {@code children} is null and call {@code loadChildren()} if
          * necessary.
          */
         @SuppressWarnings("unchecked")
@@ -1349,7 +1349,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
      * @param parentBranchInfo The branch info of the parent node.
      * @param index The index of the first child node to remove from the visible
      * nodes sequence.
-     * @param count The number of child nodes to remove, or <tt>-1</tt> to remove
+     * @param count The number of child nodes to remove, or <code>-1</code> to remove
      * all child nodes from the visible nodes sequence.
      */
     private void removeVisibleNodes(BranchInfo parentBranchInfo, int index, int count) {
@@ -1420,7 +1420,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
     }
 
     /**
-     * Clears our <tt>NodeInfo</tt> hierarchy of the specified cached field.
+     * Clears our {@code NodeInfo} hierarchy of the specified cached field.
      *
      * @param mask The bitmask specifying which field to clear.
      */

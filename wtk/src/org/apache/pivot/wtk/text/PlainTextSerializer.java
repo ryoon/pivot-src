@@ -92,7 +92,7 @@ public class PlainTextSerializer implements Serializer<Document> {
 
     /**
      * Sets the buffer size used internally for reading and writing.  The
-     * default value is {@link Constants#BUFFER_SIZE}.  A value of <tt>0</tt> will
+     * default value is {@link Constants#BUFFER_SIZE}.  A value of <code>0</code> will
      * use the default value in the {@link BufferedReader} and {@link BufferedWriter}
      * classes (probably 8192).
      *

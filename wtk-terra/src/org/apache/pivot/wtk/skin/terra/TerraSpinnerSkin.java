@@ -61,8 +61,8 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
          * Starts spinning the specified spinner.
          *
          * @param spinnerArgument The spinner to spin
-         * @param directionArgument <tt>1</tt> to adjust the spinner's selected
-         * index larger; <tt>-1</tt> to adjust it smaller
+         * @param directionArgument <code>1</code> to adjust the spinner's selected
+         * index larger; <code>-1</code> to adjust it smaller
          * @exception IllegalStateException If automatic spinner of any spinner
          * is already in progress. Only one spinner may be automatically spun at
          * one time

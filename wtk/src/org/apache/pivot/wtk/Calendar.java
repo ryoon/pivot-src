@@ -157,10 +157,10 @@ public class Calendar extends Container {
 
     /**
      * Sets the selected date to the date represented by the specified date
-     * string. The date string must be in the <tt>ISO 8601</tt> "calendar date"
-     * format, which is <tt>[YYYY]-[MM]-[DD]</tt>.
+     * string. The date string must be in the <code>ISO 8601</code> "calendar date"
+     * format, which is <code>[YYYY]-[MM]-[DD]</code>.
      *
-     * @param selectedDate A string in the form of <tt>[YYYY]-[MM]-[DD]</tt>
+     * @param selectedDate A string in the form of <code>[YYYY]-[MM]-[DD]</code>
      * (e.g. 2008-07-23)
      * @throws IllegalArgumentException if the given date is {@code null}.
      */

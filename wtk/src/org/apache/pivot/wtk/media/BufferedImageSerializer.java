@@ -99,7 +99,7 @@ public class BufferedImageSerializer implements Serializer<BufferedImage> {
      * Reads a serialized image from an input stream.
      *
      * @param inputStream The stream to read the image from.
-     * @return A <tt>BufferedImage</tt> object
+     * @return A {@code BufferedImage} object
      */
     @Override
     public BufferedImage readObject(final InputStream inputStream) throws IOException,

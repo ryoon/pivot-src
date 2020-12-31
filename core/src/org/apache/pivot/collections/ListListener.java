@@ -78,7 +78,7 @@ public interface ListListener<T> {
      *
      * @param list The source of the list event.
      * @param index The index of the item that was updated.
-     * @param previousItem The item that was previously stored at <tt>index</tt>.
+     * @param previousItem The item that was previously stored at {@code index}.
      */
     default void itemUpdated(List<T> list, int index, T previousItem) {
     }

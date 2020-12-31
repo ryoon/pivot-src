@@ -196,7 +196,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
      * Get the indexed element in the list.
      *
      * @param index Position of the element to retrieve.
-     * @return The element at position <tt>index</tt>.
+     * @return The element at position {@code index}.
      * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public T get(final int index) {

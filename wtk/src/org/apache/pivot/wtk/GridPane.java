@@ -337,7 +337,7 @@ public class GridPane extends Container {
      * Returns the index of the row at a given location.
      *
      * @param y The y-coordinate of the row to identify.
-     * @return The row index, or <tt>-1</tt> if there is no row at the given
+     * @return The row index, or <code>-1</code> if there is no row at the given
      * y-coordinate.
      */
     public int getRowAt(int y) {
@@ -360,7 +360,7 @@ public class GridPane extends Container {
      * Returns the index of the column at a given location.
      *
      * @param x The x-coordinate of the column to identify.
-     * @return The column index, or <tt>-1</tt> if there is no column at the
+     * @return The column index, or <code>-1</code> if there is no column at the
      * given x-coordinate.
      */
     public int getColumnAt(int x) {

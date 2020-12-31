@@ -135,7 +135,7 @@ public final class Bounds implements Serializable {
      * four needed values.
      *
      * @param bounds The sequence containing the bounds values,
-     * in the order of <tt>[ x, y, width, height ]</tt>
+     * in the order of <code>[ x, y, width, height ]</code>
      * @throws IllegalArgumentException if the bounds argument is {@code null}.
      */
     public Bounds(final Sequence<?> bounds) {

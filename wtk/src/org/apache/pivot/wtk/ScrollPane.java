@@ -69,7 +69,7 @@ public class ScrollPane extends Viewport {
 
     /**
      * Component class representing the components that will get placed in the
-     * corners of a <tt>ScrollPane</tt>. Skins will instantiate these components
+     * corners of a {@code ScrollPane}. Skins will instantiate these components
      * as needed when unfilled corners are introduced by a row header or column
      * header.
      */

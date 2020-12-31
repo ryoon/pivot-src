@@ -37,7 +37,7 @@ public class ShadeDecorator implements Decorator {
     private Graphics2D graphics;
 
     /**
-     * Creates a new <tt>ShadeDecorator</tt> with the default opacity and shade
+     * Creates a new {@code ShadeDecorator} with the default opacity and shade
      * color.
      */
     public ShadeDecorator() {
@@ -51,7 +51,7 @@ public class ShadeDecorator implements Decorator {
     }
 
     /**
-     * Creates a new <tt>ShadeDecorator</tt> with the specified opacity and
+     * Creates a new {@code ShadeDecorator} with the specified opacity and
      * shade color.
      *
      * @param opacity The opacity of the shade, between 0.0 and 1.0, exclusive.

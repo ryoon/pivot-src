@@ -438,7 +438,7 @@ public class TextInput extends Component {
     }
 
     /**
-     * @return The length of the selection; may be <tt>0</tt>.
+     * @return The length of the selection; may be <code>0</code>.
      */
     public final int getSelectionLength() {
         return selectionLength;
@@ -449,7 +449,7 @@ public class TextInput extends Component {
      *
      * @return A span containing the current selection. Both start and end
      * points are inclusive. Returns {@code null} if the selection length is
-     * <tt>0</tt>.
+     * <code>0</code>.
      */
     public final Span getSelection() {
         return (selectionLength == 0) ? null : new Span(selectionStart, selectionStart + selectionLength - 1);

@@ -61,8 +61,8 @@ public final class StringUtils {
      * Convert a string of characters into a hex value string.
      *
      * @param charSequence The string of characters to represent.
-     * @return A string in the form of <tt>"[xx,xx,xx...]"</tt>
-     * where the "xx" are the hex representations of each character.
+     * @return A string in the form of <code>"[<i>xx</i>,<i>xx</i>,<i>xx</i>...]"</code>
+     * where the "<i>xx</i>" are the hex representations of each character.
     */
     public static String toHexString(final CharSequence charSequence) {
         StringBuilder builder = new StringBuilder(charSequence.length() * 3 + 1);
@@ -132,11 +132,11 @@ public final class StringUtils {
      * and supports more features.  Specifically it will recognize:
      * <ul>
      * <li>{@code true} or {@code false} in mixed case.</li>
-     * <li><tt>yes</tt> or <tt>no</tt> in mixed case.</li>
-     * <li><tt>on</tt> or <tt>off</tt> in mixed case.</li>
-     * <li><tt>T</tt> or <tt>F</tt> in mixed case.</li>
-     * <li><tt>Y</tt> or <tt>N</tt> in mixed case.</li>
-     * <li><tt>1</tt> or <tt>0</tt>.</li>
+     * <li><code>yes</code> or <code>no</code> in mixed case.</li>
+     * <li><code>on</code> or <code>off</code> in mixed case.</li>
+     * <li><code>T</code> or <code>F</code> in mixed case.</li>
+     * <li><code>Y</code> or <code>N</code> in mixed case.</li>
+     * <li><code>1</code> or <code>0</code>.</li>
      * </ul>
      *
      * @param input The string value to convert to a boolean.
@@ -174,7 +174,7 @@ public final class StringUtils {
     /**
      * Given an iterable list of items, construct a string representation of the list
      * that looks like:
-     * <pre>[item1, item2, ...]</pre>.
+     * <p><code>[<i>item1</i>, <i>item2</i>, ...]</code></p>
      *
      * @param <T> The type of items in the list.
      * @param list The iterable list of items.
@@ -189,9 +189,9 @@ public final class StringUtils {
     /**
      * Given an iterable list of items, construct a string representation of the list
      * that looks like:
-     * <pre>[item1, item2, ...]</pre>
+     * <p><code>[<i>item1</i>, <i>item2</i>, ...]</code></p>
      * appending the results to the given string builder for further use.
-     * <p> If the {@link StringBuilder} has any preceding text (that is, length &gt; 0)
+     * <p> If the {@link StringBuilder} has any preceding text (that is, {@code length > 0})
      * then append a blank before the list representation.
      *
      * @param <T> The type of items in the list.

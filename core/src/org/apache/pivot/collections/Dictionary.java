@@ -86,9 +86,9 @@ public interface Dictionary<K, V> {
      * Retrieves the value for the given key.
      *
      * @param key The key whose value is to be returned.
-     * @return The value corresponding to <tt>key</tt>, or null if the key does
+     * @return The value corresponding to <code>key</code>, or null if the key does
      * not exist. Will also return null if the key refers to a null value. Use
-     * <tt>containsKey()</tt> to distinguish between these two cases.
+     * {@link #containsKey} to distinguish between these two cases.
      */
     V get(K key);
 
@@ -160,7 +160,7 @@ public interface Dictionary<K, V> {
      * Retrieve a String value from this dictionary; returning null if the key
      * does not exist.
      *
-     * @param key The key for the (supposed) <tt>String</tt> value.
+     * @param key The key for the (supposed) {@code String} value.
      * @return The string value, or {@code null} if the key is not present.
      */
     default String getString(K key) {
@@ -171,7 +171,7 @@ public interface Dictionary<K, V> {
      * Retrieve a String value from this dictionary; returning null if the key
      * does not exist.
      *
-     * @param key The key for the (supposed) <tt>String</tt> value.
+     * @param key The key for the (supposed) {@code String} value.
      * @param defaultValue The string to return if the key is not present.
      * @return The string value, or the default value if the key is not present.
      */
@@ -186,7 +186,7 @@ public interface Dictionary<K, V> {
      * Using the other methods in this interface, retrieve an integer value
      * from this dictionary; returning 0 if the key does not exist.
      *
-     * @param key The key for the (supposed) <tt>Integer</tt>
+     * @param key The key for the (supposed) {@code Integer}
      * value to retrieve (actually any {@link Number} will work).
      * @return The integer value, or 0 if the key is not present.
      */
@@ -198,7 +198,7 @@ public interface Dictionary<K, V> {
      * Using the other methods in this interface, retrieve an integer value
      * from this dictionary; returning the given default if the key does not exist.
      *
-     * @param key The key for the (supposed) <tt>Integer</tt>
+     * @param key The key for the (supposed) {@code Integer}
      * value to retrieve (actually any {@link Number} will work).
      * @param defaultValue The value to return if the key is not present.
      * @return The integer value, or the default value if the key is not present.
@@ -214,7 +214,7 @@ public interface Dictionary<K, V> {
      * Using the other methods in this interface, retrieve a boolean value
      * from this dictionary; returning false if the key does not exist.
      *
-     * @param key The key for the (supposed) <tt>Boolean</tt>
+     * @param key The key for the (supposed) {@code Boolean}
      * value to retrieve.
      * @return The boolean value, or false if the key is not present.
      */
@@ -226,7 +226,7 @@ public interface Dictionary<K, V> {
      * Using the other methods in this interface, retrieve a boolean value
      * from this dictionary; returning a default value if the key does not exist.
      *
-     * @param key The key for the (supposed) <tt>Boolean</tt>
+     * @param key The key for the (supposed) {@code Boolean}
      * value to retrieve.
      * @param defaultValue What to return if the key is not present.
      * @return The boolean value, or the default if the key is not present.
@@ -242,7 +242,7 @@ public interface Dictionary<K, V> {
      * Using the other methods in this interface, retrieve a {@link Color} value
      * from this dictionary; returning {@code null} if the key does not exist.
      *
-     * @param key The key for the (supposed) <tt>Color</tt>
+     * @param key The key for the (supposed) {@code Color}
      * value to retrieve.
      * @return The color value, or {@code null} if the key is not present.
      */
@@ -254,7 +254,7 @@ public interface Dictionary<K, V> {
      * Using the other methods in this interface, retrieve a {@link Font} value
      * from this dictionary; returning {@code null} if the key does not exist.
      *
-     * @param key The key for the (supposed) <tt>Font</tt>
+     * @param key The key for the (supposed) {@code Font}
      * value to retrieve.
      * @return The font value, or {@code null} if the key is not present.
      */

@@ -28,7 +28,7 @@ public interface Editor {
     /**
      * Saves an edit that is in progress by updating the appropriate data
      * object. It is up to implementations to define the behavior when
-     * <tt>isEditing() == false</tt>.
+     * <code>isEditing() == false</code>.
      *
      * @return {@code true} if the changes were successfully saved;
      * {@code false} otherwise.
@@ -38,7 +38,7 @@ public interface Editor {
     /**
      * Cancels an edit that is in progress by reverting any edits the user has
      * made. It is up to implementations to define the behavior when
-     * <tt>isEditing() == false</tt>.
+     * <code>isEditing() == false</code>.
      */
     public void cancelEdit();
 }

@@ -48,7 +48,7 @@ public final class FileSizeFormat extends Format {
     /**
      * Formats a file size.
      *
-     * @param object A <tt>Number</tt> containing the length of the file, in
+     * @param object A {@code Number} containing the length of the file, in
      * bytes. May be negative to indicate an unknown file size.
      * @param stringBuffer The string buffer to which the formatted output will
      * be appended.

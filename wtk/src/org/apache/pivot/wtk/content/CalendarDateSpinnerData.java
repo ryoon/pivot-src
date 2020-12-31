@@ -31,7 +31,7 @@ import org.apache.pivot.util.Utils;
 /**
  * Spinner data model that presents a bounded list of calendar dates. <p> This
  * is a lightweight class that spoofs the actual list data by using an internal
- * calendar instance from which <tt>CalendarDate</tt> instances are created on
+ * calendar instance from which {@code CalendarDate} instances are created on
  * demand.
  */
 public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> implements List<CalendarDate> {
@@ -78,15 +78,15 @@ public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> impl
     private transient ListListenerList<CalendarDate> listListeners = new ListListenerList<>();
 
     /**
-     * Creates a new <tt>CalendarDateSpinnerData</tt> bounded from
-     * <tt>1900-01-01</tt> to <tt>2099-12-31</tt>.
+     * Creates a new {@code CalendarDateSpinnerData} bounded from
+     * <code>1900-01-01</code> to <code>2099-12-31</code>.
      */
     public CalendarDateSpinnerData() {
         this(new CalendarDate(1900, 0, 0), new CalendarDate(2099, 11, 30));
     }
 
     /**
-     * Creates a new <tt>CalendarDateSpinnerData</tt> bounded by the specified
+     * Creates a new {@code CalendarDateSpinnerData} bounded by the specified
      * calendar dates (inclusive).
      *
      * @param lowerBound The earliest date to include in this spinner data.
@@ -134,7 +134,7 @@ public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> impl
     }
 
     /**
-     * Throws <tt>UnsupportedOperationException</tt>.
+     * Throws {@code UnsupportedOperationException}.
      */
     @UnsupportedOperation
     @Override

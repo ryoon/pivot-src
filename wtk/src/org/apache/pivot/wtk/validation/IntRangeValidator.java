@@ -19,7 +19,7 @@ import org.apache.pivot.wtk.Limits;
 
 
 /**
- * A validator for an <tt>int</tt> value limited to a range.
+ * A validator for an {@code int} value limited to a range.
  * <p> {@link BigInteger} math is used here so that proper checks against
  * the limits of the type can be done.
  *

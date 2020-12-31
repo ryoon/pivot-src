@@ -17,7 +17,7 @@
 package org.apache.pivot.util;
 
 /**
- * An object holding a boolean value that can be used with a <tt>forEach</tt>
+ * An object holding a boolean value that can be used with a {@code forEach}
  * or lambda expressionm, where the value used during the iteration must be
  * final or effectively final.
  */
@@ -43,7 +43,7 @@ public class BooleanResult {
     }
 
     /**
-     * Update the saved value by <tt>OR</tt>ing this new value
+     * Update the saved value by <code>OR</code>ing this new value
      * with the saved value.
      *
      * @param value The new value to OR into the saved one.
@@ -53,7 +53,7 @@ public class BooleanResult {
     }
 
     /**
-     * Update the saved value by <tt>AND</tt>ing this new value
+     * Update the saved value by <code>AND</code>ing this new value
      * with the saved value.
      *
      * @param value The new value to AND into the saved one.
@@ -63,7 +63,7 @@ public class BooleanResult {
     }
 
     /**
-     * Update the saved value by <tt>XOR</tt>ing this new value
+     * Update the saved value by <code>XOR</code>ing this new value
      * with the saved value.
      *
      * @param value The new value to XOR into the saved one.

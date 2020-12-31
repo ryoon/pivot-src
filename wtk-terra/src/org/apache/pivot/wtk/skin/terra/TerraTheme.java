@@ -654,8 +654,7 @@ public final class TerraTheme extends Theme {
     /**
      * @return A brighter version of the specified color. Specifically, it
      * increases the brightness (in the HSB color model) by the
-     * <tt>colorMultiplier</tt> factor and <tt>themeIsDark</tt> flag already
-     * set.
+     * {@link #brightenColorMultiplier} factor already set.
      * @param color The color to brighten.
      */
     public static Color brighten(final Color color) {
@@ -665,7 +664,7 @@ public final class TerraTheme extends Theme {
     /**
      * @return A darker version of the specified color. Specifically, it
      * decreases the brightness (in the HSB color model) by the
-     * <tt>colorMultiplier</tt> factor and <tt>themeDark</tt> flag already set.
+     * {@link #darkenColorMultiplier} factor already set.
      * @param color The color to darken.
      */
     public static Color darken(final Color color) {

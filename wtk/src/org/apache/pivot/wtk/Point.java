@@ -66,9 +66,9 @@ public final class Point implements Serializable {
     }
 
     /**
-     * Return a new <tt>Point</tt> object which represents
-     * this point moved to a new location, <tt>dx</tt> and
-     * <tt>dy</tt> away from the original.
+     * Return a new {@code Point} object which represents
+     * this point moved to a new location, {@code dx} and
+     * {@code dy} away from the original.
      *
      * @param dx The distance to move in the horizontal
      * direction (positive or negative).

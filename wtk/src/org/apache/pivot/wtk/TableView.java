@@ -484,8 +484,8 @@ public class TableView extends Component {
          *
          * @param row The row to render, or {@code null} if called to calculate
          * preferred height for skins that assume a fixed renderer height.
-         * @param rowIndex The index of the row being rendered, or <tt>-1</tt> if
-         * <tt>value</tt> is {@code null}.
+         * @param rowIndex The index of the row being rendered, or <code>-1</code> if
+         * {@code value} is {@code null}.
          * @param columnIndex The index of the column being rendered.
          * @param tableView The host component.
          * @param columnName The name of the column being rendered.
@@ -614,7 +614,7 @@ public class TableView extends Component {
          * @param tableData The source table data.
          * @param value The value to locate.
          * @return The index of first occurrence of the value if it exists in the
-         * list; <tt>-1</tt>, otherwise.
+         * list; <code>-1</code>, otherwise.
          */
         public int indexOf(List<?> tableData, Object value);
 
@@ -991,8 +991,8 @@ public class TableView extends Component {
     /**
      * Sets the table data.
      *
-     * @param tableData A JSON string (must begin with <tt>[</tt> and end with
-     * <tt>]</tt>, denoting a list) which will be the data to be presented by the table view.
+     * @param tableData A JSON string (must begin with <code>[</code> and end with
+     * <code>]</code>, denoting a list) which will be the data to be presented by the table view.
      */
     public final void setTableData(final String tableData) {
         Utils.checkNull(tableData, "Table data");
@@ -1072,7 +1072,7 @@ public class TableView extends Component {
     /**
      * Sets the selection to a single index.
      *
-     * @param index The index to select, or <tt>-1</tt> to clear the selection.
+     * @param index The index to select, or <code>-1</code> to clear the selection.
      */
     public void setSelectedIndex(final int index) {
         if (index == -1) {
@@ -1196,7 +1196,7 @@ public class TableView extends Component {
     /**
      * Returns the first selected index.
      *
-     * @return The first selected index, or <tt>-1</tt> if nothing is selected.
+     * @return The first selected index, or <code>-1</code> if nothing is selected.
      */
     public int getFirstSelectedIndex() {
         return (rangeSelection.getLength() > 0) ? rangeSelection.get(0).start : -1;
@@ -1205,7 +1205,7 @@ public class TableView extends Component {
     /**
      * Returns the last selected index.
      *
-     * @return The last selected index, or <tt>-1</tt> if nothing is selected.
+     * @return The last selected index, or <code>-1</code> if nothing is selected.
      */
     public int getLastSelectedIndex() {
         return (rangeSelection.getLength() > 0) ? rangeSelection.get(rangeSelection.getLength() - 1).end
@@ -1866,7 +1866,7 @@ public class TableView extends Component {
      * Returns the index of the row at a given location.
      *
      * @param y The y-coordinate of the row to identify.
-     * @return The row index, or <tt>-1</tt> if there is no row at the given
+     * @return The row index, or <code>-1</code> if there is no row at the given
      * y-coordinate.
      */
     public int getRowAt(final int y) {
@@ -1878,7 +1878,7 @@ public class TableView extends Component {
      * Returns the index of the column at a given location.
      *
      * @param x The x-coordinate of the column to identify.
-     * @return The column index, or <tt>-1</tt> if there is no column at the
+     * @return The column index, or <code>-1</code> if there is no column at the
      * given x-coordinate.
      */
     public int getColumnAt(final int x) {

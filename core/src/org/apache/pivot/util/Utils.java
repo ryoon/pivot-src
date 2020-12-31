@@ -321,8 +321,8 @@ public final class Utils {
      * @param start  The start of the acceptable range (inclusive).
      * @param end    The end of the acceptable range (inclusive).
      *
-     * @throws IllegalArgumentException if {@code end} is &lt; {@code start}.
-     * @throws IndexOutOfBoundsException if {@code index} is &lt; {@code start} or &gt; {@code end}.
+     * @throws IllegalArgumentException if {@code end < start}.
+     * @throws IndexOutOfBoundsException if {@code index < start} or {@code index > end}.
      */
     public static void checkIndexBounds(final int index, final int start, final int end) {
         if (end < start) {
@@ -340,7 +340,7 @@ public final class Utils {
      *
      * @param index   The candidate index into the zero-based range.
      * @param size    The size of the array/list/etc. (so the proper range is {@code 0 .. size - 1}).
-     * @throws IndexOutOfBoundsException if the {@code index} is &lt; 0 or &gt;= {@code size}.
+     * @throws IndexOutOfBoundsException if the {@code index < 0} or {@code index >= size}.
      */
     public static void checkZeroBasedIndex(final int index, final int size) {
         if (index < 0 || index >= size) {
@@ -357,10 +357,10 @@ public final class Utils {
      * @param start  The start of the acceptable range (inclusive).
      * @param end    The end of the acceptable range (inclusive).
      *
-     * @throws IllegalArgumentException if {@code end} is &lt; {@code start}, or
-     * if {@code count} or {@code start} are &lt; zero.
-     * @throws IndexOutOfBoundsException if {@code index} is &lt; {@code start} or
-     * if {@code index + start} is &gt; {@code end}.
+     * @throws IllegalArgumentException if {@code end < start}, or
+     * if {@code count} or {@code start} are {@code < zero}.
+     * @throws IndexOutOfBoundsException if {@code index < start} or
+     * if {@code index + count > end}.
      */
     public static void checkIndexBounds(final int index, final int count, final int start, final int end) {
         if (end < start) {
@@ -389,9 +389,9 @@ public final class Utils {
      * @param start  The start of the acceptable range (inclusive).
      * @param end    The end of the acceptable range (inclusive).
      *
-     * @throws IllegalArgumentException if {@code endIndex} is &lt; {@code startIndex}.
-     * @throws IndexOutOfBoundsException if {@code startIndex} is &lt; {@code start} or
-     * {@code endIndex} is &gt; {@code end}.
+     * @throws IllegalArgumentException if {@code startIndex > endIndex}.
+     * @throws IndexOutOfBoundsException if {@code startIndex < start} or
+     * {@code endIndex > end}.
      */
     public static void checkTwoIndexBounds(final int startIndex, final int endIndex, final int start, final int end) {
         if (startIndex > endIndex) {

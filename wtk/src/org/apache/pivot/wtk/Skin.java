@@ -20,9 +20,9 @@ package org.apache.pivot.wtk;
  * Interface defining a "skin". A skin is the graphical representation of a
  * component. In MVC terminology, a skin represents the "view" of the "model"
  * data provided by a component. Components delegate a number of methods to the
- * skin, including all methods defined by the <tt>Visual</tt> interface as well
+ * skin, including all methods defined by the {@link Visual} interface as well
  * as style properties and layout. In conjunction with renderers
- * (implementations of the <tt>Renderer</tt> interface), skins define the
+ * (implementations of the {@link Renderer} interface), skins define the
  * overall look and feel of an application. <p> Skins are primarily responsible
  * for the following: <ul> <li>Adding additional subcomponents, if a
  * composite.</li> <li>Painting the component; if a container, this is

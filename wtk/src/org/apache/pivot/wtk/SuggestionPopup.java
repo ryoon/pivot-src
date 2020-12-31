@@ -219,7 +219,7 @@ public class SuggestionPopup extends Window {
     /**
      * Returns the current selection.
      *
-     * @return The index of the currently selected suggestion, or <tt>-1</tt> if
+     * @return The index of the currently selected suggestion, or <code>-1</code> if
      * nothing is selected.
      */
     public int getSelectedIndex() {
@@ -230,7 +230,7 @@ public class SuggestionPopup extends Window {
      * Sets the selection.
      *
      * @param selectedIndex The index of the suggestion to select, or
-     * <tt>-1</tt> to clear the selection.
+     * <code>-1</code> to clear the selection.
      */
     public void setSelectedIndex(int selectedIndex) {
         indexBoundsCheck("selectedIndex", selectedIndex, -1, suggestionData.getLength() - 1);

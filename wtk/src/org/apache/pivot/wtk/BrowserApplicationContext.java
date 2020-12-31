@@ -42,14 +42,14 @@ public final class BrowserApplicationContext extends ApplicationContext {
      * Applet used to host applications in a web browser. <p> This applet
      * supports the following parameters:
      * <ul>
-     * <li><tt>application_class_name</tt> - the class name of the application
+     * <li><code>application_class_name</code> - the class name of the application
      * to launch.</li>
-     * <li><tt>startup_properties</tt> - startup properties to
+     * <li><code>startup_properties</code> - startup properties to
      * be passed to the application. Properties use HTTP query string syntax;
-     * e.g. "a=1&amp;b=2".</li>
-     * <li><tt>system_properties</tt> - system properties
+     * e.g. "{@code a=1&b=2}".</li>
+     * <li><code>system_properties</code> - system properties
      * to set at startup. Properties use HTTP query string syntax; e.g.
-     * "a=1&amp;b=2" (trusted applets only).</li>
+     * "{@code a=1&b=2}" (trusted applets only).</li>
      * </ul>
      */
     public static final class HostApplet extends Applet {

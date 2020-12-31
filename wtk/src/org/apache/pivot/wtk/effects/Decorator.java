@@ -26,13 +26,13 @@ import org.apache.pivot.wtk.Component;
  * Interface defining a component "decorator". Decorators allow a caller to
  * attach additional visual effects to a component. <p> Decorators use a chained
  * prepare/update model to modify the graphics in which a component is painted.
- * The <tt>prepare()</tt> method of each decorator in a component's decorator
- * sequence is called in reverse order before the component's <tt>paint()</tt>
- * method is called. <tt>prepare()</tt> returns an instance of
- * <tt>Graphics2D</tt> that is passed to prior decorators, and ultimately to the
+ * The {@code prepare()} method of each decorator in a component's decorator
+ * sequence is called in reverse order before the component's {@code paint()}
+ * method is called. {@code prepare()} returns an instance of
+ * {@code Graphics2D} that is passed to prior decorators, and ultimately to the
  * component itself. This allows decorators to modify the graphics context
  * before it reaches the component. After the component has been painted, each
- * decorator's <tt>update()</tt> method is then called in order to allow the
+ * decorator's {@code update()} method is then called in order to allow the
  * decorator to further modify the resulting output. <p> Decorators are not
  * restricted to painting within the component's bounds. However, they are
  * clipped to the bounds of the component's parent. They are not clipped to

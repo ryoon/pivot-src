@@ -27,7 +27,7 @@ import org.apache.pivot.util.Utils;
  * FillPane, such as a {@link ScrollPane}, will allow that child to fill the
  * containing area (as opposed to using a {@link BoxPane} which will only size
  * itself to the size of its children, which doesn't always work well with a
- * <tt>ScrollPane</tt>). <p> The <b>n</b> children of a FillPane will be given
+ * {@code ScrollPane}). <p> The <b>n</b> children of a FillPane will be given
  * 1/n of the total space available, depending on the orientation. For vertical,
  * each child's height will be 1/n of the total height, and for horizontal each
  * child's width will be 1/n of the total width. The children will always

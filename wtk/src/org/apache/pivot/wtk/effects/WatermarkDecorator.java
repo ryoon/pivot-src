@@ -48,14 +48,14 @@ public class WatermarkDecorator implements Decorator {
     private Graphics2D graphics = null;
 
     /**
-     * Creates a new <tt>WatermarkDecorator</tt> with no text or image.
+     * Creates a new {@code WatermarkDecorator} with no text or image.
      */
     public WatermarkDecorator() {
         this(null, null);
     }
 
     /**
-     * Creates a new <tt>WatermarkDecorator</tt> with the specified string as
+     * Creates a new {@code WatermarkDecorator} with the specified string as
      * its text and no image.
      *
      * @param text The text to paint over the decorated component
@@ -65,7 +65,7 @@ public class WatermarkDecorator implements Decorator {
     }
 
     /**
-     * Creates a new <tt>WatermarkDecorator</tt> with no text and the specified
+     * Creates a new {@code WatermarkDecorator} with no text and the specified
      * image.
      *
      * @param image The image to paint over the decorated component
@@ -75,7 +75,7 @@ public class WatermarkDecorator implements Decorator {
     }
 
     /**
-     * Creates a new <tt>WatermarkDecorator</tt> with the specified text and
+     * Creates a new {@code WatermarkDecorator} with the specified text and
      * image.
      *
      * @param text The text to paint over the decorated component
@@ -218,7 +218,7 @@ public class WatermarkDecorator implements Decorator {
 
     /**
      * Sets the angle at the watermark will be painted, in radians. This value
-     * must lie between <tt>0</tt> and <tt>PI / 2</tt> (inclusive).
+     * must lie between <code>0</code> and <code>PI / 2</code> (inclusive).
      *
      * @param theta This decorator's watermark angle
      */

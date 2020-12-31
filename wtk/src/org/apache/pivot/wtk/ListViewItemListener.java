@@ -99,7 +99,7 @@ public interface ListViewItemListener {
      *
      * @param listView The source of the event.
      * @param index The first index affected by the event.
-     * @param count The number of items that were removed, or <tt>-1</tt> if all
+     * @param count The number of items that were removed, or <code>-1</code> if all
      * items were removed.
      */
     default void itemsRemoved(ListView listView, int index, int count) {

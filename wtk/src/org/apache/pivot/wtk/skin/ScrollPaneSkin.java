@@ -479,7 +479,7 @@ public class ScrollPaneSkin extends ContainerSkin implements Viewport.Skin, Scro
     }
 
     /**
-     * Gets the maximum legal <tt>scrollTop</tt> value this this skin imposes.
+     * Gets the maximum legal {@code scrollTop} value this this skin imposes.
      * This is the largest value possible that still shows as much of the view
      * component as it can.
      *
@@ -514,7 +514,7 @@ public class ScrollPaneSkin extends ContainerSkin implements Viewport.Skin, Scro
     }
 
     /**
-     * Gets the maximum legal <tt>scrollLeft</tt> value this this skin imposes.
+     * Gets the maximum legal {@code scrollLeft} value this this skin imposes.
      * This is the largest value possible that still shows as much of the view
      * component as it can.
      *
@@ -616,13 +616,13 @@ public class ScrollPaneSkin extends ContainerSkin implements Viewport.Skin, Scro
     }
 
     /**
-     * Layout helper method that assumes that the <tt>FILL_TO_CAPACITY</tt>
+     * Layout helper method that assumes that the <code>FILL_TO_CAPACITY</code>
      * scroll policy doesn't exist.
      *
      * @param horizontalPolicy The assumed horizontal scroll policy; musn't be
-     * <tt>FILL_TO_CAPACITY</tt>
+     * <code>FILL_TO_CAPACITY</code>
      * @param verticalPolicy The assumed vertical scroll policy; musn't be
-     * <tt>FILL_TO_CAPACITY</tt>
+     * <code>FILL_TO_CAPACITY</code>
      */
     private void layoutHelper(final ScrollBarPolicy horizontalPolicy, final ScrollBarPolicy verticalPolicy) {
         ScrollPane scrollPane = (ScrollPane) getComponent();

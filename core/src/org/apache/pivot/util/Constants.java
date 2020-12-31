@@ -26,8 +26,8 @@ public final class Constants {
     }
 
     /**
-     * The non-default buffer size to use for <tt>BufferedReader</tt> and
-     * and <tt>BufferedWriter</tt>.
+     * The non-default buffer size to use for {@code BufferedReader} and
+     * and {@code BufferedWriter}.
      * <p> This should be larger than the default value (which seems to be
      * 8192 as of Java 7), or there is no point in using it.
      */

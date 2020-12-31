@@ -329,7 +329,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
      * Set the number of pixels interval at which to draw the markers
      * (for horizontal orientation only).
      *
-     * @param spacing The number of pixels between markers (must be &gt;= 1).
+     * @param spacing The number of pixels between markers (must be {@code >= 1}).
      */
     public final void setMarkerSpacing(final int spacing) {
         Utils.checkPositive(spacing, "markerSpacing");
@@ -342,7 +342,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
      * Set the number of pixels interval at which to draw the markers
      * (for horizontal orientation only).
      *
-     * @param spacing The integer number of pixels between markers (must be &gt;= 1).
+     * @param spacing The integer number of pixels between markers (must be {@code >= 1}).
      */
     public final void setMarkerSpacing(final Number spacing) {
         Utils.checkNull(spacing, "markerSpacing");

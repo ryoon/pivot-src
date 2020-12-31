@@ -284,9 +284,9 @@ abstract class TextPaneSkinNodeView implements NodeListener {
     }
 
     /**
-     * Create a node view for the given model node attached to this <tt>TextPaneSkin</tt>.
+     * Create a node view for the given model node attached to this {@code TextPaneSkin}.
      *
-     * @param textPaneSkin The overall skin of this <tt>TextPane</tt>.
+     * @param textPaneSkin The overall skin of this {@code TextPane}.
      * @param node The data node we are creating the view for.
      * @return The corresponding view node.
      */

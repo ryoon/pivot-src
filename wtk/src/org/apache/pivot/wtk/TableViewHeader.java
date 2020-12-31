@@ -98,7 +98,7 @@ public class TableViewHeader extends Component {
      * Returns the index of the header at a given location.
      *
      * @param x The x-coordinate of the header to identify.
-     * @return The column index, or <tt>-1</tt> if there is no column at the
+     * @return The column index, or <code>-1</code> if there is no column at the
      * given x-coordinate.
      */
     public int getHeaderAt(final int x) {

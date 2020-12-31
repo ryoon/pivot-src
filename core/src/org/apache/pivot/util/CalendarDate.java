@@ -33,7 +33,7 @@ import org.apache.pivot.json.JSONSerializer;
 import org.apache.pivot.serialization.SerializationException;
 
 /**
- * <tt>CalendarDate</tt> allows a specific day to be identified within the
+ * {@code CalendarDate} allows a specific day to be identified within the
  * Gregorian calendar system. This identification has no association with any
  * particular time zone and no notion of the time of day, except that
  * conversions to/from Gregorian calendar may be affected by time zone, so
@@ -228,17 +228,17 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     }
 
     /**
-     * The year field. (e.g. <tt>2008</tt>).
+     * The year field. (e.g. <code>2008</code>).
      */
     public final int year;
 
     /**
-     * The month field, 0-based. (e.g. <tt>2</tt> for March).
+     * The month field, 0-based. (e.g. <code>2</code> for March).
      */
     public final int month;
 
     /**
-     * The day of the month, 0-based. (e.g. <tt>14</tt> for the 15th).
+     * The day of the month, 0-based. (e.g. <code>14</code> for the 15th).
      */
     public final int day;
 
@@ -248,7 +248,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * <p> This is only meaningful for conversions to/from Gregorian calendar
      * (and implicitly then for difference calculations which use a calculated
      * calendar value). Can be set in the non-default constructor
-     * (for instance to GMT for the <tt>CalendarDateSpinnerData</tt> class).
+     * (for instance to GMT for the {@code CalendarDateSpinnerData} class).
      * <p> Note: difference calculations will only be affected by the timezone
      * if the two dates are in different ones, otherwise the calculations
      * will be the same no matter what zone is used.
@@ -275,7 +275,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     public static final Time MIDNIGHT_TIME = new Time(0, 0, 0);
 
     /**
-     * Creates a new <tt>CalendarDate</tt> representing the current day in the
+     * Creates a new {@code CalendarDate} representing the current day in the
      * default timezone and the default locale.
      */
     public CalendarDate() {
@@ -283,7 +283,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     }
 
     /**
-     * Creates a new <tt>CalendarDate</tt> representing the current day in the
+     * Creates a new {@code CalendarDate} representing the current day in the
      * given timezone and the default locale.
      *
      * @param timeZone The timezone to use for this calendar date.
@@ -293,7 +293,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     }
 
     /**
-     * Creates a new <tt>CalendarDate</tt> representing the day contained in the
+     * Creates a new {@code CalendarDate} representing the day contained in the
      * specified Gregorian calendar (assuming the default locale and the default
      * timezone).
      *
@@ -307,7 +307,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     }
 
     /**
-     * Creates a new <tt>CalendarDate</tt> from the given {@link LocalDate}
+     * Creates a new {@code CalendarDate} from the given {@link LocalDate}
      * (new in Java 8).  This does not represent a moment in time, but only
      * represents a date (as in year, month and day).
      *
@@ -321,12 +321,12 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     }
 
     /**
-     * Creates a new <tt>CalendarDate</tt> representing the specified year,
+     * Creates a new {@code CalendarDate} representing the specified year,
      * month, and day of month.
      *
-     * @param year The year field. (e.g. <tt>2008</tt>)
-     * @param month The month field, 0-based. (e.g. <tt>2</tt> for March)
-     * @param day The day of the month, 0-based. (e.g. <tt>14</tt> for the 15th)
+     * @param year The year field. (e.g. <code>2008</code>)
+     * @param month The month field, 0-based. (e.g. <code>2</code> for March)
+     * @param day The day of the month, 0-based. (e.g. <code>14</code> for the 15th)
      * @see #MIN_CALENDAR_YEAR
      * @see #MAX_CALENDAR_YEAR
      */
@@ -335,12 +335,12 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     }
 
     /**
-     * Creates a new <tt>CalendarDate</tt> representing the specified year,
+     * Creates a new {@code CalendarDate} representing the specified year,
      * month, day of month, and timezone.
      *
-     * @param year The year field. (e.g. <tt>2008</tt>)
-     * @param month The month field, 0-based. (e.g. <tt>2</tt> for March)
-     * @param day The day of the month, 0-based. (e.g. <tt>14</tt> for the 15th)
+     * @param year The year field. (e.g. <code>2008</code>)
+     * @param month The month field, 0-based. (e.g. <code>2</code> for March)
+     * @param day The day of the month, 0-based. (e.g. <code>14</code> for the 15th)
      * @param timeZone The timezone to assume for conversions and differences (if
      * {@code null} then the default TimeZone will be used).
      * @see #MIN_CALENDAR_YEAR
@@ -395,8 +395,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * Adds the specified number of days to this calendar date and returns the
      * resulting calendar date. The number of days may be negative, in which
      * case the result will be a date before this calendar date. <p> More
-     * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return {@code true}:
+     * formally, it is defined that given calendar dates <code>c1</code> and
+     * <code>c2</code>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param days The number of days to add to (or subtract from if negative)
@@ -413,8 +413,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * Adds the specified number of months to this calendar date and returns the
      * resulting calendar date. The number of months may be negative, in which
      * case the result will be a date before this calendar date. <p> More
-     * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return {@code true}:
+     * formally, it is defined that given calendar dates <code>c1</code> and
+     * <code>c2</code>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param months The number of months to add to (or subtract from if negative)
@@ -431,8 +431,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * Adds the specified number of years to this calendar date and returns the
      * resulting calendar date. The number of years may be negative, in which
      * case the result will be a date before this calendar date. <p> More
-     * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return {@code true}:
+     * formally, it is defined that given calendar dates <code>c1</code> and
+     * <code>c2</code>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param years The number of years to add to (or subtract from if negative)
@@ -452,13 +452,13 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * represents a day before the specified calendar date, the difference will
      * be negative. If the two calendar dates represent the same day, the
      * difference will be zero.
-     * <p> More formally, it is defined that given calendar dates <tt>c1</tt>
-     * and <tt>c2</tt>, the following will return {@code true}:
+     * <p> More formally, it is defined that given calendar dates <code>c1</code>
+     * and <code>c2</code>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param calendarDate The calendar date to subtract from this calendar date.
      * @return The number of days in between this calendar date and
-     * <tt>calendarDate</tt>.
+     * {@code calendarDate}.
      */
     public int subtract(final CalendarDate calendarDate) {
         GregorianCalendar c1 = toCalendar();
@@ -472,11 +472,11 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
 
     /**
      * Translates this calendar date to an instance of
-     * <tt>GregorianCalendar</tt>, with the <tt>year</tt>, <tt>month</tt>, and
-     * <tt>dayOfMonth</tt> fields set in the time zone set at construction with
+     * {@code GregorianCalendar}, with the <code>year</code>, <code>month</code>, and
+     * <code>dayOfMonth</code> fields set in the time zone set at construction with
      * the default locale.
      *
-     * @return This calendar date as a <tt>GregorianCalendar</tt>.
+     * @return This calendar date as a {@code GregorianCalendar}.
      */
     public GregorianCalendar toCalendar() {
         return toCalendar(MIDNIGHT_TIME);
@@ -484,12 +484,12 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
 
     /**
      * Translates this calendar date along with the given time of day to an instance of
-     * <tt>GregorianCalendar</tt>, with the <tt>year</tt>, <tt>month</tt>, and
-     * <tt>dayOfMonth</tt> fields set in the time zone set at construction with the default
+     * {@code GregorianCalendar}, with the <code>year</code>, <code>month</code>, and
+     * <code>dayOfMonth</code> fields set in the time zone set at construction with the default
      * locale.
      *
      * @param time The time of day.
-     * @return This calendar date as a <tt>GregorianCalendar</tt>.
+     * @return This calendar date as a {@code GregorianCalendar}.
      */
     public GregorianCalendar toCalendar(final Time time) {
         GregorianCalendar calendar = new GregorianCalendar(this.year, this.month, this.day + 1,
@@ -572,8 +572,8 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
     }
 
     /**
-     * Returns a string representation of this calendar date in the <tt>ISO
-     * 8601</tt> "calendar date" format, which is <tt>[YYYY]-[MM]-[DD]</tt>.
+     * Returns a string representation of this calendar date in the <code>ISO
+     * 8601</code> "calendar date" format, which is <code>[YYYY]-[MM]-[DD]</code>.
      */
     @Override
     public String toString() {
@@ -606,10 +606,10 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
 
     /**
      * Creates a new date representing the specified date string. The date
-     * string must be in the <tt>ISO 8601</tt> "calendar date" format, which is
-     * <tt>[YYYY]-[MM]-[DD]</tt>.
+     * string must be in the <code>ISO 8601</code> "calendar date" format, which is
+     * <code>[YYYY]-[MM]-[DD]</code>.
      *
-     * @param value A string in the form of <tt>[YYYY]-[MM]-[DD]</tt> (e.g.
+     * @param value A string in the form of <code>[YYYY]-[MM]-[DD]</code> (e.g.
      * 2008-07-23).
      * @return The {@code CalendarDate} corresponding to the input string.
      */

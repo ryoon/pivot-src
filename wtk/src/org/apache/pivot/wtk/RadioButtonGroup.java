@@ -32,8 +32,8 @@ import org.apache.pivot.wtk.Keyboard.Modifier;
 /**
  * Extension of {@link ButtonGroup} providing keyboard navigation within the
  * group and modified focus navigation that treats the group as a single
- * focusable entity.<br><br> {@link KeyCode#UP UP} &amp; {@link KeyCode#LEFT LEFT}
- * Select the previous button<br> {@link KeyCode#DOWN DOWN} &amp;
+ * focusable entity.<br><br> {@link KeyCode#UP UP} and {@link KeyCode#LEFT LEFT}
+ * Select the previous button<br> {@link KeyCode#DOWN DOWN} and 
  * {@link KeyCode#RIGHT RIGHT} Select the next button<br> {@link KeyCode#HOME
  * HOME} Select the first button<br> {@link KeyCode#END END} Select the last
  * button<br><br> (Note that only {@link Component#isFocusable() focusable}
@@ -54,7 +54,7 @@ import org.apache.pivot.wtk.Keyboard.Modifier;
  * <code>add(T)</code> and <code>remove(T)</code> methods in the
  * {@link Group#add(Object) Group} and {@link Sequence#add(Object) Sequence}
  * interfaces, this class cannot actually implement
- * <code>Sequence&lt;Button&gt;</code>, although most of the same methods are
+ * {@code Sequence<Button>}, although most of the same methods are
  * implemented.<br>
  */
 public class RadioButtonGroup extends ButtonGroup {

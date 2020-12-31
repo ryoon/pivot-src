@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 public @interface BXML {
     /**
      * @return The ID of the BXML variable that references the element to bind. It
-     * should be a valid <tt>bxml:id</tt> from the loaded BXML resource. If
+     * should be a valid <code>bxml:id</code> from the loaded BXML resource. If
      * unspecified, the name of the annotated field will be used.
      */
     String id() default "\0";

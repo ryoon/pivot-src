@@ -44,15 +44,15 @@ public class ScaleDecorator implements Decorator {
     private VerticalAlignment verticalAlignment = VerticalAlignment.CENTER;
 
     /**
-     * Creates a new <tt>ScaleDecorator</tt> with the default <tt>scaleX</tt>
-     * <tt>scaleY</tt> values of <tt>1.0f</tt>.
+     * Creates a new {@code ScaleDecorator} with the default <code>scaleX</code>
+     * <code>scaleY</code> values of <code>1.0f</code>.
      */
     public ScaleDecorator() {
         this(1f, 1f);
     }
 
     /**
-     * Creates a new <tt>ScaleDecorator</tt> with a "square" scaling of the given
+     * Creates a new {@code ScaleDecorator} with a "square" scaling of the given
      * value in both directions.
      *
      * @param scale The scale to use for both X and Y directions.
@@ -62,8 +62,8 @@ public class ScaleDecorator implements Decorator {
     }
 
     /**
-     * Creates a new <tt>ScaleDecorator</tt> with the specified <tt>scaleX</tt>
-     * and <tt>scaleY</tt> values.
+     * Creates a new {@code ScaleDecorator} with the specified <code>scaleX</code>
+     * and <code>scaleY</code> values.
      *
      * @param scaleX The amount to scale the component's x-axis
      * @param scaleY The amount to scale the component's y-axis
@@ -224,8 +224,8 @@ public class ScaleDecorator implements Decorator {
 
     /**
      * Gets the x translation that will be applied with respect to the specified
-     * component, given this decorator's <tt>scaleX</tt> and
-     * <tt>horizontalAlignment</tt> properties.
+     * component, given this decorator's <code>scaleX</code> and
+     * <code>horizontalAlignment</code> properties.
      *
      * @param component The component being decorated
      * @return The amount to translate x-coordinate actions when decorating this
@@ -254,8 +254,8 @@ public class ScaleDecorator implements Decorator {
 
     /**
      * Gets the y translation that will be applied with respect to the specified
-     * component, given this decorator's <tt>scaleY</tt> and
-     * <tt>verticalAlignment</tt> properties.
+     * component, given this decorator's <code>scaleY</code> and
+     * <code>verticalAlignment</code> properties.
      *
      * @param component The component being decorated
      * @return The amount to translate y-coordinate actions when decorating this

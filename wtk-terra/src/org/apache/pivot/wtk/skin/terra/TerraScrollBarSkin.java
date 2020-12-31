@@ -46,8 +46,8 @@ public class TerraScrollBarSkin extends ContainerSkin implements ScrollBarListen
     ScrollBarValueListener {
     /**
      * Encapsulates the code needed to perform timer-controlled scrolling. This
-     * class is used by <tt>TerraScrollBarSkin</tt> (automatic block increment
-     * scrolling) and <tt>ScrollButtonSkin</tt> (automatic unit increment
+     * class is used by {@code TerraScrollBarSkin} (automatic block increment
+     * scrolling) and {@code ScrollButtonSkin} (automatic unit increment
      * scrolling).
      */
     protected class AutomaticScroller {
@@ -61,12 +61,12 @@ public class TerraScrollBarSkin extends ContainerSkin implements ScrollBarListen
          * Starts scrolling this skin's scroll bar, stopping the scroll when the
          * specified value has been reached.
          *
-         * @param directionArgument <tt>1</tt> to adjust the scroll bar's value
-         * larger; <tt>-1</tt> to adjust it smaller
+         * @param directionArgument <code>1</code> to adjust the scroll bar's value
+         * larger; <code>-1</code> to adjust it smaller
          * @param incrementTypeArgument Determines whether we'll use the scroll
          * bar's unit increment or the block increment when scrolling
          * @param stopValueArgument The value which, once reached, will stop the
-         * automatic scrolling. Use <tt>-1</tt> to specify no stop value
+         * automatic scrolling. Use <code>-1</code> to specify no stop value
          * @exception IllegalStateException If automatic scrolling of any scroll
          * bar is already in progress. Only one scroll bar may be automatically
          * scrolled at one time
@@ -1044,7 +1044,7 @@ public class TerraScrollBarSkin extends ContainerSkin implements ScrollBarListen
      * @param component The scroll bar.
      * @param scrollType Unit or block scrolling.
      * @param scrollAmount The amount of scrolling.
-     * @param wheelRotation <tt>-1</tt> or <tt>1</tt> for backward or forward
+     * @param wheelRotation <code>-1</code> or <code>1</code> for backward or forward
      * scrolling, respectively.
      * @param x The x-coordinate of the event in the scroll bar's coordinate
      * space.
@@ -1085,14 +1085,14 @@ public class TerraScrollBarSkin extends ContainerSkin implements ScrollBarListen
     /**
      * Gets the scale factor that allows us to translate pixel values to scroll
      * bar values and vice versa. This assumes that the range of pixels spans
-     * from the last pixel of <tt>scrollUpButton</tt> to the first pixel of
-     * <tt>scrollDownButton</tt> and excludes the pixels taken up by
-     * <tt>handle</tt>. <p> To map from scroll bar values (<i>real values</i>)
+     * from the last pixel of {@code scrollUpButton} to the first pixel of
+     * {@code scrollDownButton} and excludes the pixels taken up by
+     * {@code handle}. <p> To map from scroll bar values (<i>real values</i>)
      * to pixel values, you multiply by the value scale. To map from pixel
      * values back to real values, you divide by the value scale.
      *
-     * @return <tt>&lt;number of legal pixel values&gt; / &lt;number of legal
-     * real values&gt;</tt>
+     * @return {@code <number of legal pixel values> / <number of legal
+     * real values>}
      */
     private float getValueScale() {
         ScrollBar scrollBar = (ScrollBar) getComponent();

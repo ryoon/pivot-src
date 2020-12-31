@@ -21,9 +21,9 @@ import java.util.Iterator;
 /**
  * Immutable implementation of the {@link Iterator} interface.
  * <p>The only methods that have actual implementations (that just
- * defer to the underlying <tt>Iterator</tt>) are:  {@link #hasNext}
+ * defer to the underlying {@code Iterator}) are:  {@link #hasNext}
  * and {@link #next}.
- * <p>Note: the <tt>remove()</tt> method implementation here has
+ * <p>Note: the {@code remove()} method implementation here has
  * been taken out because there is now a default implementation
  * in the {@link Iterator} interface itself in Java 8.
  * @param <T> The type of elements we are iterating over.

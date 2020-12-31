@@ -30,9 +30,9 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Spinner data model that presents a bounded list of integers. This is a
  * lightweight class that spoofs the actual list data (no data is stored in the
- * list). <p> The iterator returned by this class's <tt>iterator</tt> method is
+ * list). <p> The iterator returned by this class's {@code iterator} method is
  * <i>fail-fast</i>: if the bounds of the enclosing spinner data change during
- * iteration, a <tt>ConcurrentModificationException</tt> will be thrown.
+ * iteration, a {@code ConcurrentModificationException} will be thrown.
  */
 public class NumericSpinnerData extends ReadOnlySequence<Integer> implements List<Integer> {
 
@@ -82,8 +82,8 @@ public class NumericSpinnerData extends ReadOnlySequence<Integer> implements Lis
     private transient ListListenerList<Integer> listListeners = new ListListenerList<>();
 
     /**
-     * Creates a new <tt>NumericSpinnerData</tt> instance bounded from
-     * <tt>Short.MIN_VALUE</tt> to <tt>Short.MAX_VALUE</tt> and an increment of
+     * Creates a new {@code NumericSpinnerData} instance bounded from
+     * <code>Short.MIN_VALUE</code> to <code>Short.MAX_VALUE</code> and an increment of
      * one.
      */
     public NumericSpinnerData() {
@@ -91,7 +91,7 @@ public class NumericSpinnerData extends ReadOnlySequence<Integer> implements Lis
     }
 
     /**
-     * Creates a new <tt>NumericSpinnerData</tt> with the specified bounded
+     * Creates a new {@code NumericSpinnerData} with the specified bounded
      * range and an increment of one.
      *
      * @param lowerBound The lower bound for the data.
@@ -102,7 +102,7 @@ public class NumericSpinnerData extends ReadOnlySequence<Integer> implements Lis
     }
 
     /**
-     * Creates a new <tt>NumericSpinnerData</tt> with the specified bounded
+     * Creates a new {@code NumericSpinnerData} with the specified bounded
      * range and increment.
      *
      * @param lowerBound The lower bound for the data.

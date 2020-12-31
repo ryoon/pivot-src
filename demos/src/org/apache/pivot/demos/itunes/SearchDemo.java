@@ -98,7 +98,7 @@ public class SearchDemo implements Application {
      * Executes a search.
      *
      * @param term The search term.
-     * @throws IllegalArgumentException If <tt>term</tt> is {@code null} or
+     * @throws IllegalArgumentException If {@code term} is {@code null} or
      * empty.
      * @throws IllegalStateException If a query is already executing.
      */

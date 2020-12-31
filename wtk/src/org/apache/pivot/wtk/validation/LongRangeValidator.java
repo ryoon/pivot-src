@@ -17,7 +17,7 @@ import java.math.BigInteger;
 import java.util.Locale;
 
 /**
- * A validator for a <tt>long</tt> value limited to a range.
+ * A validator for a {@code long} value limited to a range.
  * <p> {@link BigInteger} math is used here so that proper checks against
  * the limits of the type can be done.
  *

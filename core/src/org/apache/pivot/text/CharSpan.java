@@ -24,7 +24,7 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Class representing a span of characters. The range includes all values
- * in the interval <i><tt>[start, start+length-1]</tt></i> inclusive.  This is the paradigm
+ * in the interval <i><code>[start, start+length-1]</code></i> inclusive.  This is the paradigm
  * used in a lot of places (notably the text controls) to indicate a selection.
  * <p> A zero-length span indicates a single caret position at the given start.
  * <p> Negative lengths are not supported and will throw exceptions, as will
@@ -125,7 +125,7 @@ public final class CharSpan {
 
     /**
      * Returns the inclusive end value of this char span, which is the
-     * <tt>start + length - 1</tt>.  So, if the length is zero,
+     * <code>start + length - 1</code>.  So, if the length is zero,
      * then the end will be less that the start.
      *
      * @return The computed inclusive end value of this char span.

@@ -102,7 +102,7 @@ public interface TreeViewNodeListener {
      * @param treeView The source of this event.
      * @param path     The path to the branch where the node(s) were removed.
      * @param index    The index to the first removed node within the branch.
-     * @param count    The number of nodes that were removed, or <tt>-1</tt> if all
+     * @param count    The number of nodes that were removed, or <code>-1</code> if all
      * nodes were removed.
      */
     default void nodesRemoved(TreeView treeView, Path path, int index, int count) {
