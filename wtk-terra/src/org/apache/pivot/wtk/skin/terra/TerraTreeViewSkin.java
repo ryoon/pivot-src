@@ -221,7 +221,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
         public static final byte CHECK_STATE_MASK = CHECK_STATE_CHECKED_MASK
             | CHECK_STATE_MIXED_MASK;
 
-        private NodeInfo(TreeView treeView, BranchInfo parent, Object data) {
+        protected NodeInfo(TreeView treeView, BranchInfo parent, Object data) {
             this.treeView = treeView;
             this.parent = parent;
             this.data = data;

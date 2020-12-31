@@ -174,7 +174,7 @@ public final class StringUtils {
     /**
      * Given an iterable list of items, construct a string representation of the list
      * that looks like:
-     * <p><code>[<i>item1</i>, <i>item2</i>, ...]</code></p>
+     * <p><code>[<i>item1</i>, <i>item2</i>, ...]</code>.</p>
      *
      * @param <T> The type of items in the list.
      * @param list The iterable list of items.
