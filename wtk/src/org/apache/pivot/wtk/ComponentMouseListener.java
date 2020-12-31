@@ -77,7 +77,7 @@ public interface ComponentMouseListener {
      * @param component Component that is under the mouse.
      * @param x X position of the mouse.
      * @param y Y position of the mouse.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate (default return).
      */
     default boolean mouseMove(Component component, int x, int y) {

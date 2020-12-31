@@ -191,7 +191,7 @@ public class EventLogger extends Container {
     /**
      * Gets this event logger's source component.
      *
-     * @return The source component, or <tt>null</tt> if no source has been set.
+     * @return The source component, or {@code null} if no source has been set.
      */
     public Component getSource() {
         return source;
@@ -200,7 +200,7 @@ public class EventLogger extends Container {
     /**
      * Sets this event logger's source component.
      *
-     * @param source The source component, or <tt>null</tt> to clear the source.
+     * @param source The source component, or {@code null} to clear the source.
      */
     public void setSource(Component source) {
         Component previousSource = this.source;

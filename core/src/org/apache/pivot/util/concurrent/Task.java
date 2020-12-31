@@ -154,8 +154,8 @@ public abstract class Task<V> {
     /**
      * Returns the result of executing the task.
      *
-     * @return The task result, or <tt>null</tt> if the task is still executing
-     * or has failed. The result itself may also be <tt>null</tt>; callers
+     * @return The task result, or {@code null} if the task is still executing
+     * or has failed. The result itself may also be {@code null}; callers
      * should call {@link #isPending()} and {@link #getFault()} to distinguish
      * between these cases.
      */
@@ -166,7 +166,7 @@ public abstract class Task<V> {
     /**
      * Returns the fault that occurred while executing the task.
      *
-     * @return The task fault, or <tt>null</tt> if the task is still executing
+     * @return The task fault, or {@code null} if the task is still executing
      * or has succeeded. Callers should call {@link #isPending()} to distinguish
      * between these cases.
      */
@@ -177,7 +177,7 @@ public abstract class Task<V> {
     /**
      * Returns the thread that was used to execute this task in the background.
      *
-     * @return The background thread or <tt>null</tt> if the weak reference was
+     * @return The background thread or {@code null} if the weak reference was
      * already cleared or if the thread hasn't started yet.
      */
     public synchronized Thread getBackgroundThread() {
@@ -187,8 +187,8 @@ public abstract class Task<V> {
     /**
      * Returns the pending state of the task.
      *
-     * @return <tt>true</tt> if the task is awaiting execution or currently
-     * executing; <tt>false</tt>, otherwise.
+     * @return {@code true} if the task is awaiting execution or currently
+     * executing; {@code false}, otherwise.
      */
     public synchronized boolean isPending() {
         return (taskListener != null);
@@ -216,7 +216,7 @@ public abstract class Task<V> {
     }
 
     /**
-     * Sets the abort flag for this task to <tt>true</tt>. It is the
+     * Sets the abort flag for this task to {@code true}. It is the
      * responsibility of the implementing class to respect this value and throw
      * a {@link AbortException}.
      */

@@ -178,7 +178,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
         /**
          * Gets the path of the node last returned by a call to {@link #next()}.
          *
-         * @return The path to the node, or <tt>null</tt> if <tt>next()</tt> has
+         * @return The path to the node, or {@code null} if <tt>next()</tt> has
          * not yet been called.
          */
         public Path getPath() {
@@ -388,7 +388,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
 
         /**
          * Loads this branch info's children. The children list is initialized
-         * to <tt>null</tt> and loaded lazily to allow the skin to only create
+         * to {@code null} and loaded lazily to allow the skin to only create
          * <tt>NodeInfo</tt> objects for the nodes that it actually needs in
          * order to paint. Thus, it is the responsibility of the skin to check
          * if <tt>children</tt> is null and call <tt>loadChildren()</tt> if
@@ -1149,7 +1149,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
 
     /**
      * @return The metadata associated with the node found at the specified
-     * y-coordinate, or <tt>null</tt> if there is no node at that location.
+     * y-coordinate, or {@code null} if there is no node at that location.
      * @param y The current Y location.
      */
     protected final NodeInfo getNodeInfoAt(int y) {
@@ -1199,7 +1199,7 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
     }
 
     /**
-     * @return The bounding box defined by the specified node, or <tt>null</tt> if
+     * @return The bounding box defined by the specified node, or {@code null} if
      * the node is not currently visible.
      * @param nodeInfo The node information to search for.
      */

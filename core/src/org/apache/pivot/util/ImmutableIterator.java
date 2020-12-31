@@ -38,7 +38,7 @@ public final class ImmutableIterator<T> implements Iterator<T> {
      * Construct an immutable iterator over the base iterator given here.
      *
      * @param iter The base iterator we want to protect from change.
-     * @throws IllegalArgumentException if the iterator is <tt>null</tt>.
+     * @throws IllegalArgumentException if the iterator is {@code null}.
      */
     public ImmutableIterator(final Iterator<T> iter) {
         Utils.checkNull(iter, "iter");

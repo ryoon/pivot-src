@@ -687,8 +687,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
          * Attempts to paint the display using an offscreen buffer.
          *
          * @param graphics The source graphics context.
-         * @return <tt>true</tt> if the display was painted using the offscreen
-         * buffer; <tt>false</tt>, otherwise.
+         * @return {@code true} if the display was painted using the offscreen
+         * buffer; {@code false}, otherwise.
          */
         private boolean paintBuffered(Graphics2D graphics) {
             boolean painted = false;
@@ -728,8 +728,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
          * Attempts to paint the display using a volatile offscreen buffer.
          *
          * @param graphics The source graphics context.
-         * @return <tt>true</tt> if the display was painted using the offscreen
-         * buffer; <tt>false</tt>, otherwise.
+         * @return {@code true} if the display was painted using the offscreen
+         * buffer; {@code false}, otherwise.
          */
         private boolean paintVolatileBuffered(Graphics2D graphics) {
             boolean painted = false;
@@ -1830,7 +1830,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
     /**
      * Returns this application's origin (the URL of it's originating server).
      *
-     * @return The application's origin, or <tt>null</tt> if the origin cannot
+     * @return The application's origin, or {@code null} if the origin cannot
      * be determined.
      */
     public static URL getOrigin() {
@@ -2075,7 +2075,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * optionally waits for the task to complete.
      *
      * @param callback The task to execute.
-     * @param wait If <tt>true</tt>, does not return until the task has
+     * @param wait If {@code true}, does not return until the task has
      * executed. Otherwise, returns immediately.
      * @return The callback object (used to manipulate or wait for the task).
      */

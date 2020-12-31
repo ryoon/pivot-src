@@ -287,7 +287,7 @@ public abstract class QueryServlet extends HttpServlet {
      * @param path The path of this request.
      * @param value The value parsed from the POST request data.
      * @return A URL containing the location of the created resource, or
-     * <tt>null</tt> if operation did not result in the creation of a resource.
+     * {@code null} if operation did not result in the creation of a resource.
      * @throws QueryException on errors.
      */
     protected URL doPost(final Path path, final Object value) throws QueryException {
@@ -300,8 +300,8 @@ public abstract class QueryServlet extends HttpServlet {
      *
      * @param path The server path for this request.
      * @param value The value parsed from the PUT request data.
-     * @return <tt>true</tt> if the operation resulted in the creation of a
-     * resource; <tt>false</tt>, otherwise.
+     * @return {@code true} if the operation resulted in the creation of a
+     * resource; {@code false}, otherwise.
      * @throws QueryException on any error.
      */
     protected boolean doPut(final Path path, final Object value) throws QueryException {

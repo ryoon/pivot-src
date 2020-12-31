@@ -424,7 +424,7 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
     }
 
     /**
-     * @return <tt>false</tt>; labels are not focusable.
+     * @return {@code false}; labels are not focusable.
      */
     @Override
     public boolean isFocusable() {
@@ -550,7 +550,7 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
      * Sets the background color of the label.
      *
      * @param backgroundColor The new background color for the label
-     * (can be <tt>null</tt> to let the parent background show through).
+     * (can be {@code null} to let the parent background show through).
      */
     public void setBackgroundColor(final Color backgroundColor) {
         this.backgroundColor = backgroundColor;

@@ -97,23 +97,23 @@ public class TreeView extends Component {
         /**
          * Prepares the renderer for layout or paint.
          *
-         * @param node The node value to render, or <tt>null</tt> if called to
+         * @param node The node value to render, or {@code null} if called to
          * calculate preferred height for skins that assume a fixed renderer
          * height.
-         * @param path The path to the node being rendered, or <tt>null</tt> if
-         * <tt>node</tt> is <tt>null</tt>.
+         * @param path The path to the node being rendered, or {@code null} if
+         * <tt>node</tt> is {@code null}.
          * @param rowIndex The row index of the node being rendered, as seen in
          * the current visible nodes list, or <tt>-1</tt> if <tt>node</tt> is
-         * <tt>null</tt>.
+         * {@code null}.
          * @param treeView The host component.
-         * @param expanded <tt>true</tt> if the node is expanded; <tt>false</tt>
+         * @param expanded {@code true} if the node is expanded; {@code false}
          * otherwise.
-         * @param selected <tt>true</tt> if the node is selected; <tt>false</tt>
+         * @param selected {@code true} if the node is selected; {@code false}
          * otherwise.
          * @param checkState The node's {@linkplain NodeCheckState check state}.
-         * @param highlighted <tt>true</tt> if the node is highlighted;
-         * <tt>false</tt> otherwise.
-         * @param disabled <tt>true</tt> if the node is disabled; <tt>false</tt>
+         * @param highlighted {@code true} if the node is highlighted;
+         * {@code false} otherwise.
+         * @param disabled {@code true} if the node is disabled; {@code false}
          * otherwise.
          */
         public void render(Object node, Path path, int rowIndex, TreeView treeView,
@@ -124,7 +124,7 @@ public class TreeView extends Component {
          * Converts a tree node to a string representation.
          *
          * @param node The actual tree node data object.
-         * @return The node's string representation, or <tt>null</tt> if the node
+         * @return The node's string representation, or {@code null} if the node
          * does not have a string representation. <p> Note that this method may
          * be called often during keyboard navigation, so implementations should
          * avoid unnecessary string allocations.
@@ -147,7 +147,7 @@ public class TreeView extends Component {
         /**
          * Terminates an edit operation.
          *
-         * @param result <tt>true</tt> to perform the edit; <tt>false</tt> to
+         * @param result {@code true} to perform the edit; {@code false} to
          * cancel it.
          */
         public void endEdit(boolean result);
@@ -167,7 +167,7 @@ public class TreeView extends Component {
          * (relative to the tree view).
          *
          * @param y The y-coordinate in pixels.
-         * @return The path to the node, or <tt>null</tt> if there is no node
+         * @return The path to the node, or {@code null} if there is no node
          * being painted at the specified y-coordinate.
          */
         public Path getNodeAt(int y);
@@ -178,7 +178,7 @@ public class TreeView extends Component {
          * the pixel value of a node's indent, use {@link #getNodeIndent(int)}.
          *
          * @param path The path to the node.
-         * @return The bounds, or <tt>null</tt> if the node is not currently
+         * @return The bounds, or {@code null} if the node is not currently
          * visible.
          */
         public Bounds getNodeBounds(Path path);
@@ -820,7 +820,7 @@ public class TreeView extends Component {
     /**
      * Returns the editor used to edit nodes in this tree.
      *
-     * @return The node editor, or <tt>null</tt> if no editor is installed.
+     * @return The node editor, or {@code null} if no editor is installed.
      */
     public NodeEditor getNodeEditor() {
         return nodeEditor;
@@ -941,7 +941,7 @@ public class TreeView extends Component {
     /**
      * Returns the first selected path, as it would appear in a fully expanded tree.
      *
-     * @return The first selected path, or <tt>null</tt> if nothing is selected.
+     * @return The first selected path, or {@code null} if nothing is selected.
      */
     public Path getFirstSelectedPath() {
         return (selectedPaths.getLength() > 0 ? selectedPaths.get(0) : null);
@@ -950,7 +950,7 @@ public class TreeView extends Component {
     /**
      * Returns the last selected path, as it would appear in a fully expanded tree.
      *
-     * @return The last selected path, or <tt>null</tt> if nothing is selected.
+     * @return The last selected path, or {@code null} if nothing is selected.
      */
     public Path getLastSelectedPath() {
         return (selectedPaths.getLength() > 0 ? selectedPaths.get(selectedPaths.getLength() - 1)
@@ -960,7 +960,7 @@ public class TreeView extends Component {
     /**
      * Returns the currently selected index, even when in multi-select mode.
      *
-     * @return The selected path, or <tt>null</tt> if nothing is selected.
+     * @return The selected path, or {@code null} if nothing is selected.
      */
     public Path getSelectedPath() {
         return getFirstSelectedPath();
@@ -978,9 +978,9 @@ public class TreeView extends Component {
     }
 
     /**
-     * @return The selected object, or <tt>null</tt> if nothing is selected.
+     * @return The selected object, or {@code null} if nothing is selected.
      * Note that technically, the selected path could be backed by a
-     * <tt>null</tt> data value. If the caller wishes to distinguish between
+     * {@code null} data value. If the caller wishes to distinguish between
      * these cases, they can use <tt>getSelectedPath()</tt> instead.
      */
     public Object getSelectedNode() {
@@ -998,8 +998,8 @@ public class TreeView extends Component {
      * Adds a path to the selection.
      *
      * @param path The path to the node to be added to the selection.
-     * @return <tt>true</tt> if the path was added to the selection;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the path was added to the selection;
+     * {@code false}, otherwise.
      * @throws IllegalStateException If multi-select is not enabled.
      */
     public boolean addSelectedPath(Path path) {
@@ -1029,8 +1029,8 @@ public class TreeView extends Component {
      * Removes a path from the selection.
      *
      * @param path Path to the node to be removed from the selection.
-     * @return <tt>true</tt> if the path was removed from the selection;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the path was removed from the selection;
+     * {@code false}, otherwise.
      * @throws IllegalStateException If multi-select is not enabled.
      */
     public boolean removeSelectedPath(Path path) {
@@ -1105,7 +1105,7 @@ public class TreeView extends Component {
      * Returns the disabled state of a given node.
      *
      * @param path The path to the node whose disabled state is to be tested
-     * @return <tt>true</tt> if the node is disabled; <tt>false</tt>, otherwise
+     * @return {@code true} if the node is disabled; {@code false}, otherwise
      */
     @SuppressWarnings("unchecked")
     public boolean isNodeDisabled(Path path) {
@@ -1126,9 +1126,9 @@ public class TreeView extends Component {
      * all nodes. Disabled nodes are not interactive to the user. Note, however,
      * that disabled nodes may still be expanded, selected, and checked
      * <i>programatically</i>. A disabled node may have enabled children. <p> If
-     * the disabled node filter is set to <tt>null</tt>, all nodes are enabled.
+     * the disabled node filter is set to {@code null}, all nodes are enabled.
      *
-     * @return The disabled node filter, or <tt>null</tt> if no disabled node
+     * @return The disabled node filter, or {@code null} if no disabled node
      * filter is set
      */
     public Filter<?> getDisabledNodeFilter() {
@@ -1140,9 +1140,9 @@ public class TreeView extends Component {
      * nodes. Disabled nodes are not interactive to the user. Note, however,
      * that disabled nodes may still be expanded, selected, and checked
      * <i>programatically</i>. A disabled node may have enabled children. <p> If
-     * the disabled node filter is set to <tt>null</tt>, all nodes are enabled.
+     * the disabled node filter is set to {@code null}, all nodes are enabled.
      *
-     * @param disabledNodeFilter The disabled node filter, or <tt>null</tt> for
+     * @param disabledNodeFilter The disabled node filter, or {@code null} for
      * no disabled node filter
      */
     public void setDisabledNodeFilter(Filter<?> disabledNodeFilter) {
@@ -1169,8 +1169,8 @@ public class TreeView extends Component {
      * {@link TreeViewListener#checkmarksEnabledChanged(TreeView)
      * checkmarksEnabledChanged} event.
      *
-     * @param checkmarksEnabled <tt>true</tt> to enable checkmarks;
-     * <tt>false</tt> to disable them.
+     * @param checkmarksEnabled {@code true} to enable checkmarks;
+     * {@code false} to disable them.
      */
     public void setCheckmarksEnabled(boolean checkmarksEnabled) {
         if (this.checkmarksEnabled != checkmarksEnabled) {
@@ -1191,8 +1191,8 @@ public class TreeView extends Component {
      * one or more of its descendants are." When this state is configured to not
      * be shown, such nodes will simply be reported as unchecked.
      *
-     * @return <tt>true</tt> if the tree view will report so-called mixed nodes
-     * as mixed; <tt>false</tt> if it will report them as unchecked.
+     * @return {@code true} if the tree view will report so-called mixed nodes
+     * as mixed; {@code false} if it will report them as unchecked.
      * @see NodeCheckState#MIXED
      */
     public boolean getShowMixedCheckmarkState() {
@@ -1211,8 +1211,8 @@ public class TreeView extends Component {
      * {@link TreeViewListener#showMixedCheckmarkStateChanged(TreeView)
      * showMixedCheckmarkStateChanged} event.
      *
-     * @param showMixedCheckmarkState <tt>true</tt> to show the derived mixed
-     * state; <tt>false</tt> to report so-called "mixed" nodes as unchecked.
+     * @param showMixedCheckmarkState {@code true} to show the derived mixed
+     * state; {@code false} to report so-called "mixed" nodes as unchecked.
      * @see NodeCheckState#MIXED
      */
     public void setShowMixedCheckmarkState(boolean showMixedCheckmarkState) {
@@ -1227,11 +1227,11 @@ public class TreeView extends Component {
 
     /**
      * Tells whether or not the node at the specified path is checked. If
-     * checkmarks are not enabled, this is guaranteed to be <tt>false</tt>. So
+     * checkmarks are not enabled, this is guaranteed to be {@code false}. So
      * called mixed nodes will always be reported as unchecked in this method.
      *
      * @param path The path to the node.
-     * @return <tt>true</tt> if the node is explicitly checked; <tt>false</tt>
+     * @return {@code true} if the node is explicitly checked; {@code false}
      * otherwise.
      * @see #getCheckmarksEnabled()
      */
@@ -1289,7 +1289,7 @@ public class TreeView extends Component {
      * checked, but one or more of its descendants are."
      *
      * @param path The path to the node.
-     * @param checked <tt>true</tt> to check the node; <tt>false</tt> to uncheck it.
+     * @param checked {@code true} to check the node; {@code false} to uncheck it.
      * @throws IllegalStateException If checkmarks are not enabled (see
      * {@link #getCheckmarksEnabled()}).
      * @see NodeCheckState#MIXED
@@ -1364,7 +1364,7 @@ public class TreeView extends Component {
      * this will still only return the nodes that are fully checked.
      *
      * @return The paths to the checked nodes in the tree, guaranteed to be
-     * non-<tt>null</tt>.
+     * non-{@code null}.
      */
     public Sequence<Path> getCheckedPaths() {
         return new ImmutableList<>(checkedPaths);
@@ -1374,12 +1374,12 @@ public class TreeView extends Component {
      * Returns the disabled checkmark filter, which determines which checkboxes
      * are interactive and which are not. Note that this filter only affects
      * user interaction; nodes may still be checked programatically despite
-     * their inclusion in this filter. If this filter is set to <tt>null</tt>,
+     * their inclusion in this filter. If this filter is set to {@code null},
      * all checkboxes will be interactive. <p> <b>Note:</b> this filter is only
      * relavent if {@link #setCheckmarksEnabled(boolean) checkmarksEnabled} is
      * set to true.
      *
-     * @return The disabled checkmark filter, or <tt>null</tt> if no disabled
+     * @return The disabled checkmark filter, or {@code null} if no disabled
      * checkmark filter is set
      */
     public Filter<?> getDisabledCheckmarkFilter() {
@@ -1390,13 +1390,13 @@ public class TreeView extends Component {
      * Sets the disabled checkmark filter, which determines which checkboxes are
      * interactive and which are not. Note that this filter only affects user
      * interaction; nodes may still be checked programatically despite their
-     * inclusion in this filter. If this filter is set to <tt>null</tt>, all
+     * inclusion in this filter. If this filter is set to {@code null}, all
      * checkboxes will be interactive. <p> <b>Note:</b> this filter is only
      * relavent if {@link #setCheckmarksEnabled(boolean) checkmarksEnabled} is
      * set to true. enabled.
      *
      * @param disabledCheckmarkFilter The disabled checkmark filter, or
-     * <tt>null</tt> for no disabled checkmark filter
+     * {@code null} for no disabled checkmark filter
      */
     public void setDisabledCheckmarkFilter(Filter<?> disabledCheckmarkFilter) {
         Filter<?> previousDisabledCheckmarkFilter = this.disabledCheckmarkFilter;
@@ -1414,7 +1414,7 @@ public class TreeView extends Component {
      * for any reason. If the vote passes, then the state is changed.
      *
      * @param path The path to the branch node.
-     * @param expanded <tt>true</tt> to expand the branch; <tt>false</tt> to
+     * @param expanded {@code true} to expand the branch; {@code false} to
      * collapse it.
      */
     public void setBranchExpanded(Path path, boolean expanded) {
@@ -1450,7 +1450,7 @@ public class TreeView extends Component {
      * Tells whether or not the specified branch is expanded.
      *
      * @param path The path to the branch node.
-     * @return <tt>true</tt> if the branch is expanded; <tt>false</tt> otherwise.
+     * @return {@code true} if the branch is expanded; {@code false} otherwise.
      */
     public boolean isBranchExpanded(Path path) {
         checkNullOrEmpty(path);
@@ -1538,8 +1538,8 @@ public class TreeView extends Component {
      * node along the specified path.
      *
      * @param path A path leading to a nested branch node.
-     * @param includeSelf If <tt>true</tt> then include the last path element (if
-     * it is a branch), or <tt>false</tt> to just iterate to the parent branch in
+     * @param includeSelf If {@code true} then include the last path element (if
+     * it is a branch), or {@code false} to just iterate to the parent branch in
      * the path.
      * @throws IndexOutOfBoundsException If a path element is out of bounds.
      * @throws IllegalArgumentException If the path contains any leaf nodes.
@@ -1580,7 +1580,7 @@ public class TreeView extends Component {
      * to the tree view).
      *
      * @param y The y-coordinate in pixels.
-     * @return The path to the node, or <tt>null</tt> if there is no node being
+     * @return The path to the node, or {@code null} if there is no node being
      * painted at the specified y-coordinate.
      */
     public Path getNodeAt(int y) {
@@ -1594,7 +1594,7 @@ public class TreeView extends Component {
      * pixel value of a node's indent, use {@link #getNodeIndent(int)}.
      *
      * @param path The path to the node.
-     * @return The bounds, or <tt>null</tt> if the node is not currently visible.
+     * @return The bounds, or {@code null} if the node is not currently visible.
      */
     public Bounds getNodeBounds(Path path) {
         checkNullOrEmpty(path);

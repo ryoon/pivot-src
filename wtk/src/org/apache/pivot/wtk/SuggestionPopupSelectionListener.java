@@ -71,7 +71,7 @@ public interface SuggestionPopupSelectionListener {
      *
      * @param suggestionPopup The source of the event.
      * @param previousSelectedSuggestion The item that was previously selected,
-     * or <tt>null</tt> if the previous selection cannot be determined.
+     * or {@code null} if the previous selection cannot be determined.
      */
     default void selectedSuggestionChanged(SuggestionPopup suggestionPopup,
         Object previousSelectedSuggestion) {

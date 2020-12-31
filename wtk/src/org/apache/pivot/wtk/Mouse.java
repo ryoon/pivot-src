@@ -67,7 +67,7 @@ public final class Mouse {
      * Tests the pressed state of a button.
      *
      * @param button The button to test.
-     * @return <tt>true</tt> if the button is pressed; <tt>false</tt>, otherwise.
+     * @return {@code true} if the button is pressed; {@code false}, otherwise.
      */
     public static boolean isPressed(final Button button) {
         return (buttons & button.getMask()) > 0;
@@ -139,7 +139,7 @@ public final class Mouse {
     /**
      * Returns the mouse capturer.
      *
-     * @return The component that has captured the mouse, or <tt>null</tt> if
+     * @return The component that has captured the mouse, or {@code null} if
      * the mouse is not currently captured.
      */
     public static Component getCapturer() {

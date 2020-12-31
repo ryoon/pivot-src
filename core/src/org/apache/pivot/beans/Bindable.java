@@ -34,10 +34,10 @@ public interface Bindable {
      * this to extract named values defined in the BXML file. Alternatively, the
      * {@link BXML} annotation can be used by trusted code to automatically map
      * namespace values to member variables.
-     * @param location The location of the BXML source. May be <tt>null</tt> if
+     * @param location The location of the BXML source. May be {@code null} if
      * the location of the source is not known.
      * @param resources The resources that were used to localize the deserialized
-     * content. May be <tt>null</tt> if no resources were specified.
+     * content. May be {@code null} if no resources were specified.
      */
     void initialize(Map<String, Object> namespace, URL location, Resources resources);
 }

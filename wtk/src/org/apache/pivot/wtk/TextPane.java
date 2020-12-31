@@ -550,7 +550,7 @@ public class TextPane extends Container {
      * Returns character count of the document.
      *
      * @return The document's character count, or <tt>0</tt> if the document is
-     * <tt>null</tt>.
+     * {@code null}.
      */
     public int getCharacterCount() {
         return (document == null) ? 0 : document.getCharacterCount();
@@ -997,7 +997,7 @@ public class TextPane extends Container {
      * Returns a span representing the current selection.
      *
      * @return A span containing the current selection. Both start and end
-     * points are inclusive. Returns <tt>null</tt> if the selection is empty.
+     * points are inclusive. Returns {@code null} if the selection is empty.
      */
     public Span getSelection() {
         return (selectionLength == 0) ? null : new Span(selectionStart, selectionStart
@@ -1112,7 +1112,7 @@ public class TextPane extends Container {
      * Returns the currently selected text.
      *
      * @return A new string containing a copy of the text in the selected range,
-     * or <tt>null</tt> if nothing is selected.
+     * or {@code null} if nothing is selected.
      */
     public String getSelectedText() {
         return selectionLength > 0 ? getText(selectionStart, selectionStart + selectionLength) : null;

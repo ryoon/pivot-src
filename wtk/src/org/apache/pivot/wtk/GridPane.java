@@ -52,7 +52,7 @@ public class GridPane extends Container {
         /**
          * Returns the grid pane with which this row is associated.
          *
-         * @return The row's grid pane, or <tt>null</tt> if the row does not
+         * @return The row's grid pane, or {@code null} if the row does not
          * currently belong to a grid.
          */
         public GridPane getGridPane() {
@@ -384,7 +384,7 @@ public class GridPane extends Container {
      *
      * @param rowIndex The row index of the cell.
      * @param columnIndex The column index of the cell.
-     * @return The component in the specified cell, or <tt>null</tt> if the cell
+     * @return The component in the specified cell, or {@code null} if the cell
      * is empty.
      */
     public Component getCellComponent(int rowIndex, int columnIndex) {

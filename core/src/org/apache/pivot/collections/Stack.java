@@ -55,7 +55,7 @@ public interface Stack<T> extends Collection<T> {
     /**
      * Tests the emptiness of the stack.
      *
-     * @return <tt>true</tt> if the stack contains no items; <tt>false</tt>,
+     * @return {@code true} if the stack contains no items; {@code false},
      * otherwise.
      */
     @Override

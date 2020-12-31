@@ -570,7 +570,7 @@ public abstract class Element extends Node implements Sequence<Node>, Iterable<N
     }
 
     /**
-     * @return The current foreground color, or <tt>null</tt> if no color is
+     * @return The current foreground color, or {@code null} if no color is
      * foreground.
      */
     public final Color getForegroundColor() {
@@ -580,7 +580,7 @@ public abstract class Element extends Node implements Sequence<Node>, Iterable<N
     /**
      * Sets the current foreground color.
      *
-     * @param foregroundColor The foreground color, or <tt>null</tt> to specify
+     * @param foregroundColor The foreground color, or {@code null} to specify
      * no selection.
      */
     public final void setForegroundColor(final Color foregroundColor) {
@@ -602,7 +602,7 @@ public abstract class Element extends Node implements Sequence<Node>, Iterable<N
     }
 
     /**
-     * @return The current background color, or <tt>null</tt> if no color is
+     * @return The current background color, or {@code null} if no color is
      * background.
      */
     public final Color getBackgroundColor() {
@@ -612,7 +612,7 @@ public abstract class Element extends Node implements Sequence<Node>, Iterable<N
     /**
      * Sets the current background color.
      *
-     * @param backgroundColor The background color, or <tt>null</tt> to specify
+     * @param backgroundColor The background color, or {@code null} to specify
      * no selection.
      */
     public final void setBackgroundColor(final Color backgroundColor) {

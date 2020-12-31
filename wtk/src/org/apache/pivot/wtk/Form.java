@@ -244,7 +244,7 @@ public class Form extends Container {
         private MessageType messageType = null;
 
         /**
-         * The flag message. May be <tt>null</tt>.
+         * The flag message. May be {@code null}.
          */
         private String message = null;
 
@@ -272,7 +272,7 @@ public class Form extends Container {
          *
          * @param messageType The type of the flag.
          * @param message The message text associated with the flag, or
-         * <tt>null</tt> for no message.
+         * {@code null} for no message.
          */
         public Flag(MessageType messageType, String message) {
             Utils.checkNull(messageType, "messageType");
@@ -305,7 +305,7 @@ public class Form extends Container {
         /**
          * Returns the flag message.
          *
-         * @return The message text associated with the flag, or <tt>null</tt>
+         * @return The message text associated with the flag, or {@code null}
          * if there is no message.
          */
         public String getMessage() {
@@ -316,7 +316,7 @@ public class Form extends Container {
          * Sets the flag message.
          *
          * @param message The message text associated with the flag, or
-         * <tt>null</tt> if there is no message.
+         * {@code null} if there is no message.
          */
         public void setMessage(String message) {
             this.message = message;
@@ -389,7 +389,7 @@ public class Form extends Container {
     /**
      * Returns the number of fields that are flagged with a given message type.
      *
-     * @param messageType The message type to count, or <tt>null</tt> to return
+     * @param messageType The message type to count, or {@code null} to return
      * the count of all flagged fields regardless of message type.
      * @return The number of flagged fields.
      */
@@ -412,7 +412,7 @@ public class Form extends Container {
     /**
      * Ensures that the first field with the given flag type is visible.
      *
-     * @param messageType The message type, or <tt>null</tt> to scroll the first
+     * @param messageType The message type, or {@code null} to scroll the first
      * flag of any type to visible.
      */
     public void scrollFirstFlagToVisible(MessageType messageType) {

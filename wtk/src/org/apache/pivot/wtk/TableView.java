@@ -116,7 +116,7 @@ public class TableView extends Component {
          * @param name The column name.
          * @param headerData The column header data.
          * @param width The width of the column.
-         * @param relative If <tt>true</tt>, specifies a relative column width;
+         * @param relative If {@code true}, specifies a relative column width;
          * otherwise, specifies a fixed column width.
          */
         public Column(final String name, final Object headerData, final int width, final boolean relative) {
@@ -152,7 +152,7 @@ public class TableView extends Component {
         /**
          * Returns the table view with which this column is associated.
          *
-         * @return The column's table view, or <tt>null</tt> if the column does
+         * @return The column's table view, or {@code null} if the column does
          * not currently belong to a table.
          */
         public TableView getTableView() {
@@ -188,7 +188,7 @@ public class TableView extends Component {
         /**
          * Returns the column header data.
          *
-         * @return The column header data, or <tt>null</tt> if the column has no
+         * @return The column header data, or {@code null} if the column has no
          * header data.
          */
         public Object getHeaderData() {
@@ -198,7 +198,7 @@ public class TableView extends Component {
         /**
          * Sets the column header data.
          *
-         * @param headerData The column header data, or <tt>null</tt> for no
+         * @param headerData The column header data, or {@code null} for no
          * header data.
          */
         public void setHeaderData(final Object headerData) {
@@ -252,7 +252,7 @@ public class TableView extends Component {
         /**
          * Returns the relative flag.
          *
-         * @return <tt>true</tt> if the column width is relative, <tt>false</tt>
+         * @return {@code true} if the column width is relative, {@code false}
          * if it is fixed.
          */
         public boolean isRelative() {
@@ -291,8 +291,8 @@ public class TableView extends Component {
          * Sets the column width.
          *
          * @param width The width of the column.
-         * @param relative <tt>true</tt> if the column width is relative,
-         * <tt>false</tt> if it is fixed.
+         * @param relative {@code true} if the column width is relative,
+         * {@code false} if it is fixed.
          */
         public void setWidth(final int width, final boolean relative) {
             if (width < (relative ? 0 : -1)) {
@@ -398,7 +398,7 @@ public class TableView extends Component {
         /**
          * Returns the column's filter.
          *
-         * @return The column's filter, or <tt>null</tt> if the column does not
+         * @return The column's filter, or {@code null} if the column does not
          * have a filter.
          */
         public Object getFilter() {
@@ -408,7 +408,7 @@ public class TableView extends Component {
         /**
          * Sets the column's filter.
          *
-         * @param filter The column's filter, or <tt>null</tt> for no filter.
+         * @param filter The column's filter, or {@code null} for no filter.
          */
         public void setFilter(final Object filter) {
             Object previousFilter = this.filter;
@@ -482,16 +482,16 @@ public class TableView extends Component {
         /**
          * Prepares the renderer for layout or paint.
          *
-         * @param row The row to render, or <tt>null</tt> if called to calculate
+         * @param row The row to render, or {@code null} if called to calculate
          * preferred height for skins that assume a fixed renderer height.
          * @param rowIndex The index of the row being rendered, or <tt>-1</tt> if
-         * <tt>value</tt> is <tt>null</tt>.
+         * <tt>value</tt> is {@code null}.
          * @param columnIndex The index of the column being rendered.
          * @param tableView The host component.
          * @param columnName The name of the column being rendered.
-         * @param selected If <tt>true</tt>, the row is selected.
-         * @param highlighted If <tt>true</tt>, the row is highlighted.
-         * @param disabled If <tt>true</tt>, the row is disabled.
+         * @param selected If {@code true}, the row is selected.
+         * @param highlighted If {@code true}, the row is highlighted.
+         * @param disabled If {@code true}, the row is disabled.
          */
         public void render(Object row, int rowIndex, int columnIndex, TableView tableView,
             String columnName, boolean selected, boolean highlighted, boolean disabled);
@@ -501,7 +501,7 @@ public class TableView extends Component {
          *
          * @param row The row object.
          * @param columnName The name of the column.
-         * @return The cell data's string representation, or <tt>null</tt> if the
+         * @return The cell data's string representation, or {@code null} if the
          * data does not have a string representation. <p> Note that this method
          * may be called often during keyboard navigation, so implementations
          * should avoid unnecessary string allocations.
@@ -517,13 +517,13 @@ public class TableView extends Component {
         /**
          * Prepares the renderer for layout or paint.
          *
-         * @param data The data to render, or <tt>null</tt> if called to
+         * @param data The data to render, or {@code null} if called to
          * calculate preferred height for skins that assume a fixed renderer
          * height.
          * @param columnIndex The index of the column being rendered.
          * @param tableViewHeader The host component.
          * @param columnName The name of the column being rendered.
-         * @param highlighted If <tt>true</tt>, the item is highlighted.
+         * @param highlighted If {@code true}, the item is highlighted.
          */
         public void render(Object data, int columnIndex, TableViewHeader tableViewHeader,
             String columnName, boolean highlighted);
@@ -532,7 +532,7 @@ public class TableView extends Component {
          * Converts table view header data to a string representation.
          *
          * @param item The header data item.
-         * @return The data's string representation, or <tt>null</tt> if the data
+         * @return The data's string representation, or {@code null} if the data
          * does not have a string representation. <p> Note that this method may
          * be called often during keyboard navigation, so implementations should
          * avoid unnecessary string allocations.
@@ -556,7 +556,7 @@ public class TableView extends Component {
         /**
          * Terminates an edit operation.
          *
-         * @param result <tt>true</tt> to perform the edit; <tt>false</tt> to
+         * @param result {@code true} to perform the edit; {@code false} to
          * cancel it.
          */
         public void endEdit(boolean result);
@@ -1040,7 +1040,7 @@ public class TableView extends Component {
     /**
      * Returns the editor used to edit rows in this table.
      *
-     * @return The row editor, or <tt>null</tt> if no editor is installed.
+     * @return The row editor, or {@code null} if no editor is installed.
      */
     public RowEditor getRowEditor() {
         return rowEditor;
@@ -1216,8 +1216,8 @@ public class TableView extends Component {
      * Adds a single index to the selection.
      *
      * @param index The index to add.
-     * @return <tt>true</tt> if the index was added to the selection;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the index was added to the selection;
+     * {@code false}, otherwise.
      */
     public boolean addSelectedIndex(final int index) {
         Sequence<Span> addedRanges = addSelectedRange(index, index);
@@ -1275,8 +1275,8 @@ public class TableView extends Component {
      * Removes a single index from the selection.
      *
      * @param index The index to remove.
-     * @return <tt>true</tt> if the index was removed from the selection;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the index was removed from the selection;
+     * {@code false}, otherwise.
      */
     public boolean removeSelectedIndex(final int index) {
         Sequence<Span> removedRanges = removeSelectedRange(index, index);
@@ -1351,7 +1351,7 @@ public class TableView extends Component {
      * Returns the selection state of a given index.
      *
      * @param index The index whose selection state is to be tested.
-     * @return <tt>true</tt> if the index is selected; <tt>false</tt>, otherwise.
+     * @return {@code true} if the index is selected; {@code false}, otherwise.
      */
     public boolean isRowSelected(final int index) {
         indexBoundsCheck("index", index, 0, tableData.getLength() - 1);
@@ -1546,7 +1546,7 @@ public class TableView extends Component {
      * Returns the disabled state of a given row.
      *
      * @param index The index of the row whose disabled state is to be tested.
-     * @return <tt>true</tt> if the row is disabled; <tt>false</tt>, otherwise.
+     * @return {@code true} if the row is disabled; {@code false}, otherwise.
      */
     @SuppressWarnings("unchecked")
     public boolean isRowDisabled(final int index) {
@@ -1563,7 +1563,7 @@ public class TableView extends Component {
     /**
      * Returns the disabled row filter.
      *
-     * @return The disabled row filter, or <tt>null</tt> if no disabled row
+     * @return The disabled row filter, or {@code null} if no disabled row
      * filter is set.
      */
     public Filter<?> getDisabledRowFilter() {
@@ -1573,7 +1573,7 @@ public class TableView extends Component {
     /**
      * Sets the disabled row filter.
      *
-     * @param disabledRowFilter The disabled row filter, or <tt>null</tt> for no
+     * @param disabledRowFilter The disabled row filter, or {@code null} for no
      * disabled row filter.
      */
     public void setDisabledRowFilter(final Filter<?> disabledRowFilter) {

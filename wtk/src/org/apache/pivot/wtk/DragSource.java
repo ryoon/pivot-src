@@ -26,7 +26,7 @@ public interface DragSource {
      * @param component The component to drag from.
      * @param x The X-position of the mouse at the beginning of the drag.
      * @param y The Y-position of the mouse.
-     * @return <tt>true</tt> to accept the drag; <tt>false</tt> to reject it.
+     * @return {@code true} to accept the drag; {@code false} to reject it.
      */
     public boolean beginDrag(Component component, int x, int y);
 
@@ -41,7 +41,7 @@ public interface DragSource {
     /**
      * Returns the drag source's native flag.
      *
-     * @return If <tt>true</tt>, the drag will be executed via the native OS.
+     * @return If {@code true}, the drag will be executed via the native OS.
      * Otherwise, it will be executed locally.
      */
     public boolean isNative();
@@ -54,7 +54,7 @@ public interface DragSource {
     /**
      * Returns a visual representing the drag content.
      *
-     * @return The drag visual, or <tt>null</tt> for no visual.
+     * @return The drag visual, or {@code null} for no visual.
      */
     public Visual getRepresentation();
 
@@ -62,7 +62,7 @@ public interface DragSource {
      * Returns the offset of the mouse pointer within the drag visual. Not
      * required unless a representation is specified.
      *
-     * @return The mouse offset within the drag visual, or <tt>null</tt> if no
+     * @return The mouse offset within the drag visual, or {@code null} if no
      * visual is specified.
      */
     public Point getOffset();

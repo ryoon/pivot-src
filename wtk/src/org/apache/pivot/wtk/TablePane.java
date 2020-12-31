@@ -89,7 +89,7 @@ public class TablePane extends Container {
         /**
          * Returns the table pane with which this row is associated.
          *
-         * @return The row's table pane, or <tt>null</tt> if the row does not
+         * @return The row's table pane, or {@code null} if the row does not
          * currently belong to a table.
          */
         public TablePane getTablePane() {
@@ -108,7 +108,7 @@ public class TablePane extends Container {
         /**
          * Returns the relative flag.
          *
-         * @return <tt>true</tt> if the row height is relative, <tt>false</tt>
+         * @return {@code true} if the row height is relative, {@code false}
          * if it is fixed.
          */
         public boolean isRelative() {
@@ -147,8 +147,8 @@ public class TablePane extends Container {
          * Sets the row height.
          *
          * @param height The height of the row.
-         * @param relative <tt>true</tt> if the row height is relative,
-         * <tt>false</tt> if it is fixed.
+         * @param relative {@code true} if the row height is relative,
+         * {@code false} if it is fixed.
          */
         public void setHeight(int height, boolean relative) {
             int previousHeight = this.height;
@@ -168,7 +168,7 @@ public class TablePane extends Container {
         /**
          * Returns the highlighted flag.
          *
-         * @return <tt>true</tt> if the row is highlighted, <tt>false</tt> if it
+         * @return {@code true} if the row is highlighted, {@code false} if it
          * is not
          */
         public boolean isHighlighted() {
@@ -178,8 +178,8 @@ public class TablePane extends Container {
         /**
          * Sets the highlighted flag.
          *
-         * @param highlighted <tt>true</tt> to set the row as highlighted,
-         * <tt>false</tt> to set it as not highlighted
+         * @param highlighted {@code true} to set the row as highlighted,
+         * {@code false} to set it as not highlighted
          */
         public void setHighlighted(boolean highlighted) {
             if (highlighted != this.highlighted) {
@@ -335,7 +335,7 @@ public class TablePane extends Container {
         /**
          * Returns the table pane with which this column is associated.
          *
-         * @return The column's table pane, or <tt>null</tt> if the column does
+         * @return The column's table pane, or {@code null} if the column does
          * not currently belong to a table.
          */
         public TablePane getTablePane() {
@@ -354,7 +354,7 @@ public class TablePane extends Container {
         /**
          * Returns the relative flag.
          *
-         * @return <tt>true</tt> if the column width is relative, <tt>false</tt>
+         * @return {@code true} if the column width is relative, {@code false}
          * if it is fixed.
          */
         public boolean isRelative() {
@@ -393,8 +393,8 @@ public class TablePane extends Container {
          * Sets the column width.
          *
          * @param width The width of the column.
-         * @param relative <tt>true</tt> if the column width is relative,
-         * <tt>false</tt> if it is fixed.
+         * @param relative {@code true} if the column width is relative,
+         * {@code false} if it is fixed.
          */
         public void setWidth(int width, boolean relative) {
             int previousWidth = this.width;
@@ -414,7 +414,7 @@ public class TablePane extends Container {
         /**
          * Returns the highlighted flag.
          *
-         * @return <tt>true</tt> if the column is highlighted, <tt>false</tt> if
+         * @return {@code true} if the column is highlighted, {@code false} if
          * it is not
          */
         public boolean isHighlighted() {
@@ -424,8 +424,8 @@ public class TablePane extends Container {
         /**
          * Sets the highlighted flag.
          *
-         * @param highlighted <tt>true</tt> to set the column as highlighted,
-         * <tt>false</tt> to set it as not highlighted
+         * @param highlighted {@code true} to set the column as highlighted,
+         * {@code false} to set it as not highlighted
          */
         public void setHighlighted(boolean highlighted) {
             if (highlighted != this.highlighted) {
@@ -751,7 +751,7 @@ public class TablePane extends Container {
      *
      * @param rowIndex The row index of the cell
      * @param columnIndex The column index of the cell
-     * @return The component in the specified cell, or <tt>null</tt> if the cell
+     * @return The component in the specified cell, or {@code null} if the cell
      * is empty
      */
     public Component getCellComponent(int rowIndex, int columnIndex) {

@@ -160,7 +160,7 @@ public class MovieViewSkin extends ComponentSkin implements MovieViewListener {
     }
 
     /**
-     * @return <tt>false</tt>; movie views are not focusable.
+     * @return {@code false}; movie views are not focusable.
      */
     @Override
     public final boolean isFocusable() {

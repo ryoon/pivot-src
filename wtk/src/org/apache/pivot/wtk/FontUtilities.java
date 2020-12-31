@@ -46,7 +46,7 @@ public final class FontUtilities {
      * a font relative to the current theme}, or one of the
      * {@link Font#decode(String) standard Java font specifications}.
      * @return The font corresponding to the specification.
-     * @throws IllegalArgumentException if the given string is <tt>null</tt>
+     * @throws IllegalArgumentException if the given string is {@code null}
      * or empty or the font specification cannot be decoded.
      */
     public static Font decodeFont(final String value) {

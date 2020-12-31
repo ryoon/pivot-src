@@ -934,7 +934,7 @@ public class TextArea extends Component {
      * Returns a span representing the current selection.
      *
      * @return A span containing the current selection. Both start and end
-     * points are inclusive. Returns <tt>null</tt> if the selection is empty.
+     * points are inclusive. Returns {@code null} if the selection is empty.
      */
     public Span getSelection() {
         return (selectionLength == 0) ? null : new Span(selectionStart, selectionStart
@@ -1079,7 +1079,7 @@ public class TextArea extends Component {
     /**
      * Returns the text area's text key.
      *
-     * @return The text key, or <tt>null</tt> if no text key is set.
+     * @return The text key, or {@code null} if no text key is set.
      */
     public String getTextKey() {
         return textKey;
@@ -1088,7 +1088,7 @@ public class TextArea extends Component {
     /**
      * Sets the text area's text key.
      *
-     * @param textKey The text key, or <tt>null</tt> to clear the binding.
+     * @param textKey The text key, or {@code null} to clear the binding.
      */
     public void setTextKey(String textKey) {
         String previousTextKey = this.textKey;

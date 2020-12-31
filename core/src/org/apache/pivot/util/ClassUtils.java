@@ -81,8 +81,8 @@ public final class ClassUtils {
      * given classes.
      * @param obj The (non-null) object to test.
      * @param classes The list of classes.
-     * @return <tt>true</tt> if the object is non-null and an instance of ANY of
-     * the given classes, <tt>false</tt> otherwise.
+     * @return {@code true} if the object is non-null and an instance of ANY of
+     * the given classes, {@code false} otherwise.
      */
     public static boolean instanceOf(final Object obj, final Class<?>... classes) {
         for (Class<?> cls : classes) {

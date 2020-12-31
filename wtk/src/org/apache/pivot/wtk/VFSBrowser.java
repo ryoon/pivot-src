@@ -232,7 +232,7 @@ public class VFSBrowser extends Container {
      * Adds a file to the file selection.
      *
      * @param file The new file to be selected.
-     * @return <tt>true</tt> if the file was added; <tt>false</tt> if it was
+     * @return {@code true} if the file was added; {@code false} if it was
      * already selected.
      * @throws FileSystemException if there are any problems.
      */
@@ -261,7 +261,7 @@ public class VFSBrowser extends Container {
      * Removes a file from the file selection.
      *
      * @param file The file to be unselected.
-     * @return <tt>true</tt> if the file was removed; <tt>false</tt> if it was
+     * @return {@code true} if the file was removed; {@code false} if it was
      * not already selected.
      */
     public boolean removeSelectedFile(FileObject file) {
@@ -389,8 +389,8 @@ public class VFSBrowser extends Container {
     /**
      * Sets the file browser's multi-select state.
      *
-     * @param multiSelect <tt>true</tt> if multi-select is enabled;
-     * <tt>false</tt>, otherwise.
+     * @param multiSelect {@code true} if multi-select is enabled;
+     * {@code false}, otherwise.
      */
     public void setMultiSelect(boolean multiSelect) {
         if (this.multiSelect != multiSelect) {
@@ -406,7 +406,7 @@ public class VFSBrowser extends Container {
     /**
      * Returns the current file filter.
      *
-     * @return The current file filter, or <tt>null</tt> if no filter is set.
+     * @return The current file filter, or {@code null} if no filter is set.
      */
     public Filter<FileObject> getDisabledFileFilter() {
         return disabledFileFilter;
@@ -415,7 +415,7 @@ public class VFSBrowser extends Container {
     /**
      * Sets the file filter.
      *
-     * @param disabledFileFilter The file filter to use, or <tt>null</tt> for no
+     * @param disabledFileFilter The file filter to use, or {@code null} for no
      * filter.
      */
     public void setDisabledFileFilter(Filter<FileObject> disabledFileFilter) {

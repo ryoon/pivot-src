@@ -55,7 +55,7 @@ public interface Serializer<T> {
      *
      * @param object If provided, allows the serializer to attach parameters to
      * the returned MIME type containing more detailed information about the
-     * data. If <tt>null</tt>, the base MIME type is returned.
+     * data. If {@code null}, the base MIME type is returned.
      * @return The MIME type of the current data.
      */
     public String getMIMEType(T object);

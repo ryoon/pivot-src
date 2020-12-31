@@ -30,8 +30,8 @@ public interface Editor {
      * object. It is up to implementations to define the behavior when
      * <tt>isEditing() == false</tt>.
      *
-     * @return <tt>true</tt> if the changes were successfully saved;
-     * <tt>false</tt> otherwise.
+     * @return {@code true} if the changes were successfully saved;
+     * {@code false} otherwise.
      */
     public boolean saveChanges();
 

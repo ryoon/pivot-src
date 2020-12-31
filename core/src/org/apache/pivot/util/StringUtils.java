@@ -131,7 +131,7 @@ public final class StringUtils {
      * Extension of {@link Boolean#parseBoolean} that is both more exact
      * and supports more features.  Specifically it will recognize:
      * <ul>
-     * <li><tt>true</tt> or <tt>false</tt> in mixed case.</li>
+     * <li>{@code true} or {@code false} in mixed case.</li>
      * <li><tt>yes</tt> or <tt>no</tt> in mixed case.</li>
      * <li><tt>on</tt> or <tt>off</tt> in mixed case.</li>
      * <li><tt>T</tt> or <tt>F</tt> in mixed case.</li>

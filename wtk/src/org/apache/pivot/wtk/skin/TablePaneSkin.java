@@ -1009,7 +1009,7 @@ public class TablePaneSkin extends ContainerSkin implements TablePane.Skin, Tabl
      * components within them or spanning them.
      *
      * @return A grid of booleans, where occupied cells are denoted by
-     * <tt>true</tt>, and vacant cells are denoted by <tt>false</tt>
+     * {@code true}, and vacant cells are denoted by {@code false}
      */
     private boolean[][] getOccupiedCells() {
         TablePane tablePane = (TablePane) getComponent();
@@ -1086,7 +1086,7 @@ public class TablePaneSkin extends ContainerSkin implements TablePane.Skin, Tabl
      * the cell.
      *
      * @param columnIndex The index of the column within the table pane
-     * @return <tt>true</tt> if the column is visible; <tt>false</tt> otherwise
+     * @return {@code true} if the column is visible; {@code false} otherwise
      */
     private boolean isColumnVisible(int columnIndex) {
         boolean visible = false;
@@ -1148,7 +1148,7 @@ public class TablePaneSkin extends ContainerSkin implements TablePane.Skin, Tabl
      * the cell.
      *
      * @param rowIndex The index of the row within the table pane
-     * @return <tt>true</tt> if the row is visible; <tt>false</tt> otherwise
+     * @return {@code true} if the row is visible; {@code false} otherwise
      */
     private boolean isRowVisible(int rowIndex) {
         boolean visible = false;
@@ -1332,7 +1332,7 @@ public class TablePaneSkin extends ContainerSkin implements TablePane.Skin, Tabl
      * @param height The height constraint of the table pane
      * @param columnWidthsArgument The widths of the table pane's columns, which
      * will be used as width constraints to the row heights when necessary, or
-     * <tt>null</tt> if the column widths are not yet known (the row heights
+     * {@code null} if the column widths are not yet known (the row heights
      * will be unconstrained)
      * @return An array containing the height of each row in the table pane given
      * the specified constraints

@@ -1076,7 +1076,7 @@ public class TerraTableViewSkin extends ComponentSkin implements TableView.Skin,
     /**
      * Set whether this {@link TableView} will go into edit mode on a mouse down or
      * on a mouse double click (the default).
-     * <p> Setting this to <tt>true</tt> can reduce the number of mouse clicks
+     * <p> Setting this to {@code true} can reduce the number of mouse clicks
      * necessary to rapidly edit a table view.
      * @param editOnMouseDown The new setting.
      */

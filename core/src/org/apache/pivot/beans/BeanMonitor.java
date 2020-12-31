@@ -153,7 +153,7 @@ public class BeanMonitor {
      * Tests whether a property fires change events.
      *
      * @param key The property name.
-     * @return <tt>true</tt> if the property fires change events; <tt>false</tt>
+     * @return {@code true} if the property fires change events; {@code false}
      * otherwise.
      */
     public boolean isNotifying(final String key) {

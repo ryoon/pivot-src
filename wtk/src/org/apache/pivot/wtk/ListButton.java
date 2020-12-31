@@ -395,7 +395,7 @@ public class ListButton extends Button {
      * Returns an item's disabled state.
      *
      * @param index The index of the item whose disabled state is to be tested.
-     * @return <tt>true</tt> if the item is disabled; <tt>false</tt>, otherwise.
+     * @return {@code true} if the item is disabled; {@code false}, otherwise.
      */
     @SuppressWarnings("unchecked")
     public boolean isItemDisabled(int index) {
@@ -412,7 +412,7 @@ public class ListButton extends Button {
     /**
      * Returns the disabled item filter.
      *
-     * @return The disabled item filter, or <tt>null</tt> if no disabled item
+     * @return The disabled item filter, or {@code null} if no disabled item
      * filter is set.
      */
     public Filter<?> getDisabledItemFilter() {
@@ -422,7 +422,7 @@ public class ListButton extends Button {
     /**
      * Sets the disabled item filter.
      *
-     * @param disabledItemFilter The disabled item filter, or <tt>null</tt> for
+     * @param disabledItemFilter The disabled item filter, or {@code null} for
      * no disabled item filter.
      */
     public void setDisabledItemFilter(Filter<?> disabledItemFilter) {

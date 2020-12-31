@@ -121,7 +121,7 @@ public final class Span {
      * Determines whether this span contains another span.
      *
      * @param span The span to test for containment.
-     * @return <tt>true</tt> if this span contains <tt>span</tt>; <tt>false</tt>,
+     * @return {@code true} if this span contains <tt>span</tt>; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -147,7 +147,7 @@ public final class Span {
      * either end of the other span (since start and end are inclusive).
      *
      * @param span The span to test for adjacency.
-     * @return <tt>true</tt> if this span is adjacent <tt>span</tt>; <tt>false</tt>,
+     * @return {@code true} if this span is adjacent <tt>span</tt>; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -173,7 +173,7 @@ public final class Span {
      * normalized start of the other span.
     *
      * @param span The span to test.
-     * @return <tt>true</tt> if this span is "before" <tt>span</tt>; <tt>false</tt>,
+     * @return {@code true} if this span is "before" <tt>span</tt>; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -189,7 +189,7 @@ public final class Span {
      * normalized end of the other span.
     *
      * @param span The span to test.
-     * @return <tt>true</tt> if this span is "after" <tt>span</tt>; <tt>false</tt>,
+     * @return {@code true} if this span is "after" <tt>span</tt>; {@code false},
      * otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
@@ -203,8 +203,8 @@ public final class Span {
      * Determines whether this span intersects with another span.
      *
      * @param span The span to test for intersection.
-     * @return <tt>true</tt> if this span intersects with <tt>span</tt>;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if this span intersects with <tt>span</tt>;
+     * {@code false}, otherwise.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
     public boolean intersects(final Span span) {
@@ -228,7 +228,7 @@ public final class Span {
      *
      * @param span The span to intersect with this span.
      * @return A new Span instance representing the intersection of this span and
-     * <tt>span</tt>, or <tt>null</tt> if the spans do not intersect.
+     * <tt>span</tt>, or {@code null} if the spans do not intersect.
      * @throws IllegalArgumentException if the given span is {@code null}.
      */
     public Span intersect(final Span span) {
@@ -271,7 +271,7 @@ public final class Span {
     }
 
     /**
-     * @return <tt>true</tt> if the span is "normal", meaning the start is
+     * @return {@code true} if the span is "normal", meaning the start is
      * less or equal the end.
      */
     public boolean isNormal() {

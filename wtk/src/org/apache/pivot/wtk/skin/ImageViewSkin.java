@@ -254,7 +254,7 @@ public class ImageViewSkin extends ComponentSkin implements ImageViewListener {
     }
 
     /**
-     * @return <tt>false</tt>; image views are not focusable.
+     * @return {@code false}; image views are not focusable.
      */
     @Override
     public final boolean isFocusable() {

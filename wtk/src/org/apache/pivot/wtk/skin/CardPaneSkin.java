@@ -610,16 +610,16 @@ public class CardPaneSkin extends ContainerSkin implements CardPaneListener {
      * Returns the circular style, which controls the direction of certain
      * transitions (transitions for which a direction makes sense) when looping
      * from the first index of a card pane to the last, or vice versa. When this
-     * style is <tt>false</tt> (the default), directional transitions will
+     * style is {@code false} (the default), directional transitions will
      * always appear to move forward when transitioning from a lower card index
-     * to a higher card index, and vice versa. When this style is <tt>true</tt>,
+     * to a higher card index, and vice versa. When this style is {@code true},
      * directional transitions will appear to move forward when transitioning
      * from the last card to the first, and backward when they transition from
      * the first card to the last. <p> Note: to avoid ambiguity, the circular
      * style will be ignored if the card pane has fewer than three cards.
      *
-     * @return <tt>true</tt> if directional transitions will be circular;
-     * <tt>false</tt> otherwise
+     * @return {@code true} if directional transitions will be circular;
+     * {@code false} otherwise
      */
     public boolean isCircular() {
         return circular;
@@ -629,16 +629,16 @@ public class CardPaneSkin extends ContainerSkin implements CardPaneListener {
      * Sets the circular style, which controls the direction of certain
      * transitions (transitions for which a direction makes sense) when looping
      * from the first index of a card pane to the last, or vice versa. When this
-     * style is <tt>false</tt> (the default), directional transitions will
+     * style is {@code false} (the default), directional transitions will
      * always appear to move forward when transitioning from a lower card index
-     * to a higher card index, and vice versa. When this style is <tt>true</tt>,
+     * to a higher card index, and vice versa. When this style is {@code true},
      * directional transitions will appear to move forward when transitioning
      * from the last card to the first, and backward when they transition from
      * the first card to the last. <p> Note: to avoid ambiguity, the circular
      * style will be ignored if the card pane has fewer than three cards.
      *
-     * @param circular <tt>true</tt> if directional transitions should be
-     * circular; <tt>false</tt> otherwise
+     * @param circular {@code true} if directional transitions should be
+     * circular; {@code false} otherwise
      */
     public void setCircular(final boolean circular) {
         this.circular = circular;

@@ -64,7 +64,7 @@ public class ColorChooser extends Container {
     }
 
     /**
-     * @return The currently selected color, or <tt>null</tt> if no color is
+     * @return The currently selected color, or {@code null} if no color is
      * selected.
      */
     public Color getSelectedColor() {
@@ -74,7 +74,7 @@ public class ColorChooser extends Container {
     /**
      * Sets the selected color.
      *
-     * @param selectedColor The color to select, or <tt>null</tt> to clear the
+     * @param selectedColor The color to select, or {@code null} to clear the
      * selection.
      */
     public void setSelectedColor(final Color selectedColor) {

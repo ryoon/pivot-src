@@ -212,7 +212,7 @@ public final class JSON {
      * @param <T> The type of value we're dealing with.
      * @param root The root object.
      * @param path The path to test (from the root).
-     * @return <tt>true</tt> if the path exists; <tt>false</tt>, otherwise.
+     * @return {@code true} if the path exists; {@code false}, otherwise.
      */
     @SuppressWarnings("unchecked")
     public static <T> boolean containsKey(Object root, String path) {

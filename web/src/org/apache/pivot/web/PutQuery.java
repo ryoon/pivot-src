@@ -65,8 +65,8 @@ public class PutQuery extends Query<Boolean> {
     /**
      * Synchronously executes the PUT operation.
      *
-     * @return <tt>true</tt> if the operation resulted in the creation of a
-     * server resource; <tt>false</tt>, otherwise.
+     * @return {@code true} if the operation resulted in the creation of a
+     * server resource; {@code false}, otherwise.
      */
     @Override
     public Boolean execute() throws QueryException {

@@ -378,8 +378,8 @@ public abstract class Container extends Component implements Sequence<Component>
      * is considered to be its own ancestor.
      *
      * @param component The component to test.
-     * @return <tt>true</tt> if this container is an ancestor of
-     * <tt>component</tt>; <tt>false</tt> otherwise.
+     * @return {@code true} if this container is an ancestor of
+     * <tt>component</tt>; {@code false} otherwise.
      */
     public boolean isAncestor(Component component) {
         boolean ancestor = false;
@@ -402,8 +402,8 @@ public abstract class Container extends Component implements Sequence<Component>
      * focusable, this requests that focus be set to the first focusable
      * descendant in this container.
      *
-     * @return <tt>true</tt> if the container or one of its descendants gained
-     * the focus or <tt>false</tt> if no component was found to gain the focus.
+     * @return {@code true} if the container or one of its descendants gained
+     * the focus or {@code false} if no component was found to gain the focus.
      */
     @Override
     public boolean requestFocus() {
@@ -498,8 +498,8 @@ public abstract class Container extends Component implements Sequence<Component>
      * Tests whether this container is an ancestor of the currently focused
      * component.
      *
-     * @return <tt>true</tt> if a component is focused and this container is an
-     * ancestor of the component; <tt>false</tt>, otherwise.
+     * @return {@code true} if a component is focused and this container is an
+     * ancestor of the component; {@code false}, otherwise.
      */
     public boolean containsFocus() {
         Component focusedComponent = getFocusedComponent();

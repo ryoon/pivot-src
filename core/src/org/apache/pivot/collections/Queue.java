@@ -54,7 +54,7 @@ public interface Queue<T> extends Collection<T> {
     /**
      * Tests the emptiness of the queue.
      *
-     * @return <tt>true</tt> if the queue contains no items; <tt>false</tt>,
+     * @return {@code true} if the queue contains no items; {@code false},
      * otherwise.
      */
     @Override

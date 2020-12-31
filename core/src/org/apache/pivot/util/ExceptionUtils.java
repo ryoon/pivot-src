@@ -75,9 +75,9 @@ public final class ExceptionUtils {
      *
      * @param    ex          The exception to report.
      * @param    buf         The buffer to build the string representation in.
-     * @param    useToString <tt>true</tt> to format using the {@link Throwable#toString}
+     * @param    useToString {@code true} to format using the {@link Throwable#toString}
      *                       method instead of the {@link Throwable#getMessage} for the text.
-     * @param    useSpaces   <tt>true</tt> to use spaces instead of newlines to separate
+     * @param    useSpaces   {@code true} to use spaces instead of newlines to separate
      *                       the chained exceptions.
      * @param    convertTabs Convert any tab characters to single spaces (for use in controls
      *                       that don't deal with tabs correctly; some do).

@@ -298,7 +298,7 @@ public class RangeSelection {
      * Tests for the presence of an index in the selection.
      *
      * @param index The index to look for in the selection.
-     * @return <tt>true</tt> if the index is selected; <tt>false</tt>, otherwise.
+     * @return {@code true} if the index is selected; {@code false}, otherwise.
      */
     public boolean containsIndex(final int index) {
         Span range = new Span(index);

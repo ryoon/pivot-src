@@ -111,7 +111,7 @@ public class Label extends Component {
     /**
      * Returns the label's text key.
      *
-     * @return The text key, or <tt>null</tt> if no text key is set.
+     * @return The text key, or {@code null} if no text key is set.
      */
     public String getTextKey() {
         return textKey;
@@ -150,7 +150,7 @@ public class Label extends Component {
     /**
      * Sets the label's text key.
      *
-     * @param textKey The text key, or <tt>null</tt> to clear the binding.
+     * @param textKey The text key, or {@code null} to clear the binding.
      */
     public void setTextKey(final String textKey) {
         String previousTextKey = this.textKey;

@@ -754,9 +754,9 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
      * Gets current value of style that determines the behavior of <tt>TAB</tt>
      * and <tt>Ctrl-TAB</tt> characters.
      *
-     * @return <tt>true</tt> if <tt>TAB</tt> inserts an appropriate number of
+     * @return {@code true} if <tt>TAB</tt> inserts an appropriate number of
      * spaces, while <tt>Ctrl-TAB</tt> shifts focus to next component.
-     * <tt>false</tt> (default) means <tt>TAB</tt> shifts focus and
+     * {@code false} (default) means <tt>TAB</tt> shifts focus and
      * <tt>Ctrl-TAB</tt> inserts spaces.
      */
     public final boolean getAcceptsTab() {
@@ -767,9 +767,9 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
      * Sets current value of style that determines the behavior of <tt>TAB</tt>
      * and <tt>Ctrl-TAB</tt> characters.
      *
-     * @param acceptsTab <tt>true</tt> if <tt>TAB</tt> inserts an appropriate
+     * @param acceptsTab {@code true} if <tt>TAB</tt> inserts an appropriate
      * number of spaces, while <tt>Ctrl-TAB</tt> shifts focus to next component.
-     * <tt>false</tt> (default) means <tt>TAB</tt> shifts focus and
+     * {@code false} (default) means <tt>TAB</tt> shifts focus and
      * <tt>Ctrl-TAB</tt> inserts spaces.
      */
     public final void setAcceptsTab(final boolean acceptsTab) {

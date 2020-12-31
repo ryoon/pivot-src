@@ -26,7 +26,7 @@ public interface Filter<T> {
      * Determines item inclusion.
      *
      * @param item The item to test for inclusion.
-     * @return <tt>true</tt> if the item should be included; <tt>false</tt>,
+     * @return {@code true} if the item should be included; {@code false},
      * otherwise.
      */
     boolean include(T item);

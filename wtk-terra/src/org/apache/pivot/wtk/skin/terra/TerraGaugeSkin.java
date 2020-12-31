@@ -687,9 +687,9 @@ public class TerraGaugeSkin<T extends Number> extends ComponentSkin implements G
 
     /**
      * Set whether or not to only show the maximum color for the entire gauge.
-     * @param onlyMaxColor <tt>true</tt> to show the entire gauge in the normal,
+     * @param onlyMaxColor {@code true} to show the entire gauge in the normal,
      * warning, or critical color (if set) which is appropriate for the value
-     * and the warning or critical levels (again if set), <tt>false</tt> to
+     * and the warning or critical levels (again if set), {@code false} to
      * show multiple segments.
      */
     public final void setOnlyMaxColor(final boolean onlyMaxColor) {

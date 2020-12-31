@@ -381,7 +381,7 @@ public interface Sequence<T> {
          * @param <T> The type of items in this sequence.
          * @param sequence The root sequence.
          * @param path The path of the item to retrieve.
-         * @return The item at the given path, or <tt>null</tt> if the path is
+         * @return The item at the given path, or {@code null} if the path is
          * empty.
          */
         @SuppressWarnings("unchecked")
@@ -412,7 +412,7 @@ public interface Sequence<T> {
          * @param sequence The root sequence.
          * @param item The item to locate.
          * @return The path of first occurrence of the item if it exists in the
-         * sequence; <tt>null</tt> otherwise.
+         * sequence; {@code null} otherwise.
          */
         @SuppressWarnings("unchecked")
         public static <T> Path pathOf(final Sequence<T> sequence, final T item) {
@@ -458,8 +458,8 @@ public interface Sequence<T> {
          *
          * @param ancestorPath The ancestor path to test.
          * @param descendantPath The descendant path to test.
-         * @return <tt>true</tt> if the second argument is a descendant of the first
-         * path argument, <tt>false</tt> otherwise.
+         * @return {@code true} if the second argument is a descendant of the first
+         * path argument, {@code false} otherwise.
          */
         public static boolean isDescendant(final Path ancestorPath, final Path descendantPath) {
             int ancestorLength = ancestorPath.getLength();

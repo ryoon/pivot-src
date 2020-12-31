@@ -70,8 +70,8 @@ public interface MenuHandler {
      * @param menu The menu to be configured.
      * @param x The X location of the click.
      * @param y The Y location of the click.
-     * @return <tt>true</tt> to stop propagation of context menu configuration;
-     * <tt>false</tt> to allow it to continue (default).
+     * @return {@code true} to stop propagation of context menu configuration;
+     * {@code false} to allow it to continue (default).
      */
     default boolean configureContextMenu(Component component, Menu menu, int x, int y) {
         return false;

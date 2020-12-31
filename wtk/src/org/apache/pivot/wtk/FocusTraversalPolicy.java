@@ -26,10 +26,10 @@ public interface FocusTraversalPolicy {
      *
      * @param container The container to which the traversal policy applies.
      * @param component The component from which focus is being transferred. If
-     * <tt>null</tt>, implementations should return the first component for a
+     * {@code null}, implementations should return the first component for a
      * forward traversal and the last component for a backward traversal.
      * @param direction The direction in which to transfer focus.
-     * @return The component to focus, or <tt>null</tt> if there are no more
+     * @return The component to focus, or {@code null} if there are no more
      * components in the given direction or next component cannot be determined.
      */
     Component getNextComponent(Container container, Component component,

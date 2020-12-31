@@ -704,7 +704,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
      * and the maximum height of any character in the font.
      *
      * @param font The new font to use.
-     * @throws IllegalArgumentException if the <tt>font</tt> argument is <tt>null</tt>.
+     * @throws IllegalArgumentException if the <tt>font</tt> argument is {@code null}.
      */
     public final void setFont(final Font font) {
         Utils.checkNull(font, "font");

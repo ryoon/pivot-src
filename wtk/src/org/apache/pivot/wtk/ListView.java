@@ -69,18 +69,18 @@ public class ListView extends Component {
         /**
          * Prepares the renderer for layout or paint.
          *
-         * @param item The item to render, or <tt>null</tt> if called to
+         * @param item The item to render, or {@code null} if called to
          * calculate preferred height for skins that assume a fixed renderer
          * height.
          * @param index The index of the item being rendered, or <tt>-1</tt> if
-         * <tt>item</tt> is <tt>null</tt>.
+         * <tt>item</tt> is {@code null}.
          * @param listView The host component.
-         * @param selected If <tt>true</tt>, the item is selected. the item.
+         * @param selected If {@code true}, the item is selected. the item.
          * @param state The selected, unselected or mixed state for the checkmark.
          * If tri-state checkmarks are not enabled, this value will either be
          * selected or unselected.
-         * @param highlighted If <tt>true</tt>, the item is highlighted.
-         * @param disabled If <tt>true</tt>, the item is disabled.
+         * @param highlighted If {@code true}, the item is highlighted.
+         * @param disabled If {@code true}, the item is disabled.
          */
         public void render(Object item, int index, ListView listView, boolean selected,
             Button.State state, boolean highlighted, boolean disabled);
@@ -89,7 +89,7 @@ public class ListView extends Component {
          * Converts a list item to a string representation.
          *
          * @param item The particular list item.
-         * @return The item's string representation, or <tt>null</tt> if the item
+         * @return The item's string representation, or {@code null} if the item
          * does not have a string representation. <p> Note that this method may
          * be called often during keyboard navigation, so implementations should
          * avoid unnecessary string allocations.
@@ -112,7 +112,7 @@ public class ListView extends Component {
         /**
          * Terminates an edit operation.
          *
-         * @param result <tt>true</tt> to perform the edit; <tt>false</tt> to
+         * @param result {@code true} to perform the edit; {@code false} to
          * cancel it.
          */
         public void endEdit(boolean result);
@@ -564,7 +564,7 @@ public class ListView extends Component {
     /**
      * Returns the editor used to edit items in this list.
      *
-     * @return The item editor, or <tt>null</tt> if no editor is installed.
+     * @return The item editor, or {@code null} if no editor is installed.
      */
     public ItemEditor getItemEditor() {
         return itemEditor;
@@ -744,8 +744,8 @@ public class ListView extends Component {
      * Adds a single index to the selection.
      *
      * @param index The index to add.
-     * @return <tt>true</tt> if the index was added to the selection;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the index was added to the selection;
+     * {@code false}, otherwise.
      */
     public boolean addSelectedIndex(int index) {
         Sequence<Span> addedRanges = addSelectedRange(index, index);
@@ -805,8 +805,8 @@ public class ListView extends Component {
      * Removes a single index from the selection.
      *
      * @param index The index to remove.
-     * @return <tt>true</tt> if the index was removed from the selection;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the index was removed from the selection;
+     * {@code false}, otherwise.
      */
     public boolean removeSelectedIndex(int index) {
         Sequence<Span> removedRanges = removeSelectedRange(index, index);
@@ -878,7 +878,7 @@ public class ListView extends Component {
      * Returns the selection state of a given index.
      *
      * @param index The index whose selection state is to be tested.
-     * @return <tt>true</tt> if the index is selected; <tt>false</tt>, otherwise.
+     * @return {@code true} if the index is selected; {@code false}, otherwise.
      */
     public boolean isItemSelected(int index) {
         indexBoundsCheck("index", index, 0, listData.getLength() - 1);
@@ -998,7 +998,7 @@ public class ListView extends Component {
     /**
      * Returns an item's checked state.
      * <p> For a tri-state checkmark, if the {@link #checkmarksMixedAsChecked} flag
-     * is set, this method returns <tt>true</tt> if the state is {@link Button.State#MIXED}.
+     * is set, this method returns {@code true} if the state is {@link Button.State#MIXED}.
      *
      * @param index The index of the item to test.
      * @return Whether or not the given item is checked.
@@ -1086,7 +1086,7 @@ public class ListView extends Component {
      *
      * @param index The index of the item whose disabled checkmark state is to
      * be tested.
-     * @return <tt>true</tt> if the item's checkmark is disabled; <tt>false</tt>
+     * @return {@code true} if the item's checkmark is disabled; {@code false}
      * otherwise (such as if no disabled checkmark filter is set).
      */
     @SuppressWarnings("unchecked")
@@ -1221,13 +1221,13 @@ public class ListView extends Component {
      * Returns the disabled checkmark filter, which determines which checkboxes
      * are interactive and which are not. Note that this filter only affects
      * user interaction; items may still be checked programatically despite
-     * their inclusion in this filter. If this filter is set to <tt>null</tt>,
+     * their inclusion in this filter. If this filter is set to {@code null},
      * all checkboxes will be interactive.
      * <p>
      * <b>Note:</b> this filter is only relevant if
      * {@link #setCheckmarksEnabled(boolean) checkmarksEnabled} is set to true.
      *
-     * @return The disabled checkmark filter, or <tt>null</tt> if no disabled
+     * @return The disabled checkmark filter, or {@code null} if no disabled
      * checkmark filter is set
      */
     public Filter<?> getDisabledCheckmarkFilter() {
@@ -1238,13 +1238,13 @@ public class ListView extends Component {
      * Sets the disabled checkmark filter, which determines which checkboxes are
      * interactive and which are not. Note that this filter only affects user
      * interaction; items may still be checked programatically despite their
-     * inclusion in this filter. If this filter is set to <tt>null</tt>, all
+     * inclusion in this filter. If this filter is set to {@code null}, all
      * checkboxes will be interactive. <p> <b>Note:</b> this filter is only
      * relavent if {@link #setCheckmarksEnabled(boolean) checkmarksEnabled} is
      * set to true. enabled.
      *
      * @param disabledCheckmarkFilter The disabled checkmark filter, or
-     * <tt>null</tt> for no disabled checkmark filter
+     * {@code null} for no disabled checkmark filter
      */
     public void setDisabledCheckmarkFilter(Filter<?> disabledCheckmarkFilter) {
         Filter<?> previousDisabledCheckmarkFilter = this.disabledCheckmarkFilter;
@@ -1293,8 +1293,8 @@ public class ListView extends Component {
     /**
      * Get the flag saying whether the mixed state of tri-state checkmarks should be treated for
      * all other purposes as "checked" or not.  This setting will also affect what happens when
-     * we get mouse clicks on the checkmark.  Set to <tt>false</tt> <code>UNSELECTED</code>
-     *  will go to <code>MIXED</code>; while set to <tt>true</tt> <code>UNSELECTED</code> will
+     * we get mouse clicks on the checkmark.  Set to {@code false} <code>UNSELECTED</code>
+     *  will go to <code>MIXED</code>; while set to {@code true} <code>UNSELECTED</code> will
      * go to <code>SELECTED</code>.
      *
      * @return Whether or not to treat the mixed state as "checked".
@@ -1321,7 +1321,7 @@ public class ListView extends Component {
      * Returns an item's disabled state.
      *
      * @param index The index of the item whose disabled state is to be tested.
-     * @return <tt>true</tt> if the item is disabled; <tt>false</tt>, otherwise.
+     * @return {@code true} if the item is disabled; {@code false}, otherwise.
      */
     @SuppressWarnings("unchecked")
     public boolean isItemDisabled(int index) {
@@ -1338,7 +1338,7 @@ public class ListView extends Component {
     /**
      * Returns the disabled item filter.
      *
-     * @return The disabled item filter, or <tt>null</tt> if no disabled item
+     * @return The disabled item filter, or {@code null} if no disabled item
      * filter is set.
      */
     public Filter<?> getDisabledItemFilter() {
@@ -1348,7 +1348,7 @@ public class ListView extends Component {
     /**
      * Sets the disabled item filter.
      *
-     * @param disabledItemFilter The disabled item filter, or <tt>null</tt> for
+     * @param disabledItemFilter The disabled item filter, or {@code null} for
      * no disabled item filter.
      */
     public void setDisabledItemFilter(Filter<?> disabledItemFilter) {

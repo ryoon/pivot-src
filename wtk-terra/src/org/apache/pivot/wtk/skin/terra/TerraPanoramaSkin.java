@@ -178,7 +178,7 @@ public class TerraPanoramaSkin extends ContainerSkin implements Viewport.Skin, V
         }
 
         /**
-         * @return <tt>false</tt>; scroll buttons are not focusable.
+         * @return {@code false}; scroll buttons are not focusable.
          */
         @Override
         public boolean isFocusable() {

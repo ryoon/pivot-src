@@ -166,7 +166,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
      * Tests the existence of a listener in the list.
      *
      * @param listener The listener to test.
-     * @return <tt>true</tt> if the listener exists in the list; <tt>false</tt>,
+     * @return {@code true} if the listener exists in the list; {@code false},
      * otherwise.
      */
     public boolean contains(final T listener) {
@@ -176,7 +176,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
     /**
      * Tests the emptiness of the list.
      *
-     * @return <tt>true</tt> if the list contains no listeners; <tt>false</tt>,
+     * @return {@code true} if the list contains no listeners; {@code false},
      * otherwise.
      */
     public boolean isEmpty() {

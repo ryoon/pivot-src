@@ -342,7 +342,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * @param month The month field, 0-based. (e.g. <tt>2</tt> for March)
      * @param day The day of the month, 0-based. (e.g. <tt>14</tt> for the 15th)
      * @param timeZone The timezone to assume for conversions and differences (if
-     * <tt>null</tt> then the default TimeZone will be used).
+     * {@code null} then the default TimeZone will be used).
      * @see #MIN_CALENDAR_YEAR
      * @see #MAX_CALENDAR_YEAR
      */
@@ -396,7 +396,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * resulting calendar date. The number of days may be negative, in which
      * case the result will be a date before this calendar date. <p> More
      * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return <tt>true</tt>:
+     * <tt>c2</tt>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param days The number of days to add to (or subtract from if negative)
@@ -414,7 +414,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * resulting calendar date. The number of months may be negative, in which
      * case the result will be a date before this calendar date. <p> More
      * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return <tt>true</tt>:
+     * <tt>c2</tt>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param months The number of months to add to (or subtract from if negative)
@@ -432,7 +432,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * resulting calendar date. The number of years may be negative, in which
      * case the result will be a date before this calendar date. <p> More
      * formally, it is defined that given calendar dates <tt>c1</tt> and
-     * <tt>c2</tt>, the following will return <tt>true</tt>:
+     * <tt>c2</tt>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param years The number of years to add to (or subtract from if negative)
@@ -453,7 +453,7 @@ public final class CalendarDate implements Comparable<CalendarDate>, Serializabl
      * be negative. If the two calendar dates represent the same day, the
      * difference will be zero.
      * <p> More formally, it is defined that given calendar dates <tt>c1</tt>
-     * and <tt>c2</tt>, the following will return <tt>true</tt>:
+     * and <tt>c2</tt>, the following will return {@code true}:
      * <pre> c1.add(c2.subtract(c1)).equals(c2); </pre>
      *
      * @param calendarDate The calendar date to subtract from this calendar date.

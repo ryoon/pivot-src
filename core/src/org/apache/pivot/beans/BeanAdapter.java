@@ -41,7 +41,7 @@ import org.apache.pivot.util.Utils;
  * property, and a call to {@link Map#put(Object, Object)} invokes the
  * property's setter. <p> Properties may provide multiple setters; the
  * appropriate setter to invoke is determined by the type of the value being
- * set. If the value is <tt>null</tt>, the return type of the getter method is
+ * set. If the value is {@code null}, the return type of the getter method is
  * used. <p> Getter methods must be named "getProperty" where "property" is the
  * property name. If there is no "get" method, then an "isProperty" method can
  * also be used. Setter methods (if present) must be named "setProperty". <p>
@@ -177,8 +177,8 @@ public class BeanAdapter implements Map<String, Object> {
      * there is a "get" method but no corresponding "set" method).
      *
      * @param bean The bean object to wrap.
-     * @param ignoreReadOnlyProperties <tt>true</tt> if {@code final} or non-settable
-     * fields should be excluded from the dictionary, <tt>false</tt> to include all fields.
+     * @param ignoreReadOnlyProperties {@code true} if {@code final} or non-settable
+     * fields should be excluded from the dictionary, {@code false} to include all fields.
      */
     public BeanAdapter(final Object bean, final boolean ignoreReadOnlyProperties) {
         Utils.checkNull(bean, "bean object");
@@ -190,7 +190,7 @@ public class BeanAdapter implements Map<String, Object> {
     /**
      * Returns the bean object this dictionary wraps.
      *
-     * @return The bean object, or <tt>null</tt> if no bean has been set.
+     * @return The bean object, or {@code null} if no bean has been set.
      */
     public Object getBean() {
         return bean;
@@ -200,7 +200,7 @@ public class BeanAdapter implements Map<String, Object> {
      * Invokes the getter method for the given property.
      *
      * @param key The property name.
-     * @return The value returned by the method, or <tt>null</tt> if no such
+     * @return The value returned by the method, or {@code null} if no such
      * method exists.
      */
     @Override
@@ -241,12 +241,12 @@ public class BeanAdapter implements Map<String, Object> {
 
     /**
      * Invokes the setter method for the given property. The method signature is
-     * determined by the type of the value. If the value is <tt>null</tt>, the
+     * determined by the type of the value. If the value is {@code null}, the
      * return type of the getter method is used.
      *
      * @param key The property name.
      * @param value The new property value.
-     * @return Returns <tt>null</tt>, since returning the previous value would
+     * @return Returns {@code null}, since returning the previous value would
      * require a call to the getter method, which may not be an efficient
      * operation.
      * @throws PropertyNotFoundException If the given property does not exist or
@@ -320,7 +320,7 @@ public class BeanAdapter implements Map<String, Object> {
     /**
      * Invokes the setter methods for all the given properties that are present
      * in the map. The method signatures are determined by the type of the
-     * values. If any value is <tt>null</tt>, the return type of the getter
+     * values. If any value is {@code null}, the return type of the getter
      * method is used. There is an option to ignore (that is, not throw)
      * exceptions during the process, but to return status if any exceptions
      * were caught and ignored.
@@ -370,7 +370,7 @@ public class BeanAdapter implements Map<String, Object> {
      * method; write-only properties are not supported.
      *
      * @param key The property name.
-     * @return <tt>true</tt> if the property exists; <tt>false</tt>, otherwise.
+     * @return {@code true} if the property exists; {@code false}, otherwise.
      */
     @Override
     public boolean containsKey(final String key) {
@@ -421,7 +421,7 @@ public class BeanAdapter implements Map<String, Object> {
      * Tests the read-only state of a property.
      *
      * @param key The property name.
-     * @return <tt>true</tt> if the property is read-only; <tt>false</tt>,
+     * @return {@code true} if the property is read-only; {@code false},
      * otherwise.
      */
     public boolean isReadOnly(final String key) {
@@ -469,7 +469,7 @@ public class BeanAdapter implements Map<String, Object> {
      * Returns the getter method for a property.
      *
      * @param key The property name.
-     * @return The getter method, or <tt>null</tt> if the method does not exist.
+     * @return The getter method, or {@code null} if the method does not exist.
      */
     private Method getGetterMethod(final String key) {
         return getGetterMethod(bean.getClass(), key);
@@ -480,7 +480,7 @@ public class BeanAdapter implements Map<String, Object> {
      *
      * @param key The property name.
      * @param valueType The value type of the property in question.
-     * @return The getter method, or <tt>null</tt> if the method does not exist.
+     * @return The getter method, or {@code null} if the method does not exist.
      */
     private Method getSetterMethod(final String key, final Class<?> valueType) {
         return getSetterMethod(bean.getClass(), key, valueType);
@@ -491,7 +491,7 @@ public class BeanAdapter implements Map<String, Object> {
      * will only be consulted for bean properties after bean methods.
      *
      * @param key The property name
-     * @return The field, or <tt>null</tt> if the field does not exist, or is
+     * @return The field, or {@code null} if the field does not exist, or is
      * non-public or static
      */
     private Field getField(final String key) {
@@ -500,12 +500,12 @@ public class BeanAdapter implements Map<String, Object> {
 
     /**
      * Tests the read-only state of a property. Note that if no such property
-     * exists, this method will return <tt>true</tt> (it will <u>not</u> throw
+     * exists, this method will return {@code true} (it will <u>not</u> throw
      * an exception).
      *
      * @param beanClass The bean class.
      * @param key The property name.
-     * @return <tt>true</tt> if the property is read-only; <tt>false</tt>,
+     * @return {@code true} if the property is read-only; {@code false},
      * otherwise.
      */
     public static boolean isReadOnly(final Class<?> beanClass, final String key) {
@@ -533,7 +533,7 @@ public class BeanAdapter implements Map<String, Object> {
      *
      * @param beanClass The bean class.
      * @param key The property name.
-     * @return The type of the property, or <tt>null</tt> if no such bean
+     * @return The type of the property, or {@code null} if no such bean
      * property exists.
      */
     public static Class<?> getType(final Class<?> beanClass, final String key) {
@@ -562,7 +562,7 @@ public class BeanAdapter implements Map<String, Object> {
      *
      * @param beanClass The bean class.
      * @param key The property name.
-     * @return The generic type of the property, or <tt>null</tt> if no such bean
+     * @return The generic type of the property, or {@code null} if no such bean
      * property exists. If the type is a generic, an instance of
      * {@link java.lang.reflect.ParameterizedType} will be returned. Otherwise,
      * an instance of {@link java.lang.Class} will be returned.
@@ -594,7 +594,7 @@ public class BeanAdapter implements Map<String, Object> {
      *
      * @param beanClass The bean class.
      * @param key The property name.
-     * @return The field, or <tt>null</tt> if the field does not exist, or is
+     * @return The field, or {@code null} if the field does not exist, or is
      * non-public or static.
      */
     public static Field getField(final Class<?> beanClass, final String key) {
@@ -624,7 +624,7 @@ public class BeanAdapter implements Map<String, Object> {
      *
      * @param beanClass The bean class.
      * @param key The property name.
-     * @return The getter method, or <tt>null</tt> if the method does not exist.
+     * @return The getter method, or {@code null} if the method does not exist.
      */
     public static Method getGetterMethod(final Class<?> beanClass, final String key) {
         Utils.checkNull(beanClass, "beanClass");
@@ -657,7 +657,7 @@ public class BeanAdapter implements Map<String, Object> {
      * @param beanClass The bean class.
      * @param key The property name.
      * @param valueType The type of the property.
-     * @return The getter method, or <tt>null</tt> if the method does not exist.
+     * @return The getter method, or {@code null} if the method does not exist.
      */
     public static Method getSetterMethod(final Class<?> beanClass, final String key,
             final Class<?> valueType) {

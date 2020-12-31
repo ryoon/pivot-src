@@ -41,7 +41,7 @@ public class Expander extends Container {
     /**
      * Returns the expander's title.
      *
-     * @return The pane's title, or <tt>null</tt> if no title is set.
+     * @return The pane's title, or {@code null} if no title is set.
      */
     public String getTitle() {
         return title;
@@ -50,7 +50,7 @@ public class Expander extends Container {
     /**
      * Sets the expander's title.
      *
-     * @param title The new title, or <tt>null</tt> for no title.
+     * @param title The new title, or {@code null} for no title.
      */
     public void setTitle(String title) {
         String previousTitle = this.title;

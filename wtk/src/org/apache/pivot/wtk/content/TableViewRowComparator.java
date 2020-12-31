@@ -41,8 +41,8 @@ public class TableViewRowComparator implements Comparator<Object> {
      * {@link Comparable}, the {@link Comparable#compareTo(Object)} method will
      * be used to compare the values. Otherwise, the values will be compared as
      * strings using {@link Object#toString()}. If either value is
-     * <tt>null</tt>, it will be considered as less than the other value. If
-     * both values are <tt>null</tt>, they will be considered equal.
+     * {@code null}, it will be considered as less than the other value. If
+     * both values are {@code null}, they will be considered equal.
      */
     @Override
     @SuppressWarnings("unchecked")

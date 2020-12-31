@@ -157,7 +157,7 @@ public class ListViewItemRenderer extends BoxPane implements ListView.ItemRender
     /**
      * Gets the bounds of the text that is rendered by this renderer.
      *
-     * @return The bounds of the rendered text, or <tt>null</tt> if this
+     * @return The bounds of the rendered text, or {@code null} if this
      * renderer did not render any text.
      */
     public Bounds getTextBounds() {

@@ -319,7 +319,7 @@ public final class Keyboard {
      * Tests the pressed state of a modifier.
      *
      * @param modifier The modifier to test.
-     * @return <tt>true</tt> if the modifier is pressed; <tt>false</tt>,
+     * @return {@code true} if the modifier is pressed; {@code false},
      * otherwise.
      */
     public static boolean isPressed(final Modifier modifier) {
@@ -330,7 +330,7 @@ public final class Keyboard {
      * Are any of the given set of {@link Modifier}s pressed?
      *
      * @param modifierSet The set of modifiers to test.
-     * @return <tt>true</tt> if any of them are pressed, <tt>false</tt>
+     * @return {@code true} if any of them are pressed, {@code false}
      * if none are pressed.
      */
     public static boolean areAnyPressed(final Set<Modifier> modifierSet) {
@@ -341,7 +341,7 @@ public final class Keyboard {
      * Are any of the given list of {@link Modifier}s pressed?
      *
      * @param modifierList The list of modifiers to test.
-     * @return <tt>true</tt> if any of them are pressed, <tt>false</tt>
+     * @return {@code true} if any of them are pressed, {@code false}
      * if none are pressed.
      */
     public static boolean areAnyPressed(final Modifier... modifierList) {
@@ -353,7 +353,7 @@ public final class Keyboard {
      * <p> This is typically used to test two modifiers (like CTRL and SHIFT).
      *
      * @param modifierSet The set of modifiers to test.
-     * @return <tt>true</tt> if all of the modifiers are pressed, <tt>false</tt>
+     * @return {@code true} if all of the modifiers are pressed, {@code false}
      * if only some or none are pressed.
      */
     public static boolean areAllPressed(final Set<Modifier> modifierSet) {
@@ -366,7 +366,7 @@ public final class Keyboard {
      * <p> This is typically used to test two modifiers (like CTRL and SHIFT).
      *
      * @param modifierList The list of modifiers to test.
-     * @return <tt>true</tt> if all of the modifiers are pressed, <tt>false</tt>
+     * @return {@code true} if all of the modifiers are pressed, {@code false}
      * if only some or none are pressed.
      */
     public static boolean areAllPressed(final Modifier... modifierList) {

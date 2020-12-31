@@ -139,7 +139,7 @@ public class CSVSerializer implements Serializer<List<?>> {
 
     /**
      * Returns the serializer's write keys flag.
-     * @return <tt>true</tt> if keys will be written, <tt>false</tt> otherwise.
+     * @return {@code true} if keys will be written, {@code false} otherwise.
      * @see #setWriteKeys(boolean)
      */
     public boolean getWriteKeys() {
@@ -149,7 +149,7 @@ public class CSVSerializer implements Serializer<List<?>> {
     /**
      * Sets the serializer's write keys flag.
      *
-     * @param writeKeys If <tt>true</tt>, the first line of the output will
+     * @param writeKeys If {@code true}, the first line of the output will
      * contain the keys. Otherwise, the first line will contain the first line
      * of data.
      */
@@ -159,7 +159,7 @@ public class CSVSerializer implements Serializer<List<?>> {
 
     /**
      * Returns the serializer's verbosity flag.
-     * @return <tt>true</tt> if the serializer is echoing input, <tt>false</tt>
+     * @return {@code true} if the serializer is echoing input, {@code false}
      * if not.
      */
     public boolean isVerbose() {

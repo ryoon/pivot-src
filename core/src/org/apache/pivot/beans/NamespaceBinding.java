@@ -193,7 +193,7 @@ public class NamespaceBinding {
     /**
      * Returns the bind mapping.
      *
-     * @return The bind mapping to use during binding, or <tt>null</tt> if no
+     * @return The bind mapping to use during binding, or {@code null} if no
      * bind mapping is specified.
      */
     public BindMapping getBindMapping() {

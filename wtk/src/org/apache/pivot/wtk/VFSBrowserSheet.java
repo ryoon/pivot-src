@@ -99,7 +99,7 @@ public class VFSBrowserSheet extends Sheet {
      * constructor must be used when a custom root folder has to be set.
      *
      * @param manager The VFS FileSystemManager that we will be browsing. If
-     * <tt>null</tt> the default (local) will be used.
+     * {@code null} the default (local) will be used.
      * @param mode The mode for opening the sheet.
      * @param rootFolder The root folder full name.
      * @throws FileSystemException if there are any problems.
@@ -116,7 +116,7 @@ public class VFSBrowserSheet extends Sheet {
      * custom home folder has to be set.
      *
      * @param manager The VFS FileSystemManager that we will be browsing.
-     * If <tt>null</tt> the default (local) will be used.
+     * If {@code null} the default (local) will be used.
      * @param mode The mode for opening the sheet.
      * @param rootFolder The root folder full name.
      * @param homeFolder The default for the "home" folder (full name).
@@ -146,7 +146,7 @@ public class VFSBrowserSheet extends Sheet {
      * custom home folder has to be set.
      *
      * @param manager The VFS FileSystemManager that we will be browsing.
-     * If <tt>null</tt> the default (local) will be used.
+     * If {@code null} the default (local) will be used.
      * @param mode The mode for opening the sheet.
      * @param rootFolder The root folder object.
      * @param homeFolder The default for the "home" folder.

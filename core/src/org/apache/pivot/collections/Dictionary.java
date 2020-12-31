@@ -114,7 +114,7 @@ public interface Dictionary<K, V> {
      * Tests the existence of a key in the dictionary.
      *
      * @param key The key whose presence in the dictionary is to be tested.
-     * @return <tt>true</tt> if the key exists in the dictionary; <tt>false</tt>,
+     * @return {@code true} if the key exists in the dictionary; {@code false},
      * otherwise.
      */
     boolean containsKey(K key);
@@ -161,7 +161,7 @@ public interface Dictionary<K, V> {
      * does not exist.
      *
      * @param key The key for the (supposed) <tt>String</tt> value.
-     * @return The string value, or <tt>null</tt> if the key is not present.
+     * @return The string value, or {@code null} if the key is not present.
      */
     default String getString(K key) {
         return (String) get(key);
@@ -240,11 +240,11 @@ public interface Dictionary<K, V> {
 
     /**
      * Using the other methods in this interface, retrieve a {@link Color} value
-     * from this dictionary; returning <tt>null</tt> if the key does not exist.
+     * from this dictionary; returning {@code null} if the key does not exist.
      *
      * @param key The key for the (supposed) <tt>Color</tt>
      * value to retrieve.
-     * @return The color value, or <tt>null</tt> if the key is not present.
+     * @return The color value, or {@code null} if the key is not present.
      */
     default Color getColor(K key) {
         return (Color) get(key);
@@ -252,11 +252,11 @@ public interface Dictionary<K, V> {
 
     /**
      * Using the other methods in this interface, retrieve a {@link Font} value
-     * from this dictionary; returning <tt>null</tt> if the key does not exist.
+     * from this dictionary; returning {@code null} if the key does not exist.
      *
      * @param key The key for the (supposed) <tt>Font</tt>
      * value to retrieve.
-     * @return The font value, or <tt>null</tt> if the key is not present.
+     * @return The font value, or {@code null} if the key is not present.
      */
     default Font getFont(K key) {
         return (Font) get(key);

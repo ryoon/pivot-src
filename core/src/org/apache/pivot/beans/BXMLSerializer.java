@@ -617,7 +617,7 @@ public class BXMLSerializer implements Serializer<Object>, Resolvable {
      * @param baseType The base type from which to access needed resources.
      * @param resourceName Name of the BXML resource to deserialize.
      * @return the top-level deserialized object.
-     * @throws IllegalArgumentException for <tt>null</tt> type or resource name or if
+     * @throws IllegalArgumentException for {@code null} type or resource name or if
      * the resource could not be found.
      * @throws IOException for any error reading the BXML resource.
      * @throws SerializationException for any other errors encountered deserializing the resource.
@@ -637,12 +637,12 @@ public class BXMLSerializer implements Serializer<Object>, Resolvable {
      *
      * @param baseType The base type.
      * @param resourceName The name of the BXML resource.
-     * @param localize If <tt>true</tt>, the deserialized resource will be
+     * @param localize If {@code true}, the deserialized resource will be
      * localized using the resource bundle specified by the base type.
      * Otherwise, it will not be localized, and any use of the resource
      * resolution operator will result in a serialization exception.
      * @return the top-level deserialized object.
-     * @throws IllegalArgumentException for <tt>null</tt> type or resource name or if
+     * @throws IllegalArgumentException for {@code null} type or resource name or if
      * the resource could not be found.
      * @throws IOException for any error reading the BXML resource.
      * @throws SerializationException for any other errors encountered deserializing the resource.
@@ -1531,7 +1531,7 @@ public class BXMLSerializer implements Serializer<Object>, Resolvable {
      * Retrieves the root of the object hierarchy most recently processed by
      * this serializer.
      *
-     * @return The root object, or <tt>null</tt> if this serializer has not yet
+     * @return The root object, or {@code null} if this serializer has not yet
      * read an object from an input stream.
      */
     public Object getRoot() {

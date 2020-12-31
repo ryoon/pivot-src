@@ -85,7 +85,7 @@ public interface ComponentMouseButtonListener {
      * @param button Which mouse button was pressed.
      * @param x X position of the mouse.
      * @param y Y position of the mouse.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate (default).
      */
     default boolean mouseDown(Component component, Mouse.Button button, int x, int y) {
@@ -99,7 +99,7 @@ public interface ComponentMouseButtonListener {
      * @param button Which mouse button that was released.
      * @param x X position of the mouse.
      * @param y Y position of the mouse.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate (default).
      */
     default boolean mouseUp(Component component, Mouse.Button button, int x, int y) {
@@ -114,7 +114,7 @@ public interface ComponentMouseButtonListener {
      * @param x X position of the mouse.
      * @param y Y position of the mouse.
      * @param count Number of clicks (1 = single click, 2 = double click, etc.).
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate (default).
      */
     default boolean mouseClick(Component component, Mouse.Button button, int x, int y, int count) {

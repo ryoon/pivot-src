@@ -102,7 +102,7 @@ public interface ContainerMouseListener {
      * @param container The container under the mouse.
      * @param x         The X-position of the mouse.
      * @param y         The Y-position of the mouse.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
     default boolean mouseMove(Container container, int x, int y) {
@@ -116,7 +116,7 @@ public interface ContainerMouseListener {
      * @param button    Which button was pressed.
      * @param x         The X-position of the mouse.
      * @param y         The Y-position of the mouse.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
     default boolean mouseDown(Container container, Mouse.Button button, int x, int y) {
@@ -130,7 +130,7 @@ public interface ContainerMouseListener {
      * @param button    Which mouse button was released.
      * @param x         The X-position at the time of release.
      * @param y         The Y-position at the time of release.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
     default boolean mouseUp(Container container, Mouse.Button button, int x, int y) {
@@ -146,7 +146,7 @@ public interface ContainerMouseListener {
      * @param wheelRotation The amount and direction of wheel rotation.
      * @param x             The X-position of the mouse at the time.
      * @param y             The Y-position of the mouse.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
     default boolean mouseWheel(Container container, Mouse.ScrollType scrollType, int scrollAmount,

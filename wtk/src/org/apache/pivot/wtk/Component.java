@@ -440,7 +440,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Returns the component's automation ID.
      *
-     * @return The component's automation ID, or <tt>null</tt> if the component
+     * @return The component's automation ID, or {@code null} if the component
      * does not have an automation ID.
      */
     public String getAutomationID() {
@@ -453,7 +453,7 @@ public abstract class Component implements ConstrainedVisual {
      * component is attached to a component hierarchy.
      *
      * @param automationID The automation ID to use for the component, or
-     * <tt>null</tt> to clear the automation ID.
+     * {@code null} to clear the automation ID.
      */
     public void setAutomationID(final String automationID) {
         String previousAutomationID = this.automationID;
@@ -475,7 +475,7 @@ public abstract class Component implements ConstrainedVisual {
      *
      * @param <E> The enum type that will be used here.
      * @param enumID The enum value to use as the automation ID for this
-     * component, or <tt>null</tt> to clear the automation ID.
+     * component, or {@code null} to clear the automation ID.
      * @see #setAutomationID(String)
      */
     public <E extends Enum<E>> void setAutomationID(final E enumID) {
@@ -756,8 +756,8 @@ public abstract class Component implements ConstrainedVisual {
      * Returns a flag indicating whether the preferred width was explicitly set
      * by the caller or is the default value determined by the skin.
      *
-     * @return <tt>true</tt> if the preferred width was explicitly set;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the preferred width was explicitly set;
+     * {@code false}, otherwise.
      */
     public boolean isPreferredWidthSet() {
         return (preferredWidth != -1);
@@ -813,8 +813,8 @@ public abstract class Component implements ConstrainedVisual {
      * Returns a flag indicating whether the preferred height was explicitly set
      * by the caller or is the default value determined by the skin.
      *
-     * @return <tt>true</tt> if the preferred height was explicitly set;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the preferred height was explicitly set;
+     * {@code false}, otherwise.
      */
     public boolean isPreferredHeightSet() {
         return (preferredHeight != -1);
@@ -902,8 +902,8 @@ public abstract class Component implements ConstrainedVisual {
      * Returns a flag indicating whether the preferred size was explicitly set
      * by the caller or is the default value determined by the skin.
      *
-     * @return <tt>true</tt> if the preferred size was explicitly set;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the preferred size was explicitly set;
+     * {@code false}, otherwise.
      */
     public boolean isPreferredSizeSet() {
         return isPreferredWidthSet() && isPreferredHeightSet();
@@ -1242,8 +1242,8 @@ public abstract class Component implements ConstrainedVisual {
      *
      * @param xValue Horizontal location to check.
      * @param yValue Vertical location to check.
-     * @return <tt>true</tt> if the component's shape contains the given
-     * location; <tt>false</tt>, otherwise.
+     * @return {@code true} if the component's shape contains the given
+     * location; {@code false}, otherwise.
      * @throws UnsupportedOperationException This method is not currently
      * implemented.
      */
@@ -1256,7 +1256,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Returns the component's visibility.
      *
-     * @return <tt>true</tt> if the component will be painted; <tt>false</tt>,
+     * @return {@code true} if the component will be painted; {@code false},
      * otherwise.
      */
     public boolean isVisible() {
@@ -1266,8 +1266,8 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Sets the component's visibility.
      *
-     * @param visible <tt>true</tt> if the component should be painted;
-     * <tt>false</tt>, otherwise.
+     * @param visible {@code true} if the component should be painted;
+     * {@code false}, otherwise.
      */
     public void setVisible(final boolean visible) {
         if (this.visible != visible) {
@@ -1323,7 +1323,7 @@ public abstract class Component implements ConstrainedVisual {
      * @param ancestor The ancestor container of this component.
      * @param xValue The x-coordinate in this component's coordinate space.
      * @param yValue The y-coordinate in this component's coordinate space.
-     * @return A point containing the translated coordinates, or <tt>null</tt> if
+     * @return A point containing the translated coordinates, or {@code null} if
      * the component is not a descendant of the specified ancestor.
      */
     public Point mapPointToAncestor(final Container ancestor, final int xValue, final int yValue) {
@@ -1353,7 +1353,7 @@ public abstract class Component implements ConstrainedVisual {
      *
      * @param ancestor The ancestor container of this component.
      * @param location The coordinates in this component's coordinate space.
-     * @return A point containing the translated coordinates, or <tt>null</tt> if
+     * @return A point containing the translated coordinates, or {@code null} if
      * the component is not a descendant of the specified ancestor.
      */
     public Point mapPointToAncestor(final Container ancestor, final Point location) {
@@ -1369,7 +1369,7 @@ public abstract class Component implements ConstrainedVisual {
      * @param ancestor The ancestor container of this component.
      * @param xValue The x-coordinate in the ancestors's coordinate space.
      * @param yValue The y-coordinate in the ancestor's coordinate space.
-     * @return A point containing the translated coordinates, or <tt>null</tt> if
+     * @return A point containing the translated coordinates, or {@code null} if
      * the component is not a descendant of the specified ancestor.
      */
     public Point mapPointFromAncestor(final Container ancestor, final int xValue, final int yValue) {
@@ -1403,7 +1403,7 @@ public abstract class Component implements ConstrainedVisual {
      * Determines if this component is showing. To be showing, the component and
      * all of its ancestors must be visible and attached to a display.
      *
-     * @return <tt>true</tt> if this component is showing; <tt>false</tt>
+     * @return {@code true} if this component is showing; {@code false}
      * otherwise.
      */
     public boolean isShowing() {
@@ -1422,7 +1422,7 @@ public abstract class Component implements ConstrainedVisual {
      * ancestors, or, in the case of a Viewport, the viewport bounds.
      *
      * @return The visible area of the component in the component's coordinate
-     * space, or <tt>null</tt> if the component is either not showing or not
+     * space, or {@code null} if the component is either not showing or not
      * part of the component hierarchy.
      */
     public Bounds getVisibleArea() {
@@ -1436,7 +1436,7 @@ public abstract class Component implements ConstrainedVisual {
      *
      * @param area The area to check its visibility.
      * @return The visible part of the given area in the component's coordinate
-     * space, or <tt>null</tt> if the component is either not showing or not
+     * space, or {@code null} if the component is either not showing or not
      * part of the component hierarchy.
      */
     public Bounds getVisibleArea(final Bounds area) {
@@ -1455,7 +1455,7 @@ public abstract class Component implements ConstrainedVisual {
      * @param width The width of the area.
      * @param height The height of the area.
      * @return The visible part of the given area in the component's coordinate
-     * space, or <tt>null</tt> if the component is either not showing or not
+     * space, or {@code null} if the component is either not showing or not
      * part of the component hierarchy.
      */
     public Bounds getVisibleArea(final int xValue, final int yValue, final int width, final int height) {
@@ -1780,7 +1780,7 @@ public abstract class Component implements ConstrainedVisual {
      * not be double buffered. In other words, drawing operations on it will
      * operate directly on the video RAM.
      *
-     * @return A graphics context for this component, or <tt>null</tt> if this
+     * @return A graphics context for this component, or {@code null} if this
      * component is not showing.
      * @see #isShowing()
      */
@@ -1818,7 +1818,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Returns the component's enabled state.
      *
-     * @return <tt>true</tt> if the component is enabled; <tt>false</tt>,
+     * @return {@code true} if the component is enabled; {@code false},
      * otherwise.
      */
     public boolean isEnabled() {
@@ -1829,7 +1829,7 @@ public abstract class Component implements ConstrainedVisual {
      * Sets the component's enabled state. Enabled components respond to user
      * input events; disabled components do not.
      *
-     * @param enabled <tt>true</tt> if the component is enabled; <tt>false</tt>,
+     * @param enabled {@code true} if the component is enabled; {@code false},
      * otherwise.
      */
     public void setEnabled(final boolean enabled) {
@@ -1856,7 +1856,7 @@ public abstract class Component implements ConstrainedVisual {
      * Determines if this component is blocked. A component is blocked if the
      * component or any of its ancestors is disabled.
      *
-     * @return <tt>true</tt> if the component is blocked; <tt>false</tt>,
+     * @return {@code true} if the component is blocked; {@code false},
      * otherwise.
      */
     public boolean isBlocked() {
@@ -1875,8 +1875,8 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Determines if the mouse is positioned over this component.
      *
-     * @return <tt>true</tt> if the mouse is currently located over this
-     * component; <tt>false</tt>, otherwise.
+     * @return {@code true} if the mouse is currently located over this
+     * component; {@code false}, otherwise.
      */
     public boolean isMouseOver() {
         return (mouseLocation != null);
@@ -1885,7 +1885,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Returns the current mouse location in the component's coordinate space.
      *
-     * @return The current mouse location, or <tt>null</tt> if the mouse is not
+     * @return The current mouse location, or {@code null} if the mouse is not
      * currently positioned over this component.
      */
     public Point getMouseLocation() {
@@ -1906,7 +1906,7 @@ public abstract class Component implements ConstrainedVisual {
      * Sets the cursor that is displayed when the mouse pointer is over this
      * component.
      *
-     * @param cursor The cursor to display over the component, or <tt>null</tt>
+     * @param cursor The cursor to display over the component, or {@code null}
      * to inherit the cursor of the parent container.
      */
     public void setCursor(final Cursor cursor) {
@@ -1924,7 +1924,7 @@ public abstract class Component implements ConstrainedVisual {
     }
 
     /**
-     * @return The component's tooltip text, or <tt>null</tt> if no tooltip is
+     * @return The component's tooltip text, or {@code null} if no tooltip is
      * specified.
      */
     public String getTooltipText() {
@@ -1934,7 +1934,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Sets the component's tooltip text.
      *
-     * @param tooltipText The component's tooltip text, or <tt>null</tt> for no
+     * @param tooltipText The component's tooltip text, or {@code null} for no
      * tooltip.
      */
     public void setTooltipText(final String tooltipText) {
@@ -1970,8 +1970,8 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Returns the tooltip's mode for wrapping its text.
      *
-     * @return <tt>true</tt> if the tooltip text wrap mode is enabled;
-     * <tt>false</tt> if not.
+     * @return {@code true} if the tooltip text wrap mode is enabled;
+     * {@code false} if not.
      */
     public boolean getTooltipWrapText() {
         return tooltipWrapText;
@@ -1995,7 +1995,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Tells whether or not this component is fully opaque when painted.
      *
-     * @return <tt>true</tt> if this component is opaque; <tt>false</tt> if any
+     * @return {@code true} if this component is opaque; {@code false} if any
      * part of it is transparent or translucent.
      */
     public boolean isOpaque() {
@@ -2007,8 +2007,8 @@ public abstract class Component implements ConstrainedVisual {
      * of receiving the focus only when it is showing, unblocked, and its window
      * is not closing.
      *
-     * @return <tt>true</tt> if the component is capable of receiving the focus;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the component is capable of receiving the focus;
+     * {@code false}, otherwise.
      */
     public boolean isFocusable() {
         boolean focusable = skin.isFocusable();
@@ -2040,8 +2040,8 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Returns the component's focused state.
      *
-     * @return <tt>true</tt> if the component has the input focus;
-     * <tt>false</tt> otherwise.
+     * @return {@code true} if the component has the input focus;
+     * {@code false} otherwise.
      */
     public boolean isFocused() {
         return (focusedComponent == this);
@@ -2050,8 +2050,8 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Called to notify a component that its focus state has changed.
      *
-     * @param focused <tt>true</tt> if the component has received the input
-     * focus; <tt>false</tt> if the component has lost the focus.
+     * @param focused {@code true} if the component has received the input
+     * focus; {@code false} if the component has lost the focus.
      * @param obverseComponent If <tt>focused</tt> is true, the component that
      * has lost the focus; otherwise, the component that has gained the focus.
      */
@@ -2068,7 +2068,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Requests that focus be given to this component.
      *
-     * @return <tt>true</tt> if the component gained the focus; <tt>false</tt>
+     * @return {@code true} if the component gained the focus; {@code false}
      * otherwise.
      */
     public boolean requestFocus() {
@@ -2088,7 +2088,7 @@ public abstract class Component implements ConstrainedVisual {
      * Transfers focus to the next focusable component in the given direction.
      *
      * @param direction The direction in which to transfer focus.
-     * @return The new component that has received the focus or <tt>null</tt>
+     * @return The new component that has received the focus or {@code null}
      * if no component is focused.
      */
     public Component transferFocus(final FocusTraversalDirection direction) {
@@ -2105,7 +2105,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Returns the currently focused component.
      *
-     * @return The component that currently has the focus, or <tt>null</tt> if
+     * @return The component that currently has the focus, or {@code null} if
      * no component is focused.
      */
     public static Component getFocusedComponent() {
@@ -2115,7 +2115,7 @@ public abstract class Component implements ConstrainedVisual {
     /**
      * Sets the focused component.
      *
-     * @param focusedComponent The component to focus, or <tt>null</tt> to clear
+     * @param focusedComponent The component to focus, or {@code null} to clear
      * the focus.
      */
     private static void setFocusedComponent(final Component focusedComponent) {
@@ -2336,7 +2336,7 @@ public abstract class Component implements ConstrainedVisual {
      *
      * @param <T> The enum type of the attribute key.
      * @param key The attribute key
-     * @return The attribute value, or <tt>null</tt> if no such attribute exists
+     * @return The attribute value, or {@code null} if no such attribute exists
      */
     @SuppressWarnings("unchecked")
     public <T extends Enum<T>> Object getAttribute(final T key) {
@@ -2356,8 +2356,8 @@ public abstract class Component implements ConstrainedVisual {
      *
      * @param <T> The enum type of the attribute key.
      * @param key The attribute key
-     * @param value The attribute value, or <tt>null</tt> to clear the attribute
-     * @return The previous value of the attribute, or <tt>null</tt> if the
+     * @param value The attribute value, or {@code null} to clear the attribute
+     * @return The previous value of the attribute, or {@code null} if the
      * attribute was unset
      */
     @SuppressWarnings("unchecked")

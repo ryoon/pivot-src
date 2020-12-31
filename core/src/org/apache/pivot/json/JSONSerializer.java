@@ -115,8 +115,8 @@ public class JSONSerializer implements Serializer<Object> {
      * Returns a flag indicating whether or not map keys will always be
      * quote-delimited.
      * <p> Note: the JSON "standard" requires keys to be delimited.
-     * @return <tt>true</tt> if map keys must always be delimited (that is,
-     * enclosed in double quotes), <tt>false</tt> for the default behavior
+     * @return {@code true} if map keys must always be delimited (that is,
+     * enclosed in double quotes), {@code false} for the default behavior
      * that does not require double quotes.
      */
     public boolean getAlwaysDelimitMapKeys() {
@@ -126,8 +126,8 @@ public class JSONSerializer implements Serializer<Object> {
     /**
      * Sets a flag indicating that map keys should always be quote-delimited.
      *
-     * @param alwaysDelimitMapKeys <tt>true</tt> to bound map keys in double
-     * quotes; <tt>false</tt> to only quote-delimit keys as necessary.
+     * @param alwaysDelimitMapKeys {@code true} to bound map keys in double
+     * quotes; {@code false} to only quote-delimit keys as necessary.
      */
     public void setAlwaysDelimitMapKeys(final boolean alwaysDelimitMapKeys) {
         this.alwaysDelimitMapKeys = alwaysDelimitMapKeys;
@@ -145,7 +145,7 @@ public class JSONSerializer implements Serializer<Object> {
      * Sets the serializer's verbosity flag. When verbosity is enabled, all data
      * read or written will be echoed to the console.
      *
-     * @param verbose <tt>true</tt> to set verbose mode, <tt>false</tt> to disable.
+     * @param verbose {@code true} to set verbose mode, {@code false} to disable.
      */
     public void setVerbose(final boolean verbose) {
         this.verbose = verbose;
@@ -204,7 +204,7 @@ public class JSONSerializer implements Serializer<Object> {
      * <li>java.lang.String</li>
      * <li>java.lang.Number</li>
      * <li>java.lang.Boolean</li>
-     * <li><tt>null</tt></li>
+     * <li>{@code null}</li>
      * <li>A JavaBean object</li>
      * </ul>
      * @throws IOException for any I/O related errors while reading.
@@ -815,7 +815,7 @@ public class JSONSerializer implements Serializer<Object> {
      * <li>java.lang.String</li>
      * <li>java.lang.Number</li>
      * <li>java.lang.Boolean</li>
-     * <li><tt>null</tt></li>
+     * <li>{@code null}</li>
      * </ul>
      * @param writer The writer to which data will be written.
      * @throws IOException for any errors during the writing process.

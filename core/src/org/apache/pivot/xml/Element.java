@@ -60,7 +60,7 @@ public class Element extends Node implements List<Node> {
         /**
          * Returns the element to which this attribute belongs.
          *
-         * @return This attribute's element, or <tt>null</tt> if the attribute
+         * @return This attribute's element, or {@code null} if the attribute
          * does not belong to an element.
          */
         public Element getElement() {
@@ -70,7 +70,7 @@ public class Element extends Node implements List<Node> {
         /**
          * Returns the attribute's namespace prefix.
          *
-         * @return The attribute's namespace prefix, or <tt>null</tt> if the
+         * @return The attribute's namespace prefix, or {@code null} if the
          * attribute belongs to the default namespace.
          */
         public String getNamespacePrefix() {
@@ -322,7 +322,7 @@ public class Element extends Node implements List<Node> {
          * Returns the URI of a namespace declared by this element.
          *
          * @param prefix The namespace prefix.
-         * @return The declared namespace, or <tt>null</tt> if no such namespace
+         * @return The declared namespace, or {@code null} if no such namespace
          * exists.
          */
         @Override
@@ -375,8 +375,8 @@ public class Element extends Node implements List<Node> {
          * Tests for the existence of a namespace declared by this element.
          *
          * @param prefix Namespace prefix to test for.
-         * @return <tt>true</tt> if this element declares a namespace with the
-         * given prefix; <tt>false</tt> otherwise.
+         * @return {@code true} if this element declares a namespace with the
+         * given prefix; {@code false} otherwise.
          */
         @Override
         public boolean containsKey(String prefix) {
@@ -404,7 +404,7 @@ public class Element extends Node implements List<Node> {
          *
          * @param attributeName Name of the attribute whose value we are interested in.
          * @return The value associated with the given attribute, or
-         * <tt>null</tt>
+         * {@code null}
          */
         @Override
         public String get(String attributeName) {
@@ -418,7 +418,7 @@ public class Element extends Node implements List<Node> {
          * @param attributeName The attribute to set the new value for.
          * @param value New value for this attribute.
          * @return The value previously associated with the given attribute, or
-         * <tt>null</tt> if the attribute did not previously exist.
+         * {@code null} if the attribute did not previously exist.
          */
         @Override
         public String put(String attributeName, String value) {
@@ -470,8 +470,8 @@ public class Element extends Node implements List<Node> {
          * Tests for the existence of an attribute.
          *
          * @param attributeName Name of the attribute to test for.
-         * @return <tt>true</tt> if this element defines the given attribute;
-         * <tt>false</tt> otherwise.
+         * @return {@code true} if this element defines the given attribute;
+         * {@code false} otherwise.
          */
         @Override
         public boolean containsKey(String attributeName) {
@@ -511,7 +511,7 @@ public class Element extends Node implements List<Node> {
     /**
      * Returns the element's namespace prefix.
      *
-     * @return The element's namespace prefix, or <tt>null</tt> if the element
+     * @return The element's namespace prefix, or {@code null} if the element
      * belongs to the default namespace.
      */
     public String getNamespacePrefix() {
@@ -545,7 +545,7 @@ public class Element extends Node implements List<Node> {
      * Returns the element's default namespace URI.
      *
      * @return The default namespace URI declared by this element, or
-     * <tt>null</tt> if this element does not declare a default namespace.
+     * {@code null} if this element does not declare a default namespace.
      */
     public String getDefaultNamespaceURI() {
         return defaultNamespaceURI;
@@ -555,7 +555,7 @@ public class Element extends Node implements List<Node> {
      * Sets the element's default namespace URI.
      *
      * @param defaultNamespaceURI The default namespace URI declared by this
-     * element, or <tt>null</tt> if this element does not declare a default
+     * element, or {@code null} if this element does not declare a default
      * namespace.
      */
     public void setDefaultNamespaceURI(String defaultNamespaceURI) {
@@ -578,10 +578,10 @@ public class Element extends Node implements List<Node> {
      * Determines the namespace URI corresponding to the given prefix by
      * traversing the element's ancestry.
      *
-     * @param prefix The namespace prefix to look up, or <tt>null</tt> to
+     * @param prefix The namespace prefix to look up, or {@code null} to
      * determine the default namespace for this element.
      * @return The namespace URI corresponding to the given prefix, or
-     * <tt>null</tt> if a URI could not be found.
+     * {@code null} if a URI could not be found.
      */
     public String getNamespaceURI(String prefix) {
         String namespaceURI;
@@ -746,7 +746,7 @@ public class Element extends Node implements List<Node> {
     }
 
     /**
-     * @return <tt>null</tt>; elements cannot be sorted.
+     * @return {@code null}; elements cannot be sorted.
      */
     @Override
     public Comparator<Node> getComparator() {
@@ -773,8 +773,8 @@ public class Element extends Node implements List<Node> {
     /**
      * Determines if this element defines any attributes.
      *
-     * @return <tt>true</tt> if this element does not define any attributes;
-     * <tt>false</tt> otherwise.
+     * @return {@code true} if this element does not define any attributes;
+     * {@code false} otherwise.
      */
     @Override
     public boolean isEmpty() {

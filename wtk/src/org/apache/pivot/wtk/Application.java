@@ -124,9 +124,9 @@ public interface Application {
     /**
      * Called when the application is being shut down.
      *
-     * @param optional If <tt>true</tt>, the shutdown may be cancelled by
-     * returning a value of <tt>true</tt>.
-     * @return <tt>true</tt> to cancel shutdown, <tt>false</tt> to proceed with shutdown (default).
+     * @param optional If {@code true}, the shutdown may be cancelled by
+     * returning a value of {@code true}.
+     * @return {@code true} to cancel shutdown, {@code false} to proceed with shutdown (default).
      * @throws Exception if there is a problem during shutdown.
      */
     default boolean shutdown(boolean optional) throws Exception {

@@ -155,7 +155,7 @@ public abstract class ContainerSkin extends ComponentSkin implements ContainerLi
     }
 
     /**
-     * @return <tt>false</tt>; by default, containers are not focusable.
+     * @return {@code false}; by default, containers are not focusable.
      */
     @Override
     public boolean isFocusable() {

@@ -50,13 +50,13 @@ public class ResultList implements List<Map<String, Object>> {
         public final String columnName;
 
         /**
-         * The name of the map key. If <tt>null</tt>, the column name will be
+         * The name of the map key. If {@code null}, the column name will be
          * used.
          */
         public final String key;
 
         /**
-         * The type of the map value. If <tt>null</tt>, the default SQL type
+         * The type of the map value. If {@code null}, the default SQL type
          * will be used.
          */
         public final Class<?> type;

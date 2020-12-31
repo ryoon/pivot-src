@@ -28,7 +28,7 @@ public interface DropTarget {
      * @param supportedDropActions What drop actions should be considered.
      * @param userDropAction       What drop action the user is requesting.
      * @return The drop action that would result if the user dropped the item at
-     * this location, or <tt>null</tt> if the target cannot accept the drop.
+     * this location, or {@code null} if the target cannot accept the drop.
      */
     public DropAction dragEnter(Component component, Manifest dragContent,
         int supportedDropActions, DropAction userDropAction);
@@ -51,7 +51,7 @@ public interface DropTarget {
      * @param y                    The current mouse Y-location.
      * @param userDropAction       What drop action the user is requesting.
      * @return The drop action that would result if the user dropped the item at
-     * this location, or <tt>null</tt> if the target cannot accept the drop.
+     * this location, or {@code null} if the target cannot accept the drop.
      */
     public DropAction dragMove(Component component, Manifest dragContent, int supportedDropActions,
         int x, int y, DropAction userDropAction);
@@ -67,7 +67,7 @@ public interface DropTarget {
      * @param y                    The current mouse Y-location.
      * @param userDropAction       What drop action the user is requesting.
      * @return The drop action that would result if the user dropped the item at
-     * this location, or <tt>null</tt> if the target cannot accept the drop.
+     * this location, or {@code null} if the target cannot accept the drop.
      */
     public DropAction userDropActionChange(Component component, Manifest dragContent,
         int supportedDropActions, int x, int y, DropAction userDropAction);
@@ -81,7 +81,7 @@ public interface DropTarget {
      * @param x                    The current mouse X-location.
      * @param y                    The current mouse Y-location.
      * @param userDropAction       What drop action the user is requesting.
-     * @return The drop action used to perform the drop, or <tt>null</tt> if the
+     * @return The drop action used to perform the drop, or {@code null} if the
      * target rejected the drop.
      */
     public DropAction drop(Component component, Manifest dragContent, int supportedDropActions,

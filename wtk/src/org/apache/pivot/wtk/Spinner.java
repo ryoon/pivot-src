@@ -44,7 +44,7 @@ public class Spinner extends Container {
         /**
          * Prepares the renderer for layout or paint.
          *
-         * @param item The item to render, or <tt>null</tt> if called to
+         * @param item The item to render, or {@code null} if called to
          * calculate preferred height for skins that assume a fixed renderer
          * height.
          * @param spinner The host component.
@@ -55,7 +55,7 @@ public class Spinner extends Container {
          * Converts a spinner item to a string representation.
          *
          * @param item The item from the spinner's data.
-         * @return The item's string representation, or <tt>null</tt> if the item
+         * @return The item's string representation, or {@code null} if the item
          * does not have a string representation. <p> Note that this method may
          * be called often during keyboard navigation, so implementations should
          * avoid unnecessary string allocations.

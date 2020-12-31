@@ -159,7 +159,7 @@ public class CalendarDateSpinnerData extends ReadOnlySequence<CalendarDate> impl
 
     /**
      * Gets the comparator for this list, which is guaranteed to always be
-     * <tt>null</tt>. The generated data is inherently in date order, thus
+     * {@code null}. The generated data is inherently in date order, thus
      * sorting doesn't make sense.
      */
     @Override

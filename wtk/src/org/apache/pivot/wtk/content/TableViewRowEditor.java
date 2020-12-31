@@ -295,7 +295,7 @@ public class TableViewRowEditor extends Window implements TableView.RowEditor {
     /**
      * Returns the effect that is applied when the editor opens or closes.
      *
-     * @return The edit effect, or <tt>null</tt> for no effect.
+     * @return The edit effect, or {@code null} for no effect.
      */
     public CardPaneSkin.SelectionChangeEffect getEditEffect() {
         return (CardPaneSkin.SelectionChangeEffect) cardPane.getStyles().get(
@@ -305,7 +305,7 @@ public class TableViewRowEditor extends Window implements TableView.RowEditor {
     /**
      * Sets the effect that is applied when the editor opens or closes.
      *
-     * @param editEffect The edit effect, or <tt>null</tt> for no effect.
+     * @param editEffect The edit effect, or {@code null} for no effect.
      */
     public void setEditEffect(CardPaneSkin.SelectionChangeEffect editEffect) {
         cardPane.getStyles().put(Style.selectionChangeEffect, editEffect);

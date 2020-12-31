@@ -398,8 +398,8 @@ public final class DesktopApplicationContext extends ApplicationContext {
     /**
      * Terminates the application context.
      *
-     * @param optional If <tt>true</tt>, shutdown is optional and may be
-     * cancelled. If <tt>false</tt>, shutdown cannot be cancelled.
+     * @param optional If {@code true}, shutdown is optional and may be
+     * cancelled. If {@code false}, shutdown cannot be cancelled.
      * @return Whether shutdown was canceled by the application.
      */
     public static boolean exit(boolean optional) {

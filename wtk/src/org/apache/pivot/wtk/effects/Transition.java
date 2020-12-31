@@ -75,8 +75,8 @@ public abstract class Transition {
      *
      * @param duration Transition duration, in milliseconds.
      * @param rate Transition rate, in frames per second.
-     * @param repeating <tt>true</tt> if the transition should repeat;
-     * <tt>false</tt>, otherwise.
+     * @param repeating {@code true} if the transition should repeat;
+     * {@code false}, otherwise.
      */
     public Transition(int duration, int rate, boolean repeating) {
         this(duration, rate, repeating, false);
@@ -90,10 +90,10 @@ public abstract class Transition {
      *
      * @param duration Transition duration, in milliseconds.
      * @param rate Transition rate, in frames per second.
-     * @param repeating <tt>true</tt> if the transition should repeat;
-     * <tt>false</tt>, otherwise.
-     * @param reversed <tt>true</tt> if the transition should run in reverse;
-     * <tt>false</tt> otherwise.
+     * @param repeating {@code true} if the transition should repeat;
+     * {@code false}, otherwise.
+     * @param reversed {@code true} if the transition should run in reverse;
+     * {@code false} otherwise.
      */
     public Transition(int duration, int rate, boolean repeating, boolean reversed) {
         Utils.checkNonNegative(duration, "duration");
@@ -243,8 +243,8 @@ public abstract class Transition {
     /**
      * Tells whether or not the transition is currently running.
      *
-     * @return <tt>true</tt> if the transition is currently running;
-     * <tt>false</tt> if it is not
+     * @return {@code true} if the transition is currently running;
+     * {@code false} if it is not
      */
     public boolean isRunning() {
         return (transitionCallback != null);
@@ -266,7 +266,7 @@ public abstract class Transition {
      * notified when the transition completes.
      *
      * @param transitionListenerArgument The listener to get notified when the
-     * transition completes, or <tt>null</tt> if no notification is necessary
+     * transition completes, or {@code null} if no notification is necessary
      */
     public void start(TransitionListener transitionListenerArgument) {
         if (transitionCallback != null) {
@@ -322,7 +322,7 @@ public abstract class Transition {
     /**
      * Tests whether the transition is reversed.
      *
-     * @return <tt>true</tt> if the transition is reversed; <tt>false</tt>,
+     * @return {@code true} if the transition is reversed; {@code false},
      * otherwise.
      */
     public boolean isReversed() {

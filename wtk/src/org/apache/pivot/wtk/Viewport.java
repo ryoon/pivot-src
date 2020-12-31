@@ -126,8 +126,8 @@ public abstract class Viewport extends Container {
      * enables skins to optimize viewport scrolling by blitting the display to
      * reduce the required repaint area.
      *
-     * @return <tt>true</tt> if this viewport will consume repaints that bubble
-     * up through it; <tt>false</tt> if it will propagate them up like normal.
+     * @return {@code true} if this viewport will consume repaints that bubble
+     * up through it; {@code false} if it will propagate them up like normal.
      */
     public boolean isConsumeRepaint() {
         return consumeRepaint;
@@ -139,8 +139,8 @@ public abstract class Viewport extends Container {
      * enables skins to optimize viewport scrolling by blitting the display to
      * reduce the required repaint area.
      *
-     * @param consumeRepaint <tt>true</tt> to consume repaints that bubble up
-     * through this viewport; <tt>false</tt> to propagate them up like normal.
+     * @param consumeRepaint {@code true} to consume repaints that bubble up
+     * through this viewport; {@code false} to propagate them up like normal.
      */
     public void setConsumeRepaint(boolean consumeRepaint) {
         this.consumeRepaint = consumeRepaint;
@@ -190,10 +190,10 @@ public abstract class Viewport extends Container {
      * area, default), or repaint all. <p> This is implemented as a workaround
      * for various painting issues on some platforms. So, if you experience
      * problems with the scrolled-in area not being painted properly by default,
-     * consider setting this property <tt>true</tt> using the
+     * consider setting this property {@code true} using the
      * {@link #setRepaintAllViewport setRepaintAllViewport} method.
      *
-     * @return <tt>false</tt> if optimized, otherwise <tt>true</tt> (repaint
+     * @return {@code false} if optimized, otherwise {@code true} (repaint
      * entire viewport)
      */
     public boolean isRepaintAllViewport() {
@@ -204,10 +204,10 @@ public abstract class Viewport extends Container {
      * Set the viewport painting mode. <p> This is implemented as a workaround
      * for various painting issues on some platforms. So, if you experience
      * problems with the scrolled-in area not being painted properly by default,
-     * consider setting this property <tt>true</tt> (default is <tt>false</tt>).
+     * consider setting this property {@code true} (default is {@code false}).
      *
-     * @param repaintAllViewport <tt>false</tt> means optimized (repaint only
-     * needed area, default), while <tt>true</tt> means repaint all
+     * @param repaintAllViewport {@code false} means optimized (repaint only
+     * needed area, default), while {@code true} means repaint all
      */
     public void setRepaintAllViewport(boolean repaintAllViewport) {
         this.repaintAllViewport = repaintAllViewport;

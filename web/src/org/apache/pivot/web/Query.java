@@ -161,7 +161,7 @@ public abstract class Query<V> extends IOTask<V> {
     /**
      * Gets the proxy associated with this query.
      *
-     * @return This query's proxy, or <tt>null</tt> if the query is using the
+     * @return This query's proxy, or {@code null} if the query is using the
      * default JVM proxy settings
      */
     public Proxy getProxy() {
@@ -171,7 +171,7 @@ public abstract class Query<V> extends IOTask<V> {
     /**
      * Sets the proxy associated with this query.
      *
-     * @param proxy This query's proxy, or <tt>null</tt> to use the default JVM
+     * @param proxy This query's proxy, or {@code null} to use the default JVM
      * proxy settings
      */
     public void setProxy(final Proxy proxy) {

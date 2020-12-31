@@ -104,7 +104,7 @@ public interface TableViewSelectionListener {
      * @param previousSelectedRanges If the selection changed directly, contains
      * the ranges that were previously selected. If the selection changed
      * indirectly as a result of a model change, contains the current selection.
-     * Otherwise, contains <tt>null</tt>.
+     * Otherwise, contains {@code null}.
      */
     default void selectedRangesChanged(TableView tableView, Sequence<Span> previousSelectedRanges) {
     }

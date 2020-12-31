@@ -156,7 +156,7 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
     }
 
     /**
-     * @return <tt>false</tt>; spacers are not focusable.
+     * @return {@code false}; spacers are not focusable.
      */
     @Override
     public boolean isFocusable() {

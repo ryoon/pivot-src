@@ -118,7 +118,7 @@ public class ImageView extends Component {
     /**
      * Creates an image view with the given image.
      *
-     * @param image The initial image to set, or <tt>null</tt> for no image.
+     * @param image The initial image to set, or {@code null} for no image.
      */
     public ImageView(final Image image) {
         setImage(image);
@@ -129,7 +129,7 @@ public class ImageView extends Component {
     /**
      * Returns the image view's current image.
      *
-     * @return The current image, or <tt>null</tt> if no image is set.
+     * @return The current image, or {@code null} if no image is set.
      */
     public final Image getImage() {
         return image;
@@ -138,7 +138,7 @@ public class ImageView extends Component {
     /**
      * Sets the image view's current image.
      *
-     * @param image The image to set, or <tt>null</tt> for no image.
+     * @param image The image to set, or {@code null} for no image.
      */
     public final void setImage(final Image image) {
         Image previousImage = this.image;
@@ -224,8 +224,8 @@ public class ImageView extends Component {
     /**
      * Returns the image view's asynchronous flag.
      *
-     * @return <tt>true</tt> if images specified via URL will be loaded in the
-     * background; <tt>false</tt> if they will be loaded synchronously.
+     * @return {@code true} if images specified via URL will be loaded in the
+     * background; {@code false} if they will be loaded synchronously.
      */
     public boolean isAsynchronous() {
         return asynchronous;
@@ -234,8 +234,8 @@ public class ImageView extends Component {
     /**
      * Sets the image view's asynchronous flag.
      *
-     * @param asynchronous <tt>true</tt> if images specified via URL will be
-     * loaded in the background; <tt>false</tt> if they will be loaded
+     * @param asynchronous {@code true} if images specified via URL will be
+     * loaded in the background; {@code false} if they will be loaded
      * synchronously.
      */
     public void setAsynchronous(final boolean asynchronous) {
@@ -248,7 +248,7 @@ public class ImageView extends Component {
     /**
      * Returns the image view's image key.
      *
-     * @return The image key, or <tt>null</tt> if no key is set.
+     * @return The image key, or {@code null} if no key is set.
      */
     public String getImageKey() {
         return imageKey;
@@ -257,7 +257,7 @@ public class ImageView extends Component {
     /**
      * Sets the image view's image key.
      *
-     * @param imageKey The image key, or <tt>null</tt> to clear the binding.
+     * @param imageKey The image key, or {@code null} to clear the binding.
      */
     public void setImageKey(final String imageKey) {
         String previousImageKey = this.imageKey;

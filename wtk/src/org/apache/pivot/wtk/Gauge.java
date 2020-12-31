@@ -241,8 +241,8 @@ public class Gauge<T extends Number> extends Component {
     /**
      * Set a level at which the gauge will start showing "warning" indication
      * (basically the warning color set in the skin).
-     * <p> If the warning (or critical) value is set to <tt>null</tt>, and/or
-     * the warning (or critical) color is set to <tt>null</tt> then the display
+     * <p> If the warning (or critical) value is set to {@code null}, and/or
+     * the warning (or critical) color is set to {@code null} then the display
      * will always be the same color, no matter the value.
      * <p> The assumption is that the warning level will be less than the critical
      * level, and both will be in the range of the min - max values (this is not
@@ -280,8 +280,8 @@ public class Gauge<T extends Number> extends Component {
     /**
      * Set a level at which the gauge will start showing "critical" indication
      * (basically the critical color set in the skin).
-     * <p> If the critical (or warning) value is set to <tt>null</tt>, and/or
-     * the critical (or warning) color is set to <tt>null</tt> then the display
+     * <p> If the critical (or warning) value is set to {@code null}, and/or
+     * the critical (or warning) color is set to {@code null} then the display
      * will always be the same color, no matter the value.
      * <p> The assumption is that the warning level will be less than the critical
      * level, and both will be in the range of the min - max values (this is not
@@ -318,7 +318,7 @@ public class Gauge<T extends Number> extends Component {
 
     /**
      * Set the text string to be displayed in the middle of the gauge.
-     * @param text The new text to be shown (can be <tt>null</tt> or empty).
+     * @param text The new text to be shown (can be {@code null} or empty).
      */
     public void setText(String text) {
         // Null text is allowed

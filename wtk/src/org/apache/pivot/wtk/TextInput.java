@@ -448,7 +448,7 @@ public class TextInput extends Component {
      * Returns a span representing the current selection.
      *
      * @return A span containing the current selection. Both start and end
-     * points are inclusive. Returns <tt>null</tt> if the selection length is
+     * points are inclusive. Returns {@code null} if the selection length is
      * <tt>0</tt>.
      */
     public final Span getSelection() {
@@ -606,7 +606,7 @@ public class TextInput extends Component {
     /**
      * Returns the password flag.
      *
-     * @return <tt>true</tt> if this is a password text input; <tt>false</tt>,
+     * @return {@code true} if this is a password text input; {@code false},
      * otherwise.
      */
     public final boolean isPassword() {
@@ -617,8 +617,8 @@ public class TextInput extends Component {
      * Sets or clears the password flag. If the password flag is set, the text
      * input will visually mask its contents.
      *
-     * @param password <tt>true</tt> if this is a password text input;
-     * <tt>false</tt>, otherwise.
+     * @param password {@code true} if this is a password text input;
+     * {@code false}, otherwise.
      */
     public final void setPassword(final boolean password) {
         if (this.password != password) {
@@ -637,7 +637,7 @@ public class TextInput extends Component {
     /**
      * Sets the text input's prompt.
      *
-     * @param prompt The prompt text, or <tt>null</tt> for no prompt.
+     * @param prompt The prompt text, or {@code null} for no prompt.
      */
     public final void setPrompt(final String prompt) {
         String previousPrompt = this.prompt;
@@ -651,7 +651,7 @@ public class TextInput extends Component {
     /**
      * Returns the text input's text key.
      *
-     * @return The text key, or <tt>null</tt> if no text key is set.
+     * @return The text key, or {@code null} if no text key is set.
      */
     public final String getTextKey() {
         return textKey;
@@ -660,7 +660,7 @@ public class TextInput extends Component {
     /**
      * Sets the text input's text key.
      *
-     * @param textKey The text key, or <tt>null</tt> to clear the binding.
+     * @param textKey The text key, or {@code null} to clear the binding.
      */
     public final void setTextKey(final String textKey) {
         String previousTextKey = this.textKey;
@@ -750,7 +750,7 @@ public class TextInput extends Component {
     /**
      * Sets the validator associated with this text input.
      *
-     * @param validator The validator to use, or <tt>null</tt> to use no
+     * @param validator The validator to use, or {@code null} to use no
      * validator.
      */
     public final void setValidator(final Validator validator) {
@@ -798,8 +798,8 @@ public class TextInput extends Component {
      * Reports whether this text input's text is currently valid as defined by
      * its validator.
      *
-     * @return <tt>true</tt> if the text is valid or no validator is installed;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the text is valid or no validator is installed;
+     * {@code false}, otherwise.
      */
     public final boolean isTextValid() {
         return textValid;

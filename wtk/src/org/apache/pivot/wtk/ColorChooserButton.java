@@ -87,7 +87,7 @@ public class ColorChooserButton extends Button {
     }
 
     /**
-     * @return The currently selected color, or <tt>null</tt> if nothing is
+     * @return The currently selected color, or {@code null} if nothing is
      * selected.
      */
     public Color getSelectedColor() {
@@ -97,7 +97,7 @@ public class ColorChooserButton extends Button {
     /**
      * Sets the selected color.
      *
-     * @param selectedColor The color to select, or <tt>null</tt> to clear the
+     * @param selectedColor The color to select, or {@code null} to clear the
      * selection.
      */
     public void setSelectedColor(final Color selectedColor) {

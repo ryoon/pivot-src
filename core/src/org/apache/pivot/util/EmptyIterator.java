@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * A no-op iterator, for which {@link #hasNext} always returns <tt>false</tt>
+ * A no-op iterator, for which {@link #hasNext} always returns {@code false}
  * and {@link #next} throws {@link NoSuchElementException}.
  * <p> This is used (for instance) for {@link org.apache.pivot.collections.HashMap}
  * when a hash bucket list is empty, so that iteration through the bucket list

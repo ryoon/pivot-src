@@ -41,11 +41,11 @@ public abstract class Button extends Component {
         /**
          * Prepares the renderer for layout or paint.
          *
-         * @param data The data to render, or <tt>null</tt> if called to
+         * @param data The data to render, or {@code null} if called to
          * calculate preferred height for skins that assume a fixed renderer
          * height.
          * @param button The host component.
-         * @param highlighted If <tt>true</tt>, the item is highlighted.
+         * @param highlighted If {@code true}, the item is highlighted.
          */
         public void render(Object data, Button button, boolean highlighted);
 
@@ -53,7 +53,7 @@ public abstract class Button extends Component {
          * Converts button data to a string representation.
          *
          * @param data The button's data.
-         * @return The data's string representation, or <tt>null</tt> if the data
+         * @return The data's string representation, or {@code null} if the data
          * does not have a string representation. <p> Note that this method may
          * be called often during keyboard navigation, so implementations should
          * avoid unnecessary string allocations.
@@ -218,7 +218,7 @@ public abstract class Button extends Component {
     /**
      * Returns the action associated with this button.
      *
-     * @return The button's action, or <tt>null</tt> if no action is defined.
+     * @return The button's action, or {@code null} if no action is defined.
      */
     public Action getAction() {
         return action;
@@ -228,7 +228,7 @@ public abstract class Button extends Component {
      * Sets this button's action.
      *
      * @param action The action to be triggered when this button is pressed, or
-     * <tt>null</tt> for no action.
+     * {@code null} for no action.
      */
     public void setAction(Action action) {
         Action previousAction = this.action;
@@ -439,7 +439,7 @@ public abstract class Button extends Component {
     }
 
     /**
-     * Set the delay to be used when {@link #setQueuedAction} is set to <tt>true</tt>.
+     * Set the delay to be used when {@link #setQueuedAction} is set to {@code true}.
      * <p> Typically this delay would be a bit longer than the popup window fade
      * transition (for instance), or similar timing.
      *
@@ -455,7 +455,7 @@ public abstract class Button extends Component {
     /**
      * Returns the button's button group.
      *
-     * @return The group to which the button belongs, or <tt>null</tt> if the
+     * @return The group to which the button belongs, or {@code null} if the
      * button does not belong to a group.
      */
     public ButtonGroup getButtonGroup() {
@@ -466,7 +466,7 @@ public abstract class Button extends Component {
      * Sets the button's button group.
      *
      * @param buttonGroup The group to which the button will belong, or
-     * <tt>null</tt> if the button will not belong to a group.
+     * {@code null} if the button will not belong to a group.
      */
     public void setButtonGroup(ButtonGroup buttonGroup) {
         if (!toggleButton) {

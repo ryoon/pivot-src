@@ -144,7 +144,7 @@ public class SplitPane extends Container {
 
     /**
      * @return The "top" component of the split pane, which only applies in vertical mode;
-     * otherwise it is <tt>null</tt>.
+     * otherwise it is {@code null}.
      */
     public Component getTop() {
         return (orientation == Orientation.HORIZONTAL) ? null : getTopLeft();
@@ -156,7 +156,7 @@ public class SplitPane extends Container {
 
     /**
      * @return The "bottom" component of the split pane, which only applies in vertical mode;
-     * otherwise it is <tt>null</tt>.
+     * otherwise it is {@code null}.
      */
     public Component getBottom() {
         return (orientation == Orientation.HORIZONTAL) ? null : getBottomRight();
@@ -168,7 +168,7 @@ public class SplitPane extends Container {
 
     /**
      * @return The "left" component of the split pane, which only applies in horizontal mode;
-     * otherwise it is <tt>null</tt>.
+     * otherwise it is {@code null}.
      */
     public Component getLeft() {
         return (orientation == Orientation.VERTICAL) ? null : getTopLeft();
@@ -180,7 +180,7 @@ public class SplitPane extends Container {
 
     /**
      * @return The "right" component of the split pane, which only applies in horizontal mode;
-     * otherwise it is <tt>null</tt>.
+     * otherwise it is {@code null}.
      */
     public Component getRight() {
         return (orientation == Orientation.VERTICAL) ? null : getBottomRight();

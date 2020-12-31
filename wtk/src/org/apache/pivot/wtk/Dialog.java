@@ -122,7 +122,7 @@ public class Dialog extends Frame {
      * Opens the dialog.
      *
      * @param display The display on which the dialog will be opened.
-     * @param owner The window's owner, or <tt>null</tt> if the window has no
+     * @param owner The window's owner, or {@code null} if the window has no
      * owner. Required if the dialog is modal.
      * @param dialogCloseListenerArgument A listener that will be called when the
      * dialog is closed.

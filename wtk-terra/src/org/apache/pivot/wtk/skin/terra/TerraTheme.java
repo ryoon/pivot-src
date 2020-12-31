@@ -326,7 +326,7 @@ public final class TerraTheme extends Theme {
      *
      * @param properties The color properties map.
      * @param colorPropertyName Name of the color property to get.
-     * @return The decoded color value or <tt>null</tt> if the property by that name cannot be found.
+     * @return The decoded color value or {@code null} if the property by that name cannot be found.
      * @see GraphicsUtilities#decodeColor
      */
     private Color getColorProperty(final Map<String, ?> properties, final String colorPropertyName) {

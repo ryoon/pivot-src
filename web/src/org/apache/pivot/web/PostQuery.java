@@ -69,7 +69,7 @@ public class PostQuery extends Query<URL> {
      * Synchronously executes the POST operation.
      *
      * @return A URL that uniquely identifies the location of the resource
-     * created on the server by the operation, or <tt>null</tt> if the server
+     * created on the server by the operation, or {@code null} if the server
      * did not return a location.
      */
     @Override

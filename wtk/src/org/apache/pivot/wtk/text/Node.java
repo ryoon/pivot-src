@@ -33,7 +33,7 @@ public abstract class Node {
     /**
      * Returns the parent element of this node.
      *
-     * @return The node's parent, or <tt>null</tt> if the node does not have a
+     * @return The node's parent, or {@code null} if the node does not have a
      * parent.
      */
     public Element getParent() {

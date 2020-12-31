@@ -122,7 +122,7 @@ public final class MacroReader extends Reader {
      * from the underlying {@link Reader}.
      * <p> This is the heart of the processing that handles both
      * macro definition and expansion.
-     * @param   handleMacros   set to <tt>false</tt> only when
+     * @param   handleMacros   set to {@code false} only when
      *                         invoking this method recursively
      *                         to ignore unknown macro commands
      *                         or undefined macros

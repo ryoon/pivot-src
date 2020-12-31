@@ -153,7 +153,7 @@ public class CalendarButton extends Button {
     /**
      * Returns the currently selected date.
      *
-     * @return The currently selected date, or <tt>null</tt> if nothing is
+     * @return The currently selected date, or {@code null} if nothing is
      * selected.
      */
     public CalendarDate getSelectedDate() {
@@ -163,7 +163,7 @@ public class CalendarButton extends Button {
     /**
      * Sets the selected date.
      *
-     * @param selectedDate The date to select, or <tt>null</tt> to clear the
+     * @param selectedDate The date to select, or {@code null} to clear the
      * selection.
      */
     public void setSelectedDate(CalendarDate selectedDate) {

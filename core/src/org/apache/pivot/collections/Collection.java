@@ -31,8 +31,8 @@ public interface Collection<T> extends Iterable<T> {
     /**
      * Tests the emptiness of the collection.
      *
-     * @return <tt>true</tt> if the collection contains no elements;
-     * <tt>false</tt>, otherwise.
+     * @return {@code true} if the collection contains no elements;
+     * {@code false}, otherwise.
      */
     public boolean isEmpty();
 
@@ -40,7 +40,7 @@ public interface Collection<T> extends Iterable<T> {
      * Returns the collection's sort order.
      *
      * @return The comparator used to order elements in the collection, or
-     * <tt>null</tt> if the sort order is undefined.
+     * {@code null} if the sort order is undefined.
      * @see #setComparator(Comparator)
      */
     public Comparator<T> getComparator();

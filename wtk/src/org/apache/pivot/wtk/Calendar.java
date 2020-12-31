@@ -133,7 +133,7 @@ public class Calendar extends Container {
     }
 
     /**
-     * @return The currently selected date, or <tt>null</tt> if no date is
+     * @return The currently selected date, or {@code null} if no date is
      * selected.
      */
     public CalendarDate getSelectedDate() {
@@ -143,7 +143,7 @@ public class Calendar extends Container {
     /**
      * Sets the currently selected date.
      *
-     * @param selectedDate The selected date, or <tt>null</tt> to specify no
+     * @param selectedDate The selected date, or {@code null} to specify no
      * selection
      */
     public void setSelectedDate(CalendarDate selectedDate) {

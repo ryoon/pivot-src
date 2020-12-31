@@ -127,9 +127,9 @@ public abstract class Theme {
      * Returns the skin class responsible for skinning the specified component class.
      *
      * @param componentClass The component class.
-     * @return The skin class, or <tt>null</tt> if no skin mapping exists for
+     * @return The skin class, or {@code null} if no skin mapping exists for
      * the component class.
-     * @throws IllegalArgumentException if the given component class is <tt>null</tt>.
+     * @throws IllegalArgumentException if the given component class is {@code null}.
      */
     public final Class<? extends Skin> getSkinClass(final Class<? extends Component> componentClass) {
         Utils.checkNull(componentClass, "Component class");
@@ -300,7 +300,7 @@ public abstract class Theme {
      * </ul>
      * Omitted values are taken from the theme's font.
      * @return The new font derived from the current font.
-     * @throws IllegalArgumentException if the supplied dictionary is <tt>null</tt>.
+     * @throws IllegalArgumentException if the supplied dictionary is {@code null}.
      */
     public static Font deriveFont(final Dictionary<String, ?> dictionary) {
         Utils.checkNull(dictionary, "dictionary");

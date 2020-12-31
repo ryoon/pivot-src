@@ -84,7 +84,7 @@ public interface ComponentKeyListener {
      *
      * @param component Component that has the focus, that is receiving this key.
      * @param character The decoded character that was typed.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
     default boolean keyTyped(Component component, char character) {
@@ -97,7 +97,7 @@ public interface ComponentKeyListener {
      * @param component Component that has the focus.
      * @param keyCode The key code for the key that was pressed.
      * @param keyLocation Location value for the key (left or right for shift keys, etc.).
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
     default boolean keyPressed(Component component, int keyCode, Keyboard.KeyLocation keyLocation) {
@@ -110,7 +110,7 @@ public interface ComponentKeyListener {
      * @param component Component that has the focus, that is receiving this key event.
      * @param keyCode Code for the key that was released.
      * @param keyLocation Location of the key.
-     * @return <tt>true</tt> to consume the event; <tt>false</tt> to allow it to
+     * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
     default boolean keyReleased(Component component, int keyCode, Keyboard.KeyLocation keyLocation) {

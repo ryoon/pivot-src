@@ -403,7 +403,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * a font relative to the current theme}, or one of the
      * {@link Font#decode(String) standard Java font specifications}.
      * @return The font corresponding to the specification.
-     * @throws IllegalArgumentException if the given string is <tt>null</tt>
+     * @throws IllegalArgumentException if the given string is {@code null}
      * or empty or the font specification cannot be decoded.
      * @see FontUtilities#decodeFont(String)
      */
