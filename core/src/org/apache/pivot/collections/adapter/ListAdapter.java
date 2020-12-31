@@ -34,7 +34,9 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Implementation of the {@link List} interface that is backed by an instance of
- * {@link java.util.List}.
+ * {@link java.util.List}; in other words, adapting a <tt>java.util.List</tt> to
+ * one of our <tt>List</tt>s.
+ *
  * @param <T> Type of elements in the list.
  */
 public class ListAdapter<T> implements List<T>, Serializable {
@@ -178,9 +180,8 @@ public class ListAdapter<T> implements List<T>, Serializable {
         java.util.List<T> removedList = null;
         try {
             removedList = list.getClass().getDeclaredConstructor().newInstance();
-        } catch (IllegalAccessException | InstantiationException exception) {
-            throw new RuntimeException(exception);
-        } catch (NoSuchMethodException | InvocationTargetException exception) {
+        } catch (IllegalAccessException | InstantiationException
+                | NoSuchMethodException | InvocationTargetException exception) {
             throw new RuntimeException(exception);
         }
 

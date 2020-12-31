@@ -25,35 +25,69 @@ import org.apache.pivot.util.ListenerList;
 import org.apache.pivot.util.Utils;
 
 /**
- * Implementation of the {@link Stack} interface that is backed by an array.
+ * Implementation of the {@link Stack} interface that is backed by an {@link ArrayList}.
+ * <p> Note: a stack with a comparator set is more like a priority queue than a stack
+ * because it no longer maintains the LIFO (last-in, first-out) ordering of a normal stack.
+ *
+ * @param <T> The type of elements stored in this stack.
  */
 public class ArrayStack<T> implements Stack<T>, Serializable {
     private static final long serialVersionUID = 3175064065273930731L;
 
+    /** The backing array for this stack. */
     private ArrayList<T> arrayList = new ArrayList<>();
+    /** The maximum permitted stack depth (0 = unlimited). */
     private int maxDepth = 0;
+    /** The list of listeners for changes in the stack. */
     private transient StackListener.Listeners<T> stackListeners = new StackListener.Listeners<>();
 
+    /**
+     * Construct an empty stack, with all defaults.
+     */
     public ArrayStack() {
         this(null);
     }
 
-    public ArrayStack(Comparator<T> comparator) {
+    /**
+     * Construct an empty stack with the given comparator used to order the elemnts in it.
+     *
+     * @param comparator A comparator used to sort the elements in the stack as they are pushed.
+     */
+    public ArrayStack(final Comparator<T> comparator) {
         setComparator(comparator);
     }
 
-    public ArrayStack(int capacity) {
+    /**
+     * Construct an empty stack with the given initial capacity.
+     *
+     * @param capacity The initial capacity for the stack.
+     */
+    public ArrayStack(final int capacity) {
         ensureCapacity(capacity);
     }
 
-    public ArrayStack(int capacity, int maxDepth) {
+    /**
+     * Construct an empty stack with the given initial capacity and maximum depth.
+     *
+     * @param capacity The initial capacity for the stack.
+     * @param depth    The maximum depth to enforce for this stack (0 = unlimited).
+     */
+    public ArrayStack(final int capacity, final int depth) {
         ensureCapacity(capacity);
-        setMaxDepth(maxDepth);
+        setMaxDepth(depth);
     }
 
-    public ArrayStack(int capacity, int maxDepth, Comparator<T> comparator) {
+    /**
+     * Construct an empty stack with the given initial capacity, maximum stack
+     * depth, and comparator used to order the stack elements.
+     *
+     * @param capacity   The initial stack capacity.
+     * @param depth      The maximum stack depth to enforce (0 = unlimited).
+     * @param comparator The comparator to use to order the stack elements.
+     */
+    public ArrayStack(final int capacity, final int depth, final Comparator<T> comparator) {
         ensureCapacity(capacity);
-        setMaxDepth(maxDepth);
+        setMaxDepth(depth);
         setComparator(comparator);
     }
 
@@ -69,16 +103,16 @@ public class ArrayStack<T> implements Stack<T>, Serializable {
     /**
      * Set the maximum depth permitted for this stack, 0 means unlimited.
      *
-     * @param maxDepth The new maximum depth for this stack.
+     * @param depth The new maximum depth for this stack.
      */
     @Override
-    public void setMaxDepth(int maxDepth) {
-        Utils.checkNonNegative(maxDepth, "maxDepth");
-        this.maxDepth = maxDepth;
+    public void setMaxDepth(final int depth) {
+        Utils.checkNonNegative(depth, "maxDepth");
+        this.maxDepth = depth;
     }
 
     @Override
-    public void push(T item) {
+    public void push(final T item) {
         arrayList.add(item);
         stackListeners.itemPushed(this, item);
 
@@ -130,7 +164,14 @@ public class ArrayStack<T> implements Stack<T>, Serializable {
         return arrayList.getLength();
     }
 
-    public void ensureCapacity(int capacity) {
+    /**
+     * Ensure that the stack has sufficient internal capacity to satisfy
+     * the given number of elements.
+     *
+     * @param capacity The capacity to ensure (to make sure no further
+     * allocations are done to accommodate this number of elements).
+     */
+    public void ensureCapacity(final int capacity) {
         arrayList.ensureCapacity(capacity);
     }
 
@@ -139,8 +180,21 @@ public class ArrayStack<T> implements Stack<T>, Serializable {
         return arrayList.getComparator();
     }
 
+    /**
+     * Set/remove the comparator for this stack.
+     * <p> Setting a non-null comparator changes this stack to a priority
+     * queue, because LIFO ordering is no longer maintained.
+     * <p> If a new comparator is set the stack will be reordered
+     * if it contains any elements. Removing the comparator will not
+     * reorder any elements.
+     * <p> Calls the {@link StackListener#comparatorChanged} method for
+     * each registered listener after setting the new comparator.
+     *
+     * @param comparator The new comparator used to order the elements
+     * in the stack. Can be {@code null} to remove the existing comparator.
+     */
     @Override
-    public void setComparator(Comparator<T> comparator) {
+    public void setComparator(final Comparator<T> comparator) {
         Comparator<T> previousComparator = getComparator();
         arrayList.setComparator(comparator);
 

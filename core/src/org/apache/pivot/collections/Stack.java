@@ -21,6 +21,8 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Interface representing a last-in, first-out (LIFO) stack when unsorted, and a
  * priority stack when sorted.
+ *
+ * @param <T> The type of element kept in the stack.
  */
 public interface Stack<T> extends Collection<T> {
     /**
@@ -33,7 +35,7 @@ public interface Stack<T> extends Collection<T> {
      *
      * @param item The item to push onto the stack.
      */
-    public void push(T item);
+    void push(T item);
 
     /**
      * Removes the top item from the stack and returns it.
@@ -41,7 +43,7 @@ public interface Stack<T> extends Collection<T> {
      * @return The top item from the stack (removed from it).
      * @throws IllegalStateException If the stack contains no items.
      */
-    public T pop();
+    T pop();
 
     /**
      * Returns the item on top of the stack without removing it from the stack.
@@ -50,7 +52,7 @@ public interface Stack<T> extends Collection<T> {
      * distinguish between these two cases.
      * @return The top item from the stack (which remains there).
      */
-    public T peek();
+    T peek();
 
     /**
      * Tests the emptiness of the stack.
@@ -59,27 +61,27 @@ public interface Stack<T> extends Collection<T> {
      * otherwise.
      */
     @Override
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * @return The stack depth.
      */
-    public int getDepth();
+    int getDepth();
 
     /**
      * @return The maximum permitted stack/queue length (0 = unlimited).
      */
-    public int getMaxDepth();
+    int getMaxDepth();
 
     /**
      * Set the maximum permitted stack/queue depth (0 = unlimited).
      *
      * @param maxDepth The new maximum depth.
      */
-    public void setMaxDepth(int maxDepth);
+    void setMaxDepth(int maxDepth);
 
     /**
      * @return The stack listener list.
      */
-    public ListenerList<StackListener<T>> getStackListeners();
+    ListenerList<StackListener<T>> getStackListeners();
 }

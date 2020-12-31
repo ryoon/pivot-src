@@ -20,6 +20,8 @@ import java.util.Objects;
 
 /**
  * Utility class for additional Try methods.
+ *
+ * @param <T> The value type for this Try (on success).
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class TryCompanion<T> {

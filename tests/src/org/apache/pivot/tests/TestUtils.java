@@ -21,11 +21,19 @@ package org.apache.pivot.tests;
  */
 public final class TestUtils {
 
+    /** What we print out if the system property is not available (because of
+     * the {@link SecurityManager} settings.
+     */
     private static final String NA = "not available";
 
+    /** Private constructor for a test class with only static methods. */
     private TestUtils() {
     }
 
+    /**
+     * Test several system properties that could be subject to {@link SecurityManager}
+     * restrictions.
+     */
     static void testJavaSecurity() {
         try {
             System.out.println("The current SecurityManager is: " + System.getSecurityManager());

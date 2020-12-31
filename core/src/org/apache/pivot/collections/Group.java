@@ -18,6 +18,8 @@ package org.apache.pivot.collections;
 
 /**
  * Interface representing a group of unique elements.
+ *
+ * @param <E> Type of element stored in the group.
  */
 public interface Group<E> {
     /**
@@ -27,7 +29,7 @@ public interface Group<E> {
      * @return {@code true} if the element was added to the group;
      * {@code false}, otherwise.
      */
-    public boolean add(E element);
+    boolean add(E element);
 
     /**
      * Removes an element from the group.
@@ -36,7 +38,7 @@ public interface Group<E> {
      * @return {@code true} if the element was removed from the group;
      * {@code false}, otherwise.
      */
-    public boolean remove(E element);
+    boolean remove(E element);
 
     /**
      * Tests the existence of an element in the group.
@@ -45,5 +47,5 @@ public interface Group<E> {
      * @return {@code true} if the element exists in the group; {@code false},
      * otherwise.
      */
-    public boolean contains(E element);
+    boolean contains(E element);
 }

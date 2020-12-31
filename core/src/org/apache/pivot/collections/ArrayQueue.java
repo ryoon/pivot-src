@@ -25,40 +25,72 @@ import org.apache.pivot.util.ListenerList;
 import org.apache.pivot.util.Utils;
 
 /**
- * Implementation of the {@link Queue} interface that is backed by an array.
+ * Implementation of the {@link Queue} interface that is backed by an {@link ArrayList}.
+ *
+ * @param <T> The type of object stored in this queue.
  */
 public class ArrayQueue<T> implements Queue<T>, Serializable {
     private static final long serialVersionUID = -3856732506886968324L;
 
+    /** The underlying array list used to implement this queue. */
     private ArrayList<T> arrayList = new ArrayList<>();
+    /** The maximum permitted length of the queue (0 = unlimited). */
     private int maxLength = 0;
+    /** List of queue listeners for this queue. */
     private transient QueueListener.Listeners<T> queueListeners = new QueueListener.Listeners<>();
 
+    /**
+     * Construct an empty queue, with all defaults.
+     */
     public ArrayQueue() {
         this(null);
     }
 
-    public ArrayQueue(Comparator<T> comparator) {
+    /**
+     * Construct an empty queue with the given comparator used to order the elements in it.
+     *
+     * @param comparator A comparator used to sort the elements in the queue as they are added.
+     */
+    public ArrayQueue(final Comparator<T> comparator) {
         setComparator(comparator);
     }
 
-    public ArrayQueue(int capacity) {
+    /**
+     * Construct an empty queue with a given initial capacity.
+     *
+     * @param capacity The initial capacity for the queue.
+     */
+    public ArrayQueue(final int capacity) {
         ensureCapacity(capacity);
     }
 
-    public ArrayQueue(int capacity, int maxLength) {
+    /**
+     * Construct an empty queue with a given initial capacity and maxmimum length.
+     *
+     * @param capacity The initial capacity for the queue.
+     * @param maxLen   The maximum permitted queue length.
+     */
+    public ArrayQueue(final int capacity, final int maxLen) {
         ensureCapacity(capacity);
-        setMaxLength(maxLength);
+        setMaxLength(maxLen);
     }
 
-    public ArrayQueue(int capacity, int maxLength, Comparator<T> comparator) {
+    /**
+     * Construct an empty queue with a given initial capacity, maximum length,
+     * and comparator for ordering the queue.
+     *
+     * @param capacity   The initial capacity for the queue.
+     * @param maxLen     The maximum permitted queue length.
+     * @param comparator The comparator to use for ordering the elements.
+     */
+    public ArrayQueue(final int capacity, final int maxLen, final Comparator<T> comparator) {
         ensureCapacity(capacity);
-        setMaxLength(maxLength);
+        setMaxLength(maxLen);
         setComparator(comparator);
     }
 
     @Override
-    public void enqueue(T item) {
+    public void enqueue(final T item) {
         if (maxLength == 0 || arrayList.getLength() < maxLength) {
             if (getComparator() == null) {
                 arrayList.insert(item, 0);
@@ -118,12 +150,19 @@ public class ArrayQueue<T> implements Queue<T>, Serializable {
     }
 
     @Override
-    public void setMaxLength(int maxLength) {
-        Utils.checkNonNegative(maxLength, "maxLength");
-        this.maxLength = maxLength;
+    public void setMaxLength(final int maxLen) {
+        Utils.checkNonNegative(maxLen, "maxLen");
+        this.maxLength = maxLen;
     }
 
-    public void ensureCapacity(int capacity) {
+    /**
+     * Ensure that the queue has sufficient internal capacity to satisfy
+     * the given number of elements.
+     *
+     * @param capacity The capacity to ensure (to make sure no further
+     * allocations are done to accommodate this number of elements).
+     */
+    public void ensureCapacity(final int capacity) {
         arrayList.ensureCapacity(capacity);
     }
 
@@ -132,8 +171,19 @@ public class ArrayQueue<T> implements Queue<T>, Serializable {
         return arrayList.getComparator();
     }
 
+    /**
+     * Set/remove the comparator for this queue.
+     * <p> If a new comparator is set the queue will be reordered
+     * if it contains any elements. Removing the comparator will not
+     * reorder any elements.
+     * <p> Calls the {@link QueueListener#comparatorChanged} method for
+     * each registered listener after setting the new comparator.
+     *
+     * @param comparator The new comparator used to order the elements
+     * in the queue. Can be {@code null} to remove the existing comparator.
+     */
     @Override
-    public void setComparator(Comparator<T> comparator) {
+    public void setComparator(final Comparator<T> comparator) {
         Comparator<T> previousComparator = getComparator();
         arrayList.setComparator(comparator);
 

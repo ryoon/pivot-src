@@ -21,18 +21,20 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Interface representing a first-in, first-out (FIFO) queue when unsorted, and
  * a priority queue when sorted.
+ *
+ * @param <T> The type of object kept in the queue.
  */
 public interface Queue<T> extends Collection<T> {
     /**
      * Enqueues an item. If the queue is unsorted, the item is added at the tail
      * of the queue (index <code>0</code>). Otherwise, it is inserted at the
-     * appropriate index.
+     * appropriate index according to the priority/sort order.
      * <p> If there is a maximum queue length defined and the queue is already at
      * the maximum length this new item will not be queued.
      *
      * @param item The item to add to the queue.
      */
-    public void enqueue(T item);
+    void enqueue(T item);
 
     /**
      * Removes the item from the head of the queue and returns it. Calling this
@@ -40,7 +42,7 @@ public interface Queue<T> extends Collection<T> {
      * 1);</code>
      * @return The (removed) object at the head of the queue.
      */
-    public T dequeue();
+    T dequeue();
 
     /**
      * Returns the item at the head of the queue without removing it from the
@@ -49,7 +51,7 @@ public interface Queue<T> extends Collection<T> {
      * distinguish between these two cases.
      * @return The object at the head of the queue (not removed from the queue).
      */
-    public T peek();
+    T peek();
 
     /**
      * Tests the emptiness of the queue.
@@ -58,27 +60,27 @@ public interface Queue<T> extends Collection<T> {
      * otherwise.
      */
     @Override
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * @return The length of the queue.
      */
-    public int getLength();
+    int getLength();
 
     /**
      * @return The maximum queue length allowed (0 means unlimited).
      */
-    public int getMaxLength();
+    int getMaxLength();
 
     /**
      * Set the maximum allowed queue length (0 means unlimited).
      *
      * @param maxLength The maximum allowed length.
      */
-    public void setMaxLength(int maxLength);
+    void setMaxLength(int maxLength);
 
     /**
      * @return The queue listener list.
      */
-    public ListenerList<QueueListener<T>> getQueueListeners();
+    ListenerList<QueueListener<T>> getQueueListeners();
 }

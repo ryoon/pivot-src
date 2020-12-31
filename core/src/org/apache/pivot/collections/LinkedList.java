@@ -24,12 +24,15 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.pivot.util.ListenerList;
+import org.apache.pivot.util.StringUtils;
 import org.apache.pivot.util.Utils;
 
 /**
  * Implementation of the {@link List} interface that is backed by a linked list.
  * <p> NOTE This class is not thread-safe. For concurrent access, use a
  * {@link org.apache.pivot.collections.concurrent.SynchronizedList}.
+ *
+ * @param <T> The type of object stored in the list.
  */
 public class LinkedList<T> implements List<T>, Serializable {
     private static final long serialVersionUID = 2100691224732602812L;
@@ -41,7 +44,7 @@ public class LinkedList<T> implements List<T>, Serializable {
         private Node<T> next;
         private T item;
 
-        public Node(Node<T> previous, Node<T> next, T item) {
+        public Node(final Node<T> previous, final Node<T> next, final T item) {
             this.previous = previous;
             this.next = next;
             this.item = item;
@@ -53,15 +56,15 @@ public class LinkedList<T> implements List<T>, Serializable {
         private Node<T> current = null;
         private boolean forward = false;
 
-        private int modificationCountLocal;
+        private int localModificationCount;
 
         public LinkedListItemIterator() {
-            modificationCountLocal = LinkedList.this.modificationCount;
+            localModificationCount = LinkedList.this.modificationCount;
         }
 
         @Override
         public boolean hasNext() {
-            if (modificationCountLocal != LinkedList.this.modificationCount) {
+            if (localModificationCount != LinkedList.this.modificationCount) {
                 throw new ConcurrentModificationException();
             }
 
@@ -90,7 +93,7 @@ public class LinkedList<T> implements List<T>, Serializable {
 
         @Override
         public boolean hasPrevious() {
-            if (modificationCountLocal != LinkedList.this.modificationCount) {
+            if (localModificationCount != LinkedList.this.modificationCount) {
                 throw new ConcurrentModificationException();
             }
 
@@ -128,7 +131,7 @@ public class LinkedList<T> implements List<T>, Serializable {
         }
 
         @Override
-        public void insert(T item) {
+        public void insert(final T item) {
             Node<T> next = null;
             Node<T> previous = null;
 
@@ -163,7 +166,7 @@ public class LinkedList<T> implements List<T>, Serializable {
             LinkedList.this.insert(item, previous, next);
 
             length++;
-            modificationCountLocal++;
+            localModificationCount++;
             LinkedList.this.modificationCount++;
 
             if (listListeners != null) {
@@ -172,7 +175,7 @@ public class LinkedList<T> implements List<T>, Serializable {
         }
 
         @Override
-        public void update(T item) {
+        public void update(final T item) {
             if (current == null) {
                 throw new IllegalStateException();
             }
@@ -183,7 +186,7 @@ public class LinkedList<T> implements List<T>, Serializable {
                 verifyLocation(item, current.previous, current.next);
 
                 current.item = item;
-                modificationCountLocal++;
+                localModificationCount++;
                 LinkedList.this.modificationCount++;
 
                 if (listListeners != null) {
@@ -219,7 +222,7 @@ public class LinkedList<T> implements List<T>, Serializable {
             }
 
             length--;
-            modificationCountLocal++;
+            localModificationCount++;
             LinkedList.this.modificationCount++;
 
             if (listListeners != null) {
@@ -244,18 +247,18 @@ public class LinkedList<T> implements List<T>, Serializable {
     public LinkedList() {
     }
 
-    public LinkedList(Comparator<T> comparator) {
+    public LinkedList(final Comparator<T> comparator) {
         this.comparator = comparator;
     }
 
     @SafeVarargs
-    public LinkedList(T... items) {
+    public LinkedList(final T... items) {
         for (T item : items) {
             add(item);
         }
     }
 
-    public LinkedList(Sequence<T> items) {
+    public LinkedList(final Sequence<T> items) {
         Utils.checkNull(items, "items");
 
         for (int i = 0, n = items.getLength(); i < n; i++) {
@@ -264,7 +267,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     @Override
-    public int add(T item) {
+    public int add(final T item) {
         int index;
 
         if (comparator == null) {
@@ -300,7 +303,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     @Override
-    public void insert(T item, int index) {
+    public void insert(final T item, final int index) {
         Utils.checkIndexBounds(index, 0, length);
 
         Node<T> next = null;
@@ -323,7 +326,7 @@ public class LinkedList<T> implements List<T>, Serializable {
         }
     }
 
-    private void insert(T item, Node<T> previous, Node<T> next) {
+    private void insert(final T item, final Node<T> previous, final Node<T> next) {
         Node<T> node = new Node<>(previous, next, item);
 
         if (previous == null) {
@@ -340,7 +343,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     @Override
-    public T update(int index, T item) {
+    public T update(final int index, final T item) {
         Utils.checkIndexBounds(index, 0, length - 1);
 
         // Get the previous item at index
@@ -363,7 +366,7 @@ public class LinkedList<T> implements List<T>, Serializable {
         return previousItem;
     }
 
-    private void verifyLocation(T item, Node<T> previous, Node<T> next) {
+    private void verifyLocation(final T item, final Node<T> previous, final Node<T> next) {
         if (comparator != null) {
             // Ensure that the new item is greater or equal to its
             // predecessor and less than or equal to its successor
@@ -375,7 +378,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     @Override
-    public int remove(T item) {
+    public int remove(final T item) {
         int index = 0;
 
         LinkedListItemIterator nodeIterator = new LinkedListItemIterator();
@@ -396,7 +399,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     @Override
-    public Sequence<T> remove(int index, int count) {
+    public Sequence<T> remove(final int index, final int count) {
         Utils.checkIndexBounds(index, count, 0, length);
 
         LinkedList<T> removed = new LinkedList<>();
@@ -463,14 +466,14 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     @Override
-    public T get(int index) {
+    public T get(final int index) {
         Utils.checkIndexBounds(index, 0, length - 1);
 
         Node<T> node = getNode(index);
         return node.item;
     }
 
-    private Node<T> getNode(int index) {
+    private Node<T> getNode(final int index) {
         Node<T> node;
         if (index == 0) {
             node = first;
@@ -494,7 +497,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     @Override
-    public int indexOf(T item) {
+    public int indexOf(final T item) {
         int index = 0;
 
         Node<T> node = first;
@@ -537,7 +540,7 @@ public class LinkedList<T> implements List<T>, Serializable {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setComparator(Comparator<T> comparator) {
+    public void setComparator(final Comparator<T> comparator) {
         Comparator<T> previousComparator = this.comparator;
 
         if (comparator != null) {
@@ -595,7 +598,7 @@ public class LinkedList<T> implements List<T>, Serializable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         boolean equals = false;
 
         if (this == o) {
@@ -633,20 +636,8 @@ public class LinkedList<T> implements List<T>, Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(getClass().getName());
-        sb.append(" [");
-
-        int i = 0;
-        for (T item : this) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-
-            sb.append(item);
-            i++;
-        }
-
-        sb.append("]");
+        sb.append(getClass().getSimpleName());
+        StringUtils.append(sb, this);
 
         return sb.toString();
     }
