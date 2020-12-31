@@ -89,10 +89,11 @@ limitations under the License.
 
     <!-- Dynamic properties -->
     <property name="release" value="apache-${ant.project.name}-${version}"/>
-    <exec executable="svn" dir="." output="svnlog">
+    <exec executable="svn" dir="." outputproperty="svn.info">
         <arg value="info"/>
     </exec>
-    <loadproperties srcFile="svnlog">
+    <loadproperties>
+        <propertyresource name="svn.info"/>
         <filterchain>
             <linecontains>
                 <contains value="Last Changed Rev:"/>
