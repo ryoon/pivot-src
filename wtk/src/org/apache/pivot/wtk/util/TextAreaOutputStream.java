@@ -91,10 +91,10 @@ public final class TextAreaOutputStream extends OutputStream {
      */
     public TextAreaOutputStream(final TextArea textAreaToUse, final Charset charsetToUse,
         final int lineBufferSizeToUse) {
-        this.textArea = textAreaToUse;
+        this.textArea        = textAreaToUse;
         this.incomingCharset = (charsetToUse == null) ? Charset.defaultCharset() : charsetToUse;
-        this.lineBufferSize = lineBufferSizeToUse;
-        this.lineBuffer = new ByteArrayOutputStream(lineBufferSize);
+        this.lineBufferSize  = lineBufferSizeToUse;
+        this.lineBuffer      = new ByteArrayOutputStream(lineBufferSize);
     }
 
     /**
@@ -108,21 +108,25 @@ public final class TextAreaOutputStream extends OutputStream {
 
     /**
      * Flush the (byte) line buffer if there is anything cached.
-     * @param addNewLine If there is anything to flush, also add a newline
-     * ('\n') character at the end.
+     * @param addNewLine Add a newline ('\n') character after any buffered text.
      */
     private void flushLineBuffer(final boolean addNewLine) {
+        int length    = textArea.getCharacterCount();
+        int newLength = length;
+
         if (lineBuffer.size() > 0) {
             byte[] bytes = lineBuffer.toByteArray();
-            String text = new String(bytes, incomingCharset);
-            int length = textArea.getCharacterCount();
+            String text  = new String(bytes, incomingCharset);
             textArea.insertText(text, length);
-            if (addNewLine) {
-                int newLength = length + text.length();
-                textArea.insertText("\n", newLength);
-            }
+            newLength += text.length();
             lineBuffer.reset();
-            Bounds beginningOfLineBounds = textArea.getCharacterBounds(length);
+        }
+        if (addNewLine) {
+            textArea.insertText("\n", newLength++);
+        }
+        // If there was anything added to the text, scroll to make it visible
+        if (newLength > length) {
+            Bounds beginningOfLineBounds = textArea.getCharacterBounds(newLength);
             ApplicationContext.queueCallback(() -> textArea.scrollAreaToVisible(beginningOfLineBounds));
         }
     }
@@ -130,9 +134,9 @@ public final class TextAreaOutputStream extends OutputStream {
     @Override
     public void close() throws IOException {
         flush();
-        this.textArea = null;
+        this.textArea        = null;
         this.incomingCharset = null;
-        this.lineBuffer = null;
+        this.lineBuffer      = null;
     }
 
     @Override
