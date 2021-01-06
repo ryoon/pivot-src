@@ -84,8 +84,8 @@ public class TextArea extends Component {
 
             int count = text.length();
 
-            if (textArea != null && textArea.characterCount + count > textArea.maximumLength) {
-                throw new IllegalArgumentException("Insertion of text would exceed maximum length.");
+            if (textArea != null) {
+                textArea.checkMaximumLength(count, false);
             }
 
             characters.insert(index, text);
@@ -332,9 +332,7 @@ public class TextArea extends Component {
                 characterCountLocal++;
             }
 
-            if (TextArea.this.characterCount + characterCountLocal > maximumLength) {
-                throw new IllegalArgumentException("Insertion of text would exceed maximum length.");
-            }
+            checkMaximumLength(characterCountLocal, false);
 
             // Set the paragraph offset
             if (index == paragraphs.getLength()) {
@@ -601,6 +599,31 @@ public class TextArea extends Component {
     }
 
     /**
+     * Check the count of new or additional characters exceeding the specified
+     * maximum.
+     * @param count if {@code overwrite == true} specifies a new count (from {@code setText()})
+     * that will replace the existing text, or if {@code overwrite == false} from an insert that
+     * will add to the existing count.
+     * @throws IllegalArgumentException if the count exceeds the maximum.
+     */
+    private void checkMaximumLength(int count, boolean overwrite) {
+        if (overwrite) {
+            if (count > maximumLength) {
+                throw new IllegalArgumentException(String.format(
+                    "New text length of %1$,d exceeds the maximum length of %2$,d.",
+                        count, maximumLength));
+            }
+        } else {
+            if (characterCount + count > maximumLength) {
+                throw new IllegalArgumentException(String.format(
+                    "Insertion of %1$,d characters to existing length of %2$,d would "
+                  + "exceed the maximum length of %3$,d.",
+                        count, characterCount, maximumLength));
+            }
+        }
+    }
+
+    /**
      * Sets the text content of the text area.
      *
      * @param text The new text for the control (cannot be {@code null}).
@@ -608,9 +631,7 @@ public class TextArea extends Component {
     public void setText(String text) {
         Utils.checkNull(text, "Text");
 
-        if (text.length() > maximumLength) {
-            throw new IllegalArgumentException("Text length is greater than maximum length.");
-        }
+        checkMaximumLength(text.length(), true);
 
         try {
             if (!text.equals(this.getText())) {
@@ -654,9 +675,7 @@ public class TextArea extends Component {
 
         int c = textReader.read();
         while (c != -1) {
-            if (++characterCountLocal > maximumLength) {
-                throw new IllegalArgumentException("Text length is greater than maximum length.");
-            }
+            checkMaximumLength(++characterCountLocal, true);
 
             if (c == '\n') {
                 paragraphsLocal.add(paragraph);
@@ -665,10 +684,7 @@ public class TextArea extends Component {
             } else if (c == '\t' && expandTabs) {
                 int spaces = tabWidth - (tabPosition % tabWidth);
                 for (int i = 0; i < spaces; i++) {
-                    if (++characterCountLocal > maximumLength) {
-                        throw new IllegalArgumentException(
-                            "Text length is greater than maximum length.");
-                    }
+                    checkMaximumLength(++characterCountLocal, true);
                     paragraph.append(' ');
                 }
                 tabPosition += spaces;
