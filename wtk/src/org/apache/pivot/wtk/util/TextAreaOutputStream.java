@@ -111,23 +111,34 @@ public final class TextAreaOutputStream extends OutputStream {
      * @param addNewLine Add a newline ('\n') character after any buffered text.
      */
     private void flushLineBuffer(final boolean addNewLine) {
-        int length    = textArea.getCharacterCount();
-        int newLength = length;
+	final String text;
 
         if (lineBuffer.size() > 0) {
             byte[] bytes = lineBuffer.toByteArray();
-            String text  = new String(bytes, incomingCharset);
-            textArea.insertText(text, length);
-            newLength += text.length();
+            text = new String(bytes, incomingCharset);
             lineBuffer.reset();
+        } else {
+            text = "";
         }
-        if (addNewLine) {
-            textArea.insertText("\n", newLength++);
-        }
-        // If there was anything added to the text, scroll to make it visible
-        if (newLength > length) {
-            Bounds beginningOfLineBounds = textArea.getCharacterBounds(newLength);
-            ApplicationContext.queueCallback(() -> textArea.scrollAreaToVisible(beginningOfLineBounds));
+
+        // Do the actual text manipulation (including scrolling) on the event thread
+        if (!text.isEmpty() || addNewLine) {
+            ApplicationContext.queueCallback(() -> {
+                int length    = textArea.getCharacterCount();
+                int newLength = length;
+
+                if (!text.isEmpty()) {
+                    textArea.insertText(text, length);
+                    newLength += text.length();
+                }
+
+                if (addNewLine) {
+                    textArea.insertText("\n", newLength++);
+                }
+
+                Bounds lastCharBounds = textArea.getCharacterBounds(newLength);
+                textArea.scrollAreaToVisible(lastCharBounds);
+            });
         }
     }
 
