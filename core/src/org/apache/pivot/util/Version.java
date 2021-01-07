@@ -169,7 +169,7 @@ public class Version implements Comparable<Version>, Serializable {
      *
      * @return Our version.
      */
-    public static Version ourVersion() {
+    public static Version implementationVersion() {
         return decode(Version.class.getPackage().getImplementationVersion());
     }
 }
