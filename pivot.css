@@ -1,0 +1,14 @@
+#proptable {
+    border-collapse: collapse;
+    caption-side: bottom;
+}
+#proptable table, td, th {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    padding: 4px;
+}
+#proptable caption {
+    font-size: 0.9rem;
+    font-style: italic;
+}

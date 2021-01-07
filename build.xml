@@ -441,6 +441,7 @@ limitations under the License.
 
                 <arg value="-html4" if:true="${html4.output}"/>
                 <arg value="--frames" if:true="${html4.output}"/>
+                <arg line="--add-stylesheet pivot.css"/>
             </javadoc>
 
             <package-maven-source-or-javadoc-jar
@@ -625,6 +626,7 @@ limitations under the License.
 
             <arg value="-html4" if:true="${html4.output}"/>
             <arg value="--frames" if:true="${html4.output}"/>
+            <arg line="--add-stylesheet pivot.css"/>
         </javadoc>
     </target>
 
