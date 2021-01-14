@@ -81,6 +81,9 @@ public abstract class Theme {
     /** Key for the font italic style in a font dictionary. */
     public static final String ITALIC_KEY = "italic";
 
+    /** Default point size for the theme font. */
+    private static final int DEFAULT_POINT_SIZE = 12;
+
     /**
      * The service provider name (see {@link Service#getProvider(String)}).
      */
@@ -314,7 +317,7 @@ public abstract class Theme {
             name = (String) dictionary.get(NAME_KEY);
         }
 
-        int size = (font != null) ? font.getSize() : 12;
+        int size = (font != null) ? font.getSize() : DEFAULT_POINT_SIZE;
         if (dictionary.containsKey(SIZE_KEY)) {
             size = FontUtilities.decodeFontSize(dictionary.get(SIZE_KEY), size);
         }
