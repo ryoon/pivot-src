@@ -347,4 +347,30 @@ public enum CSSColor {
         return matches;
     }
 
+    /**
+     * Return the set of all these colors with the same RGB value as the given {@code CSSColor},
+     * in other words, the synonyms for this color.
+     * <p> This could be a bit time-consuming because we have to search all the values.
+     * @param color One of these colors to find the matching enum values.
+     * @return The complete set (could be empty) of these colors with the same RGB value (not
+     * including the given color).
+     */
+    public static Set<CSSColor> getMatchingColors(final CSSColor color) {
+        Set<CSSColor> matches = EnumSet.noneOf(CSSColor.class);
+        Color solidColor = color.color;
+        for (CSSColor cssColor : values()) {
+            if (cssColor.color.equals(solidColor) && cssColor != color) {
+                matches.add(cssColor);
+            }
+        }
+        return matches;
+    }
+
+    /**
+     * @return The number of colors in this list.
+     */
+    public static int numberOfColors() {
+        return values().length;
+    }
+
 }
