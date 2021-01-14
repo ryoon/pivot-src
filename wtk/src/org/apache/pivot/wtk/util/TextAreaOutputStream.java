@@ -111,7 +111,7 @@ public final class TextAreaOutputStream extends OutputStream {
      * @param addNewLine Add a newline ('\n') character after any buffered text.
      */
     private void flushLineBuffer(final boolean addNewLine) {
-	final String text;
+        final String text;
 
         if (lineBuffer.size() > 0) {
             byte[] bytes = lineBuffer.toByteArray();
