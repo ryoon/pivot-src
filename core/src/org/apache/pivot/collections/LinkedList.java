@@ -634,12 +634,8 @@ public class LinkedList<T> implements List<T>, Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(getClass().getSimpleName());
-        StringUtils.append(sb, this);
-
-        return sb.toString();
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        return StringUtils.append(sb, this).toString();
     }
 
 }

@@ -211,14 +211,8 @@ public abstract class ListenerList<T> implements Iterable<T> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(getClass().getName());
-        sb.append(" ");
-
-        StringUtils.append(sb, this);
-
-        return sb.toString();
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        return StringUtils.append(sb, this).toString();
     }
 
 }
