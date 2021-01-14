@@ -35,7 +35,7 @@ public final class FontUtilities {
      * A list of "standard" sans-serif fonts, useful when cross-platform
      * support is necessary.
      */
-    public static final String SANS_SERIF_FONTS = 
+    public static final String SANS_SERIF_FONTS =
         "Verdana, Helvetica, Arial, SansSerif";
 
     /**
@@ -74,8 +74,7 @@ public final class FontUtilities {
         if (sizeIndex > 0 && sizeIndex + 1 < length) {
             try {
                 Integer.valueOf(str.substring(sizeIndex + 1));
-            }
-            catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfe) {
                 /* Invalid size, maybe this is the style */
                 styleIndex = sizeIndex;
                 sizeIndex  = length;
@@ -103,13 +102,11 @@ public final class FontUtilities {
                     break;
             }
             fontName = str.substring(0, styleIndex);
-        }
-        else {
+        } else {
             int fontEnd = length;
             if (styleIndex > 0) {
                 fontEnd = styleIndex;
-            }
-            else if (sizeIndex > 0) {
+            } else if (sizeIndex > 0) {
                 fontEnd = sizeIndex;
             }
             while (fontEnd > 0 && str.charAt(fontEnd - 1) == sepChar) {
@@ -177,17 +174,17 @@ public final class FontUtilities {
         if (str.indexOf(',') > 0) {
             String name = getFontName(str);
             int pos     = name.length();
-            String spec = pos < str.length() ? str.substring(0, pos) : "";
+            String spec = pos < str.length() ? str.substring(pos) : "";
 
             String[] names = name.split("\\s*,\\s*");
             for (String nm : names) {
                 Font f = Font.decode(nm + spec);
-                if (f.getName().equals(nm) || f.getFamily().equals(nm)) {
+                if (f.getName().equalsIgnoreCase(nm) || f.getFamily().equalsIgnoreCase(nm)) {
                     return f;
                 }
             }
 
-            // Nothing quite matched in the name list, so return the default
+            // No names matched in the list, so use the default name
             return Font.decode(Font.DIALOG + spec);
         }
 
@@ -213,12 +210,12 @@ public final class FontUtilities {
             String[] names = name.split("\\s*,\\s*");
             for (String nm : names) {
                 Font f = new Font(nm, style, size);
-                if (f.getName().equals(nm) || f.getFamily().equals(nm)) {
+                if (f.getName().equalsIgnoreCase(nm) || f.getFamily().equalsIgnoreCase(nm)) {
                     return f;
                 }
             }
 
-            // Nothing quite matched in the name list, so return the default
+            // No names matched in the list, so use the default name
             return new Font(Font.DIALOG, style, size);
         }
 
