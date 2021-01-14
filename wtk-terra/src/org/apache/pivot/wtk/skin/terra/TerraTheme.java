@@ -43,6 +43,7 @@ import org.apache.pivot.wtk.Dialog;
 import org.apache.pivot.wtk.Expander;
 import org.apache.pivot.wtk.FileBrowser;
 import org.apache.pivot.wtk.FileBrowserSheet;
+import org.apache.pivot.wtk.FontUtilities;
 import org.apache.pivot.wtk.Form;
 import org.apache.pivot.wtk.Frame;
 import org.apache.pivot.wtk.Gauge;

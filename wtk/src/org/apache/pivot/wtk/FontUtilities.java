@@ -34,7 +34,7 @@ public final class FontUtilities {
      * A list of "standard" sans-serif fonts, useful when cross-platform
      * support is necessary.
      */
-    public static final String SANS_SERIF_FONTS = "Arial,Verdana,Helvetica,SansSerif";
+    public static final String SANS_SERIF_FONTS = "Verdana,Helvetica,Arial,SansSerif";
 
     /** The obvious factor needed to convert a number to a percentage value. */
     private static final float PERCENT_SCALE = 100.0f;
@@ -109,17 +109,24 @@ public final class FontUtilities {
                     break;
                 }
             }
+
             int pos = str.indexOf(sep);
             String name = pos < 0 ? str : str.substring(0, pos);
             String spec = pos < 0 ? "" : str.substring(pos);
+
             String[] names = name.split(",");
             for (String nm : names) {
                 Font f = Font.decode(nm + spec);
-System.out.println("getName = " + f.getName() + ", getFontName = " + f.getFontName() + ", getFamily = " + f.getFamily());
+                if (f.getName().equals(nm) || f.getFamily().equals(nm)) {
+                    return f;
+                }
             }
-        } else {
-            return Font.decode(str);
+
+            // Nothing quite matched in the name list, so return the default
+            return Font.decode(Font.DIALOG + spec);
         }
+
+        return Font.decode(str);
     }
 
     /**
@@ -141,11 +148,16 @@ System.out.println("getName = " + f.getName() + ", getFontName = " + f.getFontNa
             String[] names = name.split(",");
             for (String nm : names) {
                 Font f = new Font(nm, style, size);
-System.out.println("getName = " + f.getName() + ", getFontName = " + f.getFontName() + ", getFamily = " + f.getFamily());
+                if (f.getName().equals(nm) || f.getFamily().equals(nm)) {
+                    return f;
+                }
             }
-        } else {
-            return new Font(name, style, size);
+
+            // Nothing quite matched in the name list, so return the default
+            return new Font(Font.DIALOG, style, size);
         }
+
+        return new Font(name, style, size);
     }
 
     /**
