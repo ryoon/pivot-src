@@ -401,7 +401,9 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      *
      * @param value Either a JSON dictionary {@link Theme#deriveFont describing
      * a font relative to the current theme}, or one of the
-     * {@link Font#decode(String) standard Java font specifications}.
+     * {@link Font#decode(String) standard Java font specifications}, with the
+     * additional capability of supplying a list of font names (comma-separated)
+     * (similar to CSS) if desired.
      * @return The font corresponding to the specification.
      * @throws IllegalArgumentException if the given string is {@code null}
      * or empty or the font specification cannot be decoded.
