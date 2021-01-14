@@ -17,6 +17,7 @@
 package org.apache.pivot.wtk;
 
 import java.awt.Font;
+import java.util.Locale;
 
 import org.apache.pivot.json.JSONSerializer;
 import org.apache.pivot.serialization.SerializationException;
@@ -34,7 +35,16 @@ public final class FontUtilities {
      * A list of "standard" sans-serif fonts, useful when cross-platform
      * support is necessary.
      */
-    public static final String SANS_SERIF_FONTS = "Verdana,Helvetica,Arial,SansSerif";
+    public static final String SANS_SERIF_FONTS = 
+        "Verdana, Helvetica, Arial, SansSerif";
+
+    /**
+     * A list of monospaced fonts, useful for text editing areas for code, where
+     * column position must be consistent.
+     */
+    public static final String MONOSPACED_FONTS =
+        "Courier, Courier New, Andale Mono, Monaco, Menlo, Monospaced";
+
 
     /** The obvious factor needed to convert a number to a percentage value. */
     private static final float PERCENT_SCALE = 100.0f;
@@ -43,6 +53,72 @@ public final class FontUtilities {
      * Private constructor for utility class.
      */
     private FontUtilities() {
+    }
+
+    /**
+     * Parse out just the "name" part of a font specification.
+     * <p> Note: this logic follows the logic in {@link Font#decode(String)}.
+     *
+     * @param str The font specification to parse.
+     * @return    Just the font name part (which could be a list).
+     */
+    private static String getFontName(final String str) {
+        String fontName = str;
+        int lastHyphen  = str.lastIndexOf('-');
+        int lastSpace   = str.lastIndexOf(' ');
+        char sepChar    = (lastHyphen > lastSpace) ? '-' : ' ';
+        int sizeIndex   = str.lastIndexOf(sepChar);
+        int styleIndex  = str.lastIndexOf(sepChar, sizeIndex - 1);
+        int length      = str.length();
+
+        if (sizeIndex > 0 && sizeIndex + 1 < length) {
+            try {
+                Integer.valueOf(str.substring(sizeIndex + 1));
+            }
+            catch (NumberFormatException nfe) {
+                /* Invalid size, maybe this is the style */
+                styleIndex = sizeIndex;
+                sizeIndex  = length;
+                while (sizeIndex > 0 && str.charAt(sizeIndex - 1) == sepChar) {
+                    sizeIndex--;
+                }
+            }
+        }
+
+        if (styleIndex >= 0 && styleIndex + 1 < length) {
+            String styleName = str.substring(styleIndex + 1, sizeIndex);
+            styleName = styleName.toLowerCase(Locale.ENGLISH);
+            switch (styleName) {
+                case "bolditalic":
+                case "italic":
+                case "bold":
+                case "plain":
+                    break;
+                default:
+                    /* Not a recognized style, must be part of the name */
+                    styleIndex = sizeIndex;
+                    while (styleIndex > 0 && str.charAt(styleIndex - 1) == sepChar) {
+                        styleIndex--;
+                    }
+                    break;
+            }
+            fontName = str.substring(0, styleIndex);
+        }
+        else {
+            int fontEnd = length;
+            if (styleIndex > 0) {
+                fontEnd = styleIndex;
+            }
+            else if (sizeIndex > 0) {
+                fontEnd = sizeIndex;
+            }
+            while (fontEnd > 0 && str.charAt(fontEnd - 1) == sepChar) {
+                fontEnd--;
+            }
+            fontName = str.substring(0, fontEnd);
+        }
+
+        return fontName;
     }
 
     /**
@@ -99,22 +175,11 @@ public final class FontUtilities {
         }
 
         if (str.indexOf(',') > 0) {
-            // Search from the end to find the separator (either ' ' or '-')
-            int len = str.length();
-            char sep = ' ';
-            while (--len >= 0) {
-                char ch = str.charAt(len);
-                if (ch == ' ' || ch == '-') {
-                    sep = ch;
-                    break;
-                }
-            }
+            String name = getFontName(str);
+            int pos     = name.length();
+            String spec = pos < str.length() ? str.substring(0, pos) : "";
 
-            int pos = str.indexOf(sep);
-            String name = pos < 0 ? str : str.substring(0, pos);
-            String spec = pos < 0 ? "" : str.substring(pos);
-
-            String[] names = name.split(",");
+            String[] names = name.split("\\s*,\\s*");
             for (String nm : names) {
                 Font f = Font.decode(nm + spec);
                 if (f.getName().equals(nm) || f.getFamily().equals(nm)) {
@@ -145,7 +210,7 @@ public final class FontUtilities {
         }
 
         if (name.indexOf(',') > 0) {
-            String[] names = name.split(",");
+            String[] names = name.split("\\s*,\\s*");
             for (String nm : names) {
                 Font f = new Font(nm, style, size);
                 if (f.getName().equals(nm) || f.getFamily().equals(nm)) {
