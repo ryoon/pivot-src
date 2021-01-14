@@ -106,7 +106,7 @@ public class TextPaneDemo implements Application {
                 super.render(item, index, listView, selected, state, highlighted, disabled);
                 if (item != null) {
                     String fontFamilyName = (String) item;
-                    label.getStyles().put(Style.font, Font.decode(fontFamilyName + "-12"));
+                    label.getStyles().put(Style.font, FontUtilities.decode(fontFamilyName + "-12"));
                 }
             }
         });
@@ -116,7 +116,7 @@ public class TextPaneDemo implements Application {
                 super.render(data, button, highlight);
                 if (data != null) {
                     String fontFamilyName = (String) data;
-                    label.getStyles().put(Style.font, Font.decode(fontFamilyName + "-12"));
+                    label.getStyles().put(Style.font, FontUtilities.decode(fontFamilyName + "-12"));
                 }
             }
         });
@@ -129,7 +129,7 @@ public class TextPaneDemo implements Application {
             public void selectedItemChanged(final ListButton listButton, final Object previousSelectedItem) {
                 int selectedFontSize = ((Integer) fontSizeListButton.getSelectedItem()).intValue();
                 String selectedFontFamily = (String) fontFamilyListButton.getSelectedItem();
-                final Font derivedFont = Font.decode(selectedFontFamily + " " + selectedFontSize);
+                final Font derivedFont = FontUtilities.decode(selectedFontFamily + " " + selectedFontSize);
 
                 applyStyleToSelection(span -> span.setFont(derivedFont));
                 requestTextPaneFocus();
@@ -200,7 +200,7 @@ public class TextPaneDemo implements Application {
                     }
                     span.setFont(font);
                 } else {
-                    span.setFont(FontUtilities.ARIAL, Font.BOLD, 12);
+                    span.setFont(FontUtilities.SANS_SERIF_FONTS, Font.BOLD, 12);
                 }
             });
             requestTextPaneFocus();
@@ -220,7 +220,7 @@ public class TextPaneDemo implements Application {
                     }
                     span.setFont(font);
                 } else {
-                    span.setFont(FontUtilities.ARIAL, Font.ITALIC, 12);
+                    span.setFont(FontUtilities.SANS_SERIF_FONTS, Font.ITALIC, 12);
                 }
             });
             requestTextPaneFocus();

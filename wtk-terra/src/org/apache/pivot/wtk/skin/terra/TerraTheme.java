@@ -350,7 +350,7 @@ public final class TerraTheme extends Theme {
             @SuppressWarnings("unchecked")
             Map<String, ?> properties = (Map<String, ?>) serializer.readObject(inputStream);
 
-            font = Font.decode((String) properties.get(FONT_PROPERTY));
+            font = FontUtilities.decodeFont((String) properties.get(FONT_PROPERTY));
 
             String defaultStylesName = (String) properties.get(DEFAULT_STYLES_PROPERTY);
             if (defaultStylesName != null && !defaultStylesName.isEmpty()) {

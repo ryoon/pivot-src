@@ -30,7 +30,13 @@ public final class FontUtilities {
     /** The standard name for the {@code Arial} font. */
     public static final String ARIAL = "Arial";
 
-    /** The obvious factor needed to convert a number to a percentage factor. */
+    /**
+     * A list of "standard" sans-serif fonts, useful when cross-platform
+     * support is necessary.
+     */
+    public static final String SANS_SERIF_FONTS = "Arial,Verdana,Helvetica,SansSerif";
+
+    /** The obvious factor needed to convert a number to a percentage value. */
     private static final float PERCENT_SCALE = 100.0f;
 
     /**
@@ -60,10 +66,86 @@ public final class FontUtilities {
                 throw new IllegalArgumentException(exception);
             }
         } else {
-            font = Font.decode(value);
+            font = decode(value);
         }
 
         return font;
+    }
+
+    /**
+     * Decode a font specification.
+     * <p> This is the same as {@link Font#decode(String)} except that we will allow multiple
+     * font/family names separated by commas as the <code><i>fontname</i></code> part of the
+     * spec (much the same as CSS allows).
+     * <p>The list of allowed formats is:
+     * <ul><li><i>fontname-style-pointsize</i></li>
+     * <li><i>fontname-pointsize</i></li>
+     * <li><i>fontname-style</i></li>
+     * <li><i>fontname</i></li>
+     * <li><i>fontname style pointsize</i></li>
+     * <li><i>fontname pointsize</i></li>
+     * <li><i>fontname style</i></li>
+     * <li><i>fontname</i></li>
+     * </ul>
+     * where <i>fontname</i> can be <i>fontname</i>[,<i>fontname</i>]*.
+     *
+     * @param str The font specification as above.
+     * @return    The font according to the desired specification as much as possible.
+     * @see       Font#decode(String)
+     */
+    public static Font decode(final String str) {
+        if (Utils.isNullOrEmpty(str)) {
+            return Font.decode(str);
+        }
+
+        if (str.indexOf(',') > 0) {
+            // Search from the end to find the separator (either ' ' or '-')
+            int len = str.length();
+            char sep = ' ';
+            while (--len >= 0) {
+                char ch = str.charAt(len);
+                if (ch == ' ' || ch == '-') {
+                    sep = ch;
+                    break;
+                }
+            }
+            int pos = str.indexOf(sep);
+            String name = pos < 0 ? str : str.substring(0, pos);
+            String spec = pos < 0 ? "" : str.substring(pos);
+            String[] names = name.split(",");
+            for (String nm : names) {
+                Font f = Font.decode(nm + spec);
+System.out.println("getName = " + f.getName() + ", getFontName = " + f.getFontName() + ", getFamily = " + f.getFamily());
+            }
+        } else {
+            return Font.decode(str);
+        }
+    }
+
+    /**
+     * Get a new font with the given name, style, and size.
+     * <p> The {@code name} can be a comma-separated list of names, and the first one matched will be used.
+     *
+     * @param name  The font name, which can be a list (such as <code>Arial,Verdana,SansSerif</code> with
+     *              no spaces).
+     * @param style The integer font style (as in {@link Font#PLAIN} or {@link Font#ITALIC}).
+     * @param size  The integer font size (in points).
+     * @return      The newly created font with these attributes.
+     */
+    public static Font getFont(final String name, final int style, final int size) {
+        if (Utils.isNullOrEmpty(name)) {
+            return new Font(name, style, size);
+        }
+
+        if (name.indexOf(',') > 0) {
+            String[] names = name.split(",");
+            for (String nm : names) {
+                Font f = new Font(nm, style, size);
+System.out.println("getName = " + f.getName() + ", getFontName = " + f.getFontName() + ", getFamily = " + f.getFamily());
+            }
+        } else {
+            return new Font(name, style, size);
+        }
     }
 
     /**

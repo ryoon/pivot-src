@@ -298,7 +298,9 @@ public abstract class Theme {
      * <li>{@value #BOLD_KEY} - true/false</li>
      * <li>{@value #ITALIC_KEY} - true/false</li>
      * </ul>
-     * Omitted values are taken from the theme's font.
+     * Omitted values are taken from the theme's font. The name (if given) can be
+     * a comma-separated list of names, which are searched in the order given to
+     * find the first available in the list (such as <code>Arial,Verdana,SansSerif</code>.
      * @return The new font derived from the current font.
      * @throws IllegalArgumentException if the supplied dictionary is {@code null}.
      */
@@ -307,17 +309,17 @@ public abstract class Theme {
 
         Font font = theme.getFont();
 
-        String name = font.getName();
+        String name = (font != null) ? font.getName() : Font.DIALOG;
         if (dictionary.containsKey(NAME_KEY)) {
             name = (String) dictionary.get(NAME_KEY);
         }
 
-        int size = font.getSize();
+        int size = (font != null) ? font.getSize() : 12;
         if (dictionary.containsKey(SIZE_KEY)) {
             size = FontUtilities.decodeFontSize(dictionary.get(SIZE_KEY), size);
         }
 
-        int style = font.getStyle();
+        int style = (font != null) ? font.getStyle() : Font.PLAIN;
         if (dictionary.containsKey(BOLD_KEY)) {
             boolean bold = dictionary.getBoolean(BOLD_KEY);
 
@@ -338,7 +340,7 @@ public abstract class Theme {
             }
         }
 
-        return new Font(name, style, size);
+        return FontUtilities.getFont(name, style, size);
     }
 
 }
