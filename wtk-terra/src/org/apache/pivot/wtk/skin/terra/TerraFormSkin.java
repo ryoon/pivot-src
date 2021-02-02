@@ -18,6 +18,7 @@ package org.apache.pivot.wtk.skin.terra;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -220,6 +221,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
     private boolean showFlagMessagesInline;
     private boolean leftAlignLabels;
     private String delimiter;
+    private Font labelFont;
     private Image errorIcon = null;
     private Color errorMessageColor = null;
     private Color errorMessageBackgroundColor = null;
@@ -332,6 +334,10 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
         // Get theme icons/colors
         TerraTheme theme = (TerraTheme) Theme.getTheme();
+
+        Font themeFont = theme.getFont();
+        labelFont = themeFont;
+        flagMessageLabel.getStyles().put(Style.font, themeFont);
 
         errorIcon = theme.getSmallMessageIcon(MessageType.ERROR);
         errorMessageColor = theme.getColor(4);
@@ -1067,6 +1073,61 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         setSeparatorHeadingColor(GraphicsUtilities.decodeColor(separatorHeadingColor, "separatorHeadingColor"));
     }
 
+    public final Font getLabelFont() {
+        return labelFont;
+    }
+
+    public final void setLabelFont(Font font) {
+        Utils.checkNull(font, "labelFont");
+
+        labelFont = font;
+
+        for (int sectionIndex = 0, sectionCount = sections.getLength(); sectionIndex < sectionCount; sectionIndex++) {
+            Form.Section section = sections.get(sectionIndex);
+
+            for (int fieldIndex = 0, fieldCount = section.getLength(); fieldIndex < fieldCount; fieldIndex++) {
+                Label label = labels.get(sectionIndex).get(fieldIndex);
+                label.getStyles().put(Style.font, labelFont);
+            }
+        }
+
+        invalidateComponent();
+    }
+
+    public final void setLabelFont(String fontString) {
+        Utils.checkNull(fontString, "labelFont");
+
+        setLabelFont(decodeFont(fontString));
+    }
+
+    public final void setLabelFont(Dictionary<String, ?> fontDict) {
+        Utils.checkNull(fontDict, "labelFont");
+
+        setLabelFont(Theme.deriveFont(fontDict));
+    }
+
+    public final Font getMessageFont() {
+        return flagMessageLabel.getStyles().getFont(Style.font);
+    }
+
+    public final void setMessageFont(Font font) {
+        Utils.checkNull(font, "messageFont");
+
+        flagMessageLabel.getStyles().put(Style.font, font);
+    }
+
+    public final void setMessageFont(String fontString) {
+        Utils.checkNull(fontString, "messageFont");
+
+        setMessageFont(decodeFont(fontString));
+    }
+
+    public final void setMessageFont(Dictionary<String, ?> fontDict) {
+        Utils.checkNull(fontDict, "messageFont");
+
+        setMessageFont(Theme.deriveFont(fontDict));
+    }
+
     // Form events
     @Override
     public void sectionInserted(Form form, int index) {
@@ -1165,6 +1226,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
         // Create the label
         Label label = new Label();
+        label.getStyles().put(Style.font, labelFont);
         labels.get(sectionIndex).insert(label, index);
         form.add(label);
 
