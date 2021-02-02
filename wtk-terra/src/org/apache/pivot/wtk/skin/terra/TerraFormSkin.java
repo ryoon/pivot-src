@@ -57,11 +57,14 @@ import org.apache.pivot.wtk.skin.ContainerSkin;
  * change (make this configurable via a style flag)
  */
 public class TerraFormSkin extends ContainerSkin implements FormListener, FormAttributeListener {
+    /**
+     * The decorator for the popup flags.
+     */
     private class PopupFieldIndicatorDecorator implements Decorator {
         private Graphics2D graphics = null;
 
         @Override
-        public Graphics2D prepare(Component component, Graphics2D graphicsArgument) {
+        public Graphics2D prepare(final Component component, final Graphics2D graphicsArgument) {
             this.graphics = graphicsArgument;
             return graphicsArgument;
         }
@@ -87,22 +90,25 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         }
 
         @Override
-        public Bounds getBounds(Component component) {
+        public Bounds getBounds(final Component component) {
             return new Bounds(POPUP_FIELD_INDICATOR_OFFSET, -POPUP_FIELD_INDICATOR_HEIGHT,
                 POPUP_FIELD_INDICATOR_WIDTH, POPUP_FIELD_INDICATOR_HEIGHT);
         }
 
         @Override
-        public AffineTransform getTransform(Component component) {
+        public AffineTransform getTransform(final Component component) {
             return new AffineTransform();
         }
     }
 
+    /**
+     * Decorator for the inline flags.
+     */
     private class InlineFlagMessageDecorator implements Decorator {
         private Graphics2D graphics = null;
 
         @Override
-        public Graphics2D prepare(Component component, Graphics2D graphicsArgument) {
+        public Graphics2D prepare(final Component component, final Graphics2D graphicsArgument) {
             this.graphics = graphicsArgument;
             return graphicsArgument;
         }
@@ -110,7 +116,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         @Override
         public void update() {
             if (showFlagMessagesInline) {
-                Form form = (Form) getComponent();
+                Form form = getForm();
                 Form.SectionSequence sections = form.getSections();
 
                 for (int sectionIndex = 0, sectionCount = sections.getLength(); sectionIndex < sectionCount;
@@ -195,12 +201,12 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         }
 
         @Override
-        public Bounds getBounds(Component component) {
+        public Bounds getBounds(final Component component) {
             return new Bounds(0, 0, component.getWidth(), component.getHeight());
         }
 
         @Override
-        public AffineTransform getTransform(Component component) {
+        public AffineTransform getTransform(final Component component) {
             return new AffineTransform();
         }
     }
@@ -245,7 +251,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
     private ComponentMouseListener fieldMouseListener = new ComponentMouseListener() {
         @Override
-        public void mouseOver(Component component) {
+        public void mouseOver(final Component component) {
             if (!showFlagMessagesInline) {
                 Form.Flag flag = Form.getFlag(component);
 
@@ -304,7 +310,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         }
 
         @Override
-        public void mouseOut(Component component) {
+        public void mouseOut(final Component component) {
             flagMessageWindow.close();
         }
     };
@@ -380,7 +386,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
             private ApplicationContext.ScheduledCallback scheduledHideFlagMessageCallback = null;
 
             @Override
-            public void windowOpened(Window window) {
+            public void windowOpened(final Window window) {
                 // Set a timer to hide the message
                 Runnable hideFlagMessageCallback = new Runnable() {
                     @Override
@@ -394,14 +400,18 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
             }
 
             @Override
-            public void windowClosed(Window window, Display display, Window owner) {
+            public void windowClosed(final Window window, final Display display, final Window owner) {
                 scheduledHideFlagMessageCallback.cancel();
             }
         });
     }
 
+    private Form getForm() {
+        return (Form) getComponent();
+    }
+
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         Form form = (Form) component;
@@ -417,14 +427,14 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
     }
 
     @Override
-    public int getPreferredWidth(int height) {
+    public int getPreferredWidth(final int height) {
         int preferredWidth = 0;
 
         int maximumLabelWidth = 0;
         int maximumFieldWidth = 0;
         int maximumSeparatorWidth = 0;
 
-        Form form = (Form) getComponent();
+        Form form = getForm();
         Form.SectionSequence sections = form.getSections();
 
         for (int sectionIndex = 0, sectionCount = sections.getLength(); sectionIndex < sectionCount; sectionIndex++) {
@@ -478,10 +488,10 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
     }
 
     @Override
-    public int getPreferredHeight(int width) {
+    public int getPreferredHeight(final int width) {
         int preferredHeight = 0;
 
-        Form form = (Form) getComponent();
+        Form form = getForm();
         Form.SectionSequence sections = form.getSections();
 
         // Determine the field width constraint
@@ -547,10 +557,10 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
     }
 
     @Override
-    public int getBaseline(int width, int height) {
+    public int getBaseline(final int width, final int height) {
         int baseline = -1;
 
-        Form form = (Form) getComponent();
+        Form form = getForm();
         Form.SectionSequence sections = form.getSections();
 
         // Determine the field width constraint
@@ -610,11 +620,11 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return baseline;
     }
 
-    private int getFieldWidth(int width) {
+    private int getFieldWidth(final int width) {
         int maximumLabelWidth = 0;
         int maximumFlagMessageWidth = 0;
 
-        Form form = (Form) getComponent();
+        Form form = getForm();
         Form.SectionSequence sections = form.getSections();
 
         for (int sectionIndex = 0, sectionCount = sections.getLength(); sectionIndex < sectionCount; sectionIndex++) {
@@ -663,7 +673,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
     @Override
     public void layout() {
-        Form form = (Form) getComponent();
+        Form form = getForm();
         Form.SectionSequence sections = form.getSections();
 
         // Determine the maximum label and flag message width
@@ -801,12 +811,12 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
     }
 
     @Override
-    public void paint(Graphics2D graphics) {
+    public void paint(final Graphics2D graphics) {
         super.paint(graphics);
 
         GraphicsUtilities.setAntialiasingOn(graphics);
 
-        Form form = (Form) getComponent();
+        Form form = getForm();
         Form.SectionSequence sections = form.getSections();
 
         for (int sectionIndex = 0, sectionCount = sections.getLength(); sectionIndex < sectionCount; sectionIndex++) {
@@ -834,8 +844,6 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
                                     flagIcon = questionIcon;
                                     break;
                                 case INFO:
-                                    flagIcon = infoIcon;
-                                    break;
                                 default:
                                     flagIcon = infoIcon;
                                     break;
@@ -895,30 +903,30 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return padding;
     }
 
-    public void setPadding(Insets padding) {
+    public void setPadding(final Insets padding) {
         Utils.checkNull(padding, "padding");
 
         this.padding = padding;
         invalidateComponent();
     }
 
-    public final void setPadding(Dictionary<String, ?> padding) {
+    public final void setPadding(final Dictionary<String, ?> padding) {
         setPadding(new Insets(padding));
     }
 
-    public final void setPadding(Sequence<?> padding) {
+    public final void setPadding(final Sequence<?> padding) {
         setPadding(new Insets(padding));
     }
 
-    public final void setPadding(int padding) {
+    public final void setPadding(final int padding) {
         setPadding(new Insets(padding));
     }
 
-    public final void setPadding(Number padding) {
+    public final void setPadding(final Number padding) {
         setPadding(new Insets(padding));
     }
 
-    public final void setPadding(String padding) {
+    public final void setPadding(final String padding) {
         setPadding(Insets.decode(padding));
     }
 
@@ -926,14 +934,14 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return horizontalSpacing;
     }
 
-    public void setHorizontalSpacing(int horizontalSpacing) {
+    public void setHorizontalSpacing(final int horizontalSpacing) {
         Utils.checkNonNegative(horizontalSpacing, "horizontalSpacing");
 
         this.horizontalSpacing = horizontalSpacing;
         invalidateComponent();
     }
 
-    public final void setHorizontalSpacing(Number horizontalSpacing) {
+    public final void setHorizontalSpacing(final Number horizontalSpacing) {
         Utils.checkNull(horizontalSpacing, "horizontalSpacing");
 
         setHorizontalSpacing(horizontalSpacing.intValue());
@@ -943,14 +951,14 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return verticalSpacing;
     }
 
-    public void setVerticalSpacing(int verticalSpacing) {
+    public void setVerticalSpacing(final int verticalSpacing) {
         Utils.checkNonNegative(verticalSpacing, "verticalSpacing");
 
         this.verticalSpacing = verticalSpacing;
         invalidateComponent();
     }
 
-    public final void setVerticalSpacing(Number verticalSpacing) {
+    public final void setVerticalSpacing(final Number verticalSpacing) {
         Utils.checkNull(verticalSpacing, "verticalSpacing");
 
         setVerticalSpacing(verticalSpacing.intValue());
@@ -960,14 +968,14 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return flagIconOffset;
     }
 
-    public void setFlagIconOffset(int flagIconOffset) {
+    public void setFlagIconOffset(final int flagIconOffset) {
         Utils.checkNonNegative(flagIconOffset, "flagIconOffset");
 
         this.flagIconOffset = flagIconOffset;
         invalidateComponent();
     }
 
-    public final void setFlagIconOffset(Number flagIconOffset) {
+    public final void setFlagIconOffset(final Number flagIconOffset) {
         Utils.checkNull(flagIconOffset, "flagIconOffset");
 
         setFlagIconOffset(flagIconOffset.intValue());
@@ -977,7 +985,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return fill;
     }
 
-    public void setFill(boolean fill) {
+    public void setFill(final boolean fill) {
         this.fill = fill;
         invalidateComponent();
     }
@@ -986,7 +994,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return showFlagIcons;
     }
 
-    public void setShowFlagIcons(boolean showFlagIcons) {
+    public void setShowFlagIcons(final boolean showFlagIcons) {
         this.showFlagIcons = showFlagIcons;
         invalidateComponent();
     }
@@ -995,7 +1003,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return showFlagHighlight;
     }
 
-    public void setShowFlagHighlight(boolean showFlagHighlight) {
+    public void setShowFlagHighlight(final boolean showFlagHighlight) {
         this.showFlagHighlight = showFlagHighlight;
         invalidateComponent();
     }
@@ -1004,7 +1012,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return showFlagMessagesInline;
     }
 
-    public void setShowFlagMessagesInline(boolean showFlagMessagesInline) {
+    public void setShowFlagMessagesInline(final boolean showFlagMessagesInline) {
         this.showFlagMessagesInline = showFlagMessagesInline;
         invalidateComponent();
     }
@@ -1013,7 +1021,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return leftAlignLabels;
     }
 
-    public void setLeftAlignLabels(boolean leftAlignLabels) {
+    public void setLeftAlignLabels(final boolean leftAlignLabels) {
         this.leftAlignLabels = leftAlignLabels;
         invalidateComponent();
     }
@@ -1022,12 +1030,12 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return delimiter;
     }
 
-    public void setDelimiter(String delimiter) {
+    public void setDelimiter(final String delimiter) {
         Utils.checkNull(delimiter, "delimiter");
 
         this.delimiter = delimiter;
 
-        Form form = (Form) getComponent();
+        Form form = getForm();
         Form.SectionSequence sections = form.getSections();
 
         for (int i = 0, n = sections.getLength(); i < n; i++) {
@@ -1045,7 +1053,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return separatorColor;
     }
 
-    public void setSeparatorColor(Color separatorColor) {
+    public void setSeparatorColor(final Color separatorColor) {
         this.separatorColor = separatorColor;
 
         for (Separator separator : separators) {
@@ -1053,7 +1061,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         }
     }
 
-    public final void setSeparatorColor(String separatorColor) {
+    public final void setSeparatorColor(final String separatorColor) {
         setSeparatorColor(GraphicsUtilities.decodeColor(separatorColor, "separatorColor"));
     }
 
@@ -1061,7 +1069,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return separatorHeadingColor;
     }
 
-    public void setSeparatorHeadingColor(Color separatorHeadingColor) {
+    public void setSeparatorHeadingColor(final Color separatorHeadingColor) {
         this.separatorHeadingColor = separatorHeadingColor;
 
         for (Separator separator : separators) {
@@ -1069,7 +1077,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         }
     }
 
-    public final void setSeparatorHeadingColor(String separatorHeadingColor) {
+    public final void setSeparatorHeadingColor(final String separatorHeadingColor) {
         setSeparatorHeadingColor(GraphicsUtilities.decodeColor(separatorHeadingColor, "separatorHeadingColor"));
     }
 
@@ -1077,10 +1085,13 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return labelFont;
     }
 
-    public final void setLabelFont(Font font) {
+    public final void setLabelFont(final Font font) {
         Utils.checkNull(font, "labelFont");
 
         labelFont = font;
+
+        Form form = getForm();
+        Form.SectionSequence sections = form.getSections();
 
         for (int sectionIndex = 0, sectionCount = sections.getLength(); sectionIndex < sectionCount; sectionIndex++) {
             Form.Section section = sections.get(sectionIndex);
@@ -1094,13 +1105,13 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         invalidateComponent();
     }
 
-    public final void setLabelFont(String fontString) {
+    public final void setLabelFont(final String fontString) {
         Utils.checkNull(fontString, "labelFont");
 
         setLabelFont(decodeFont(fontString));
     }
 
-    public final void setLabelFont(Dictionary<String, ?> fontDict) {
+    public final void setLabelFont(final Dictionary<String, ?> fontDict) {
         Utils.checkNull(fontDict, "labelFont");
 
         setLabelFont(Theme.deriveFont(fontDict));
@@ -1110,19 +1121,19 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         return flagMessageLabel.getStyles().getFont(Style.font);
     }
 
-    public final void setMessageFont(Font font) {
+    public final void setMessageFont(final Font font) {
         Utils.checkNull(font, "messageFont");
 
         flagMessageLabel.getStyles().put(Style.font, font);
     }
 
-    public final void setMessageFont(String fontString) {
+    public final void setMessageFont(final String fontString) {
         Utils.checkNull(fontString, "messageFont");
 
         setMessageFont(decodeFont(fontString));
     }
 
-    public final void setMessageFont(Dictionary<String, ?> fontDict) {
+    public final void setMessageFont(final Dictionary<String, ?> fontDict) {
         Utils.checkNull(fontDict, "messageFont");
 
         setMessageFont(Theme.deriveFont(fontDict));
@@ -1130,45 +1141,45 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
     // Form events
     @Override
-    public void sectionInserted(Form form, int index) {
+    public void sectionInserted(final Form form, final int index) {
         insertSection(form.getSections().get(index), index);
     }
 
     @Override
-    public void sectionsRemoved(Form form, int index, Sequence<Form.Section> removed) {
+    public void sectionsRemoved(final Form form, final int index, final Sequence<Form.Section> removed) {
         removeSections(index, removed);
     }
 
     @Override
-    public void sectionHeadingChanged(Form.Section section) {
+    public void sectionHeadingChanged(final Form.Section section) {
         updateSectionHeading(section);
     }
 
     @Override
-    public void fieldInserted(Form.Section section, int index) {
+    public void fieldInserted(final Form.Section section, final int index) {
         insertField(section, section.get(index), index);
     }
 
     @Override
-    public void fieldsRemoved(Form.Section section, int index, Sequence<Component> fields) {
-        Form form = (Form) getComponent();
+    public void fieldsRemoved(final Form.Section section, final int index, final Sequence<Component> fields) {
+        Form form = getForm();
         removeFields(form.getSections().indexOf(section), index, fields);
     }
 
     // Form attribute events
     @Override
-    public void labelChanged(Form form, Component field, String previousLabel) {
+    public void labelChanged(final Form form, final Component field, final String previousLabel) {
         Form.Section section = Form.getSection(field);
         updateFieldLabel(section, section.indexOf(field));
     }
 
     @Override
-    public void requiredChanged(Form form, Component field) {
+    public void requiredChanged(final Form form, final Component field) {
         // No-op
     }
 
     @Override
-    public void flagChanged(Form form, Component field, Form.Flag previousFlag) {
+    public void flagChanged(final Form form, final Component field, final Form.Flag previousFlag) {
         if (showFlagMessagesInline) {
             invalidateComponent();
         } else {
@@ -1176,8 +1187,8 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         }
     }
 
-    private void insertSection(Form.Section section, int index) {
-        Form form = (Form) getComponent();
+    private void insertSection(final Form.Section section, final int index) {
+        Form form = getForm();
 
         // Insert separator
         Separator separator = new Separator(section.getHeading());
@@ -1199,8 +1210,8 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         invalidateComponent();
     }
 
-    private void removeSections(int index, Sequence<Form.Section> removed) {
-        Form form = (Form) getComponent();
+    private void removeSections(final int index, final Sequence<Form.Section> removed) {
+        Form form = getForm();
         int count = removed.getLength();
 
         // Remove fields
@@ -1220,8 +1231,8 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         invalidateComponent();
     }
 
-    private void insertField(Form.Section section, Component field, int index) {
-        Form form = (Form) getComponent();
+    private void insertField(final Form.Section section, final Component field, final int index) {
+        Form form = getForm();
         int sectionIndex = form.getSections().indexOf(section);
 
         // Create the label
@@ -1239,8 +1250,8 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         invalidateComponent();
     }
 
-    private void removeFields(int sectionIndex, int index, Sequence<Component> removed) {
-        Form form = (Form) getComponent();
+    private void removeFields(final int sectionIndex, final int index, final Sequence<Component> removed) {
+        Form form = getForm();
         int count = removed.getLength();
 
         // Remove the labels
@@ -1257,16 +1268,16 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         invalidateComponent();
     }
 
-    private void updateSectionHeading(Form.Section section) {
-        Form form = (Form) getComponent();
+    private void updateSectionHeading(final Form.Section section) {
+        Form form = getForm();
         int sectionIndex = form.getSections().indexOf(section);
 
         Separator separator = separators.get(sectionIndex);
         separator.setHeading(section.getHeading());
     }
 
-    private void updateFieldLabel(Form.Section section, int fieldIndex) {
-        Form form = (Form) getComponent();
+    private void updateFieldLabel(final Form.Section section, final int fieldIndex) {
+        Form form = getForm();
         Component field = section.get(fieldIndex);
 
         int sectionIndex = form.getSections().indexOf(section);
