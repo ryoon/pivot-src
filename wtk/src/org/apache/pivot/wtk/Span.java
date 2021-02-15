@@ -26,8 +26,9 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Class representing a range of integer values. The range includes all values
- * in the interval <i>[start, end]</i>. Values may be negative, and the value of
- * {@code start} may be less than or equal to the value of {@code end}.
+ * in the interval <i>[start, end]</i> (inclusive). Values may be negative,
+ * and the value of {@code start} may be less than or equal to the value of
+ * {@code end}.
  */
 public final class Span {
     public final int start;
