@@ -23,6 +23,11 @@ import org.apache.pivot.wtk.skin.ScrollPaneSkin;
  */
 public class TerraScrollPaneSkin extends ScrollPaneSkin {
 
+    /**
+     * Specific constructor with nothing to do.
+     * <p> Default colors, etc. set by call to {@link TerraTheme#setDefaultStyles}
+     * from {@link ScrollPaneSkin#install}.
+     */
     public TerraScrollPaneSkin() {
         super();
 
