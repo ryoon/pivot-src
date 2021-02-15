@@ -1054,7 +1054,8 @@ public class TablePaneSkin extends ContainerSkin implements TablePane.Skin, Tabl
      * caller to factor such components into the column widths calculation.
      *
      * @param columnIndex The index of the column whose preferred width we're
-     * calculating
+     * calculating.
+     * @return The preferred width of the given column.
      */
     private int getPreferredColumnWidth(int columnIndex) {
         TablePane tablePane = (TablePane) getComponent();
@@ -1115,9 +1116,10 @@ public class TablePaneSkin extends ContainerSkin implements TablePane.Skin, Tabl
      * heights calculation.
      *
      * @param rowIndex The index of the row whose preferred height we're
-     * calculating
+     * calculating.
      * @param columnWidthsArgument An array of column width values corresponding
-     * to the columns of the table pane
+     * to the columns of the table pane.
+     * @return The preferred height of the row.
      */
     private int getPreferredRowHeight(int rowIndex, int[] columnWidthsArgument) {
         Utils.checkNull(columnWidthsArgument, "columnWidths");
