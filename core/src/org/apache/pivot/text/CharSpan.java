@@ -23,104 +23,138 @@ import org.apache.pivot.serialization.SerializationException;
 import org.apache.pivot.util.Utils;
 
 /**
- * Class representing a span of characters. The range includes all values
- * in the interval <i><code>[start, start+length-1]</code></i> inclusive.  This is the paradigm
- * used in a lot of places (notably the text controls) to indicate a selection.
+ * Immutable class representing a span of characters. The range includes all values
+ * in the interval <i><code>[start, start+length-1]</code></i> inclusive.  This is
+ * the paradigm used in a lot of places (notably the text controls) to indicate a selection.
  * <p> A zero-length span indicates a single caret position at the given start.
  * <p> Negative lengths are not supported and will throw exceptions, as will
  * negative start positions.
  */
 public final class CharSpan {
+    /** The starting location of this span (zero-based). */
     public final int start;
+    /** The length of this span (non-negative). */
     public final int length;
 
+    /** The dictionary key used to retrieve the start location. */
     public static final String START_KEY = "start";
+    /** The dictionary key used to retrieve the length. */
     public static final String LENGTH_KEY = "length";
+
+    /**
+     * A span of length zero, starting at position zero.
+     */
+    public static final CharSpan ZERO = new CharSpan();
+
+
+    /**
+     * Construct a default span of length zero at location zero.
+     */
+    public CharSpan() {
+        this(0);
+    }
 
     /**
      * Construct a new char span of length zero at the given location.
      *
-     * @param start The start of this char span.
+     * @param startValue The start of this char span.
+     * @throws IllegalArgumentException if the value is negative.
      */
-    public CharSpan(final int start) {
-        Utils.checkNonNegative(start, "start");
-        this.start = start;
-        this.length = 0;
+    public CharSpan(final int startValue) {
+        this(startValue, 0);
     }
 
     /**
      * Construct a new char span with the given values.
-     * @param start The start of this char span.
-     * @param length The length of this char span.
+     *
+     * @param startValue The start of this char span.
+     * @param lengthValue The length of this char span.
+     * @throws IllegalArgumentException if either value is negative.
      */
-    public CharSpan(final int start, final int length) {
-        Utils.checkNonNegative(start, "start");
-        Utils.checkNonNegative(length, "length");
-        this.start = start;
-        this.length = length;
+    public CharSpan(final int startValue, final int lengthValue) {
+        Utils.checkNonNegative(startValue, "start");
+        Utils.checkNonNegative(lengthValue, "length");
+
+        start = startValue;
+        length = lengthValue;
     }
 
     /**
      * Construct a new char span from another one (a "copy constructor").
      *
-     * @param charSpan An existing char span (which must not be {@code null}).
+     * @param existingCharSpan An existing char span (which must not be {@code null}).
      * @throws IllegalArgumentException if the given char span is {@code null}.
      */
-    public CharSpan(final CharSpan charSpan) {
-        Utils.checkNull(charSpan, "charSpan");
+    public CharSpan(final CharSpan existingCharSpan) {
+        Utils.checkNull(existingCharSpan, "existingCharSpan");
 
-        this.start = charSpan.start;
-        this.length = charSpan.length;
+        start = existingCharSpan.start;
+        length = existingCharSpan.length;
     }
 
     /**
-     * Construct a new char span from the given dictionary which must
-     * contain the {@link #START_KEY} and {@link #LENGTH_KEY} keys.
+     * Construct a new char span from the given dictionary which must contain
+     * the {@link #START_KEY} and can also contain the {@link #LENGTH_KEY} key.
      *
-     * @param charSpan A dictionary containing start and end values.
-     * @throws IllegalArgumentException if the given char span is {@code null}
-     * or if the dictionary does not contain the start and length keys.
+     * @param charSpanDictionary A dictionary containing start and length values.
+     * @throws IllegalArgumentException if the given char span is {@code null},
+     * if the dictionary does not contain at least the start key, or if either of
+     * the dictionary values is negative.
      */
-    public CharSpan(final Dictionary<String, ?> charSpan) {
-        Utils.checkNull(charSpan, "charSpan");
+    public CharSpan(final Dictionary<String, ?> charSpanDictionary) {
+        Utils.checkNull(charSpanDictionary, "charSpanDictionary");
 
-        if (!charSpan.containsKey(START_KEY)) {
+        int startValue;
+        int lengthValue = 0;
+
+        if (charSpanDictionary.containsKey(START_KEY)) {
+            startValue = charSpanDictionary.getInt(START_KEY);
+            Utils.checkNonNegative(startValue, "start");
+        } else {
             throw new IllegalArgumentException(START_KEY + " is required.");
         }
 
-        if (!charSpan.containsKey(LENGTH_KEY)) {
-            throw new IllegalArgumentException(LENGTH_KEY + " is required.");
+        if (charSpanDictionary.containsKey(LENGTH_KEY)) {
+            lengthValue = charSpanDictionary.getInt(LENGTH_KEY);
+            Utils.checkNonNegative(lengthValue, "length");
         }
 
-        int start = charSpan.getInt(START_KEY);
-        int length = charSpan.getInt(LENGTH_KEY);
-
-        Utils.checkNonNegative(start, "start");
-        Utils.checkNonNegative(length, "length");
-
-        this.start = start;
-        this.length = length;
+        start = startValue;
+        length = lengthValue;
     }
 
     /**
      * Construct a new char span from the given sequence with two
      * numeric values corresponding to the start and length values
-     * respectively.
+     * respectively, or one numeric value corresponding to the start
+     * value (length 0).
      *
-     * @param charSpan A sequence containing the start and length values.
-     * @throws IllegalArgumentException if the given char span is {@code null}.
+     * @param charSpanSequence A sequence containing the start and length values.
+     * @throws IllegalArgumentException if the given char span is {@code null}, or
+     * zero length, or length is greater than two.
      */
-    public CharSpan(final Sequence<?> charSpan) {
-        Utils.checkNull(charSpan, "charSpan");
+    public CharSpan(final Sequence<?> charSpanSequence) {
+        Utils.checkNull(charSpanSequence, "charSpanSequence");
 
-        int start = ((Number) charSpan.get(0)).intValue();
-        int length = ((Number) charSpan.get(1)).intValue();
+        int startValue;
+        int lengthValue = 0;
+        int seqLength = charSpanSequence.getLength();
 
-        Utils.checkNonNegative(start, "start");
-        Utils.checkNonNegative(length, "length");
+        if (seqLength < 1 || seqLength > 2) {
+            throw new IllegalArgumentException("CharSpan needs one or two values in the sequence to construct.");
+        }
 
-        this.start = start;
-        this.length = length;
+        startValue = ((Number) charSpanSequence.get(0)).intValue();
+        Utils.checkNonNegative(startValue, "start");
+
+        if (seqLength == 2) {
+            lengthValue = ((Number) charSpanSequence.get(1)).intValue();
+            Utils.checkNonNegative(lengthValue, "length");
+        }
+
+
+        start = startValue;
+        length = lengthValue;
     }
 
     /**
@@ -143,7 +177,7 @@ public final class CharSpan {
      * @throws IllegalArgumentException if the updated start value goes negative.
      */
     public CharSpan offset(final int offset) {
-        return new CharSpan(this.start + offset, this.length);
+        return (offset == 0) ? this : new CharSpan(this.start + offset, this.length);
     }
 
     /**
@@ -156,12 +190,16 @@ public final class CharSpan {
      * @throws IllegalArgumentException if the updated length value goes negative.
      */
     public CharSpan lengthen(final int offset) {
-        return new CharSpan(this.start, this.length + offset);
+        return (offset == 0) ? this : new CharSpan(this.start, this.length + offset);
     }
 
     @Override
     public boolean equals(final Object o) {
         boolean equal = false;
+
+        if (o == this) {
+            return true;
+        }
 
         if (o instanceof CharSpan) {
             CharSpan span = (CharSpan) o;
@@ -196,10 +234,11 @@ public final class CharSpan {
      *
      * @param value The string value to decode into a new char span.
      * @return The decoded char span.
-     * @throws IllegalArgumentException if the value is {@code null} or
+     * @throws IllegalArgumentException if the value is {@code null} or empty,
      * if the string starts with <code>"{"</code> but it cannot be parsed as
-     * a JSON map, or if it starts with <code>"["</code> but cannot be parsed
-     * as a JSON list.
+     * a JSON map, if it starts with <code>"["</code> but cannot be parsed
+     * as a JSON list, or cannot be recognized as a simple list of one or
+     * two integers.
      */
     public static CharSpan decode(final String value) {
         Utils.checkNullOrEmpty(value, "value");
