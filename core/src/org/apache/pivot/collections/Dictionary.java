@@ -33,7 +33,7 @@ public interface Dictionary<K, V> {
      * @param <K> Type of the key part of the pair.
      * @param <V> Type of the value in the pair.
      */
-    public static final class Pair<K, V> implements Serializable {
+    final class Pair<K, V> implements Serializable {
         private static final long serialVersionUID = 5010958035775950649L;
 
         /** The &quot;key&quot; of this key-value pair. */
@@ -45,15 +45,15 @@ public interface Dictionary<K, V> {
          * The only constructor for this class that takes both the
          * key and the value to be stored, ensuring they are both set
          * all the time.
-         * @param key The &quot;key&quot; to be stored.
-         * @param value The &quot;value&quot; to be associated with that key.
-         * @throws IllegalArgumentException if the key value is {@code null}.
+         * @param newKey The &quot;key&quot; to be stored.
+         * @param newValue The &quot;value&quot; to be associated with that key.
+         * @throws IllegalArgumentException if the key is {@code null}.
          */
-        public Pair(final K key, final V value) {
-            Utils.checkNull(key, "key");
+        public Pair(final K newKey, final V newValue) {
+            Utils.checkNull(newKey, "key");
 
-            this.key = key;
-            this.value = value;
+            key = newKey;
+            value = newValue;
         }
 
         @Override
@@ -205,7 +205,12 @@ public interface Dictionary<K, V> {
      */
     default int getInt(K key, int defaultValue) {
         if (containsKey(key)) {
-            return ((Number) get(key)).intValue();
+            Object value = get(key);
+            if (value instanceof Number) {
+                return ((Number) value).intValue();
+            } else if (value instanceof String) {
+                return Integer.parseInt((String) value);
+            }
         }
         return defaultValue;
     }
@@ -233,7 +238,12 @@ public interface Dictionary<K, V> {
      */
     default boolean getBoolean(K key, boolean defaultValue) {
         if (containsKey(key)) {
-            return ((Boolean) get(key)).booleanValue();
+            Object value = get(key);
+            if (value instanceof Boolean) {
+                return ((Boolean) value).booleanValue();
+            } else if (value instanceof String) {
+                return Boolean.valueOf((String) value);
+            }
         }
         return defaultValue;
     }
