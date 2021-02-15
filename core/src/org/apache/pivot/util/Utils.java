@@ -45,6 +45,24 @@ public final class Utils {
     }
 
     /**
+     * Does an "equals" check, taking care that null object references are handled
+     * appropriately.
+     *
+     * @param obj1 The first object to compare (could be {@code null}).
+     * @param obj2 The second object to compare (could be {@code null}).
+     * @return     {@code true} if the two objects are non-null and equal (according
+     *             to their {@code Object#equals} method), or are both {@code null}.
+     */
+    public static boolean equals(final Object obj1, final Object obj2) {
+        if (obj1 != null && obj2 != null) {
+            return obj1.equals(obj2);
+        } else if (obj1 == null && obj2 == null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Check if the input argument is {@code null} and throw an
      * {@link IllegalArgumentException} if so, with an optional
      * message derived from the given string.
@@ -403,5 +421,34 @@ public final class Utils {
                 + " out of bounds [" + start + "," + end + "].");
         }
     }
+
+    /**
+     * Check the count of new or additional characters exceeding the specified maximum.
+     *
+     * @param currentCount For a "new" text operation (from {@code setText} this should be &lt; zero
+     * (that is, a different message is thrown), otherwise the current count for an {@code insertText}
+     * operation.
+     * @param newCount If {@code currentCount} is negative, this is the complete count of text that
+     * will be set, otherwise this is the incremental new amount of text to add to the current.
+     * @param maximum The current maximum length.
+     * @throws IllegalArgumentException if the count exceeds the maximum.
+     */
+    public static void checkTextMaximumLength(final int currentCount, final int newCount, final int maximum) {
+        if (currentCount < 0) {
+            if (newCount > maximum) {
+                throw new IllegalArgumentException(String.format(
+                    "New text length of %1$,d exceeds the maximum length of %2$,d.",
+                        newCount, maximum));
+            }
+        } else {
+            if (currentCount + newCount > maximum) {
+                throw new IllegalArgumentException(String.format(
+                    "Insertion of %1$,d characters to existing length of %2$,d would "
+                  + "exceed the maximum length of %3$,d.",
+                        newCount, currentCount, maximum));
+            }
+        }
+    }
+
 
 }
