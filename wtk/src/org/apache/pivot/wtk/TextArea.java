@@ -85,7 +85,7 @@ public class TextArea extends Component {
             int count = text.length();
 
             if (textArea != null) {
-                textArea.checkMaximumLength(count, false);
+                Utils.checkTextMaximumLength(textArea.characterCount, count, textArea.maximumLength);
             }
 
             characters.insert(index, text);
@@ -332,7 +332,8 @@ public class TextArea extends Component {
                 characterCountLocal++;
             }
 
-            checkMaximumLength(characterCountLocal, false);
+            Utils.checkTextMaximumLength(TextArea.this.characterCount, characterCountLocal,
+                    TextArea.this.maximumLength);
 
             // Set the paragraph offset
             if (index == paragraphs.getLength()) {
@@ -599,39 +600,13 @@ public class TextArea extends Component {
     }
 
     /**
-     * Check the count of new or additional characters exceeding the specified
-     * maximum.
-     * @param count if {@code overwrite == true} specifies a new count (from {@code setText()})
-     * that will replace the existing text, or if {@code overwrite == false} from an insert that
-     * will add to the existing count.
-     * @throws IllegalArgumentException if the count exceeds the maximum.
-     */
-    private void checkMaximumLength(int count, boolean overwrite) {
-        if (overwrite) {
-            if (count > maximumLength) {
-                throw new IllegalArgumentException(String.format(
-                    "New text length of %1$,d exceeds the maximum length of %2$,d.",
-                        count, maximumLength));
-            }
-        } else {
-            if (characterCount + count > maximumLength) {
-                throw new IllegalArgumentException(String.format(
-                    "Insertion of %1$,d characters to existing length of %2$,d would "
-                  + "exceed the maximum length of %3$,d.",
-                        count, characterCount, maximumLength));
-            }
-        }
-    }
-
-    /**
      * Sets the text content of the text area.
      *
      * @param text The new text for the control (cannot be {@code null}).
      */
     public void setText(String text) {
         Utils.checkNull(text, "Text");
-
-        checkMaximumLength(text.length(), true);
+        Utils.checkTextMaximumLength(-1, text.length(), maximumLength);
 
         try {
             if (!text.equals(this.getText())) {
@@ -675,7 +650,7 @@ public class TextArea extends Component {
 
         int c = textReader.read();
         while (c != -1) {
-            checkMaximumLength(++characterCountLocal, true);
+            Utils.checkTextMaximumLength(characterCount, ++characterCountLocal, maximumLength);
 
             if (c == '\n') {
                 paragraphsLocal.add(paragraph);
@@ -684,7 +659,7 @@ public class TextArea extends Component {
             } else if (c == '\t' && expandTabs) {
                 int spaces = tabWidth - (tabPosition % tabWidth);
                 for (int i = 0; i < spaces; i++) {
-                    checkMaximumLength(++characterCountLocal, true);
+                    Utils.checkTextMaximumLength(characterCount, ++characterCountLocal, maximumLength);
                     paragraph.append(' ');
                 }
                 tabPosition += spaces;
@@ -715,6 +690,7 @@ public class TextArea extends Component {
 
     private void insertText(CharSequence text, int index, boolean addToEditHistory) {
         Utils.checkNull(text, "Text to insert");
+        Utils.checkTextMaximumLength(characterCount, text.length(), maximumLength);
 
         indexBoundsCheck("index", index, 0, characterCount);
 
