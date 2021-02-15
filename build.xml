@@ -53,6 +53,9 @@ limitations under the License.
     <condition property="no.browser.support" value="true" else="false">
         <javaversion atleast="14"/>
     </condition>
+    <condition property="doc.access" value="private" else="protected">
+        <istrue value="${compiler.debug}"/>
+    </condition>
 
     <!-- Classpath-related properties -->
     <property environment="env"/>
@@ -606,6 +609,7 @@ limitations under the License.
         <javadoc packagenames="org.apache.pivot.*" destdir="${folder.doc}"
             author="true" version="true" use="true"
             package="true"
+            access="${doc.access}"
             classpath="${java.class.path}">
             <classpath>
                 <path refid="classpath.general"/>
