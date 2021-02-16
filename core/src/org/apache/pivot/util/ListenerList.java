@@ -34,13 +34,13 @@ public abstract class ListenerList<T> implements Iterable<T> {
 
     /**
      * Iterator through the current array of elements.
-     *
-     * @param <T> The listener type to iterate over.
      */
     private class NodeIterator implements Iterator<T> {
+        /** The current position in the list for the iteration. */
         private int index;
 
-        public NodeIterator() {
+        /** Construct and start iteration at the beginning. */
+        NodeIterator() {
             this.index = 0;
         }
 
@@ -65,14 +65,17 @@ public abstract class ListenerList<T> implements Iterable<T> {
         }
     }
 
+    /** We don't expect many listeners (1 or 2 typically), so start off with this size. */
     private static final int DEFAULT_SIZE = 5;
 
-    // The current array of items (some of which are null)
-    // All non-null objects are at the beginning of the array
-    // and the array is reorganized on "remove"
-    @SuppressWarnings({ "unchecked" })
+    /**
+     * The current array of items (some of which are null).
+     * <p> All non-null objects are at the beginning of the array
+     * and the array is reorganized on "remove".
+     */
+    @SuppressWarnings("unchecked")
     private T[] list = (T[]) new Object[DEFAULT_SIZE];
-    // The current length of the active list
+    /** The current length of the active list. */
     private int last = 0;
 
     /**
@@ -110,7 +113,7 @@ public abstract class ListenerList<T> implements Iterable<T> {
 
         // If no slot is available, increase the size of the array
         if (last >= list.length) {
-            @SuppressWarnings({ "unchecked" })
+            @SuppressWarnings("unchecked")
             T[] newList = (T[]) new Object[list.length + DEFAULT_SIZE];
             if (index > 0) {
                 System.arraycopy(list, 0, newList, 0, index);
@@ -151,7 +154,14 @@ public abstract class ListenerList<T> implements Iterable<T> {
         list[--last] = null;
     }
 
-    private int indexOf(T listener) {
+    /**
+     * Search for the given listener in the list.
+     *
+     * @param listener The listener to find.
+     * @return The index {@code >= 0} of the listener if found, or {@code -1}
+     * if not found.
+     */
+    private int indexOf(final T listener) {
         Utils.checkNull(listener, "listener");
 
         for (int i = 0; i < last; i++) {
@@ -205,12 +215,12 @@ public abstract class ListenerList<T> implements Iterable<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public final Iterator<T> iterator() {
         return new NodeIterator();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         return StringUtils.append(sb, this).toString();
     }
