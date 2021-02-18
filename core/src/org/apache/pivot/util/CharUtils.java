@@ -41,11 +41,12 @@ public final class CharUtils {
      * cannot be made (which could be because the input sequence is {@code null}).
      */
     public static CharSpan selectWord(final CharSequence sequence, final int start) {
-        if (sequence == null) {
+        int length = sequence.length();
+
+        if (sequence == null || length == 0) {
             return null;
         }
 
-        int length = sequence.length();
         int adjustedStart = start;
         char ch;
 
