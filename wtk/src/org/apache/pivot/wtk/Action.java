@@ -142,6 +142,25 @@ public abstract class Action {
      */
     public abstract void perform(Component source);
 
+    /**
+     * Perform the named action.
+     * <p> This is the equivalent of
+     * <code>Action.getNamedActions().get(<i>actionName</i>).perform(<i>comp</i>)</code>.
+     *
+     * @param actionName One of the previously defined action names.
+     * @param comp       The component initiating the action.
+     * @throws IllegalArgumentException if the actionName is {@code null} or if there is
+     * no action with that name.
+     */
+    public static void performAction(final String actionName, final Component comp) {
+        Utils.checkNull(actionName, "action name");
+
+        Action action = namedActionDictionary.get(actionName);
+        Utils.checkNull(action, "action");
+
+        action.perform(comp);
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
