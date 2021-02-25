@@ -113,7 +113,8 @@ public abstract class Component implements ConstrainedVisual {
                 previousValue = styles.put(key, value);
                 componentStyleListeners.styleUpdated(Component.this, key, previousValue);
             } catch (PropertyNotFoundException exception) {
-                System.err.println("\"" + key + "\" is not a valid style for " + Component.this);
+                System.err.println("\"" + key + "\" is not a valid style for "
+                    + Component.this.getClass().getName());
             }
 
             return previousValue;
