@@ -42,6 +42,7 @@ public class BoundsTest {
 
         Dimensions dim0 = new Dimensions(0, 0);
         Dimensions dim1 = new Dimensions(1, 1);
+        Dimensions dim5 = new Dimensions(5);
         Point p10 = new Point(10, 10);
         Bounds bnd10 = new Bounds(p10, dim1);
         Bounds bnd10a = new Bounds(dim1);
@@ -62,6 +63,9 @@ public class BoundsTest {
         Bounds bnd6 = Bounds.decode("2, 3;  4,  5");
         Bounds bnd6a = new Bounds(2, 3, 4, 5);
 
+        Bounds bnd7 = bnd6a.enlarge(2);
+        Bounds bnd7a = bnd6a.enlarge(1, 3);
+
         assertEquals(Bounds.EMPTY, bnd0);
         assertNotEquals(bndMinus1, bnd0);
         assertNotEquals(bnd0, bnd1);
@@ -72,15 +76,15 @@ public class BoundsTest {
         assertEquals(bnd2, bnd3);
         assertEquals(bnd3, bnd3a);
 
-        assertEquals(bndMinus1.getSize(), dim0);
-        assertEquals(bnd0.getSize(), dim0);
-        assertEquals(bnd1.getSize(), dim1);
+        assertEquals(dim0, bndMinus1.getSize());
+        assertEquals(dim0, bnd0.getSize());
+        assertEquals(dim1, bnd1.getSize());
 
         assertFalse(bnd1.contains(bnd0));
 
         assertFalse(bndMinus1.intersects(bnd0));
         assertFalse(bnd0.intersects(bnd1));
-        assertEquals(bnd0.intersect(bnd1), new Bounds(1, 1, -1, -1));
+        assertEquals(new Bounds(1, 1, -1, -1), bnd0.intersect(bnd1));
         assertTrue(bnd5a.intersects(bnd5b));
         assertTrue(bnd0.union(bnd1).equals(new Bounds(0, 0, 2, 2)));
 
@@ -90,7 +94,10 @@ public class BoundsTest {
         assertEquals(bndN, bndAll);
 
         assertEquals(bnd6, bnd6a);
-        assertEquals(bnd6a.toString(), "Bounds [2,3;4x5]");
+        assertEquals("Bounds [2,3;4x5]", bnd6a.toString());
+
+        assertEquals("Bounds [0,1;8x9]", bnd7.toString());
+        assertEquals("Bounds [1,0;6x11]", bnd7a.toString());
     }
 
 }

@@ -311,6 +311,31 @@ public final class Bounds implements Serializable {
     }
 
     /**
+     * Create a new bounds object that is both offset and expanded by a single
+     * amount in both directions.  The X- and Y-offset values are moved up/left
+     * and the width and height are expanded by twice the amount. The center point
+     * of the bounds remains the same.
+     * <p> This has the same effect as {@code translate(amt, amt).expand(2*amt, 2*amt)}.
+     * @param amt The amount to expand both the X- and Y- directions.
+     * @return A new enlarged bounds.
+     */
+    public Bounds enlarge(final int amt) {
+        return new Bounds(x - amt, y - amt, width + (2 * amt), height + (2 * amt));
+    }
+
+    /**
+     * Create a new bounds object that is enlarged by different amounts in the
+     * X- and Y-directions. The center point of the bounds remains the same.
+     * <p> This has the same effect as {@code translate(dx, dy).expand(2*dx, 2*dy)}.
+     * @param dx The amount to enlarge in the X-direction.
+     * @param dy The amount to enlarge in the Y-direction.
+     * @return A new enlarged bounds.
+     */
+    public Bounds enlarge(final int dx, final int dy) {
+        return new Bounds(x - dx, y - dy, width + (2 * dx), height + (2 * dy));
+    }
+
+    /**
      * @return Whether this bounded area contains the given point.
      * @param point The other point to test (must not be {@code null}).
      * @throws IllegalArgumentException if the point argument is {@code null}.
