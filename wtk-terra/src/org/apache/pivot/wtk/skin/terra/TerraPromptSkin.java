@@ -16,7 +16,11 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import org.apache.pivot.beans.BXMLSerializer;
+import org.apache.pivot.collections.Dictionary;
 import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.util.Vote;
 import org.apache.pivot.wtk.BoxPane;
@@ -30,6 +34,8 @@ import org.apache.pivot.wtk.Prompt;
 import org.apache.pivot.wtk.PromptListener;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.Sheet;
+import org.apache.pivot.wtk.Style;
+import org.apache.pivot.wtk.TextDecoration;
 import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.Window;
 
@@ -37,16 +43,34 @@ import org.apache.pivot.wtk.Window;
  * Prompt skin.
  */
 public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
+    /**
+     * The image view that contains the prompt icon.
+     */
     private ImageView typeImageView = null;
+    /**
+     * Label containing the message text.
+     */
     private Label messageLabel = null;
+    /**
+     * Box pane that contains the prompt body.
+     */
     private BoxPane messageBoxPane = null;
+    /**
+     * Box pane containing the option buttons.
+     */
     private BoxPane optionButtonBoxPane = null;
+    /**
+     * The command button style for the option buttons.
+     */
     private static final String BUTTON_STYLE_NAME =
             TerraPromptSkin.class.getPackage().getName() + "." + TerraTheme.COMMAND_BUTTON_STYLE;
 
+    /**
+     * Button press listener to select the prompt response and close the prompt.
+     */
     private ButtonPressListener optionButtonPressListener = new ButtonPressListener() {
         @Override
-        public void buttonPressed(Button button) {
+        public void buttonPressed(final Button button) {
             int optionIndex = optionButtonBoxPane.indexOf(button);
 
             if (optionIndex >= 0) {
@@ -57,12 +81,15 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
         }
     };
 
+    /**
+     * Default constructor.
+     */
     public TerraPromptSkin() {
         setResizable(true);
     }
 
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         Prompt prompt = (Prompt) component;
@@ -103,7 +130,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
     }
 
     @Override
-    public void windowOpened(Window window) {
+    public void windowOpened(final Window window) {
         super.windowOpened(window);
 
         Prompt prompt = (Prompt) window;
@@ -117,19 +144,19 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
     }
 
     @Override
-    public void messageTypeChanged(Prompt prompt, MessageType previousMessageType) {
+    public void messageTypeChanged(final Prompt prompt, final MessageType previousMessageType) {
         TerraTheme theme = (TerraTheme) Theme.getTheme();
         typeImageView.setImage(theme.getMessageIcon(prompt.getMessageType()));
     }
 
     @Override
-    public void messageChanged(Prompt prompt, String previousMessage) {
+    public void messageChanged(final Prompt prompt, final String previousMessage) {
         String message = prompt.getMessage();
         messageLabel.setText(message != null ? message : "");
     }
 
     @Override
-    public void bodyChanged(Prompt prompt, Component previousBody) {
+    public void bodyChanged(final Prompt prompt, final Component previousBody) {
         if (previousBody != null) {
             messageBoxPane.remove(previousBody);
         }
@@ -141,7 +168,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
     }
 
     @Override
-    public void optionInserted(Prompt prompt, int index) {
+    public void optionInserted(final Prompt prompt, final int index) {
         Object option = prompt.getOptions().get(index);
 
         PushButton optionButton = new PushButton(option);
@@ -152,12 +179,12 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
     }
 
     @Override
-    public void optionsRemoved(Prompt prompt, int index, Sequence<?> removed) {
+    public void optionsRemoved(final Prompt prompt, final int index, final Sequence<?> removed) {
         optionButtonBoxPane.remove(index, removed.getLength());
     }
 
     @Override
-    public void selectedOptionChanged(Prompt prompt, int previousSelectedOption) {
+    public void selectedOptionChanged(final Prompt prompt, final int previousSelectedOption) {
         int index = prompt.getSelectedOptionIndex();
 
         if (prompt.isOpen() && index >= 0) {
@@ -166,7 +193,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
     }
 
     @Override
-    public Vote previewWindowOpen(Window window) {
+    public Vote previewWindowOpen(final Window window) {
         Vote vote = super.previewWindowOpen(window);
         if (vote == Vote.APPROVE) {
             // If this is the second or subsequent open, then the
@@ -177,9 +204,110 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
     }
 
     @Override
-    public void sheetClosed(Sheet sheet) {
+    public void sheetClosed(final Sheet sheet) {
         super.sheetClosed(sheet);
         typeImageView.clearImage();
+    }
+
+    /**
+     * @return The font used to render the message label's text.
+     */
+    public final Font getMessageFont() {
+        return messageLabel.getStyles().getFont(Style.font);
+    }
+
+    /**
+     * Sets the font used to render the message label's text.
+     *
+     * @param font The new font used to render the message label text.
+     */
+    public final void setMessageFont(final Font font) {
+        messageLabel.getStyles().put(Style.font, font);
+    }
+
+    /**
+     * Sets the font used in rendering the message label's text.
+     *
+     * @param font A font specification.
+     */
+    public final void setMessageFont(final String font) {
+        messageLabel.getStyles().put(Style.font, font);
+    }
+
+    /**
+     * Sets the font used in rendering the message label's text.
+     *
+     * @param font A dictionary describing a font.
+     */
+    public final void setMessageFont(final Dictionary<String, ?> font) {
+        messageLabel.getStyles().put(Style.font, font);
+    }
+
+    /**
+     * @return The foreground color of the text of the message label.
+     */
+    public final Color getMessageColor() {
+        return messageLabel.getStyles().getColor(Style.color);
+    }
+
+    /**
+     * Sets the foreground color of the text of the message label.
+     *
+     * @param color The new foreground color for the label text.
+     */
+    public final void setMessageColor(final Color color) {
+        messageLabel.getStyles().put(Style.color, color);
+    }
+
+    /**
+     * Sets the foreground color of the text of the message label.
+     *
+     * @param color Any of the recognized color values.
+     */
+    public final void setMessageColor(final String color) {
+        messageLabel.getStyles().put(Style.color, color);
+    }
+
+    /**
+     * @return The background color of the message label.
+     */
+    public final Color getMessageBackgroundColor() {
+        return messageLabel.getStyles().getColor(Style.backgroundColor);
+    }
+
+    /**
+     * Sets the background color of the message label.
+     *
+     * @param backgroundColor The new background color for the message label
+     * (can be {@code null} to let the parent background show through).
+     */
+    public final void setMessageBackgroundColor(final Color backgroundColor) {
+        messageLabel.getStyles().put(Style.backgroundColor, backgroundColor);
+    }
+
+    /**
+     * Sets the background color of the message label.
+     *
+     * @param backgroundColor Any of the recognized color values.
+     */
+    public final void setMessageBackgroundColor(final String backgroundColor) {
+        messageLabel.getStyles().put(Style.backgroundColor, backgroundColor);
+    }
+
+    /**
+     * @return The text decoration of the message label.
+     */
+    public final TextDecoration getMessageTextDecoration() {
+        return (TextDecoration) messageLabel.getStyles().get(Style.textDecoration);
+    }
+
+    /**
+     * Set the text decoration for the message label.
+     *
+     * @param textDecoration The text decoration for the message label.
+     */
+    public final void setMessageTextDecoration(final TextDecoration textDecoration) {
+        messageLabel.getStyles().put(Style.textDecoration, textDecoration);
     }
 
 }
