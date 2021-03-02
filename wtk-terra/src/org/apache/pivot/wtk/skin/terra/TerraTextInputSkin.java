@@ -75,7 +75,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     TextInputContentListener, TextInputSelectionListener {
 
     private Rectangle getCaretRectangle(final TextHitInfo textCaret) {
-        TextInput textInput = (TextInput) getComponent();
+        TextInput textInput = getTextInput();
         AttributedStringCharacterIterator composedText = textInput.getComposedText();
         Bounds selectionStartBounds = getCharacterBounds(textInput.getSelectionStart());
         return GraphicsUtilities.getCaretRectangle(textCaret, composedText, selectionStartBounds.x, padding.top + 1);
@@ -90,20 +90,18 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         @Override
         public AttributedCharacterIterator getCommittedText(final int beginIndex, final int endIndex,
             final AttributedCharacterIterator.Attribute[] attributes) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
             return new AttributedStringCharacterIterator(textInput.getText(), beginIndex, endIndex, attributes);
         }
 
         @Override
         public int getCommittedTextLength() {
-            TextInput textInput = (TextInput) getComponent();
-            return textInput.getCharacterCount();
+            return getTextInput().getCharacterCount();
         }
 
         @Override
         public int getInsertPositionOffset() {
-            TextInput textInput = (TextInput) getComponent();
-            return textInput.getSelectionStart();
+            return getTextInput().getSelectionStart();
         }
 
         @Override
@@ -113,18 +111,17 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
         @Override
         public AttributedCharacterIterator getSelectedText(final AttributedCharacterIterator.Attribute[] attributes) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
             return new AttributedStringCharacterIterator(textInput.getSelectedText(), attributes);
         }
 
         private Rectangle offsetToScreen(final Rectangle clientRectangle) {
-            TextInput textInput = (TextInput) getComponent();
-            return textInput.offsetToScreen(clientRectangle);
+            return getTextInput().offsetToScreen(clientRectangle);
         }
 
         @Override
         public Rectangle getTextLocation(final TextHitInfo offset) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
             AttributedStringCharacterIterator composedText = textInput.getComposedText();
 
             if (composedText == null) {
@@ -161,7 +158,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
         @Override
         public void inputMethodTextChanged(final InputMethodEvent event) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
             AttributedCharacterIterator iter = event.getText();
             AttributedStringCharacterIterator composedIter = null;
 
@@ -191,13 +188,13 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
         @Override
         public void caretPositionChanged(final InputMethodEvent event) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
             // TODO:  so far I have not seen this called, so ???
         }
 
     }
 
-    private TextLayout textLayout = null;
+    private TextLayout currentTextLayout = null;
 
     private int anchor = -1;
     private SelectDirection selectDirection = null;
@@ -218,13 +215,12 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         caretOn = !caretOn;
 
         if (caret != null) {
-            TextInput textInput = (TextInput) getComponent();
-            textInput.repaint(caret.x, caret.y, caret.width, caret.height);
+            getTextInput().repaint(caret.x, caret.y, caret.width, caret.height);
         }
     };
 
     private Runnable scrollSelectionCallback = () -> {
-        TextInput textInput = (TextInput) getComponent();
+        TextInput textInput = getTextInput();
         int selectionStart = textInput.getSelectionStart();
         int selectionLength = textInput.getSelectionLength();
         int selectionEnd = selectionStart + selectionLength - 1;
@@ -311,6 +307,10 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         invalidBevelColor = TerraTheme.darken(invalidBackgroundColor);
     }
 
+    private TextInput getTextInput() {
+         return (TextInput) getComponent();
+    }
+
     @Override
     public void install(final Component component) {
         super.install(component);
@@ -327,8 +327,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
     @Override
     public int getPreferredWidth(final int height) {
-        TextInput textInput = (TextInput) getComponent();
-        int textSize = textInput.getTextSize();
+        int textSize = getTextInput().getTextSize();
 
         return averageCharacterSize.width * textSize + padding.getWidth() + 2;
     }
@@ -386,9 +385,9 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
     @Override
     public void layout() {
-        TextInput textInput = (TextInput) getComponent();
+        TextInput textInput = getTextInput();
 
-        textLayout = null;
+        currentTextLayout = null;
 
         int n = textInput.getCharacterCount();
         AttributedStringCharacterIterator composedText = textInput.getComposedText();
@@ -417,8 +416,8 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
             }
 
             FontRenderContext fontRenderContext = Platform.getFontRenderContext();
-            textLayout = new TextLayout(text, fontRenderContext);
-            int textWidth = getTextWidth(textLayout);
+            currentTextLayout = new TextLayout(text, fontRenderContext);
+            int textWidth = getTextWidth(currentTextLayout);
             int width = getWidth();
 
             if (textWidth - scrollLeft + padding.left + 1 < width - padding.right - 1) {
@@ -457,13 +456,13 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
             default:
                 break;
             case CENTER:
-                textInput = (TextInput) getComponent();
+                textInput = getTextInput();
                 txtWidth = getTextWidth(textLayout);
                 availWidth = textInput.getWidth() - (padding.getWidth() + 2);
                 alignmentDeltaX = (availWidth - txtWidth) / 2;
                 break;
             case RIGHT:
-                textInput = (TextInput) getComponent();
+                textInput = getTextInput();
                 txtWidth = getTextWidth(textLayout);
                 availWidth = textInput.getWidth() - (padding.getWidth() + 2 + caret.width);
                 alignmentDeltaX = (availWidth - txtWidth);
@@ -475,7 +474,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
     @Override
     public void paint(final Graphics2D graphics) {
-        TextInput textInput = (TextInput) getComponent();
+        TextInput textInput = getTextInput();
 
         int width = getWidth();
         int height = getHeight();
@@ -522,8 +521,8 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
         Color caretColor;
 
-        TextLayout drawingTextLayout = textLayout;
-        if (textLayout == null && prompt != null && !prompt.isEmpty()) {
+        TextLayout drawingTextLayout = currentTextLayout;
+        if (currentTextLayout == null && prompt != null && !prompt.isEmpty()) {
             AttributedStringCharacterIterator promptText = new AttributedStringCharacterIterator(prompt);
             drawingTextLayout = new TextLayout(promptText, fontRenderContext);
         }
@@ -531,7 +530,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         int alignmentDeltaX = getAlignmentDeltaX(drawingTextLayout);
         int xpos = padding.left - scrollLeft + 1 + alignmentDeltaX;
 
-        if (textLayout == null && prompt != null && !prompt.isEmpty()) {
+        if (currentTextLayout == null && prompt != null && !prompt.isEmpty()) {
             GraphicsUtilities.prepareForText(graphics, fontRenderContext, font, promptColor);
             graphics.drawString(prompt, xpos, (height - textHeight) / 2 + ascent);
 
@@ -552,7 +551,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
             caretColor = colorLocal;
 
-            if (textLayout != null) {
+            if (currentTextLayout != null) {
                 graphics.setFont(font);
 
                 float ypos = (height - textHeight) / 2 + ascent;
@@ -560,7 +559,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
                 if (selection == null) {
                     // Paint the text
                     graphics.setColor(colorLocal);
-                    textLayout.draw(graphics, xpos, ypos);
+                    currentTextLayout.draw(graphics, xpos, ypos);
                 } else {
                     // Paint the unselected text
                     Area unselectedArea = new Area();
@@ -570,7 +569,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
                     Graphics2D textGraphics = (Graphics2D) graphics.create();
                     textGraphics.setColor(colorLocal);
                     textGraphics.clip(unselectedArea);
-                    textLayout.draw(textGraphics, xpos, ypos);
+                    currentTextLayout.draw(textGraphics, xpos, ypos);
                     textGraphics.dispose();
 
                     // Paint the selection
@@ -591,7 +590,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
                     Graphics2D selectedTextGraphics = (Graphics2D) graphics.create();
                     selectedTextGraphics.setColor(selectionColorLocal);
                     selectedTextGraphics.clip(selection.getBounds());
-                    textLayout.draw(selectedTextGraphics, xpos, ypos);
+                    currentTextLayout.draw(selectedTextGraphics, xpos, ypos);
                     selectedTextGraphics.dispose();
                 }
             }
@@ -625,13 +624,13 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     public int getInsertionPoint(final int x) {
         int offset = -1;
 
-        if (textLayout == null) {
+        if (currentTextLayout == null) {
             offset = 0;
         } else {
             // Translate to glyph coordinates
-            float xt = x - (padding.left - scrollLeft + 1 + getAlignmentDeltaX(textLayout));
+            float xt = x - (padding.left - scrollLeft + 1 + getAlignmentDeltaX(currentTextLayout));
 
-            TextHitInfo hitInfo = textLayout.hitTestChar(xt, 0);
+            TextHitInfo hitInfo = currentTextLayout.hitTestChar(xt, 0);
             offset = hitInfo.getInsertionIndex();
         }
 
@@ -651,29 +650,29 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     public Bounds getCharacterBounds(final int index) {
         Bounds characterBounds = null;
 
-        if (textLayout != null) {
+        if (currentTextLayout != null) {
             int x, width;
-            if (index < textLayout.getCharacterCount()) {
-                Shape glyphShape = textLayout.getLogicalHighlightShape(index, index + 1);
+            if (index < currentTextLayout.getCharacterCount()) {
+                Shape glyphShape = currentTextLayout.getLogicalHighlightShape(index, index + 1);
                 Rectangle2D glyphBounds2D = glyphShape.getBounds2D();
 
                 x = (int) Math.floor(glyphBounds2D.getX());
                 width = (int) Math.ceil(glyphBounds2D.getWidth());
             } else {
                 // This is the terminator character
-                x = getTextWidth(textLayout);
+                x = getTextWidth(currentTextLayout);
                 width = 0;
             }
 
-            characterBounds = new Bounds(x + padding.left - scrollLeft + 1 + getAlignmentDeltaX(textLayout),
+            characterBounds = new Bounds(x + padding.left - scrollLeft + 1 + getAlignmentDeltaX(currentTextLayout),
                 padding.top + 1, width, getHeight() - (padding.getHeight() + 2));
         }
 
         return characterBounds;
     }
 
-    private void setScrollLeft(final int scrollLeft) {
-        this.scrollLeft = scrollLeft;
+    private void setScrollLeft(final int scrollLeftValue) {
+        scrollLeft = scrollLeftValue;
         updateSelection();
         repaintComponent();
     }
@@ -703,325 +702,311 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
      * on this font, which will be the width of the "missing glyph code"
      * and the maximum height of any character in the font.
      *
-     * @param font The new font to use.
-     * @throws IllegalArgumentException if the {@code font} argument is {@code null}.
+     * @param newFont The new font to use.
+     * @throws IllegalArgumentException if the {@code newFont} argument is {@code null}.
      */
-    public final void setFont(final Font font) {
-        Utils.checkNull(font, "font");
+    public final void setFont(final Font newFont) {
+        Utils.checkNull(newFont, "font");
 
-        this.font = font;
+        font = newFont;
 
         averageCharacterSize = GraphicsUtilities.getAverageCharacterSize(font);
 
         invalidateComponent();
     }
 
-    public final void setFont(final String font) {
-        setFont(decodeFont(font));
+    public final void setFont(final String fontString) {
+        setFont(decodeFont(fontString));
     }
 
-    public final void setFont(final Dictionary<String, ?> font) {
-        setFont(Theme.deriveFont(font));
+    public final void setFont(final Dictionary<String, ?> fontDict) {
+        setFont(Theme.deriveFont(fontDict));
     }
 
     public final Color getColor() {
         return color;
     }
 
-    public final void setColor(final Color color) {
-        Utils.checkNull(color, "color");
+    public final void setColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "color");
 
-        this.color = color;
+        color = colorValue;
         repaintComponent();
     }
 
-    public final void setColor(final String color) {
-        setColor(GraphicsUtilities.decodeColor(color, "color"));
+    public final void setColor(final String colorString) {
+        setColor(GraphicsUtilities.decodeColor(colorString, "color"));
     }
 
-    public final void setColor(final int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
+    public final void setColor(final int colorIndex) {
+        setColor(getColor(colorIndex));
     }
 
     public final Color getPromptColor() {
         return promptColor;
     }
 
-    public final void setPromptColor(final Color promptColor) {
-        Utils.checkNull(promptColor, "promptColor");
+    public final void setPromptColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "promptColor");
 
-        this.promptColor = promptColor;
+        promptColor = colorValue;
         repaintComponent();
     }
 
-    public final void setPromptColor(final String promptColor) {
-        setPromptColor(GraphicsUtilities.decodeColor(promptColor, "promptColor"));
+    public final void setPromptColor(final String colorString) {
+        setPromptColor(GraphicsUtilities.decodeColor(colorString, "promptColor"));
     }
 
-    public final void setPromptColor(final int promptColor) {
-        Theme theme = currentTheme();
-        setPromptColor(theme.getColor(promptColor));
+    public final void setPromptColor(final int colorIndex) {
+        setPromptColor(getColor(colorIndex));
     }
 
     public final Color getDisabledColor() {
         return disabledColor;
     }
 
-    public final void setDisabledColor(final Color disabledColor) {
-        Utils.checkNull(disabledColor, "disabledColor");
+    public final void setDisabledColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "disabledColor");
 
-        this.disabledColor = disabledColor;
+        disabledColor = colorValue;
         repaintComponent();
     }
 
-    public final void setDisabledColor(final String disabledColor) {
-        setDisabledColor(GraphicsUtilities.decodeColor(disabledColor, "disabledColor"));
+    public final void setDisabledColor(final String colorString) {
+        setDisabledColor(GraphicsUtilities.decodeColor(colorString, "disabledColor"));
     }
 
-    public final void setDisabledColor(final int disabledColor) {
-        Theme theme = currentTheme();
-        setDisabledColor(theme.getColor(disabledColor));
+    public final void setDisabledColor(final int colorIndex) {
+        setDisabledColor(getColor(colorIndex));
     }
 
     public final Color getBackgroundColor() {
         return backgroundColor;
     }
 
-    public final void setBackgroundColor(final Color backgroundColor) {
-        Utils.checkNull(backgroundColor, "backgroundColor");
+    public final void setBackgroundColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "backgroundColor");
 
-        this.backgroundColor = backgroundColor;
+        backgroundColor = colorValue;
         bevelColor = TerraTheme.darken(backgroundColor);
 
         repaintComponent();
     }
 
-    public final void setBackgroundColor(final String backgroundColor) {
-        setBackgroundColor(GraphicsUtilities.decodeColor(backgroundColor, "backgroundColor"));
+    public final void setBackgroundColor(final String colorString) {
+        setBackgroundColor(GraphicsUtilities.decodeColor(colorString, "backgroundColor"));
     }
 
-    public final void setBackgroundColor(final int color) {
-        Theme theme = currentTheme();
-        setBackgroundColor(theme.getColor(color));
+    public final void setBackgroundColor(final int colorIndex) {
+        setBackgroundColor(getColor(colorIndex));
     }
 
     public final Color getInvalidColor() {
         return invalidColor;
     }
 
-    public final void setInvalidColor(final Color color) {
-        Utils.checkNull(color, "invalidColor");
+    public final void setInvalidColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "invalidColor");
 
-        this.invalidColor = color;
+        invalidColor = colorValue;
         repaintComponent();
     }
 
-    public final void setInvalidColor(final String color) {
-        setInvalidColor(GraphicsUtilities.decodeColor(color, "invalidColor"));
+    public final void setInvalidColor(final String colorString) {
+        setInvalidColor(GraphicsUtilities.decodeColor(colorString, "invalidColor"));
     }
 
-    public final void setInvalidColor(final int color) {
-        Theme theme = currentTheme();
-        setInvalidColor(theme.getColor(color));
+    public final void setInvalidColor(final int colorIndex) {
+        setInvalidColor(getColor(colorIndex));
     }
 
     public final Color getInvalidBackgroundColor() {
         return invalidBackgroundColor;
     }
 
-    public final void setInvalidBackgroundColor(final Color color) {
-        Utils.checkNull(color, "invalidBackgroundColor");
+    public final void setInvalidBackgroundColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "invalidBackgroundColor");
 
-        this.invalidBackgroundColor = color;
-        invalidBevelColor = TerraTheme.darken(color);
+        invalidBackgroundColor = colorValue;
+        invalidBevelColor = TerraTheme.darken(colorValue);
 
         repaintComponent();
     }
 
-    public final void setInvalidBackgroundColor(final String color) {
-        setInvalidBackgroundColor(GraphicsUtilities.decodeColor(color, "invalidBackgroundColor"));
+    public final void setInvalidBackgroundColor(final String colorString) {
+        setInvalidBackgroundColor(GraphicsUtilities.decodeColor(colorString, "invalidBackgroundColor"));
     }
 
-    public final void setInvalidBackgroundColor(final int color) {
-        Theme theme = currentTheme();
-        setInvalidBackgroundColor(theme.getColor(color));
+    public final void setInvalidBackgroundColor(final int colorIndex) {
+        setInvalidBackgroundColor(getColor(colorIndex));
     }
 
     public final Color getDisabledBackgroundColor() {
         return disabledBackgroundColor;
     }
 
-    public final void setDisabledBackgroundColor(final Color disabledBackgroundColor) {
-        Utils.checkNull(disabledBackgroundColor, "disabledBackgroundColor");
+    public final void setDisabledBackgroundColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "disabledBackgroundColor");
 
-        this.disabledBackgroundColor = disabledBackgroundColor;
+        disabledBackgroundColor = colorValue;
         disabledBevelColor = disabledBackgroundColor;
 
         repaintComponent();
     }
 
-    public final void setDisabledBackgroundColor(final String disabledBackgroundColor) {
+    public final void setDisabledBackgroundColor(final String colorString) {
         setDisabledBackgroundColor(
-            GraphicsUtilities.decodeColor(disabledBackgroundColor, "disabledBackgroundColor"));
+            GraphicsUtilities.decodeColor(colorString, "disabledBackgroundColor"));
     }
 
-    public final void setDisabledBackgroundColor(final int color) {
-        Theme theme = currentTheme();
-        setDisabledBackgroundColor(theme.getColor(color));
+    public final void setDisabledBackgroundColor(final int colorIndex) {
+        setDisabledBackgroundColor(getColor(colorIndex));
     }
 
     public final Color getBorderColor() {
         return borderColor;
     }
 
-    public final void setBorderColor(final Color borderColor) {
-        Utils.checkNull(borderColor, "borderColor");
+    public final void setBorderColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "borderColor");
 
-        this.borderColor = borderColor;
+        borderColor = colorValue;
         repaintComponent();
     }
 
-    public final void setBorderColor(final String borderColor) {
-        setBorderColor(GraphicsUtilities.decodeColor(borderColor, "borderColor"));
+    public final void setBorderColor(final String colorString) {
+        setBorderColor(GraphicsUtilities.decodeColor(colorString, "borderColor"));
     }
 
-    public final void setBorderColor(final int color) {
-        Theme theme = currentTheme();
-        setBorderColor(theme.getColor(color));
+    public final void setBorderColor(final int colorIndex) {
+        setBorderColor(getColor(colorIndex));
     }
 
     public final Color getDisabledBorderColor() {
         return disabledBorderColor;
     }
 
-    public final void setDisabledBorderColor(final Color disabledBorderColor) {
-        Utils.checkNull(disabledBorderColor, "disabledBorderColor");
+    public final void setDisabledBorderColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "disabledBorderColor");
 
-        this.disabledBorderColor = disabledBorderColor;
+        disabledBorderColor = colorValue;
         repaintComponent();
     }
 
-    public final void setDisabledBorderColor(final String disabledBorderColor) {
-        setDisabledBorderColor(GraphicsUtilities.decodeColor(disabledBorderColor, "disabledBorderColor"));
+    public final void setDisabledBorderColor(final String colorString) {
+        setDisabledBorderColor(GraphicsUtilities.decodeColor(colorString, "disabledBorderColor"));
     }
 
-    public final void setDisabledBorderColor(final int color) {
-        Theme theme = currentTheme();
-        setDisabledBorderColor(theme.getColor(color));
+    public final void setDisabledBorderColor(final int colorIndex) {
+        setDisabledBorderColor(getColor(colorIndex));
     }
 
     public final Color getSelectionColor() {
         return selectionColor;
     }
 
-    public final void setSelectionColor(final Color selectionColor) {
-        Utils.checkNull(selectionColor, "selectionColor");
+    public final void setSelectionColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "selectionColor");
 
-        this.selectionColor = selectionColor;
+        selectionColor = colorValue;
         repaintComponent();
     }
 
-    public final void setSelectionColor(final String selectionColor) {
-        setSelectionColor(GraphicsUtilities.decodeColor(selectionColor, "selectionColor"));
+    public final void setSelectionColor(final String colorString) {
+        setSelectionColor(GraphicsUtilities.decodeColor(colorString, "selectionColor"));
     }
 
-    public final void setSelectionColor(final int color) {
-        Theme theme = currentTheme();
-        setSelectionColor(theme.getColor(color));
+    public final void setSelectionColor(final int colorIndex) {
+        setSelectionColor(getColor(colorIndex));
     }
 
     public final Color getSelectionBackgroundColor() {
         return selectionBackgroundColor;
     }
 
-    public final void setSelectionBackgroundColor(final Color selectionBackgroundColor) {
-        Utils.checkNull(selectionBackgroundColor, "selectionBackgroundColor");
+    public final void setSelectionBackgroundColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "selectionBackgroundColor");
 
-        this.selectionBackgroundColor = selectionBackgroundColor;
+        selectionBackgroundColor = colorValue;
         repaintComponent();
     }
 
-    public final void setSelectionBackgroundColor(final String selectionBackgroundColor) {
-        setSelectionBackgroundColor(GraphicsUtilities.decodeColor(selectionBackgroundColor,
-            "selectionBackgroundColor"));
+    public final void setSelectionBackgroundColor(final String colorString) {
+        setSelectionBackgroundColor(GraphicsUtilities.decodeColor(colorString, "selectionBackgroundColor"));
     }
 
-    public final void setSelectionBackgroundColor(final int color) {
-        Theme theme = currentTheme();
-        setSelectionBackgroundColor(theme.getColor(color));
+    public final void setSelectionBackgroundColor(final int colorIndex) {
+        setSelectionBackgroundColor(getColor(colorIndex));
     }
 
     public final Color getInactiveSelectionColor() {
         return inactiveSelectionColor;
     }
 
-    public final void setInactiveSelectionColor(final Color inactiveSelectionColor) {
-        Utils.checkNull(inactiveSelectionColor, "inactiveSelectionColor");
+    public final void setInactiveSelectionColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "inactiveSelectionColor");
 
-        this.inactiveSelectionColor = inactiveSelectionColor;
+        inactiveSelectionColor = colorValue;
         repaintComponent();
     }
 
-    public final void setInactiveSelectionColor(final String inactiveSelectionColor) {
-        setInactiveSelectionColor(GraphicsUtilities.decodeColor(inactiveSelectionColor, "inactiveSelectionColor"));
+    public final void setInactiveSelectionColor(final String colorString) {
+        setInactiveSelectionColor(GraphicsUtilities.decodeColor(colorString, "inactiveSelectionColor"));
     }
 
-    public final void setInactiveSelectionColor(final int color) {
-        Theme theme = currentTheme();
-        setInactiveSelectionColor(theme.getColor(color));
+    public final void setInactiveSelectionColor(final int colorIndex) {
+        setInactiveSelectionColor(getColor(colorIndex));
     }
 
     public final Color getInactiveSelectionBackgroundColor() {
         return inactiveSelectionBackgroundColor;
     }
 
-    public final void setInactiveSelectionBackgroundColor(final Color inactiveSelectionBackgroundColor) {
-        Utils.checkNull(inactiveSelectionBackgroundColor, "inactiveSelectionBackgroundColor");
+    public final void setInactiveSelectionBackgroundColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "inactiveSelectionBackgroundColor");
 
-        this.inactiveSelectionBackgroundColor = inactiveSelectionBackgroundColor;
+        inactiveSelectionBackgroundColor = colorValue;
         repaintComponent();
     }
 
-    public final void setInactiveSelectionBackgroundColor(final String inactiveSelectionBackgroundColor) {
+    public final void setInactiveSelectionBackgroundColor(final String colorString) {
         setInactiveSelectionBackgroundColor(
-            GraphicsUtilities.decodeColor(inactiveSelectionBackgroundColor, "inactiveSelectionBackgroundColor"));
+            GraphicsUtilities.decodeColor(colorString, "inactiveSelectionBackgroundColor"));
     }
 
-    public final void setInactiveSelectionBackgroundColor(final int color) {
-        Theme theme = currentTheme();
-        setInactiveSelectionBackgroundColor(theme.getColor(color));
+    public final void setInactiveSelectionBackgroundColor(final int colorIndex) {
+        setInactiveSelectionBackgroundColor(getColor(colorIndex));
     }
 
     public final Insets getPadding() {
         return padding;
     }
 
-    public final void setPadding(final Insets padding) {
-        Utils.checkNull(padding, "padding");
+    public final void setPadding(final Insets paddingValue) {
+        Utils.checkNull(paddingValue, "padding");
 
-        this.padding = padding;
+        padding = paddingValue;
         invalidateComponent();
     }
 
-    public final void setPadding(final Dictionary<String, ?> padding) {
-        setPadding(new Insets(padding));
+    public final void setPadding(final Dictionary<String, ?> paddingDictionary) {
+        setPadding(new Insets(paddingDictionary));
     }
 
-    public final void setPadding(final Sequence<?> padding) {
-        setPadding(new Insets(padding));
+    public final void setPadding(final Sequence<?> paddingSequence) {
+        setPadding(new Insets(paddingSequence));
     }
 
-    public final void setPadding(final int padding) {
-        setPadding(new Insets(padding));
+    public final void setPadding(final int paddingValue) {
+        setPadding(new Insets(paddingValue));
     }
 
-    public final void setPadding(final Number padding) {
-        setPadding(new Insets(padding));
+    public final void setPadding(final Number paddingValue) {
+        setPadding(new Insets(paddingValue));
     }
 
-    public final void setPadding(final String padding) {
-        setPadding(Insets.decode(padding));
+    public final void setPadding(final String paddingString) {
+        setPadding(Insets.decode(paddingString));
     }
 
     public final HorizontalAlignment getHorizontalAlignment() {
@@ -1031,7 +1016,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     public final void setHorizontalAlignment(final HorizontalAlignment alignment) {
         Utils.checkNull(alignment, "horizontalAlignment");
 
-        this.horizontalAlignment = alignment;
+        horizontalAlignment = alignment;
         invalidateComponent();
     }
 
@@ -1040,7 +1025,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         boolean consumed = super.mouseMove(component, x, y);
 
         if (Mouse.getCapturer() == component) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
             int width = getWidth();
 
             if (x >= 0 && x < width) {
@@ -1091,7 +1076,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         boolean consumed = super.mouseDown(component, button, x, y);
 
         if (button == Mouse.Button.LEFT) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
 
             anchor = getInsertionPoint(x);
 
@@ -1144,7 +1129,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     public boolean mouseClick(final Component component, final Mouse.Button button, final int x, final int y,
         final int count) {
         if (button == Mouse.Button.LEFT && count > 1) {
-            TextInput textInput = (TextInput) getComponent();
+            TextInput textInput = getTextInput();
             if (count == 2) {
                 CharSpan charSpan = CharUtils.selectWord(textInput.getCharacters(), getInsertionPoint(x));
                 if (charSpan != null) {
@@ -1174,7 +1159,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     @Override
     public boolean keyTyped(final Component component, final char character) {
         boolean consumed = super.keyTyped(component, character);
-        TextInput textInput = (TextInput) getComponent();
+        TextInput textInput = getTextInput();
 
         if (textInput.isEditable()) {
             // Ignore characters in the control range and the ASCII delete
@@ -1448,7 +1433,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     public boolean keyPressed(final Component component, final int keyCode, final KeyLocation keyLocation) {
         boolean consumed = false;
 
-        TextInput textInput = (TextInput) getComponent();
+        TextInput textInput = getTextInput();
         boolean isEditable = textInput.isEditable();
 
         int start = textInput.getSelectionStart();
@@ -1756,7 +1741,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
     }
 
     private void updateSelection() {
-        TextInput textInput = (TextInput) getComponent();
+        TextInput textInput = getTextInput();
 
         int height = getHeight();
 
@@ -1770,9 +1755,9 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
             leadingSelectionBounds = getCharacterBounds(selectionStart);
         } else {
             // The insertion point is after the last character
-            int x = padding.left + 1 - scrollLeft + getAlignmentDeltaX(textLayout);
+            int x = padding.left + 1 - scrollLeft + getAlignmentDeltaX(currentTextLayout);
             if (n > 0) {
-                x += getTextWidth(textLayout);
+                x += getTextWidth(currentTextLayout);
             }
 
             int y = padding.top + 1;
@@ -1815,8 +1800,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
     @Override
     public TextInputMethodListener getTextInputMethodListener() {
-        TextInput textInput = (TextInput) getComponent();
-        return textInput.isEditable() ? textInputMethodHandler : null;
+        return getTextInput().isEditable() ? textInputMethodHandler : null;
     }
 
 }
