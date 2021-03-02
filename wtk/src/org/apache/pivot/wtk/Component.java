@@ -2606,16 +2606,19 @@ public abstract class Component implements ConstrainedVisual {
 
     /**
      * Check an index value against the provided bounds and throw a nicely formatted
-     * exception, including the index name, for out of range values.
+     * exception, including the index name, for out of range values. Index must be
+     * in the range of {@code [min..max]}.
      *
      * @param indexName The name of the index to be checked.
      * @param index Index to be checked against the bounds.
      * @param min Minimum allowed value of the index.
      * @param max Maximum allowed value of the index.
-     * @throws IndexOutOfBoundsException if index is out of range.
+     * @throws IllegalArgumentException if given {@code max < min}.
+     * @throws IndexOutOfBoundsException if index is out of range ({@code index < min}
+     * or {@code index > max}).
      */
-    protected static final void indexBoundsCheck(final String indexName, final int index, final int min, final int max)
-        throws IndexOutOfBoundsException {
+    protected static final void indexBoundsCheck(final String indexName, final int index,
+            final int min, final int max) {
         if (max < min) {
             throw new IllegalArgumentException("max (" + max + ") < " + "min (" + min + ")");
         }
