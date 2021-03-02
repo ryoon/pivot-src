@@ -34,6 +34,7 @@ import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.LinkedStack;
 import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.json.JSON;
+import org.apache.pivot.text.AttributedStringCharacterIterator;
 import org.apache.pivot.text.CharSpan;
 import org.apache.pivot.util.ImmutableIterator;
 import org.apache.pivot.util.ListenerList;
@@ -53,15 +54,26 @@ public class TextArea extends Component {
 
         private ParagraphListener.Listeners paragraphListeners = new ParagraphListener.Listeners();
 
+        /**
+         * @return The characters in this paragraph.
+         */
         public CharSequence getCharacters() {
             return characters;
         }
 
+        /**
+         * @return The {@code TextArea} this paragraph belongs to.
+         */
         public TextArea getTextArea() {
             return textArea;
         }
 
-        public void append(char character) {
+        /**
+         * Append the given character to this paragraph.
+         *
+         * @param character The character to append.
+         */
+        public void append(final char character) {
             if (textArea != null) {
                 throw new IllegalStateException();
             }
@@ -69,6 +81,9 @@ public class TextArea extends Component {
             characters.append(character);
         }
 
+        /**
+         * Clear all the characters in this paragraph.
+         */
         public void clear() {
             if (textArea != null) {
                 throw new IllegalStateException();
@@ -77,7 +92,13 @@ public class TextArea extends Component {
             characters.delete(0, characters.length());
         }
 
-        public void insertText(CharSequence text, int index) {
+        /**
+         * Insert the characters at the given index into this paragraph.
+         *
+         * @param text  The sequence of characters to insert.
+         * @param index The index into this paragraph where to insert the text.
+         */
+        public void insertText(final CharSequence text, final int index) {
             Utils.checkNull(text, "Text to insert");
 
             indexBoundsCheck("index", index, 0, characters.length());
@@ -106,18 +127,29 @@ public class TextArea extends Component {
                 textArea.textAreaContentListeners.textChanged(textArea);
 
                 if (textArea.selectionStart != previousSelectionStart
-                    || textArea.selectionLength != previousSelectionLength) {
+                 || textArea.selectionLength != previousSelectionLength) {
                     textArea.textAreaSelectionListeners.selectionChanged(textArea,
                         textArea.selectionStart, textArea.selectionLength);
                 }
             }
         }
 
-        public void removeText(int index) {
+        /**
+         * Remove all the text in this paragraph starting at the index.
+         *
+         * @param index The starting index in the paragraph where to remove the text.
+         */
+        public void removeText(final int index) {
             removeText(index, characters.length() - index);
         }
 
-        public void removeText(int index, int count) {
+        /**
+         * Remove some of the text in this paragraph.
+         *
+         * @param index Index in the paragraph where to start to remove the text.
+         * @param count Number of characters to remove starting at the index.
+         */
+        public void removeText(final int index, final int count) {
             Utils.checkIndexBounds(index, count, 0, characters.length());
 
             characters.delete(index, index + count);
@@ -138,17 +170,24 @@ public class TextArea extends Component {
                 textArea.textAreaContentListeners.textChanged(textArea);
 
                 if (textArea.selectionStart != previousSelectionStart
-                    || textArea.selectionLength != previousSelectionLength) {
+                 || textArea.selectionLength != previousSelectionLength) {
                     textArea.textAreaSelectionListeners.selectionChanged(textArea,
                         textArea.selectionStart, textArea.selectionLength);
                 }
             }
         }
 
+        /**
+         * @return The relative offset of the text in this paragraph from the
+         * beginning of the entire text.
+         */
         public int getOffset() {
             return offset;
         }
 
+        /**
+         * @return The listeners on this paragraph.
+         */
         public ListenerList<ParagraphListener> getParagraphListeners() {
             return paragraphListeners;
         }
@@ -161,14 +200,14 @@ public class TextArea extends Component {
         /**
          * Paragraph listener interface adapter.
          */
-        public static class Adapter implements ParagraphListener {
+        class Adapter implements ParagraphListener {
             @Override
-            public void textInserted(Paragraph paragraph, int index, int count) {
+            public void textInserted(final Paragraph paragraph, final int index, final int count) {
                 // empty block
             }
 
             @Override
-            public void textRemoved(Paragraph paragraph, int index, int count) {
+            public void textRemoved(final Paragraph paragraph, final int index, final int count) {
                 // empty block
             }
         }
@@ -176,15 +215,15 @@ public class TextArea extends Component {
         /**
          * Paragraph listeners.
          */
-        public static class Listeners extends ListenerList<ParagraphListener>
+        class Listeners extends ListenerList<ParagraphListener>
             implements ParagraphListener {
             @Override
-            public void textInserted(Paragraph paragraph, int index, int count) {
+            public void textInserted(final Paragraph paragraph, final int index, final int count) {
                 forEach(listener -> listener.textInserted(paragraph, index, count));
             }
 
             @Override
-            public void textRemoved(Paragraph paragraph, int index, int count) {
+            public void textRemoved(final Paragraph paragraph, final int index, final int count) {
                 forEach(listener -> listener.textRemoved(paragraph, index, count));
             }
         }
@@ -196,7 +235,7 @@ public class TextArea extends Component {
          * @param index The index at which the text was inserted.
          * @param count The number of characters that were inserted.
          */
-        public void textInserted(Paragraph paragraph, int index, int count);
+        void textInserted(Paragraph paragraph, int index, int count);
 
         /**
          * Called when characters have been removed from a paragraph.
@@ -205,7 +244,7 @@ public class TextArea extends Component {
          * @param index The index from which the text was removed.
          * @param count The number of characters that were removed.
          */
-        public void textRemoved(Paragraph paragraph, int index, int count);
+        void textRemoved(Paragraph paragraph, int index, int count);
     }
 
     /**
@@ -226,7 +265,7 @@ public class TextArea extends Component {
          * @param x The X-location to check (likely from the mouse location).
          * @param y The Y-location to check.
          */
-        public int getInsertionPoint(int x, int y);
+        int getInsertionPoint(int x, int y);
 
         /**
          * @return The next insertion point given an x coordinate and a
@@ -236,14 +275,14 @@ public class TextArea extends Component {
          * @param from      The current character index to move from.
          * @param direction The direction we want to move.
          */
-        public int getNextInsertionPoint(int x, int from, ScrollDirection direction);
+        int getNextInsertionPoint(int x, int from, ScrollDirection direction);
 
         /**
          * @return The row index of the character at a given index.
          *
          * @param index The character index to check.
          */
-        public int getRowAt(int index);
+        int getRowAt(int index);
 
         /**
          * @return The index of the first character in the row containing a
@@ -251,7 +290,7 @@ public class TextArea extends Component {
          *
          * @param index The character index to check.
          */
-        public int getRowOffset(int index);
+        int getRowOffset(int index);
 
         /**
          * @return The number of characters in the row containing a given
@@ -259,25 +298,25 @@ public class TextArea extends Component {
          *
          * @param index The character index to check.
          */
-        public int getRowLength(int index);
+        int getRowLength(int index);
 
         /**
          * @return The total number of rows in the text area.
          */
-        public int getRowCount();
+        int getRowCount();
 
         /**
          * @return The bounds of the character at a given index.
          *
          * @param index The index of the character to check.
          */
-        public Bounds getCharacterBounds(int index);
+        Bounds getCharacterBounds(int index);
 
         /**
          * @return The current setting of the "tabWidth" style (so "setText"
          * uses the same value as Ctrl-Tab from user).
          */
-        public int getTabWidth();
+        int getTabWidth();
     }
 
     /**
@@ -291,7 +330,7 @@ public class TextArea extends Component {
          * @param value The value from the bind context to convert to text.
          * @return The string representation of the value to display.
          */
-        public String toString(Object value);
+        String toString(Object value);
 
         /**
          * Converts a text string to a value to be stored in the bind context
@@ -301,7 +340,7 @@ public class TextArea extends Component {
          * suitable for storage in the bind context.
          * @return The text converted to an object suitable for the bind context.
          */
-        public Object valueOf(String text);
+        Object valueOf(String text);
     }
 
     /**
@@ -309,7 +348,7 @@ public class TextArea extends Component {
      */
     public final class ParagraphSequence implements Sequence<Paragraph>, Iterable<Paragraph> {
         @Override
-        public int add(Paragraph paragraph) {
+        public int add(final Paragraph paragraph) {
             int index = getLength();
             insert(paragraph, index);
 
@@ -317,7 +356,7 @@ public class TextArea extends Component {
         }
 
         @Override
-        public void insert(Paragraph paragraph, int index) {
+        public void insert(final Paragraph paragraph, final int index) {
             Utils.checkNull(paragraph, "Paragraph");
 
             if (paragraph.textArea != null) {
@@ -374,12 +413,12 @@ public class TextArea extends Component {
 
         @Override
         @UnsupportedOperation
-        public Paragraph update(int index, Paragraph paragraph) {
+        public Paragraph update(final int index, final Paragraph paragraph) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public int remove(Paragraph paragraph) {
+        public int remove(final Paragraph paragraph) {
             int index = indexOf(paragraph);
             if (index != -1) {
                 remove(index, 1);
@@ -389,7 +428,7 @@ public class TextArea extends Component {
         }
 
         @Override
-        public Sequence<Paragraph> remove(int index, int count) {
+        public Sequence<Paragraph> remove(final int index, final int count) {
             Sequence<Paragraph> removed = paragraphs.remove(index, count);
 
             if (count > 0) {
@@ -432,12 +471,12 @@ public class TextArea extends Component {
         }
 
         @Override
-        public Paragraph get(int index) {
+        public Paragraph get(final int index) {
             return paragraphs.get(index);
         }
 
         @Override
-        public int indexOf(Paragraph paragraph) {
+        public int indexOf(final Paragraph paragraph) {
             return paragraphs.indexOf(paragraph);
         }
 
@@ -452,17 +491,23 @@ public class TextArea extends Component {
         }
     }
 
+    /**
+     * Interface for undo history.
+     */
     private interface Edit {
-        public void undo();
+        void undo();
     }
 
+    /**
+     * Undo event for an insert.
+     */
     private class InsertTextEdit implements Edit {
         private final int index;
         private final int count;
 
-        public InsertTextEdit(CharSequence text, int index) {
-            this.index = index;
-            count = text.length();
+        InsertTextEdit(final CharSequence insertText, final int insertIndex) {
+            index = insertIndex;
+            count = insertText.length();
         }
 
         @Override
@@ -471,12 +516,15 @@ public class TextArea extends Component {
         }
     }
 
+    /**
+     * Undo event for a remove.
+     */
     private class RemoveTextEdit implements Edit {
         private final int index;
         private final CharSequence text;
 
-        public RemoveTextEdit(int index, int count) {
-            this.index = index;
+        RemoveTextEdit(final int removeIndex, final int count) {
+            index = removeIndex;
             text = getText(index, index + count);
         }
 
@@ -488,6 +536,7 @@ public class TextArea extends Component {
 
     private ArrayList<Paragraph> paragraphs = new ArrayList<>();
     private ParagraphSequence paragraphSequence = new ParagraphSequence();
+    private AttributedStringCharacterIterator composedText = null;
 
     private int characterCount = 0;
 
@@ -526,10 +575,14 @@ public class TextArea extends Component {
     }
 
     @Override
-    protected void setSkin(org.apache.pivot.wtk.Skin skin) {
+    protected void setSkin(final org.apache.pivot.wtk.Skin skin) {
         checkSkin(skin, TextArea.Skin.class);
 
         super.setSkin(skin);
+    }
+
+    private TextArea.Skin getTextAreaSkin() {
+        return (TextArea.Skin) getSkin();
     }
 
     /**
@@ -538,7 +591,33 @@ public class TextArea extends Component {
      * @return A string containing a copy of the text area's text content.
      */
     public String getText() {
-        return getText(0, getCharacterCount());
+        return getText(0, characterCount);
+    }
+
+    /**
+     * Return the current text that is in process of being composed
+     * using the Input Method Editor.  This is temporary text that
+     * must be displayed, scrolled, etc. but is not a permanent
+     * part of what would be returned from {@link #getText} for instance.
+     *
+     * @return The current composed text or {@code null} if we're not
+     * using an IME or we're in English input mode, or user just
+     * committed or deleted the composed text.
+     */
+    public AttributedStringCharacterIterator getComposedText() {
+        return composedText;
+    }
+
+    /**
+     * Called from the Input Method Editor callbacks to set the current
+     * composed text (that is, the text currently being composed into something
+     * meaningful).
+     *
+     * @param currentComposedText The current composed text (which can be {@code null}
+     * for many different reasons).
+     */
+    public void setComposedText(final AttributedStringCharacterIterator currentComposedText) {
+        this.composedText = currentComposedText;
     }
 
     /**
@@ -548,7 +627,7 @@ public class TextArea extends Component {
      * @param endIndex   The ending location (exclusive) of the text segment to fetch.
      * @return A string containing a copy of the text area's text content.
      */
-    public String getText(int beginIndex, int endIndex) {
+    public String getText(final int beginIndex, final int endIndex) {
         return getCharacters(beginIndex, endIndex).toString();
     }
 
@@ -556,7 +635,7 @@ public class TextArea extends Component {
      * @return A character sequence representing the text input's content.
      */
     public CharSequence getCharacters() {
-        return getCharacters(0, getCharacterCount());
+        return getCharacters(0, characterCount);
     }
 
     /**
@@ -565,7 +644,7 @@ public class TextArea extends Component {
      * @param start The start of the sequence (inclusive).
      * @param end The end of the sequence (exclusive).
      */
-    public CharSequence getCharacters(int start, int end) {
+    public CharSequence getCharacters(final int start, final int end) {
         Utils.checkTwoIndexBounds(start, end, 0, characterCount);
 
         int count = end - start;
@@ -583,8 +662,7 @@ public class TextArea extends Component {
 
         // Read characters until end is reached, appending to text builder
         // and moving to next paragraph as needed
-        int i = 0;
-        while (i < count) {
+        for (int i = 0; i < count; i++) {
             if (characterOffset == paragraph.characters.length() && i < characterCount) {
                 textBuilder.append('\n');
                 paragraph = paragraphs.get(++paragraphIndex);
@@ -592,8 +670,6 @@ public class TextArea extends Component {
             } else {
                 textBuilder.append(paragraph.characters.charAt(characterOffset++));
             }
-
-            i++;
         }
 
         return textBuilder;
@@ -604,7 +680,7 @@ public class TextArea extends Component {
      *
      * @param text The new text for the control (cannot be {@code null}).
      */
-    public void setText(String text) {
+    public void setText(final String text) {
         Utils.checkNull(text, "Text");
         Utils.checkTextMaximumLength(-1, text.length(), maximumLength);
 
@@ -617,7 +693,7 @@ public class TextArea extends Component {
         }
     }
 
-    public void setText(URL textURL) throws IOException {
+    public void setText(final URL textURL) throws IOException {
         Utils.checkNull(textURL, "URL for text");
 
         try (InputStream inputStream = textURL.openStream()) {
@@ -625,19 +701,19 @@ public class TextArea extends Component {
         }
     }
 
-    public void setText(File f) throws IOException {
+    public void setText(final File f) throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(f.toPath())) {
             setText(reader);
         }
     }
 
-    public void setText(File f, Charset cs) throws IOException {
+    public void setText(final File f, final Charset cs) throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(f.toPath(), cs)) {
             setText(reader);
         }
     }
 
-    public void setText(Reader textReader) throws IOException {
+    public void setText(final Reader textReader) throws IOException {
         Utils.checkNull(textReader, "Text reader");
 
         // Construct the paragraph list
@@ -646,7 +722,7 @@ public class TextArea extends Component {
 
         Paragraph paragraph = new Paragraph();
         int tabPosition = 0;
-        int tabWidth = ((TextArea.Skin) getSkin()).getTabWidth();
+        int tabWidth = getTextAreaSkin().getTabWidth();
 
         int c = textReader.read();
         while (c != -1) {
@@ -684,11 +760,11 @@ public class TextArea extends Component {
         }
     }
 
-    public void insertText(CharSequence text, int index) {
+    public void insertText(final CharSequence text, final int index) {
         insertText(text, index, true);
     }
 
-    private void insertText(CharSequence text, int index, boolean addToEditHistory) {
+    private void insertText(final CharSequence text, final int index, final boolean addToEditHistory) {
         Utils.checkNull(text, "Text to insert");
         Utils.checkTextMaximumLength(characterCount, text.length(), maximumLength);
 
@@ -701,7 +777,7 @@ public class TextArea extends Component {
 
             int characterOffset = index - paragraph.offset;
             int tabPosition = characterOffset;
-            int tabWidth = ((TextArea.Skin) getSkin()).getTabWidth();
+            int tabWidth = getTextAreaSkin().getTabWidth();
 
             StringBuilder textBuilder = new StringBuilder();
 
@@ -746,15 +822,15 @@ public class TextArea extends Component {
         }
     }
 
-    public void removeText(CharSpan charSelection) {
+    public void removeText(final CharSpan charSelection) {
         removeText(charSelection.start, charSelection.length, true);
     }
 
-    public void removeText(int index, int count) {
+    public void removeText(final int index, final int count) {
         removeText(index, count, true);
     }
 
-    private void removeText(int index, int count, boolean addToEditHistory) {
+    private void removeText(final int index, final int count, final boolean addToEditHistory) {
         if (index < 0 || index + count > characterCount) {
             throw new IndexOutOfBoundsException();
         }
@@ -780,8 +856,7 @@ public class TextArea extends Component {
                 // The removal affects only a single paragraph
                 beginParagraph.removeText(index - beginParagraph.offset, count);
             } else {
-                // The removal spans paragraphs; remove any intervening
-                // paragraphs and
+                // The removal spans paragraphs; remove any intervening paragraphs and
                 // merge the leading and trailing segments
                 String leadingText = beginParagraph.characters.substring(0, index
                     - beginParagraph.offset);
@@ -793,7 +868,7 @@ public class TextArea extends Component {
         }
     }
 
-    private void updateParagraphOffsets(int from, int count) {
+    private void updateParagraphOffsets(final int from, final int count) {
         if (count != 0) {
             for (int i = from, n = paragraphs.getLength(); i < n; i++) {
                 Paragraph paragraph = paragraphs.get(i);
@@ -812,9 +887,9 @@ public class TextArea extends Component {
     /**
      * @return The index of the paragraph containing a given character index.
      *
-     * @param index The character index to check.
+     * @param index The character index to check ({@code [0..characterCount]}).
      */
-    public int getParagraphAt(int index) {
+    public int getParagraphAt(final int index) {
         indexBoundsCheck("index", index, 0, characterCount);
 
         int paragraphIndex = paragraphs.getLength() - 1;
@@ -830,9 +905,9 @@ public class TextArea extends Component {
     /**
      * @return The character at a given index.
      *
-     * @param index The index of the character to fetch.
+     * @param index The index of the character to fetch ({@code [0..characterCount-1]}).
      */
-    public char getCharacterAt(int index) {
+    public char getCharacterAt(final int index) {
         indexBoundsCheck("index", index, 0, characterCount - 1);
 
         int paragraphIndex = getParagraphAt(index);
@@ -946,18 +1021,24 @@ public class TextArea extends Component {
      * Sets the selection. The sum of the selection start and length must be
      * less than the length of the text area's content.
      *
-     * @param selectionStart The starting index of the selection.
-     * @param selectionLength The length of the selection.
+     * @param newStart The starting index of the selection.
+     * @param newLength The length of the selection.
      */
-    public void setSelection(int selectionStart, int selectionLength) {
-        Utils.checkIndexBounds(selectionStart, selectionLength, 0, characterCount);
+    public void setSelection(final int newStart, final int newLength) {
+        int start = newStart;
+        int length = newLength;
 
-        int previousSelectionStart = this.selectionStart;
-        int previousSelectionLength = this.selectionLength;
+        Utils.checkNonNegative(length, "selectionLength");
 
-        if (previousSelectionStart != selectionStart || previousSelectionLength != selectionLength) {
-            this.selectionStart = selectionStart;
-            this.selectionLength = selectionLength;
+        int composedTextLength = composedText != null ? (composedText.getEndIndex() - composedText.getBeginIndex()) : 0;
+        Utils.checkIndexBounds(start, length, 0, characterCount + composedTextLength);
+
+        int previousSelectionStart = selectionStart;
+        int previousSelectionLength = selectionLength;
+
+        if (previousSelectionStart != start || previousSelectionLength != length) {
+            selectionStart = start;
+            selectionLength = length;
 
             textAreaSelectionListeners.selectionChanged(this, previousSelectionStart,
                 previousSelectionLength);
@@ -970,10 +1051,10 @@ public class TextArea extends Component {
      * @param selection The new span of text to select.
      * @see #setSelection(int, int)
      */
-    public final void setSelection(Span selection) {
-        Utils.checkNull(selection, "Selection span");
+    public final void setSelection(final Span selection) {
+        Utils.checkNull(selection, "selection span");
 
-        setSelection(Math.min(selection.start, selection.end), (int) selection.getLength());
+        setSelection(selection.normalStart(), (int) selection.getLength());
     }
 
     /**
@@ -983,7 +1064,7 @@ public class TextArea extends Component {
      * @see #setSelection(int, int)
      * @throws IllegalArgumentException if the character span is {@code null}.
      */
-    public final void setSelection(CharSpan selection) {
+    public final void setSelection(final CharSpan selection) {
         Utils.checkNull(selection, "selection");
 
         setSelection(selection.start, selection.length);
@@ -1022,15 +1103,15 @@ public class TextArea extends Component {
     /**
      * Sets the maximum length of the text area's text content.
      *
-     * @param maximumLength The maximum length of the text area's text content.
+     * @param newMaximum The maximum length of the text area's text content.
      */
-    public void setMaximumLength(int maximumLength) {
-        Utils.checkNonNegative(maximumLength, "maximumLength");
+    public void setMaximumLength(final int newMaximum) {
+        Utils.checkNonNegative(newMaximum, "maximumLength");
 
-        int previousMaximumLength = this.maximumLength;
+        int previousMaximumLength = maximumLength;
 
-        if (previousMaximumLength != maximumLength) {
-            this.maximumLength = maximumLength;
+        if (previousMaximumLength != newMaximum) {
+            maximumLength = newMaximum;
 
             // Truncate the text, if necessary
             if (characterCount > maximumLength) {
@@ -1052,17 +1133,17 @@ public class TextArea extends Component {
     /**
      * Sets the text area's editable flag.
      *
-     * @param editable Whether or not the text should now be editable.
+     * @param editableValue Whether or not the text should now be editable.
      */
-    public void setEditable(boolean editable) {
-        if (this.editable != editable) {
-            if (!editable) {
+    public void setEditable(final boolean editableValue) {
+        if (editable != editableValue) {
+            if (!editableValue) {
                 if (isFocused()) {
                     clearFocus();
                 }
             }
 
-            this.editable = editable;
+            editable = editableValue;
 
             textAreaListeners.editableChanged(this);
         }
@@ -1080,13 +1161,13 @@ public class TextArea extends Component {
     /**
      * Sets the text area's text key.
      *
-     * @param textKey The text key, or {@code null} to clear the binding.
+     * @param newTextKey The text key, or {@code null} to clear the binding.
      */
-    public void setTextKey(String textKey) {
-        String previousTextKey = this.textKey;
+    public void setTextKey(final String newTextKey) {
+        String previousTextKey = textKey;
 
-        if (previousTextKey != textKey) {
-            this.textKey = textKey;
+        if (previousTextKey != newTextKey) {
+            textKey = newTextKey;
             textAreaBindingListeners.textKeyChanged(this, previousTextKey);
         }
     }
@@ -1095,13 +1176,13 @@ public class TextArea extends Component {
         return textBindType;
     }
 
-    public void setTextBindType(BindType textBindType) {
-        Utils.checkNull(textBindType, "Text bind type");
+    public void setTextBindType(final BindType newTextBindType) {
+        Utils.checkNull(newTextBindType, "textBindType");
 
-        BindType previousTextBindType = this.textBindType;
+        BindType previousTextBindType = textBindType;
 
-        if (previousTextBindType != textBindType) {
-            this.textBindType = textBindType;
+        if (previousTextBindType != newTextBindType) {
+            textBindType = newTextBindType;
             textAreaBindingListeners.textBindTypeChanged(this, previousTextBindType);
         }
     }
@@ -1110,17 +1191,17 @@ public class TextArea extends Component {
         return textBindMapping;
     }
 
-    public void setTextBindMapping(TextBindMapping textBindMapping) {
-        TextBindMapping previousTextBindMapping = this.textBindMapping;
+    public void setTextBindMapping(final TextBindMapping newTextBindMapping) {
+        TextBindMapping previousTextBindMapping = textBindMapping;
 
-        if (previousTextBindMapping != textBindMapping) {
-            this.textBindMapping = textBindMapping;
+        if (previousTextBindMapping != newTextBindMapping) {
+            textBindMapping = newTextBindMapping;
             textAreaBindingListeners.textBindMappingChanged(this, previousTextBindMapping);
         }
     }
 
     @Override
-    public void load(Object context) {
+    public void load(final Object context) {
         if (textKey != null && JSON.containsKey(context, textKey) && textBindType != BindType.STORE) {
             Object value = JSON.get(context, textKey);
 
@@ -1135,7 +1216,7 @@ public class TextArea extends Component {
     }
 
     @Override
-    public void store(Object context) {
+    public void store(final Object context) {
         if (textKey != null && textBindType != BindType.LOAD) {
             String text = getText();
             JSON.put(context, textKey,
@@ -1159,61 +1240,53 @@ public class TextArea extends Component {
      * appropriate number of spaces during {@link #setText} and
      * {@link #insertText} operations.
      *
-     * @param expandTabs <code>true</code> to replace tab characters with space
+     * @param expandValue <code>true</code> to replace tab characters with space
      * characters (depending on the setting of the
      * {@link TextArea.Skin#getTabWidth} value) or <code>false</code> to leave
      * tabs alone. Note: this only affects tabs encountered during program
      * operations; tabs entered via the keyboard by the user are always
      * expanded, regardless of this setting.
      */
-    public void setExpandTabs(boolean expandTabs) {
-        this.expandTabs = expandTabs;
+    public void setExpandTabs(final boolean expandValue) {
+        expandTabs = expandValue;
     }
 
-    public int getInsertionPoint(int x, int y) {
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
-        return textAreaSkin.getInsertionPoint(x, y);
+    public int getInsertionPoint(final int x, final int y) {
+        return getTextAreaSkin().getInsertionPoint(x, y);
     }
 
-    public int getNextInsertionPoint(int x, int from, ScrollDirection direction) {
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
-        return textAreaSkin.getNextInsertionPoint(x, from, direction);
+    public int getNextInsertionPoint(final int x, final int from, final ScrollDirection direction) {
+        return getTextAreaSkin().getNextInsertionPoint(x, from, direction);
     }
 
-    public int getRowAt(int index) {
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
-        return textAreaSkin.getRowAt(index);
+    public int getRowAt(final int index) {
+        return getTextAreaSkin().getRowAt(index);
     }
 
-    public int getRowOffset(int index) {
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
-        return textAreaSkin.getRowOffset(index);
+    public int getRowOffset(final int index) {
+        return getTextAreaSkin().getRowOffset(index);
     }
 
-    public int getRowLength(int index) {
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
-        return textAreaSkin.getRowLength(index);
+    public int getRowLength(final int index) {
+        return getTextAreaSkin().getRowLength(index);
     }
 
-    public CharSequence getRowCharacters(int index) {
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
+    public CharSequence getRowCharacters(final int index) {
+        TextArea.Skin textAreaSkin = getTextAreaSkin();
         int offset = textAreaSkin.getRowOffset(index);
         int length = textAreaSkin.getRowLength(index);
         return getCharacters(offset, offset + length);
     }
 
     public int getRowCount() {
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
-        return textAreaSkin.getRowCount();
+        return getTextAreaSkin().getRowCount();
     }
 
-    public Bounds getCharacterBounds(int index) {
-        // We need to validate in case we get called from user-code after
-        // a user-code initiated modification, but before another layout has
-        // run.
+    public Bounds getCharacterBounds(final int index) {
+        // We need to validate in case we get called from user-code after a user-code
+        // initiated modification, but before another layout has run.
         validate();
-        TextArea.Skin textAreaSkin = (TextArea.Skin) getSkin();
-        return textAreaSkin.getCharacterBounds(index);
+        return getTextAreaSkin().getCharacterBounds(index);
     }
 
     public ListenerList<TextAreaListener> getTextAreaListeners() {
