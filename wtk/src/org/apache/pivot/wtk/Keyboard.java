@@ -41,6 +41,10 @@ public final class Keyboard {
     public enum Modifier {
         SHIFT, CTRL, ALT, META;
 
+        /**
+         * @return The one-bit mask for this modifier, which is
+         * {@code 2**ordinal}.
+         */
         public int getMask() {
             return 1 << ordinal();
         }
@@ -96,15 +100,28 @@ public final class Keyboard {
 
         public static final String COMMAND_ABBREVIATION = "CMD";
 
-        public KeyStroke(final int keyCode, final int modifiers) {
-            this.keyCode = keyCode;
+        /**
+         * Construct from a key code and the bit mask of the desired modifiers.
+         * @param code The key code desired.
+         * @param modifiers The bit mask of modifiers to use.
+         * @see Keyboard.KeyCode
+         * @see Keyboard.Modifier
+         */
+        public KeyStroke(final int code, final int modifiers) {
+            this.keyCode = code;
             this.keyModifiers = modifiers;
         }
 
+        /**
+         * @return The key code associated with this keystroke.
+         */
         public int getKeyCode() {
             return keyCode;
         }
 
+        /**
+         * @return The bit mask of modifiers associated with this keystroke.
+         */
         public int getModifiers() {
             return keyModifiers;
         }
@@ -160,6 +177,15 @@ public final class Keyboard {
             return KeyEvent.getKeyText(keyCode);
         }
 
+        /**
+         * Decode a keystroke value from its string representation.
+         *
+         * @param value Input value, such as {@code "Cmd-F1"} or
+         *              {@code "Ctrl-Shift-Left"}.
+         * @return      The corresponding {@code KeyStroke} value.
+         * @throws IllegalArgumentException if the input string cannot be
+         *         decoded.
+         */
         public static KeyStroke decode(final String value) {
             Utils.checkNull(value, "value");
 
@@ -169,7 +195,7 @@ public final class Keyboard {
             String[] keys = value.split("-");
             for (int i = 0, n = keys.length; i < n; i++) {
                 if (i < n - 1) {
-                    // Modifier
+                    // The first n-1 parts are Modifier values
                     String modifierAbbreviation = keys[i].toUpperCase(Locale.ENGLISH);
 
                     Modifier modifier;
@@ -181,7 +207,7 @@ public final class Keyboard {
 
                     keyModifiers |= modifier.getMask();
                 } else {
-                    // Keycode
+                    // The final part is the KeyCode itself
                     try {
                         Field keyCodeField = KeyCode.class.getField(keys[i].toUpperCase(Locale.ENGLISH));
                         keyCode = ((Integer) keyCodeField.get(null)).intValue();
@@ -314,12 +340,25 @@ public final class Keyboard {
         return currentModifiers;
     }
 
+    /**
+     * Set the current set of pressed keyboard modifiers.
+     *
+     * @param modifiers The complete bit mask of current modifiers.
+     */
     protected static void setModifiers(final int modifiers) {
         currentModifiers = modifiers;
     }
 
     /**
      * Tests the pressed state of a modifier.
+     *
+     * <p> Note: this method tests whether or not one modifier is pressed.
+     * It does not, however, test if this is the ONLY modifier pressed. Use
+     * one of the {@code arePressed(...)} methods for that purpose. To test
+     * efficiently for whether more than one modifier is pressed, use one
+     * of the {@code areAnyPressed(...)} or {@code areAllPressed(...)} methods.
+     * And finally, to succinctly test for the "Cmd" key (which is
+     * platform-dependent) being pressed, use {@link isCmdPressed}.
      *
      * @param modifier The modifier to test.
      * @return {@code true} if the modifier is pressed; {@code false},
