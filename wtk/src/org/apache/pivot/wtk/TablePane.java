@@ -28,8 +28,8 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Container that arranges components in a two-dimensional grid, optionally
- * spanning multiple rows and columns, much like an HTML {@code <table>}
- * element. <p> Note that unlike an HTML {@code <table>}, components that
+ * spanning multiple rows and columns, much like an HTML <code>&lt;table&gt;</code>
+ * element. <p> Note that unlike an HTML <code>&lt;tablei&gt;</code>, components that
  * span multiple rows or columns will not "push" other components out of their
  * way. Instead, the spanning components will simply overlay the cells into
  * which they span. This means that application developers may have to use
