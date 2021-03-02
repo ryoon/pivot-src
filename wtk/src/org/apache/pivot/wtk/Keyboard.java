@@ -369,7 +369,7 @@ public final class Keyboard {
      * @return {@code true} if any of them are pressed, {@code false}
      * if none are pressed.
      */
-    public static boolean areAnyPressed(final Modifier... modifiers {
+    public static boolean areAnyPressed(final Modifier... modifiers) {
         return (currentModifiers & Modifier.getMask(modifiers)) > 0;
     }
 
