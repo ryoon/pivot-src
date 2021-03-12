@@ -19,6 +19,8 @@ package org.apache.pivot.util;
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.NoSuchFileException;
 
 
@@ -71,6 +73,38 @@ public final class ExceptionUtils {
     }
 
     /**
+     * Produce a more readable exception name from the given exception.
+     *
+     * @param       ex      The exception in question.
+     * @return              A "nicer" or more readable name to use in reporting.
+     */
+    private static String exceptionName(Throwable ex) {
+        String simpleName = ex.getClass().getSimpleName();
+        String nicerName  = simpleName;
+
+        switch (simpleName) {
+            case "CharacterCodingException":
+            case "NumberFormatException":
+                break;
+            default:
+                nicerName = simpleName.replace("Exception", "").replace("Error", "");
+                break;
+        }
+
+        // Make the exception name a little easier to read
+        StringBuilder buf = new StringBuilder(nicerName.length() * 2);
+        for (int i = 0; i < nicerName.length(); i++) {
+            char ch = nicerName.charAt(i);
+            if (i > 0 && Character.isUpperCase(ch)) {
+                buf.append(' ');
+            }
+            buf.append(ch);
+        }
+
+        return buf.toString();
+    }
+
+    /**
      * Incremental version with more options.
      *
      * @param    ex          The exception to report.
@@ -90,26 +124,28 @@ public final class ExceptionUtils {
         final boolean convertTabs) {
 
         for (Throwable next = ex; next != null;) {
-            String msg, className;
+            String msg, name;
 
             if (useToString) {
                 msg = next.toString();
             } else {
-                msg       = next.getLocalizedMessage();
-                className = next.getClass().getSimpleName();
+                msg  = next.getLocalizedMessage();
+                name = exceptionName(next);
 
                 if (msg == null) {
-                    msg = className;
+                    msg = name;
                 } else if ((next instanceof UnknownHostException)
                         || (next instanceof NoClassDefFoundError)
                         || (next instanceof ClassNotFoundException)
                         || (next instanceof NullPointerException)
                         || (next instanceof CharacterCodingException)
+                        || (next instanceof IllegalCharsetNameException)
+                        || (next instanceof UnsupportedCharsetException)
                         || (next instanceof FileNotFoundException)
                         || (next instanceof NoSuchFileException)
                         || (next instanceof UnsupportedOperationException)
                         || (next instanceof NumberFormatException)) {
-                    msg = String.format("%1$s: %2$s", className, msg);
+                    msg = String.format("%1$s \"%2$s\"", name, msg);
                 }
             }
             buf.append(msg);
