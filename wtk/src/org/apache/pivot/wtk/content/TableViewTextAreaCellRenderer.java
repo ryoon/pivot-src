@@ -16,10 +16,7 @@
  */
 package org.apache.pivot.wtk.content;
 
-import java.awt.Color;
-
 import org.apache.pivot.json.JSON;
-import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Insets;
 import org.apache.pivot.wtk.Style;
 import org.apache.pivot.wtk.TableView;
@@ -31,7 +28,7 @@ import org.apache.pivot.wtk.TextArea;
  */
 public class TableViewTextAreaCellRenderer extends TextArea implements TableView.CellRenderer {
     public TableViewTextAreaCellRenderer() {
-        getStyles().put(Style.margin, new Insets(2));
+        putStyle(Style.margin, new Insets(2));
     }
 
     @Override
@@ -57,27 +54,24 @@ public class TableViewTextAreaCellRenderer extends TextArea implements TableView
     }
 
     protected void renderStyles(TableView tableView, boolean rowSelected, boolean rowDisabled) {
-        Component.StyleDictionary tableViewStyles = tableView.getStyles();
-        Component.StyleDictionary styles = getStyles();
+        copyStyle(Style.font, tableView);
 
-        styles.copy(Style.font, tableViewStyles);
-
-        Color color;
+        Style colorStyle;
         if (tableView.isEnabled() && !rowDisabled) {
             if (rowSelected) {
                 if (tableView.isFocused()) {
-                    color = tableViewStyles.getColor(Style.selectionColor);
+                    colorStyle = Style.selectionColor;
                 } else {
-                    color = tableViewStyles.getColor(Style.inactiveSelectionColor);
+                    colorStyle = Style.inactiveSelectionColor;
                 }
             } else {
-                color = tableViewStyles.getColor(Style.color);
+                colorStyle = Style.color;
             }
         } else {
-            color = tableViewStyles.getColor(Style.disabledColor);
+            colorStyle = Style.disabledColor;
         }
 
-        styles.put(Style.color, color);
+        putStyle(Style.color, tableView.getStyleColor(colorStyle));
     }
 
     @Override

@@ -16,10 +16,7 @@
  */
 package org.apache.pivot.wtk.content;
 
-import java.awt.Color;
-
 import org.apache.pivot.json.JSON;
-import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Insets;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Style;
@@ -31,8 +28,8 @@ import org.apache.pivot.wtk.VerticalAlignment;
  */
 public class TableViewCellRenderer extends Label implements TableView.CellRenderer {
     public TableViewCellRenderer() {
-        getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        getStyles().put(Style.padding, new Insets(2));
+        putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        putStyle(Style.padding, new Insets(2));
     }
 
     @Override
@@ -58,27 +55,24 @@ public class TableViewCellRenderer extends Label implements TableView.CellRender
     }
 
     protected void renderStyles(TableView tableView, boolean rowSelected, boolean rowDisabled) {
-        Component.StyleDictionary tableViewStyles = tableView.getStyles();
-        Component.StyleDictionary styles = getStyles();
+        copyStyle(Style.font, tableView);
 
-        styles.copy(Style.font, tableViewStyles);
-
-        Color color;
+        Style colorStyle;
         if (tableView.isEnabled() && !rowDisabled) {
             if (rowSelected) {
                 if (tableView.isFocused()) {
-                    color = tableViewStyles.getColor(Style.selectionColor);
+                    colorStyle = Style.selectionColor;
                 } else {
-                    color = tableViewStyles.getColor(Style.inactiveSelectionColor);
+                    colorStyle = Style.inactiveSelectionColor;
                 }
             } else {
-                color = tableViewStyles.getColor(Style.color);
+                colorStyle = Style.color;
             }
         } else {
-            color = tableViewStyles.getColor(Style.disabledColor);
+            colorStyle = Style.disabledColor;
         }
 
-        styles.put(Style.color, color);
+        putStyle(Style.color, tableView.getStyleColor(colorStyle));
     }
 
     @Override

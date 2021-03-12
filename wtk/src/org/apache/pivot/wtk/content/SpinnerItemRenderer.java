@@ -16,8 +16,6 @@
  */
 package org.apache.pivot.wtk.content;
 
-import java.awt.Color;
-
 import org.apache.pivot.wtk.Insets;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Spinner;
@@ -30,8 +28,8 @@ import org.apache.pivot.wtk.VerticalAlignment;
  */
 public class SpinnerItemRenderer extends Label implements Spinner.ItemRenderer {
     public SpinnerItemRenderer() {
-        getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        getStyles().put(Style.padding, new Insets(2));
+        putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        putStyle(Style.padding, new Insets(2));
     }
 
     @Override
@@ -52,16 +50,16 @@ public class SpinnerItemRenderer extends Label implements Spinner.ItemRenderer {
     }
 
     protected void renderStyles(Spinner spinner) {
-        getStyles().copy(Style.font, spinner.getStyles());
+        copyStyle(Style.font, spinner);
 
-        Color color;
+        Style colorStyle;
         if (spinner.isEnabled()) {
-            color = spinner.getStyles().getColor(Style.color);
+            colorStyle = Style.color;
         } else {
-            color = spinner.getStyles().getColor(Style.disabledColor);
+            colorStyle = Style.disabledColor;
         }
 
-        getStyles().put(Style.color, color);
+        putStyle(Style.color, spinner.getStyleColor(colorStyle));
     }
 
     @Override

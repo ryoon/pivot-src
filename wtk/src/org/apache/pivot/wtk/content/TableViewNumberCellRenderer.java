@@ -35,11 +35,11 @@ public class TableViewNumberCellRenderer extends TableViewCellRenderer {
     public static final NumberFormat DEFAULT_NUMBER_FORMAT = NumberFormat.getNumberInstance();
 
     public TableViewNumberCellRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
 
         // Apply more padding on the right so the right-aligned cells don't
         // appear to run into left-aligned cells in the next column
-        getStyles().put(Style.padding, new Insets(2, 2, 2, 6));
+        putStyle(Style.padding, new Insets(2, 2, 2, 6));
     }
 
     public NumberFormat getNumberFormat() {

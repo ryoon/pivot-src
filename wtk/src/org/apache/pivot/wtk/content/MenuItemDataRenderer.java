@@ -41,7 +41,7 @@ public class MenuItemDataRenderer extends TablePane implements Button.DataRender
 
     @SuppressWarnings("unused")
     public MenuItemDataRenderer() {
-        getStyles().put(Style.padding, new Insets(2));
+        putStyle(Style.padding, new Insets(2));
 
         new TablePane.Column(this, 1, true);
         new TablePane.Column(this);
@@ -49,14 +49,14 @@ public class MenuItemDataRenderer extends TablePane implements Button.DataRender
         BoxPane boxPane = new BoxPane();
         boxPane.add(imageView);
         boxPane.add(textLabel);
-        boxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        boxPane.getStyles().put(Style.padding, new Insets(0, 0, 0, 6));
+        boxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        boxPane.putStyle(Style.padding, new Insets(0, 0, 0, 6));
 
         TablePane.Row row = new TablePane.Row(this);
         row.add(boxPane);
         row.add(keyboardShortcutLabel);
 
-        imageView.getStyles().put(Style.backgroundColor, null);
+        imageView.putStyle(Style.backgroundColor, null);
     }
 
     @Override
@@ -90,44 +90,45 @@ public class MenuItemDataRenderer extends TablePane implements Button.DataRender
         // If the button is selected, icon is a checkmark; otherwise,
         // attempt to retrieve icon from button data
         if (button.isSelected()) {
-            icon = (Image) button.getStyles().get(Style.checkmarkImage);
+            icon = (Image) button.getStyle(Style.checkmarkImage);
         }
 
         // Update the image view
         Menu.Item menuItem = (Menu.Item) button;
         Menu menu = (Menu) menuItem.getParent();
 
-        int margin = menu.getStyles().getInt(Style.margin);
-        Insets padding = (Insets) getStyles().get(Style.padding);
+        int margin = menu.getStyleInt(Style.margin);
+        Insets padding = (Insets) getStyle(Style.padding);
 
         imageView.setImage(icon);
         imageView.setPreferredWidth(margin - padding.left * 2);
-        imageView.getStyles().put(Style.opacity, Float.valueOf(button.isEnabled() ? 1.0f : 0.5f));
+        imageView.putStyle(Style.opacity, Float.valueOf(button.isEnabled() ? 1.0f : 0.5f));
 
         // Update the labels
         textLabel.setText(text != null ? text : "");
 
-        Font font = menu.getStyles().getFont(Style.font);
-        textLabel.getStyles().put(Style.font, font);
-        keyboardShortcutLabel.getStyles().put(Style.font, font.deriveFont(Font.ITALIC));
+        Font font = menu.getStyleFont(Style.font);
+        textLabel.putStyle(Style.font, font);
+        keyboardShortcutLabel.putStyle(Style.font, font.deriveFont(Font.ITALIC));
 
-        Color color;
+        Style colorStyle;
         if (button.isEnabled()) {
             if (highlighted) {
-                color = menu.getStyles().getColor(Style.activeColor);
+                colorStyle = Style.activeColor;
             } else {
-                color = menu.getStyles().getColor(Style.color);
+                colorStyle = Style.color;
             }
         } else {
-            color = menu.getStyles().getColor(Style.disabledColor);
+            colorStyle = Style.disabledColor;
         }
 
-        textLabel.getStyles().put(Style.color, color);
-        keyboardShortcutLabel.getStyles().put(Style.color, color);
+        Color color = menu.getStyleColor(colorStyle);
+        textLabel.putStyle(Style.color, color);
+        keyboardShortcutLabel.putStyle(Style.color, color);
 
         boolean showKeyboardShortcuts = false;
         if (menu.getStyles().containsKey(Style.showKeyboardShortcuts)) {
-            showKeyboardShortcuts = menu.getStyles().getBoolean(Style.showKeyboardShortcuts);
+            showKeyboardShortcuts = menu.getStyleBoolean(Style.showKeyboardShortcuts);
         }
 
         if (showKeyboardShortcuts) {

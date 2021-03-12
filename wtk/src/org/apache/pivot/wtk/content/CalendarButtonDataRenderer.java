@@ -30,7 +30,7 @@ import org.apache.pivot.wtk.Style;
  */
 public class CalendarButtonDataRenderer extends ButtonDataRenderer {
     public CalendarButtonDataRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
     }
 
     @Override

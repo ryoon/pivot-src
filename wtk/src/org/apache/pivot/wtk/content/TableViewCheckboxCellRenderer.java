@@ -35,9 +35,9 @@ public class TableViewCheckboxCellRenderer extends BoxPane implements TableView.
     public TableViewCheckboxCellRenderer() {
         add(checkbox);
 
-        getStyles().put(Style.padding, 3);
-        getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        putStyle(Style.padding, 3);
+        putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
     }
 
     @Override

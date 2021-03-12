@@ -109,7 +109,7 @@ public class TreeViewNodeEditor extends Window implements TreeView.NodeEditor {
         Bounds textBounds = nodeRenderer.getTextBounds();
 
         // Calculate the bounds of what is being edited
-        Insets padding = (Insets) textInput.getStyles().get(Style.padding);
+        Insets padding = (Insets) textInput.getStyle(Style.padding);
         Bounds editBounds = new Bounds(nodeBounds.x + textBounds.x - (padding.left + 1),
             nodeBounds.y, nodeBounds.width - textBounds.x + (padding.left + 1), nodeBounds.height);
 

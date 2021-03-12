@@ -28,11 +28,11 @@ import org.apache.pivot.wtk.Style;
  */
 public class TableViewFileSizeCellRenderer extends TableViewCellRenderer {
     public TableViewFileSizeCellRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
 
         // Apply more padding on the right so the right-aligned cells don't
         // appear to run into left-aligned cells in the next column
-        getStyles().put(Style.padding, new Insets(2, 2, 2, 6));
+        putStyle(Style.padding, new Insets(2, 2, 2, 6));
     }
 
     @Override

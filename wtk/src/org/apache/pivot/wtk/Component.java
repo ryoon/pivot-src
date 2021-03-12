@@ -2250,7 +2250,7 @@ public abstract class Component implements ConstrainedVisual {
     public final Object getStyle(final Style style) {
         return styleDictionary.get(style);
     }
-        
+
     /**
      * Get the style value corresponding to the given style key.
      *
@@ -2359,6 +2359,26 @@ public abstract class Component implements ConstrainedVisual {
      */
     public final void putStyle(final String style, final Object value) {
         styleDictionary.put(style, value);
+    }
+
+    /**
+     * Copy the given style from the other component to this one.
+     *
+     * @param style The enumerated style key.
+     * @param comp The other component to copy the style from.
+     */
+    public final void copyStyle(final Style style, final Component comp) {
+        styleDictionary.copy(style, comp.styleDictionary);
+    }
+
+    /**
+     * Copy the given style from the other component to this one.
+     *
+     * @param style The style key.
+     * @param comp The other component to copy the style from.
+     */
+    public final void copyStyle(final String style, final Component comp) {
+        styleDictionary.copy(style, comp.styleDictionary);
     }
 
     /**

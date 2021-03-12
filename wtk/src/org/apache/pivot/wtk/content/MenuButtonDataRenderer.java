@@ -25,7 +25,7 @@ import org.apache.pivot.wtk.Style;
  */
 public class MenuButtonDataRenderer extends ButtonDataRenderer {
     public MenuButtonDataRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
     }
 
     @Override

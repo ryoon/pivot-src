@@ -37,13 +37,13 @@ public class ButtonDataRenderer extends BoxPane implements Button.DataRenderer {
     protected Label label = new Label();
 
     public ButtonDataRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         add(imageView);
         add(label);
 
-        imageView.getStyles().put(Style.backgroundColor, null);
+        imageView.putStyle(Style.backgroundColor, null);
     }
 
     @Override
@@ -75,12 +75,12 @@ public class ButtonDataRenderer extends BoxPane implements Button.DataRenderer {
             imageView.setVisible(true);
             imageView.setImage(icon);
 
-            imageView.getStyles().put(Style.opacity, button.isEnabled() ? Float.valueOf(1.0f) : Float.valueOf(0.5f));
+            imageView.putStyle(Style.opacity, button.isEnabled() ? Float.valueOf(1.0f) : Float.valueOf(0.5f));
 
             if (getFillIcon()) {
                 int buttonWidth = button.getWidth();
                 int buttonHeight = button.getHeight();
-                Insets padding = (Insets) button.getStyles().get(Style.padding);
+                Insets padding = (Insets) button.getStyle(Style.padding);
                 if (buttonWidth > 0) {
                     imageView.setPreferredWidth(Math.max(buttonWidth
                         - (padding.left + padding.right + 2), 0));
@@ -100,17 +100,17 @@ public class ButtonDataRenderer extends BoxPane implements Button.DataRenderer {
         } else {
             label.setVisible(true);
 
-            Font font = button.getStyles().getFont(Style.font);
-            label.getStyles().put(Style.font, font);
+            Font font = button.getStyleFont(Style.font);
+            label.putStyle(Style.font, font);
 
             Color color;
             if (button.isEnabled()) {
-                color = button.getStyles().getColor(Style.color);
+                color = button.getStyleColor(Style.color);
             } else {
-                color = button.getStyles().getColor(Style.disabledColor);
+                color = button.getStyleColor(Style.disabledColor);
             }
 
-            label.getStyles().put(Style.color, color);
+            label.putStyle(Style.color, color);
         }
     }
 
@@ -139,12 +139,12 @@ public class ButtonDataRenderer extends BoxPane implements Button.DataRenderer {
     }
 
     public boolean getFillIcon() {
-        return imageView.getStyles().getBoolean(Style.fill);
+        return imageView.getStyleBoolean(Style.fill);
     }
 
     public void setFillIcon(boolean fillIcon) {
-        imageView.getStyles().put(Style.fill, fillIcon);
-        getStyles().put(Style.fill, fillIcon);
+        imageView.putStyle(Style.fill, fillIcon);
+        putStyle(Style.fill, fillIcon);
     }
 
     @Override

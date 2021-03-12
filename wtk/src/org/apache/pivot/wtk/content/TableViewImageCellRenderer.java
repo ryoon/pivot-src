@@ -79,7 +79,7 @@ public class TableViewImageCellRenderer extends ImageView implements CellRendere
             }
 
             setImage(image);
-            getStyles().put(Style.opacity, disabled ? 0.5f : 1.0f);
+            putStyle(Style.opacity, disabled ? 0.5f : 1.0f);
         }
     }
 

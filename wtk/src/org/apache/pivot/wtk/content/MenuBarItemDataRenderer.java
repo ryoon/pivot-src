@@ -38,14 +38,14 @@ public class MenuBarItemDataRenderer extends BoxPane implements Button.DataRende
     protected Label label = new Label();
 
     public MenuBarItemDataRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
-        getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        getStyles().put(Style.padding, new Insets(4, 6, 4, 6));
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        putStyle(Style.padding, new Insets(4, 6, 4, 6));
 
         add(imageView);
         add(label);
 
-        imageView.getStyles().put(Style.backgroundColor, null);
+        imageView.putStyle(Style.backgroundColor, null);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MenuBarItemDataRenderer extends BoxPane implements Button.DataRende
         } else {
             imageView.setVisible(true);
             imageView.setImage(icon);
-            imageView.getStyles().put(Style.opacity, button.isEnabled() ? 1.0f : 0.5f);
+            imageView.putStyle(Style.opacity, button.isEnabled() ? 1.0f : 0.5f);
         }
 
         // Update the label
@@ -90,21 +90,21 @@ public class MenuBarItemDataRenderer extends BoxPane implements Button.DataRende
         } else {
             label.setVisible(true);
 
-            Font font = menuBar.getStyles().getFont(Style.font);
-            label.getStyles().put(Style.font, font);
+            Font font = menuBar.getStyleFont(Style.font);
+            label.putStyle(Style.font, font);
 
             Color color;
             if (button.isEnabled()) {
                 if (highlighted) {
-                    color = menuBar.getStyles().getColor(Style.activeColor);
+                    color = menuBar.getStyleColor(Style.activeColor);
                 } else {
-                    color = menuBar.getStyles().getColor(Style.color);
+                    color = menuBar.getStyleColor(Style.color);
                 }
             } else {
-                color = menuBar.getStyles().getColor(Style.disabledColor);
+                color = menuBar.getStyleColor(Style.disabledColor);
             }
 
-            label.getStyles().put(Style.color, color);
+            label.putStyle(Style.color, color);
         }
     }
 

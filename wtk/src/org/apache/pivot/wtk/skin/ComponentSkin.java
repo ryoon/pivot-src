@@ -353,7 +353,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
         if (tooltipText != null) {
             Label tooltipLabel = new Label(tooltipText);
             boolean tooltipWrapText = component.getTooltipWrapText();
-            tooltipLabel.getStyles().put(Style.wrapText, tooltipWrapText);
+            tooltipLabel.putStyle(Style.wrapText, tooltipWrapText);
             Tooltip tooltip = new Tooltip(tooltipLabel);
 
             Display display = component.getDisplay();

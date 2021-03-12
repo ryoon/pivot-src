@@ -28,7 +28,7 @@ public class ListButtonDataRenderer extends ButtonDataRenderer {
      * Default constructor - set necessary styles.
      */
     public ListButtonDataRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
     }
 
     @Override

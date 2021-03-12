@@ -108,7 +108,7 @@ public class ListViewItemEditor extends Window implements ListView.ItemEditor {
         Bounds textBounds = itemRenderer.getTextBounds();
 
         // Calculate the bounds of what is being edited
-        Insets padding = (Insets) textInput.getStyles().get(Style.padding);
+        Insets padding = (Insets) textInput.getStyle(Style.padding);
         Bounds editBounds = new Bounds(itemBounds.x + textBounds.x - (padding.left + 1),
             itemBounds.y, itemBounds.width - textBounds.x + (padding.left + 1), itemBounds.height);
 

@@ -16,7 +16,6 @@
  */
 package org.apache.pivot.wtk.content;
 
-import java.awt.Color;
 import java.awt.Font;
 
 import org.apache.pivot.collections.Sequence.Tree.Path;
@@ -46,8 +45,8 @@ public class TreeViewNodeRenderer extends BoxPane implements TreeView.NodeRender
     public TreeViewNodeRenderer() {
         super();
 
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
-        getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         add(imageView);
         add(label);
@@ -92,7 +91,7 @@ public class TreeViewNodeRenderer extends BoxPane implements TreeView.NodeRender
 
             // Update the image view
             imageView.setImage(icon);
-            imageView.getStyles().put(Style.opacity, (treeView.isEnabled() && !disabled) ? 1.0f : 0.5f);
+            imageView.putStyle(Style.opacity, (treeView.isEnabled() && !disabled) ? 1.0f : 0.5f);
 
             // Update the label
             label.setText(text != null ? text : "");
@@ -102,25 +101,25 @@ public class TreeViewNodeRenderer extends BoxPane implements TreeView.NodeRender
             } else {
                 label.setVisible(true);
 
-                Font font = treeView.getStyles().getFont(Style.font);
-                label.getStyles().put(Style.font, font);
+                Font font = treeView.getStyleFont(Style.font);
+                label.putStyle(Style.font, font);
 
-                Color color;
+                Style colorStyle;
                 if (treeView.isEnabled() && !disabled) {
                     if (selected) {
                         if (treeView.isFocused()) {
-                            color = treeView.getStyles().getColor(Style.selectionColor);
+                            colorStyle = Style.selectionColor;
                         } else {
-                            color = treeView.getStyles().getColor(Style.inactiveSelectionColor);
+                            colorStyle = Style.inactiveSelectionColor;
                         }
                     } else {
-                        color = treeView.getStyles().getColor(Style.color);
+                        colorStyle = Style.color;
                     }
                 } else {
-                    color = treeView.getStyles().getColor(Style.disabledColor);
+                    colorStyle = Style.disabledColor;
                 }
 
-                label.getStyles().put(Style.color, color);
+                label.putStyle(Style.color, treeView.getStyleColor(colorStyle));
             }
         }
     }
@@ -174,11 +173,11 @@ public class TreeViewNodeRenderer extends BoxPane implements TreeView.NodeRender
     }
 
     public boolean getFillIcon() {
-        return imageView.getStyles().getBoolean(Style.fill);
+        return imageView.getStyleBoolean(Style.fill);
     }
 
     public void setFillIcon(boolean fillIcon) {
-        imageView.getStyles().put(Style.fill, fillIcon);
+        imageView.putStyle(Style.fill, fillIcon);
     }
 
     /**

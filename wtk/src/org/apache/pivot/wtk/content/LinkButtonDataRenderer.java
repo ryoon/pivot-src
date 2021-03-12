@@ -36,7 +36,7 @@ public class LinkButtonDataRenderer extends TablePane implements Button.DataRend
 
     @SuppressWarnings("unused")
     public LinkButtonDataRenderer() {
-        getStyles().put(Style.horizontalSpacing, 4);
+        putStyle(Style.horizontalSpacing, 4);
 
         new TablePane.Column(this);
         new TablePane.Column(this, 1, true);
@@ -45,7 +45,7 @@ public class LinkButtonDataRenderer extends TablePane implements Button.DataRend
         row.add(imageView);
         row.add(label);
 
-        label.getStyles().put(Style.wrapText, true);
+        label.putStyle(Style.wrapText, true);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class LinkButtonDataRenderer extends TablePane implements Button.DataRend
             imageView.setVisible(true);
             imageView.setImage(icon);
 
-            imageView.getStyles().put(Style.opacity, Float.valueOf(button.isEnabled() ? 1.0f : 0.5f));
+            imageView.putStyle(Style.opacity, Float.valueOf(button.isEnabled() ? 1.0f : 0.5f));
         }
 
         // Update the label
@@ -88,20 +88,20 @@ public class LinkButtonDataRenderer extends TablePane implements Button.DataRend
         } else {
             label.setVisible(true);
 
-            Font font = button.getStyles().getFont(Style.font);
-            label.getStyles().put(Style.font, font);
+            Font font = button.getStyleFont(Style.font);
+            label.putStyle(Style.font, font);
 
             Color color;
             if (button.isEnabled()) {
-                color = button.getStyles().getColor(Style.color);
+                color = button.getStyleColor(Style.color);
             } else {
-                color = button.getStyles().getColor(Style.disabledColor);
+                color = button.getStyleColor(Style.disabledColor);
             }
 
-            label.getStyles().put(Style.color, color);
+            label.putStyle(Style.color, color);
         }
 
-        label.getStyles().put(Style.textDecoration, highlighted ? TextDecoration.UNDERLINE : null);
+        label.putStyle(Style.textDecoration, highlighted ? TextDecoration.UNDERLINE : null);
     }
 
     @Override

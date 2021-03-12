@@ -28,7 +28,7 @@ public class Checkbox extends Button {
     private static final ButtonDataRenderer DEFAULT_DATA_RENDERER = new ButtonDataRenderer();
 
     static {
-        DEFAULT_DATA_RENDERER.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        DEFAULT_DATA_RENDERER.putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
     }
 
     public Checkbox() {

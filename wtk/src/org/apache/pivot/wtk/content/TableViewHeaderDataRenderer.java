@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Font;
 
 import org.apache.pivot.wtk.BoxPane;
-import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.HorizontalAlignment;
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Insets;
@@ -39,9 +38,9 @@ public class TableViewHeaderDataRenderer extends BoxPane implements TableView.He
     protected Label label = new Label();
 
     public TableViewHeaderDataRenderer() {
-        getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
-        getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        getStyles().put(Style.padding, new Insets(1, 2, 1, 2));
+        putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        putStyle(Style.padding, new Insets(1, 2, 1, 2));
 
         add(imageView);
         add(label);
@@ -77,7 +76,7 @@ public class TableViewHeaderDataRenderer extends BoxPane implements TableView.He
             imageView.setVisible(false);
         } else {
             imageView.setVisible(true);
-            imageView.getStyles().put(Style.opacity, tableViewHeader.isEnabled() ? 1.0f : 0.5f);
+            imageView.putStyle(Style.opacity, tableViewHeader.isEnabled() ? 1.0f : 0.5f);
         }
 
         // Show/hide the label
@@ -89,22 +88,20 @@ public class TableViewHeaderDataRenderer extends BoxPane implements TableView.He
             label.setVisible(true);
 
             // Update the label styles
-            Component.StyleDictionary labelStyles = label.getStyles();
-
-            Object labelFont = tableViewHeader.getStyles().get(Style.font);
+            Object labelFont = tableViewHeader.getStyle(Style.font);
             if (labelFont instanceof Font) {
-                labelStyles.put(Style.font, labelFont);
+                label.putStyle(Style.font, labelFont);
             }
 
             Object color = null;
             if (tableViewHeader.isEnabled()) {
-                color = tableViewHeader.getStyles().get(Style.color);
+                color = tableViewHeader.getStyle(Style.color);
             } else {
-                color = tableViewHeader.getStyles().get(Style.disabledColor);
+                color = tableViewHeader.getStyle(Style.disabledColor);
             }
 
             if (color instanceof Color) {
-                labelStyles.put(Style.color, color);
+                label.putStyle(Style.color, color);
             }
         }
     }
