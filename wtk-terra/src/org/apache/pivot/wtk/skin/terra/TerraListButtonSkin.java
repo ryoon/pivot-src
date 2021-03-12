@@ -205,13 +205,13 @@ public class TerraListButtonSkin extends ListButtonSkin {
 
         // Create the panorama and border
         listViewPanorama = new Panorama(listView);
-        listViewPanorama.getStyles().put(Style.buttonBackgroundColor,
-            listView.getStyles().get(Style.backgroundColor));
-        listViewPanorama.getStyles().put(Style.alwaysShowScrollButtons, true);
+        listViewPanorama.putStyle(Style.buttonBackgroundColor,
+            listView.getStyle(Style.backgroundColor));
+        listViewPanorama.putStyle(Style.alwaysShowScrollButtons, true);
 
         listViewBorder = new Border(listViewPanorama);
-        listViewBorder.getStyles().put(Style.padding, 0);
-        listViewBorder.getStyles().put(Style.color, borderColor);
+        listViewBorder.putStyle(Style.padding, 0);
+        listViewBorder.putStyle(Style.color, borderColor);
 
         // Set the popup content
         listViewPopup.setContent(listViewBorder);
@@ -553,7 +553,7 @@ public class TerraListButtonSkin extends ListButtonSkin {
         Utils.checkNull(borderColor, "borderColor");
 
         this.borderColor = borderColor;
-        listViewBorder.getStyles().put(Style.color, borderColor);
+        listViewBorder.putStyle(Style.color, borderColor);
         repaintComponent();
     }
 
@@ -635,85 +635,85 @@ public class TerraListButtonSkin extends ListButtonSkin {
     }
 
     public Object getListFont() {
-        return listView.getStyles().get(Style.font);
+        return listView.getStyle(Style.font);
     }
 
     public void setListFont(Object listFont) {
-        listView.getStyles().put(Style.font, listFont);
+        listView.putStyle(Style.font, listFont);
     }
 
     public Object getListColor() {
-        return listView.getStyles().get(Style.color);
+        return listView.getStyle(Style.color);
     }
 
     public void setListColor(Object listColor) {
-        listView.getStyles().put(Style.color, listColor);
+        listView.putStyle(Style.color, listColor);
     }
 
     public Object getListDisabledColor() {
-        return listView.getStyles().get(Style.disabledColor);
+        return listView.getStyle(Style.disabledColor);
     }
 
     public void setListDisabledColor(Object listDisabledColor) {
-        listView.getStyles().put(Style.disabledColor, listDisabledColor);
+        listView.putStyle(Style.disabledColor, listDisabledColor);
     }
 
     public Object getListBackgroundColor() {
-        return listView.getStyles().get(Style.backgroundColor);
+        return listView.getStyle(Style.backgroundColor);
     }
 
     public void setListBackgroundColor(Object listBackgroundColor) {
-        listView.getStyles().put(Style.backgroundColor, listBackgroundColor);
-        listViewPanorama.getStyles().put(Style.buttonBackgroundColor, listBackgroundColor);
+        listView.putStyle(Style.backgroundColor, listBackgroundColor);
+        listViewPanorama.putStyle(Style.buttonBackgroundColor, listBackgroundColor);
     }
 
     public Object getListSelectionColor() {
-        return listView.getStyles().get(Style.selectionColor);
+        return listView.getStyle(Style.selectionColor);
     }
 
     public void setListSelectionColor(Object listSelectionColor) {
-        listView.getStyles().put(Style.selectionColor, listSelectionColor);
+        listView.putStyle(Style.selectionColor, listSelectionColor);
     }
 
     public Object getListSelectionBackgroundColor() {
-        return listView.getStyles().get(Style.selectionBackgroundColor);
+        return listView.getStyle(Style.selectionBackgroundColor);
     }
 
     public void setListSelectionBackgroundColor(Object listSelectionBackgroundColor) {
-        listView.getStyles().put(Style.selectionBackgroundColor, listSelectionBackgroundColor);
+        listView.putStyle(Style.selectionBackgroundColor, listSelectionBackgroundColor);
     }
 
     public Object getListInactiveSelectionColor() {
-        return listView.getStyles().get(Style.inactiveSelectionColor);
+        return listView.getStyle(Style.inactiveSelectionColor);
     }
 
     public void setListInactiveSelectionColor(Object listInactiveSelectionColor) {
-        listView.getStyles().put(Style.inactiveSelectionColor, listInactiveSelectionColor);
+        listView.putStyle(Style.inactiveSelectionColor, listInactiveSelectionColor);
     }
 
     public Object getListInactiveSelectionBackgroundColor() {
-        return listView.getStyles().get(Style.inactiveSelectionBackgroundColor);
+        return listView.getStyle(Style.inactiveSelectionBackgroundColor);
     }
 
     public void setListInactiveSelectionBackgroundColor(Object listInactiveSelectionBackgroundColor) {
-        listView.getStyles().put(Style.inactiveSelectionBackgroundColor,
+        listView.putStyle(Style.inactiveSelectionBackgroundColor,
             listInactiveSelectionBackgroundColor);
     }
 
     public Object getListHighlightColor() {
-        return listView.getStyles().get(Style.highlightColor);
+        return listView.getStyle(Style.highlightColor);
     }
 
     public void setListHighlightColor(Object listHighlightColor) {
-        listView.getStyles().put(Style.highlightColor, listHighlightColor);
+        listView.putStyle(Style.highlightColor, listHighlightColor);
     }
 
     public Object getListHighlightBackgroundColor() {
-        return listView.getStyles().get(Style.highlightBackgroundColor);
+        return listView.getStyle(Style.highlightBackgroundColor);
     }
 
     public void setListHighlightBackgroundColor(Object listHighlightBackgroundColor) {
-        listView.getStyles().put(Style.highlightBackgroundColor, listHighlightBackgroundColor);
+        listView.putStyle(Style.highlightBackgroundColor, listHighlightBackgroundColor);
     }
 
     @Override

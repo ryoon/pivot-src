@@ -81,7 +81,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
             GraphicsUtilities.setAntialiasingOn(graphics);
 
             graphics.setStroke(new BasicStroke(0));
-            graphics.setColor(flagMessageWindow.getStyles().getColor(Style.backgroundColor));
+            graphics.setColor(flagMessageWindow.getStyleColor(Style.backgroundColor));
 
             graphics.draw(arrow);
             graphics.fill(arrow);
@@ -164,8 +164,8 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
                                 flagMessageLabel.setText(message);
                                 flagMessageLabel.setSize(flagMessageLabel.getPreferredSize());
                                 flagMessageLabel.validate();
-                                flagMessageLabel.getStyles().put(Style.color, messageColor);
-                                flagMessageLabel.getStyles().put(Style.backgroundColor,
+                                flagMessageLabel.putStyle(Style.color, messageColor);
+                                flagMessageLabel.putStyle(Style.backgroundColor,
                                     messageBackgroundColor);
 
                                 int flagMessageX = field.getX() + field.getWidth()
@@ -290,8 +290,8 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
                                 break;
                         }
 
-                        flagMessageLabel.getStyles().put(Style.color, color);
-                        flagMessageWindow.getStyles().put(Style.backgroundColor, backgroundColor);
+                        flagMessageLabel.putStyle(Style.color, color);
+                        flagMessageWindow.putStyle(Style.backgroundColor, backgroundColor);
 
                         // Open the window
                         Point location = component.mapPointToAncestor(component.getDisplay(), 0,
@@ -343,7 +343,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
         Font themeFont = theme.getFont();
         labelFont = themeFont;
-        flagMessageLabel.getStyles().put(Style.font, themeFont);
+        flagMessageLabel.putStyle(Style.font, themeFont);
 
         errorIcon = theme.getSmallMessageIcon(MessageType.ERROR);
         errorMessageColor = theme.getColor(4);
@@ -375,7 +375,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         maximumFlagImageWidth = Math.max(maximumFlagImageWidth, infoIcon.getWidth());
 
         // Create the flag message popup
-        flagMessageLabel.getStyles().put(Style.padding, new Insets(3, 4, 3, 4));
+        flagMessageLabel.putStyle(Style.padding, new Insets(3, 4, 3, 4));
 
         if (!themeIsFlat()) {
             flagMessageWindow.getDecorators().add(new DropShadowDecorator());
@@ -1057,7 +1057,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         this.separatorColor = separatorColor;
 
         for (Separator separator : separators) {
-            separator.getStyles().put(Style.color, separatorColor);
+            separator.putStyle(Style.color, separatorColor);
         }
     }
 
@@ -1073,7 +1073,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
         this.separatorHeadingColor = separatorHeadingColor;
 
         for (Separator separator : separators) {
-            separator.getStyles().put(Style.headingColor, separatorHeadingColor);
+            separator.putStyle(Style.headingColor, separatorHeadingColor);
         }
     }
 
@@ -1098,7 +1098,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
             for (int fieldIndex = 0, fieldCount = section.getLength(); fieldIndex < fieldCount; fieldIndex++) {
                 Label label = labels.get(sectionIndex).get(fieldIndex);
-                label.getStyles().put(Style.font, labelFont);
+                label.putStyle(Style.font, labelFont);
             }
         }
 
@@ -1118,13 +1118,13 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
     }
 
     public final Font getMessageFont() {
-        return flagMessageLabel.getStyles().getFont(Style.font);
+        return flagMessageLabel.getStyleFont(Style.font);
     }
 
     public final void setMessageFont(final Font font) {
         Utils.checkNull(font, "messageFont");
 
-        flagMessageLabel.getStyles().put(Style.font, font);
+        flagMessageLabel.putStyle(Style.font, font);
     }
 
     public final void setMessageFont(final String fontString) {
@@ -1192,8 +1192,8 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
         // Insert separator
         Separator separator = new Separator(section.getHeading());
-        separator.getStyles().put(Style.color, separatorColor);
-        separator.getStyles().put(Style.headingColor, separatorHeadingColor);
+        separator.putStyle(Style.color, separatorColor);
+        separator.putStyle(Style.headingColor, separatorHeadingColor);
 
         separators.insert(separator, index);
         form.add(separator);
@@ -1237,7 +1237,7 @@ public class TerraFormSkin extends ContainerSkin implements FormListener, FormAt
 
         // Create the label
         Label label = new Label();
-        label.getStyles().put(Style.font, labelFont);
+        label.putStyle(Style.font, labelFont);
         labels.get(sectionIndex).insert(label, index);
         form.add(label);
 

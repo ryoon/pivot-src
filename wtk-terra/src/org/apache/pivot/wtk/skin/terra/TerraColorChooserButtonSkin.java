@@ -169,8 +169,8 @@ public class TerraColorChooserButtonSkin extends ColorChooserButtonSkin {
 
         // Create the border
         colorChooserBorder = new Border(colorChooser);
-        colorChooserBorder.getStyles().put(Style.color, borderColor);
-        colorChooserBorder.getStyles().put(Style.padding, 2);
+        colorChooserBorder.putStyle(Style.color, borderColor);
+        colorChooserBorder.putStyle(Style.padding, 2);
 
         // Set the popup content
         colorChooserPopup.setContent(colorChooserBorder);
@@ -439,7 +439,7 @@ public class TerraColorChooserButtonSkin extends ColorChooserButtonSkin {
         Utils.checkNull(borderColor, "borderColor");
 
         this.borderColor = borderColor;
-        colorChooserBorder.getStyles().put(Style.color, borderColor);
+        colorChooserBorder.putStyle(Style.color, borderColor);
         repaintComponent();
     }
 

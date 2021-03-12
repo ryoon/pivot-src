@@ -583,10 +583,10 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         activeButtonBevelColor = TerraTheme.brighten(activeTabColor);
         inactiveButtonBevelColor = TerraTheme.brighten(inactiveTabColor);
 
-        tabButtonBoxPane.getStyles().put(Style.fill, true);
+        tabButtonBoxPane.putStyle(Style.fill, true);
 
-        tabButtonPanorama.getStyles().put(Style.buttonBackgroundColor, borderColor);
-        tabButtonPanorama.getStyles().put(Style.buttonPadding, 6);
+        tabButtonPanorama.putStyle(Style.buttonBackgroundColor, borderColor);
+        tabButtonPanorama.putStyle(Style.buttonPadding, 6);
         tabButtonPanorama.setView(tabButtonBoxPane);
 
         tabButtonGroup.getButtonGroupListeners().add(new ButtonGroupListener() {
@@ -1162,7 +1162,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         Utils.checkNull(borderColor, "borderColor");
 
         this.borderColor = borderColor;
-        tabButtonPanorama.getStyles().put(Style.buttonBackgroundColor, borderColor);
+        tabButtonPanorama.putStyle(Style.buttonBackgroundColor, borderColor);
         repaintComponent();
     }
 
@@ -1300,11 +1300,11 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     public int getButtonSpacing() {
-        return tabButtonBoxPane.getStyles().getInt(Style.spacing);
+        return tabButtonBoxPane.getStyleInt(Style.spacing);
     }
 
     public void setButtonSpacing(int buttonSpacing) {
-        tabButtonBoxPane.getStyles().put(Style.spacing, buttonSpacing);
+        tabButtonBoxPane.putStyle(Style.spacing, buttonSpacing);
     }
 
     public final void setButtonCornerRadius(int buttonCornerRadius) {
@@ -1341,10 +1341,10 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
         switch (tabOrientation) {
             case HORIZONTAL:
-                tabButtonBoxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+                tabButtonBoxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
                 break;
             case VERTICAL:
-                tabButtonBoxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.TOP);
+                tabButtonBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.TOP);
                 break;
             default:
                 break;

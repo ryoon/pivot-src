@@ -87,7 +87,7 @@ public class TerraMenuBarItemSkin extends MenuBarItemSkin {
         // Paint highlight state
         if (highlight) {
             MenuBar menuBar = (MenuBar) menuBarItem.getParent();
-            Color activeBackgroundColor = menuBar.getStyles().getColor(Style.activeBackgroundColor);
+            Color activeBackgroundColor = menuBar.getStyleColor(Style.activeBackgroundColor);
             graphics.setColor(activeBackgroundColor);
             graphics.fillRect(0, 0, width, height);
         }
@@ -108,7 +108,7 @@ public class TerraMenuBarItemSkin extends MenuBarItemSkin {
 
         if (menuBarItem.isActive()) {
             MenuBar menuBar = (MenuBar) menuBarItem.getParent();
-            Color activeBackgroundColor = menuBar.getStyles().getColor(Style.activeBackgroundColor);
+            Color activeBackgroundColor = menuBar.getStyleColor(Style.activeBackgroundColor);
             opaque = (activeBackgroundColor.getTransparency() == Transparency.OPAQUE);
         }
 
@@ -116,14 +116,14 @@ public class TerraMenuBarItemSkin extends MenuBarItemSkin {
     }
 
     public Color getPopupBorderColor() {
-        return menuPopup.getStyles().getColor(Style.borderColor);
+        return menuPopup.getStyleColor(Style.borderColor);
     }
 
     public void setPopupBorderColor(Color popupBorderColor) {
-        menuPopup.getStyles().put(Style.borderColor, popupBorderColor);
+        menuPopup.putStyle(Style.borderColor, popupBorderColor);
     }
 
     public void setPopupBorderColor(String popupBorderColor) {
-        menuPopup.getStyles().put(Style.borderColor, popupBorderColor);
+        menuPopup.putStyle(Style.borderColor, popupBorderColor);
     }
 }

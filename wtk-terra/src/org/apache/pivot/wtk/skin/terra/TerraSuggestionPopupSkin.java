@@ -182,14 +182,14 @@ public class TerraSuggestionPopupSkin extends WindowSkin implements SuggestionPo
     private static final int DEFAULT_CLOSE_TRANSITION_RATE = 30;
 
     public TerraSuggestionPopupSkin() {
-        listView.getStyles().put(Style.variableItemHeight, variableItemHeight);
+        listView.putStyle(Style.variableItemHeight, variableItemHeight);
         listView.getListViewSelectionListeners().add(listViewSelectionListener);
         listView.getComponentKeyListeners().add(listViewKeyListener);
 
         listViewPanorama = new Panorama(listView);
-        listViewPanorama.getStyles().put(Style.buttonBackgroundColor,
-            listView.getStyles().getColor(Style.backgroundColor));
-        listViewPanorama.getStyles().put(Style.alwaysShowScrollButtons, true);
+        listViewPanorama.putStyle(Style.buttonBackgroundColor,
+            listView.getStyleColor(Style.backgroundColor));
+        listViewPanorama.putStyle(Style.alwaysShowScrollButtons, true);
 
         listViewBorder = new Border(listViewPanorama);
     }
@@ -216,11 +216,11 @@ public class TerraSuggestionPopupSkin extends WindowSkin implements SuggestionPo
     }
 
     public Font getFont() {
-        return listView.getStyles().getFont(Style.font);
+        return listView.getStyleFont(Style.font);
     }
 
     public void setFont(Font font) {
-        listView.getStyles().put(Style.font, font);
+        listView.putStyle(Style.font, font);
     }
 
     public final void setFont(String font) {
@@ -232,11 +232,11 @@ public class TerraSuggestionPopupSkin extends WindowSkin implements SuggestionPo
     }
 
     public Color getColor() {
-        return listView.getStyles().getColor(Style.color);
+        return listView.getStyleColor(Style.color);
     }
 
     public void setColor(Color color) {
-        listView.getStyles().put(Style.color, color);
+        listView.putStyle(Style.color, color);
     }
 
     public final void setColor(String color) {
@@ -244,11 +244,11 @@ public class TerraSuggestionPopupSkin extends WindowSkin implements SuggestionPo
     }
 
     public Color getBorderColor() {
-        return listViewBorder.getStyles().getColor(Style.color);
+        return listViewBorder.getStyleColor(Style.color);
     }
 
     public void setBorderColor(Color borderColor) {
-        listViewBorder.getStyles().put(Style.color, borderColor);
+        listViewBorder.putStyle(Style.color, borderColor);
     }
 
     public final void setBorderColor(String borderColor) {
@@ -277,7 +277,7 @@ public class TerraSuggestionPopupSkin extends WindowSkin implements SuggestionPo
 
     public void setVariableItemHeight(boolean variableItemHeight) {
         this.variableItemHeight = variableItemHeight;
-        listView.getStyles().put(Style.variableItemHeight, variableItemHeight);
+        listView.putStyle(Style.variableItemHeight, variableItemHeight);
     }
 
     @Override

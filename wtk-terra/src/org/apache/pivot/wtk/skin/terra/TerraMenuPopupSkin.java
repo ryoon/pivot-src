@@ -141,12 +141,12 @@ public class TerraMenuPopupSkin extends WindowSkin implements MenuPopupListener,
         setBackgroundColor((Color) null);
 
         panorama = new Panorama();
-        panorama.getStyles().put(Style.buttonBackgroundColor, defaultBackgroundColor());
+        panorama.putStyle(Style.buttonBackgroundColor, defaultBackgroundColor());
 
         border = new Border(panorama);
-        border.getStyles().put(Style.color, theme.getColor(7));
-        border.getStyles().put(Style.backgroundColor, null);
-        border.getStyles().put(Style.padding, 0);
+        border.putStyle(Style.color, theme.getColor(7));
+        border.putStyle(Style.backgroundColor, null);
+        border.putStyle(Style.padding, 0);
     }
 
     @Override
@@ -173,15 +173,15 @@ public class TerraMenuPopupSkin extends WindowSkin implements MenuPopupListener,
     }
 
     public Color getBorderColor() {
-        return border.getStyles().getColor(Style.color);
+        return border.getStyleColor(Style.color);
     }
 
     public void setBorderColor(Color borderColor) {
-        border.getStyles().put(Style.color, borderColor);
+        border.putStyle(Style.color, borderColor);
     }
 
     public void setBorderColor(String borderColor) {
-        border.getStyles().put(Style.color, borderColor);
+        border.putStyle(Style.color, borderColor);
     }
 
     public int getCloseTransitionDuration() {

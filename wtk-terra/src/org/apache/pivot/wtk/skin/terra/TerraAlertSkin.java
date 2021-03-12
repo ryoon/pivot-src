@@ -209,7 +209,7 @@ public class TerraAlertSkin extends TerraDialogSkin implements AlertListener {
         this.borderBackgroundColor = borderBackgroundColor;
 
         if (messageBorder != null) {
-            messageBorder.getStyles().put(Style.backgroundColor, borderBackgroundColor);
+            messageBorder.putStyle(Style.backgroundColor, borderBackgroundColor);
         }
     }
 
@@ -233,7 +233,7 @@ public class TerraAlertSkin extends TerraDialogSkin implements AlertListener {
         this.borderColor = borderColor;
 
         if (messageBorder != null) {
-            messageBorder.getStyles().put(Style.color, borderColor);
+            messageBorder.putStyle(Style.color, borderColor);
         }
     }
 

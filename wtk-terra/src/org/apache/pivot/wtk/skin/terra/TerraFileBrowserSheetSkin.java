@@ -227,19 +227,19 @@ public class TerraFileBrowserSheetSkin extends TerraSheetSkin implements FileBro
     }
 
     public boolean isHideDisabledFiles() {
-        return fileBrowser.getStyles().getBoolean(Style.hideDisabledFiles);
+        return fileBrowser.getStyleBoolean(Style.hideDisabledFiles);
     }
 
     public void setHideDisabledFiles(boolean hideDisabledFiles) {
-        fileBrowser.getStyles().put(Style.hideDisabledFiles, hideDisabledFiles);
+        fileBrowser.putStyle(Style.hideDisabledFiles, hideDisabledFiles);
     }
 
     public boolean isShowHiddenFiles() {
-        return fileBrowser.getStyles().getBoolean(Style.showHiddenFiles);
+        return fileBrowser.getStyleBoolean(Style.showHiddenFiles);
     }
 
     public void setShowHiddenFiles(boolean showHiddenFiles) {
-        fileBrowser.getStyles().put(Style.showHiddenFiles, showHiddenFiles);
+        fileBrowser.putStyle(Style.showHiddenFiles, showHiddenFiles);
     }
 
     public boolean getShowOKButtonFirst() {
@@ -357,7 +357,7 @@ public class TerraFileBrowserSheetSkin extends TerraSheetSkin implements FileBro
     public void modeChanged(FileBrowserSheet fileBrowserSheet, FileBrowserSheet.Mode previousMode) {
         FileBrowserSheet.Mode mode = fileBrowserSheet.getMode();
 
-        fileBrowser.getStyles().put(Style.keyboardFolderTraversalEnabled,
+        fileBrowser.putStyle(Style.keyboardFolderTraversalEnabled,
             (mode != FileBrowserSheet.Mode.SAVE_TO));
 
         switch (mode) {

@@ -213,7 +213,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @return The font used to render the message label's text.
      */
     public final Font getMessageFont() {
-        return messageLabel.getStyles().getFont(Style.font);
+        return messageLabel.getStyleFont(Style.font);
     }
 
     /**
@@ -222,7 +222,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param font The new font used to render the message label text.
      */
     public final void setMessageFont(final Font font) {
-        messageLabel.getStyles().put(Style.font, font);
+        messageLabel.putStyle(Style.font, font);
     }
 
     /**
@@ -231,7 +231,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param font A font specification.
      */
     public final void setMessageFont(final String font) {
-        messageLabel.getStyles().put(Style.font, font);
+        messageLabel.putStyle(Style.font, font);
     }
 
     /**
@@ -240,14 +240,14 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param font A dictionary describing a font.
      */
     public final void setMessageFont(final Dictionary<String, ?> font) {
-        messageLabel.getStyles().put(Style.font, font);
+        messageLabel.putStyle(Style.font, font);
     }
 
     /**
      * @return The foreground color of the text of the message label.
      */
     public final Color getMessageColor() {
-        return messageLabel.getStyles().getColor(Style.color);
+        return messageLabel.getStyleColor(Style.color);
     }
 
     /**
@@ -256,7 +256,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param color The new foreground color for the label text.
      */
     public final void setMessageColor(final Color color) {
-        messageLabel.getStyles().put(Style.color, color);
+        messageLabel.putStyle(Style.color, color);
     }
 
     /**
@@ -265,14 +265,14 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param color Any of the recognized color values.
      */
     public final void setMessageColor(final String color) {
-        messageLabel.getStyles().put(Style.color, color);
+        messageLabel.putStyle(Style.color, color);
     }
 
     /**
      * @return The background color of the message label.
      */
     public final Color getMessageBackgroundColor() {
-        return messageLabel.getStyles().getColor(Style.backgroundColor);
+        return messageLabel.getStyleColor(Style.backgroundColor);
     }
 
     /**
@@ -282,7 +282,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * (can be {@code null} to let the parent background show through).
      */
     public final void setMessageBackgroundColor(final Color backgroundColor) {
-        messageLabel.getStyles().put(Style.backgroundColor, backgroundColor);
+        messageLabel.putStyle(Style.backgroundColor, backgroundColor);
     }
 
     /**
@@ -291,14 +291,14 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param backgroundColor Any of the recognized color values.
      */
     public final void setMessageBackgroundColor(final String backgroundColor) {
-        messageLabel.getStyles().put(Style.backgroundColor, backgroundColor);
+        messageLabel.putStyle(Style.backgroundColor, backgroundColor);
     }
 
     /**
      * @return The text decoration of the message label.
      */
     public final TextDecoration getMessageTextDecoration() {
-        return (TextDecoration) messageLabel.getStyles().get(Style.textDecoration);
+        return (TextDecoration) messageLabel.getStyle(Style.textDecoration);
     }
 
     /**
@@ -307,7 +307,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param textDecoration The text decoration for the message label.
      */
     public final void setMessageTextDecoration(final TextDecoration textDecoration) {
-        messageLabel.getStyles().put(Style.textDecoration, textDecoration);
+        messageLabel.putStyle(Style.textDecoration, textDecoration);
     }
 
 }

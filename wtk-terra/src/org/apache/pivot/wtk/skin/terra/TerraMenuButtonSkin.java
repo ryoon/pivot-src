@@ -453,7 +453,7 @@ public class TerraMenuButtonSkin extends MenuButtonSkin {
         Utils.checkNull(borderColor, "borderColor");
 
         this.borderColor = borderColor;
-        menuPopup.getStyles().put(Style.borderColor, borderColor);
+        menuPopup.putStyle(Style.borderColor, borderColor);
         repaintComponent();
     }
 
@@ -589,21 +589,21 @@ public class TerraMenuButtonSkin extends MenuButtonSkin {
     }
 
     public int getCloseTransitionDuration() {
-        return menuPopup.getStyles().getInt(Style.closeTransitionDuration);
+        return menuPopup.getStyleInt(Style.closeTransitionDuration);
     }
 
     public void setCloseTransitionDuration(int closeTransitionDuration) {
-        menuPopup.getStyles().put(Style.closeTransitionDuration, closeTransitionDuration);
+        menuPopup.putStyle(Style.closeTransitionDuration, closeTransitionDuration);
         MenuButton menuButton = (MenuButton) getComponent();
         menuButton.setQueuedActionDelay(closeTransitionDuration + 50);
     }
 
     public int getCloseTransitionRate() {
-        return menuPopup.getStyles().getInt(Style.closeTransitionRate);
+        return menuPopup.getStyleInt(Style.closeTransitionRate);
     }
 
     public void setCloseTransitionRate(int closeTransitionRate) {
-        menuPopup.getStyles().put(Style.closeTransitionRate, closeTransitionRate);
+        menuPopup.putStyle(Style.closeTransitionRate, closeTransitionRate);
     }
 
     @Override

@@ -388,19 +388,19 @@ public class TerraColorChooserSkin extends ColorChooserSkin {
     }
 
     public int getSpacing() {
-        return tablePane.getStyles().getInt(Style.horizontalSpacing);
+        return tablePane.getStyleInt(Style.horizontalSpacing);
     }
 
     public void setSpacing(int spacing) {
         Utils.checkNonNegative(spacing, "spacing");
 
-        tablePane.getStyles().put(Style.horizontalSpacing, spacing);
+        tablePane.putStyle(Style.horizontalSpacing, spacing);
     }
 
     public final void setSpacing(Number spacing) {
         Utils.checkNull(spacing, "spacing");
 
-        tablePane.getStyles().put(Style.horizontalSpacing, spacing);
+        tablePane.putStyle(Style.horizontalSpacing, spacing);
     }
 
     @Override

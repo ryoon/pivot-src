@@ -240,23 +240,23 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
         new TablePane.Column(titleBarTablePane, 1, true);
         new TablePane.Column(titleBarTablePane, -1);
 
-        titleBarTablePane.getStyles().put(Style.padding, new Insets(3));
-        titleBarTablePane.getStyles().put(Style.horizontalSpacing, 3);
+        titleBarTablePane.putStyle(Style.padding, new Insets(3));
+        titleBarTablePane.putStyle(Style.horizontalSpacing, 3);
 
         TablePane.Row titleRow = new TablePane.Row(titleBarTablePane, -1);
 
         titleBoxPane = new BoxPane(Orientation.HORIZONTAL);
-        titleBoxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+        titleBoxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
 
         buttonBoxPane = new BoxPane(Orientation.HORIZONTAL);
-        buttonBoxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
-        buttonBoxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        buttonBoxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
+        buttonBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         titleRow.add(titleBoxPane);
         titleRow.add(buttonBoxPane);
 
         Font titleFont = getThemeFont().deriveFont(Font.BOLD);
-        titleLabel.getStyles().put(Style.font, titleFont);
+        titleLabel.putStyle(Style.font, titleFont);
         titleBoxPane.add(titleLabel);
 
         // Listen for click events on the title bar
@@ -459,11 +459,11 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     }
 
     public Font getTitleBarFont() {
-        return titleLabel.getStyles().getFont(Style.font);
+        return titleLabel.getStyleFont(Style.font);
     }
 
     public void setTitleBarFont(Font titleBarFont) {
-        titleLabel.getStyles().put(Style.font, titleBarFont);
+        titleLabel.putStyle(Style.font, titleBarFont);
     }
 
     public final void setTitleBarFont(String titleBarFont) {
@@ -480,7 +480,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
 
     public void setTitleBarColor(Color titleBarColor) {
         this.titleBarColor = titleBarColor;
-        titleLabel.getStyles().put(Style.color, titleBarColor);
+        titleLabel.putStyle(Style.color, titleBarColor);
     }
 
     public final void setTitleBarColor(String titleBarColor) {
@@ -650,9 +650,9 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     @Override
     public void enabledChanged(Component component) {
         if (component.isEnabled()) {
-            titleLabel.getStyles().put(Style.color, titleBarColor);
+            titleLabel.putStyle(Style.color, titleBarColor);
         } else {
-            titleLabel.getStyles().put(Style.color, disabledShadeButtonColor);
+            titleLabel.putStyle(Style.color, disabledShadeButtonColor);
         }
     }
 

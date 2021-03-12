@@ -186,22 +186,22 @@ public class TerraPaletteSkin extends WindowSkin {
         titleRow.add(titleBoxPane);
         titleRow.add(buttonBoxPane);
 
-        titleBarTablePane.getStyles().put(Style.padding, new Insets(2, 3, 2, 3));
+        titleBarTablePane.putStyle(Style.padding, new Insets(2, 3, 2, 3));
 
         // Initialize the title box pane
-        titleBoxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        titleBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
         titleBoxPane.add(titleLabel);
-        titleBoxPane.getStyles().put(Style.padding, new Insets(0, 0, 0, 3));
+        titleBoxPane.putStyle(Style.padding, new Insets(0, 0, 0, 3));
 
         Font titleFont = theme.getFont();
         titleFont = titleFont.deriveFont(Font.BOLD,
             Math.round(titleFont.getSize2D() * titleFontScale));
-        titleLabel.getStyles().put(Style.font, titleFont);
-        titleLabel.getStyles().put(Style.color, titleBarColor);
+        titleLabel.putStyle(Style.font, titleFont);
+        titleLabel.putStyle(Style.color, titleBarColor);
 
         // Initialize the button box pane
-        buttonBoxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
-        buttonBoxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        buttonBoxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
+        buttonBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
         buttonBoxPane.add(closeButton);
 
         closeButton.getComponentMouseButtonListeners().add(
@@ -454,7 +454,7 @@ public class TerraPaletteSkin extends WindowSkin {
      * specification}
      */
     public final void setTitleFont(String font) {
-        titleLabel.getStyles().put(Style.font, decodeFont(font));
+        titleLabel.putStyle(Style.font, decodeFont(font));
     }
 
     /**
@@ -463,7 +463,7 @@ public class TerraPaletteSkin extends WindowSkin {
      * @param font A dictionary {@link Theme#deriveFont describing a font}
      */
     public final void setTitleFont(Dictionary<String, ?> font) {
-        titleLabel.getStyles().put(Style.font, Theme.deriveFont(font));
+        titleLabel.putStyle(Style.font, Theme.deriveFont(font));
     }
 
     public final float getTitleFontScale() {
@@ -476,7 +476,7 @@ public class TerraPaletteSkin extends WindowSkin {
         Theme theme = currentTheme();
         Font titleFont = theme.getFont();
         titleFont = titleFont.deriveFont(Font.BOLD, Math.round(titleFont.getSize2D() * scale));
-        titleLabel.getStyles().put(Style.font, titleFont);
+        titleLabel.putStyle(Style.font, titleFont);
         invalidateComponent();
     }
 

@@ -55,7 +55,7 @@ public class TerraMenuItemSkin extends MenuItemSkin {
             Menu.Item menuItem = (Menu.Item) getComponent();
             Menu menu = (Menu) menuItem.getParent();
 
-            Color color = menu.getStyles().getColor(Style.color);
+            Color color = menu.getStyleColor(Style.color);
             graphics.setColor(color);
             graphics.setStroke(new BasicStroke(2.5f));
 
@@ -137,7 +137,7 @@ public class TerraMenuItemSkin extends MenuItemSkin {
 
         // Paint highlight state
         if (highlight) {
-            Color activeBackgroundColor = menu.getStyles().getColor(Style.activeBackgroundColor);
+            Color activeBackgroundColor = menu.getStyleColor(Style.activeBackgroundColor);
             graphics.setPaint(new GradientPaint(width / 2f, 0,
                 TerraTheme.brighten(activeBackgroundColor), width / 2f, height,
                 activeBackgroundColor));
@@ -152,7 +152,7 @@ public class TerraMenuItemSkin extends MenuItemSkin {
 
         // Paint the expander
         if (menuItem.getMenu() != null) {
-            Color color = menu.getStyles().getColor(highlight ? Style.activeColor : Style.color);
+            Color color = menu.getStyleColor(highlight ? Style.activeColor : Style.color);
             graphics.setColor(color);
             graphics.setStroke(new BasicStroke(0));
 
@@ -176,7 +176,7 @@ public class TerraMenuItemSkin extends MenuItemSkin {
 
         if (menuItem.isActive()) {
             Menu menu = (Menu) menuItem.getParent();
-            Color activeBackgroundColor = menu.getStyles().getColor(Style.activeBackgroundColor);
+            Color activeBackgroundColor = menu.getStyleColor(Style.activeBackgroundColor);
             opaque = (activeBackgroundColor.getTransparency() == Transparency.OPAQUE);
         }
 
@@ -188,11 +188,11 @@ public class TerraMenuItemSkin extends MenuItemSkin {
     }
 
     public Color getPopupBorderColor() {
-        return menuPopup.getStyles().getColor(Style.borderColor);
+        return menuPopup.getStyleColor(Style.borderColor);
     }
 
     public void setPopupBorderColor(Color popupBorderColor) {
-        menuPopup.getStyles().put(Style.borderColor, popupBorderColor);
+        menuPopup.putStyle(Style.borderColor, popupBorderColor);
     }
 
     public void setPopupBorderColor(String popupBorderColor) {

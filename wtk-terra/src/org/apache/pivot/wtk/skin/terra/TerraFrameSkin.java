@@ -272,24 +272,24 @@ public class TerraFrameSkin extends WindowSkin implements FrameListener {
         titleRow.add(titleBoxPane);
         titleRow.add(buttonBoxPane);
 
-        titleBarTablePane.getStyles().put(Style.padding, new Insets(2));
+        titleBarTablePane.putStyle(Style.padding, new Insets(2));
 
         // Initialize the title box pane
         titleBoxPane.add(iconImageView);
         titleBoxPane.add(titleLabel);
-        titleBoxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        titleBoxPane.getStyles().put(Style.padding, new Insets(0, 0, 0, 2));
+        titleBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        titleBoxPane.putStyle(Style.padding, new Insets(0, 0, 0, 2));
 
         Font titleFont = theme.getFont().deriveFont(Font.BOLD);
-        titleLabel.getStyles().put(Style.font, titleFont);
+        titleLabel.putStyle(Style.font, titleFont);
 
         iconImageView.setPreferredSize(16, 16);
-        iconImageView.getStyles().put(Style.fill, true);
-        iconImageView.getStyles().put(Style.backgroundColor, null);
+        iconImageView.putStyle(Style.fill, true);
+        iconImageView.putStyle(Style.backgroundColor, null);
 
         // Initialize the button box pane
-        buttonBoxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
-        buttonBoxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        buttonBoxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
+        buttonBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
     }
 
     @Override
@@ -851,8 +851,8 @@ public class TerraFrameSkin extends WindowSkin implements FrameListener {
     public void activeChanged(Window window, Window obverseWindow) {
         boolean active = window.isActive();
 
-        titleLabel.getStyles().put(Style.color, active ? titleBarColor : inactiveTitleBarColor);
-        iconImageView.getStyles().put(Style.opacity, Float.valueOf(active ? 1.0f : INACTIVE_ICON_OPACITY));
+        titleLabel.putStyle(Style.color, active ? titleBarColor : inactiveTitleBarColor);
+        iconImageView.putStyle(Style.opacity, Float.valueOf(active ? 1.0f : INACTIVE_ICON_OPACITY));
 
         updateButtonStyles(minimizeButton, active);
         updateButtonStyles(maximizeButton, active);
@@ -873,10 +873,10 @@ public class TerraFrameSkin extends WindowSkin implements FrameListener {
     }
 
     private void updateButtonStyles(FrameButton frameButton, boolean active) {
-        frameButton.getStyles().put(Style.color, active ? titleBarColor : inactiveTitleBarColor);
-        frameButton.getStyles().put(Style.backgroundColor,
+        frameButton.putStyle(Style.color, active ? titleBarColor : inactiveTitleBarColor);
+        frameButton.putStyle(Style.backgroundColor,
             active ? titleBarBackgroundColor : inactiveTitleBarBackgroundColor);
-        frameButton.getStyles().put(Style.borderColor,
+        frameButton.putStyle(Style.borderColor,
             active ? titleBarBorderColor : inactiveTitleBarBorderColor);
     }
 }

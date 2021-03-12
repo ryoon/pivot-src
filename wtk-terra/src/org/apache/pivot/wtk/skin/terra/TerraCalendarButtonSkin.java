@@ -169,8 +169,8 @@ public class TerraCalendarButtonSkin extends CalendarButtonSkin {
 
         // Create the border
         calendarBorder = new Border(calendar);
-        calendarBorder.getStyles().put(Style.padding, Insets.NONE);
-        calendarBorder.getStyles().put(Style.color, borderColor);
+        calendarBorder.putStyle(Style.padding, Insets.NONE);
+        calendarBorder.putStyle(Style.color, borderColor);
 
         // Set the popup content
         calendarPopup.setContent(calendarBorder);
@@ -458,7 +458,7 @@ public class TerraCalendarButtonSkin extends CalendarButtonSkin {
         Utils.checkNull(borderColor, "borderColor");
 
         this.borderColor = borderColor;
-        calendarBorder.getStyles().put(Style.color, borderColor);
+        calendarBorder.putStyle(Style.color, borderColor);
         repaintComponent();
     }
 
