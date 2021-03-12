@@ -2242,6 +2242,106 @@ public abstract class Component implements ConstrainedVisual {
     }
 
     /**
+     * Get the style value corresponding to the given style key.
+     *
+     * @param style The enumerated style key.
+     * @return The value for this style.
+     */
+    public final Object getStyle(final Style style) {
+        return styleDictionary.get(style);
+    }
+        
+    /**
+     * Get the style value corresponding to the given style key.
+     *
+     * @param style The style key.
+     * @return The value for this style.
+     */
+    public final Object getStyle(final String style) {
+        return styleDictionary.get(style);
+    }
+
+    /**
+     * Get the color value corresponding to the given style key.
+     *
+     * @param style The enumerated style key.
+     * @return The color value for that style.
+     */
+    public Color getStyleColor(final Style style) {
+        return styleDictionary.getColor(style);
+    }
+
+    /**
+     * Get the color value corresponding to the given style key.
+     *
+     * @param style The style key.
+     * @return The color value for that style.
+     */
+    public Color getStyleColor(final String style) {
+        return styleDictionary.getColor(style);
+    }
+
+    /**
+     * Get the font value corresponding to the given style key.
+     *
+     * @param style The enumerated style key.
+     * @return The font value for that style.
+     */
+    public Font getStyleFont(final Style style) {
+        return styleDictionary.getFont(style);
+    }
+
+    /**
+     * Get the font value corresponding to the given style key.
+     *
+     * @param style The style key.
+     * @return The font value for that style.
+     */
+    public Font getStyleFont(final String style) {
+        return styleDictionary.getFont(style);
+    }
+
+    /**
+     * Get the integer value corresponding to the given style key.
+     *
+     * @param style The enumerated style key.
+     * @return The integer value for that style.
+     */
+    public int getStyleInt(final Style style) {
+        return styleDictionary.getInt(style);
+    }
+
+    /**
+     * Get the integer value corresponding to the given style key.
+     *
+     * @param style The style key.
+     * @return The integer value for that style.
+     */
+    public int getStyleInt(final String style) {
+        return styleDictionary.getInt(style);
+    }
+
+    /**
+     * Get the boolean value corresponding to the given style key.
+     *
+     * @param style The enumerated style key.
+     * @return The boolean value for that style.
+     */
+    public boolean getStyleBoolean(final Style style) {
+        return styleDictionary.getBoolean(style);
+    }
+
+    /**
+     * Get the boolean value corresponding to the given style key.
+     *
+     * @param style The style key.
+     * @return The boolean value for that style.
+     */
+    public boolean getStyleBoolean(final String style) {
+        return styleDictionary.getBoolean(style);
+    }
+
+    /**
      * Put the given key/value style into the style dictionary.
      *
      * @param style The enumerated style key.
