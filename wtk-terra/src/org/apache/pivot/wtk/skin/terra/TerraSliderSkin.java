@@ -31,7 +31,6 @@ import org.apache.pivot.wtk.Mouse;
 import org.apache.pivot.wtk.Orientation;
 import org.apache.pivot.wtk.Point;
 import org.apache.pivot.wtk.Slider;
-import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.skin.ComponentSkin;
 import org.apache.pivot.wtk.skin.SliderSkin;
 
@@ -60,12 +59,12 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         @Override
-        public int getPreferredWidth(int height) {
+        public int getPreferredWidth(final int height) {
             return 0;
         }
 
         @Override
-        public int getPreferredHeight(int width) {
+        public int getPreferredHeight(final int width) {
             return 0;
         }
 
@@ -75,7 +74,7 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         @Override
-        public void paint(Graphics2D graphics) {
+        public void paint(final Graphics2D graphics) {
             int width = getWidth();
             int height = getHeight();
 
@@ -99,7 +98,7 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         @Override
-        public void enabledChanged(Component component) {
+        public void enabledChanged(final Component component) {
             super.enabledChanged(component);
 
             highlighted = false;
@@ -107,23 +106,24 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         @Override
-        public void focusedChanged(Component component, Component obverseComponent) {
+        public void focusedChanged(final Component component, final Component obverseComponent) {
             super.focusedChanged(component, obverseComponent);
 
             TerraSliderSkin.this.repaintComponent();
         }
 
         @Override
-        public boolean mouseMove(Component component, int x, int y) {
+        public boolean mouseMove(final Component component, final int x, final int y) {
             boolean consumed = super.mouseMove(component, x, y);
 
             if (Mouse.getCapturer() == component) {
-                Slider slider = (Slider) TerraSliderSkin.this.getComponent();
+                Slider slider = getSlider();
+                Point sliderLocation = thumb.mapPointToAncestor(slider, x, y);
+                float ratio;
+
                 if (slider.getOrientation() == Orientation.HORIZONTAL) {
                     int sliderWidth = slider.getWidth();
                     int thumbWidthLocal = thumb.getWidth();
-
-                    Point sliderLocation = thumb.mapPointToAncestor(slider, x, y);
                     int sliderX = sliderLocation.x;
 
                     int minX = dragOffset.x;
@@ -136,19 +136,10 @@ public class TerraSliderSkin extends SliderSkin {
                         sliderX = maxX;
                     }
 
-                    float ratio = (float) (sliderX - dragOffset.x)
-                        / (sliderWidth - thumbWidthLocal);
-
-                    int start = slider.getStart();
-                    int end = slider.getEnd();
-
-                    int value = (int) (start + (end - start) * ratio);
-                    slider.setValue(value);
+                    ratio = (float) (sliderX - dragOffset.x) / (sliderWidth - thumbWidthLocal);
                 } else {
                     int sliderHeight = slider.getHeight();
                     int thumbHeightLocal = thumb.getHeight();
-
-                    Point sliderLocation = thumb.mapPointToAncestor(slider, x, y);
                     int sliderY = sliderLocation.y;
 
                     int minY = dragOffset.y;
@@ -161,22 +152,21 @@ public class TerraSliderSkin extends SliderSkin {
                         sliderY = maxY;
                     }
 
-                    float ratio = (float) (sliderY - dragOffset.y)
-                        / (sliderHeight - thumbHeightLocal);
-
-                    int start = slider.getStart();
-                    int end = slider.getEnd();
-
-                    int value = (int) (start + (end - start) * ratio);
-                    slider.setValue(value);
+                    ratio = (float) (sliderY - dragOffset.y) / (sliderHeight - thumbHeightLocal);
                 }
+
+                int start = slider.getStart();
+                int end = slider.getEnd();
+
+                int value = (int) (start + (end - start) * ratio);
+                slider.setValue(value);
             }
 
             return consumed;
         }
 
         @Override
-        public void mouseOver(Component component) {
+        public void mouseOver(final Component component) {
             super.mouseOver(component);
 
             highlighted = true;
@@ -184,7 +174,7 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         @Override
-        public void mouseOut(Component component) {
+        public void mouseOut(final Component component) {
             super.mouseOut(component);
 
             highlighted = false;
@@ -192,7 +182,7 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         @Override
-        public boolean mouseDown(Component component, Mouse.Button button, int x, int y) {
+        public boolean mouseDown(final Component component, final Mouse.Button button, final int x, final int y) {
             boolean consumed = super.mouseDown(component, button, x, y);
 
             component.requestFocus();
@@ -209,7 +199,7 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         @Override
-        public boolean mouseUp(Component component, Mouse.Button button, int x, int y) {
+        public boolean mouseUp(final Component component, final Mouse.Button button, final int x, final int y) {
             boolean consumed = super.mouseUp(component, button, x, y);
 
             if (Mouse.getCapturer() == component) {
@@ -227,10 +217,10 @@ public class TerraSliderSkin extends SliderSkin {
          * UP} Increment the slider's value.
          */
         @Override
-        public boolean keyPressed(Component component, int keyCode, KeyLocation keyLocation) {
+        public boolean keyPressed(final Component component, final int keyCode, final KeyLocation keyLocation) {
             boolean consumed = super.keyPressed(component, keyCode, keyLocation);
 
-            Slider slider = (Slider) TerraSliderSkin.this.getComponent();
+            Slider slider = getSlider();
 
             int start = slider.getStart();
             int end = slider.getEnd();
@@ -252,7 +242,7 @@ public class TerraSliderSkin extends SliderSkin {
     }
 
     private Thumb thumb = new Thumb();
-    Point dragOffset = null;
+    private Point dragOffset = null;
 
     private Color trackColor;
     private Color buttonBackgroundColor;
@@ -282,7 +272,7 @@ public class TerraSliderSkin extends SliderSkin {
     }
 
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         Slider slider = (Slider) component;
@@ -290,8 +280,8 @@ public class TerraSliderSkin extends SliderSkin {
     }
 
     @Override
-    public int getPreferredWidth(int height) {
-        Slider slider = (Slider) getComponent();
+    public int getPreferredWidth(final int height) {
+        Slider slider = getSlider();
 
         int preferredWidth;
         if (slider.getOrientation() == Orientation.HORIZONTAL) {
@@ -304,8 +294,8 @@ public class TerraSliderSkin extends SliderSkin {
     }
 
     @Override
-    public int getPreferredHeight(int width) {
-        Slider slider = (Slider) getComponent();
+    public int getPreferredHeight(final int width) {
+        Slider slider = getSlider();
 
         int preferredHeight;
         if (slider.getOrientation() == Orientation.HORIZONTAL) {
@@ -324,7 +314,7 @@ public class TerraSliderSkin extends SliderSkin {
 
     @Override
     public void layout() {
-        Slider slider = (Slider) getComponent();
+        Slider slider = getSlider();
 
         int width = getWidth();
         int height = getHeight();
@@ -340,7 +330,6 @@ public class TerraSliderSkin extends SliderSkin {
             thumb.setLocation((int) ((width - thumbWidth) * ratio), (height - thumbHeight) / 2);
         } else {
             thumb.setSize(thumbHeight, thumbWidth);
-
             thumb.setLocation((width - thumbHeight) / 2, (int) ((height - thumbWidth) * ratio));
         }
     }
@@ -349,10 +338,10 @@ public class TerraSliderSkin extends SliderSkin {
         BasicStroke.JOIN_ROUND, 1.0f, new float[] {0.0f, 2.0f}, 0.0f);
 
     @Override
-    public void paint(Graphics2D graphics) {
+    public void paint(final Graphics2D graphics) {
         super.paint(graphics);
 
-        Slider slider = (Slider) getComponent();
+        Slider slider = getSlider();
 
         int width = getWidth();
         int height = getHeight();
@@ -400,153 +389,158 @@ public class TerraSliderSkin extends SliderSkin {
         return trackColor;
     }
 
-    public void setTrackColor(Color trackColor) {
-        Utils.checkNull(trackColor, "trackColor");
+    public void setTrackColor(final Color trackColorValue) {
+        Utils.checkNull(trackColorValue, "trackColor");
 
-        this.trackColor = trackColor;
+        this.trackColor = trackColorValue;
         repaintComponent();
     }
 
-    public final void setTrackColor(String trackColor) {
-        setTrackColor(GraphicsUtilities.decodeColor(trackColor, "trackColor"));
+    public final void setTrackColor(final String trackColorString) {
+        setTrackColor(GraphicsUtilities.decodeColor(trackColorString, "trackColor"));
     }
 
-    public final void setTrackColor(int trackColor) {
-        Theme theme = currentTheme();
-        setTrackColor(theme.getColor(trackColor));
+    public final void setTrackColor(final int trackColorIndex) {
+        setTrackColor(getColor(trackColorIndex));
     }
 
     public Color getButtonBackgroundColor() {
         return buttonBackgroundColor;
     }
 
-    public void setButtonBackgroundColor(Color buttonBackgroundColor) {
-        Utils.checkNull(buttonBackgroundColor, "buttonBackgroundColor");
+    public void setButtonBackgroundColor(final Color buttonBackgroundColorValue) {
+        Utils.checkNull(buttonBackgroundColorValue, "buttonBackgroundColor");
 
-        this.buttonBackgroundColor = buttonBackgroundColor;
+        this.buttonBackgroundColor = buttonBackgroundColorValue;
         buttonBevelColor = TerraTheme.brighten(buttonBackgroundColor);
         repaintComponent();
     }
 
-    public final void setButtonBackgroundColor(String buttonBackgroundColor) {
-        setButtonBackgroundColor(GraphicsUtilities.decodeColor(buttonBackgroundColor, "buttonBackgroundColor"));
+    public final void setButtonBackgroundColor(final String buttonBackgroundColorString) {
+        setButtonBackgroundColor(GraphicsUtilities.decodeColor(buttonBackgroundColorString, "buttonBackgroundColor"));
     }
 
-    public final void setButtonBackgroundColor(int buttonBackgroundColor) {
-        Theme theme = currentTheme();
-        setButtonBackgroundColor(theme.getColor(buttonBackgroundColor));
+    public final void setButtonBackgroundColor(final int buttonBackgroundColorIndex) {
+        setButtonBackgroundColor(getColor(buttonBackgroundColorIndex));
     }
 
     public Color getButtonBorderColor() {
         return buttonBorderColor;
     }
 
-    public void setButtonBorderColor(Color buttonBorderColor) {
-        Utils.checkNull(buttonBorderColor, "buttonBorderColor");
+    public void setButtonBorderColor(final Color buttonBorderColorValue) {
+        Utils.checkNull(buttonBorderColorValue, "buttonBorderColor");
 
-        this.buttonBorderColor = buttonBorderColor;
+        this.buttonBorderColor = buttonBorderColorValue;
         repaintComponent();
     }
 
-    public final void setButtonBorderColor(String buttonBorderColor) {
-        setButtonBorderColor(GraphicsUtilities.decodeColor(buttonBorderColor, "buttonBorderColor"));
+    public final void setButtonBorderColor(final String buttonBorderColorString) {
+        setButtonBorderColor(GraphicsUtilities.decodeColor(buttonBorderColorString, "buttonBorderColor"));
     }
 
-    public final void setButtonBorderColor(int buttonBorderColor) {
-        Theme theme = currentTheme();
-        setButtonBorderColor(theme.getColor(buttonBorderColor));
+    public final void setButtonBorderColor(final int buttonBorderColorIndex) {
+        setButtonBorderColor(getColor(buttonBorderColorIndex));
     }
 
     public int getTrackWidth() {
         return trackWidth;
     }
 
-    public void setTrackWidth(int trackWidth) {
-        Utils.checkNonNegative(trackWidth, "trackWidth");
+    public void setTrackWidth(final int trackWidthValue) {
+        Utils.checkNonNegative(trackWidthValue, "trackWidth");
 
-        this.trackWidth = trackWidth;
+        this.trackWidth = trackWidthValue;
         repaintComponent();
     }
 
-    public void setTrackWidth(Number trackWidth) {
-        Utils.checkNull(trackWidth, "trackWidth");
+    public void setTrackWidth(final Number trackWidthValue) {
+        Utils.checkNull(trackWidthValue, "trackWidth");
 
-        setTrackWidth(trackWidth.intValue());
+        setTrackWidth(trackWidthValue.intValue());
     }
 
     public int getThumbWidth() {
         return thumbWidth;
     }
 
-    public void setThumbWidth(int thumbWidth) {
-        if (thumbWidth < MINIMUM_THUMB_WIDTH) {
+    public void setThumbWidth(final int thumbWidthValue) {
+        if (thumbWidthValue < MINIMUM_THUMB_WIDTH) {
             throw new IllegalArgumentException("thumbWidth must be greater than or equal to "
                 + MINIMUM_THUMB_WIDTH);
         }
 
-        this.thumbWidth = thumbWidth;
+        this.thumbWidth = thumbWidthValue;
         invalidateComponent();
     }
 
-    public void setThumbWidth(Number thumbWidth) {
-        Utils.checkNull(thumbWidth, "thumbWidth");
+    public void setThumbWidth(final Number thumbWidthValue) {
+        Utils.checkNull(thumbWidthValue, "thumbWidth");
 
-        setThumbWidth(thumbWidth.intValue());
+        setThumbWidth(thumbWidthValue.intValue());
     }
 
     public int getThumbHeight() {
         return thumbHeight;
     }
 
-    public void setThumbHeight(int thumbHeight) {
-        if (thumbHeight < MINIMUM_THUMB_HEIGHT) {
+    public void setThumbHeight(final int thumbHeightValue) {
+        if (thumbHeightValue < MINIMUM_THUMB_HEIGHT) {
             throw new IllegalArgumentException("thumbHeight must be greater than or equal to "
                 + MINIMUM_THUMB_HEIGHT);
         }
 
-        this.thumbHeight = thumbHeight;
+        this.thumbHeight = thumbHeightValue;
         invalidateComponent();
     }
 
-    public void setThumbHeight(Number thumbHeight) {
-        Utils.checkNull(thumbHeight, "thumbHeight");
+    public void setThumbHeight(final Number thumbHeightValue) {
+        Utils.checkNull(thumbHeightValue, "thumbHeight");
 
-        setThumbHeight(thumbHeight.intValue());
+        setThumbHeight(thumbHeightValue.intValue());
     }
 
     public int getTickSpacing() {
         return tickSpacing;
     }
 
-    public void setTickSpacing(int tickSpacing) {
-        this.tickSpacing = tickSpacing;
+    /**
+     * Set the tick spacing value along the slider axis.
+     *
+     * @param tickSpacingValue An integer number of pixels to use to
+     * space out the tick marks along the axis. Less or equal zero
+     * implies don't draw tick marks.
+     */
+    public void setTickSpacing(final int tickSpacingValue) {
+        this.tickSpacing = tickSpacingValue;
         repaintComponent();
     }
 
-    public void setTickSpacing(Number tickSpacing) {
-        Utils.checkNull(tickSpacing, "tickSpacing");
+    public void setTickSpacing(final Number tickSpacingValue) {
+        Utils.checkNull(tickSpacingValue, "tickSpacing");
 
-        setTickSpacing(tickSpacing.intValue());
+        setTickSpacing(tickSpacingValue.intValue());
     }
 
     @Override
-    public boolean mouseClick(Component component, Mouse.Button button, int x, int y, int count) {
+    public boolean mouseClick(final Component component, final Mouse.Button button,
+        final int x, final int y, final int count) {
         thumb.requestFocus();
         return super.mouseClick(component, button, x, y, count);
     }
 
     @Override
-    public void rangeChanged(Slider slider, int previousStart, int previousEnd) {
+    public void rangeChanged(final Slider slider, final int previousStart, final int previousEnd) {
         invalidateComponent();
     }
 
     @Override
-    public void orientationChanged(Slider slider) {
+    public void orientationChanged(final Slider slider) {
         invalidateComponent();
     }
 
     @Override
-    public void valueChanged(Slider slider, int previousValue) {
+    public void valueChanged(final Slider slider, final int previousValue) {
         layout();
     }
 }

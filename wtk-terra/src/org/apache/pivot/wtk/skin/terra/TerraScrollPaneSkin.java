@@ -29,9 +29,6 @@ public class TerraScrollPaneSkin extends ScrollPaneSkin {
      * from {@link ScrollPaneSkin#install}.
      */
     public TerraScrollPaneSkin() {
-        super();
-
-        setBackgroundPaint(currentTheme().getColor(4));
     }
 
 }

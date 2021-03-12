@@ -78,6 +78,8 @@ public class ScrollPaneSkin extends ContainerSkin implements Viewport.Skin, Scro
     public void install(final Component component) {
         super.install(component);
 
+        setDefaultStyles();
+
         ScrollPane scrollPane = (ScrollPane) component;
         scrollPane.getViewportListeners().add(this);
         scrollPane.getScrollPaneListeners().add(this);

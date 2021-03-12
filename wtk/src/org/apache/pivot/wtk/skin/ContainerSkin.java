@@ -32,7 +32,6 @@ import org.apache.pivot.wtk.FocusTraversalDirection;
 import org.apache.pivot.wtk.FocusTraversalPolicy;
 import org.apache.pivot.wtk.GraphicsUtilities;
 import org.apache.pivot.wtk.Mouse;
-import org.apache.pivot.wtk.Theme;
 
 /**
  * Abstract base class for container skins.
@@ -44,14 +43,21 @@ public abstract class ContainerSkin extends ComponentSkin implements ContainerLi
      * of components in the container's component sequence.
      */
     public static class IndexFocusTraversalPolicy implements FocusTraversalPolicy {
+        /** Whether to wrap at the ends or not. */
         private boolean wrap;
 
+        /** Create a new policy with default wrap behavior (that is, don't wrap). */
         public IndexFocusTraversalPolicy() {
             this(false);
         }
 
-        public IndexFocusTraversalPolicy(final boolean wrap) {
-            this.wrap = wrap;
+        /**
+         * Create a new policy using the given wrap value.
+         * @param newWrap Whether or not the policy should wrap around the ends
+         * of the container.
+         */
+        public IndexFocusTraversalPolicy(final boolean newWrap) {
+            this.wrap = newWrap;
         }
 
         @Override
@@ -84,7 +90,6 @@ public abstract class ContainerSkin extends ComponentSkin implements ContainerLi
                                 }
                             }
                         }
-
                         break;
 
                     case BACKWARD:
@@ -106,7 +111,6 @@ public abstract class ContainerSkin extends ComponentSkin implements ContainerLi
                                 }
                             }
                         }
-
                         break;
 
                     default:
@@ -118,8 +122,10 @@ public abstract class ContainerSkin extends ComponentSkin implements ContainerLi
         }
     }
 
+    /** The {@link Paint} value to use for our background. */
     private Paint backgroundPaint = null;
 
+    /** The default behavior to use for focus traversal among the children of this container. */
     private static final FocusTraversalPolicy DEFAULT_FOCUS_TRAVERSAL_POLICY = new IndexFocusTraversalPolicy();
 
     @Override
@@ -178,31 +184,31 @@ public abstract class ContainerSkin extends ComponentSkin implements ContainerLi
     /**
      * Sets the object used to paint the background of the container.
      *
-     * @param backgroundPaint The new {@link Paint} object to paint the background.
+     * @param newBackgroundPaint The new {@link Paint} object to paint the background.
      */
-    public void setBackgroundPaint(final Paint backgroundPaint) {
-        this.backgroundPaint = backgroundPaint;
+    public void setBackgroundPaint(final Paint newBackgroundPaint) {
+        this.backgroundPaint = newBackgroundPaint;
         repaintComponent();
     }
 
     /**
      * Sets the object used to paint the background of the container.
      *
-     * @param backgroundPaint A string recognized by Pivot as a
+     * @param backgroundPaintString A string recognized by Pivot as a
      * {@linkplain GraphicsUtilities#decodePaint(String) Color or Paint value}.
      */
-    public final void setBackgroundPaint(final String backgroundPaint) {
-        setBackgroundPaint(GraphicsUtilities.decodePaint(backgroundPaint));
+    public final void setBackgroundPaint(final String backgroundPaintString) {
+        setBackgroundPaint(GraphicsUtilities.decodePaint(backgroundPaintString));
     }
 
     /**
      * Sets the object used to paint the background of the container.
      *
-     * @param backgroundPaint A dictionary containing a
+     * @param backgroundPaintDictionary A dictionary containing a
      * {@linkplain GraphicsUtilities#decodePaint(Dictionary) Paint description}.
      */
-    public final void setBackgroundPaint(final Dictionary<String, ?> backgroundPaint) {
-        setBackgroundPaint(GraphicsUtilities.decodePaint(backgroundPaint));
+    public final void setBackgroundPaint(final Dictionary<String, ?> backgroundPaintDictionary) {
+        setBackgroundPaint(GraphicsUtilities.decodePaint(backgroundPaintDictionary));
     }
 
     /**
@@ -225,22 +231,21 @@ public abstract class ContainerSkin extends ComponentSkin implements ContainerLi
     /**
      * Sets the background of the container to a solid color.
      *
-     * @param backgroundColor Any of the
+     * @param backgroundColorString Any of the
      * {@linkplain GraphicsUtilities#decodeColor color values recognized by
      * Pivot}.
      */
-    public final void setBackgroundColor(final String backgroundColor) {
-        setBackgroundColor(GraphicsUtilities.decodeColor(backgroundColor, "backgroundColor"));
+    public final void setBackgroundColor(final String backgroundColorString) {
+        setBackgroundColor(GraphicsUtilities.decodeColor(backgroundColorString, "backgroundColor"));
     }
 
     /**
      * Sets the background of the container to one of the theme colors.
      *
-     * @param backgroundColor An index into the theme's color palette.
+     * @param backgroundColorIndex An index into the theme's color palette.
      */
-    public final void setBackgroundColor(final int backgroundColor) {
-        Theme theme = currentTheme();
-        setBackgroundColor(theme.getColor(backgroundColor));
+    public final void setBackgroundColor(final int backgroundColorIndex) {
+        setBackgroundColor(getColor(backgroundColorIndex));
     }
 
     // Container events

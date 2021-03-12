@@ -16,51 +16,73 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
-import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.skin.TextPaneSkin;
 
 /**
- * Terra text area skin. This part of the skin deals with color
+ * Terra Text Pane skin. This part of the skin deals with color
  * selection that is specific to the theme.
  */
 public class TerraTextPaneSkin extends TextPaneSkin {
+    /**
+     * Specific constructor with nothing to do.
+     * <p> Default colors, etc. set by call to {@link TerraTheme#setDefaultStyles}
+     * from {@link TextPaneSkin#install}.
+     */
     public TerraTextPaneSkin() {
-        setColor(1);
-        setBackgroundColor(11);
-        setInactiveColor(7);
-        setSelectionColor(4);
-        setSelectionBackgroundColor(14);
-        setInactiveSelectionColor(1);
-        setInactiveSelectionBackgroundColor(9);
     }
 
-    public final void setColor(int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
+    /**
+     * Set the foreground color to the given theme index color.
+     *
+     * @param color The theme index for the new foreground color.
+     */
+    public final void setColor(final int color) {
+        setColor(getColor(color));
     }
 
-    public final void setInactiveColor(int inactiveColor) {
-        Theme theme = currentTheme();
-        setInactiveColor(theme.getColor(inactiveColor));
+    /**
+     * Set the inactive color to the given theme index color.
+     *
+     * @param inactiveColor The theme index for the new inactive color.
+     */
+    public final void setInactiveColor(final int inactiveColor) {
+        setInactiveColor(getColor(inactiveColor));
     }
 
-    public final void setSelectionColor(int selectionColor) {
-        Theme theme = currentTheme();
-        setSelectionColor(theme.getColor(selectionColor));
+    /**
+     * Set the selection color to the given theme index color.
+     *
+     * @param selectionColor The theme index for the new selection color.
+     */
+    public final void setSelectionColor(final int selectionColor) {
+        setSelectionColor(getColor(selectionColor));
     }
 
-    public final void setSelectionBackgroundColor(int selectionBackgroundColor) {
-        Theme theme = currentTheme();
-        setSelectionBackgroundColor(theme.getColor(selectionBackgroundColor));
+    /**
+     * Set the selection background color to the given theme index color.
+     *
+     * @param selectionBackgroundColor The theme index for the new selection background color.
+     */
+    public final void setSelectionBackgroundColor(final int selectionBackgroundColor) {
+        setSelectionBackgroundColor(getColor(selectionBackgroundColor));
     }
 
-    public final void setInactiveSelectionColor(int inactiveSelectionColor) {
-        Theme theme = currentTheme();
-        setInactiveSelectionColor(theme.getColor(inactiveSelectionColor));
+    /**
+     * Set the inactive selection color to the given theme index color.
+     *
+     * @param inactiveSelectionColor The theme index for the new inactive selection color.
+     */
+    public final void setInactiveSelectionColor(final int inactiveSelectionColor) {
+        setInactiveSelectionColor(getColor(inactiveSelectionColor));
     }
 
-    public final void setInactiveSelectionBackgroundColor(int inactiveSelectionBackgroundColor) {
-        Theme theme = currentTheme();
-        setInactiveSelectionBackgroundColor(theme.getColor(inactiveSelectionBackgroundColor));
+    /**
+     * Set the inactive selection background color to the given theme index color.
+     *
+     * @param inactiveSelectionBackgroundColor The theme index for the new inactive selection
+     * background color.
+     */
+    public final void setInactiveSelectionBackgroundColor(final int inactiveSelectionBackgroundColor) {
+        setInactiveSelectionBackgroundColor(getColor(inactiveSelectionBackgroundColor));
     }
 }

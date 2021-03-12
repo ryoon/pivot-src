@@ -67,12 +67,14 @@
         //    selectionColor = Color.DARK_GRAY;
         //    inactiveSelectionColor = Color.DARK_GRAY;
         // }
+
         // These were taken from TextAreaSkin (after the preceding code):
         backgroundColor : 'null',
         inactiveColor : 'GRAY',
         margin : 4,
         wrapText : true,
         tabWidth : 4,
+
         // But, the colors below were taken from TerraTextAreaSkin...
         color : 1,
         backgroundColor : 11,
@@ -81,6 +83,57 @@
         selectionBackgroundColor : 14,
         inactiveSelectionColor : 1,
         inactiveSelectionBackgroundColor : 9
+    },
+
+    TerraTextPaneSkin : {
+        // TODO: Conflicts with TextPaneSkin, whose constructor says this:
+        // color = defaultForegroundColor();
+        // selectionBackgroundColor = defaultForegroundColor();
+        // inactiveSelectionBackgroundColor = defaultForegroundColor();
+        // if (!themeIsDark()) {
+        //     selectionColor = Color.LIGHT_GRAY;
+        //     inactiveSelectionColor = Color.LIGHT_GRAY;
+        // } else {
+        //     selectionColor = Color.DARK_GRAY;
+        //     inactiveSelectionColor = Color.DARK_GRAY;
+        // }
+        // inactiveColor = Color.GRAY;
+
+        // While these colors were taken from TerraTextPaneSkin...
+        color : 1,
+        backgroundColor : 11,
+        inactiveColor : 7,
+        selectionColor : 4,
+        selectionBackgroundColor : 14,
+        inactiveSelectionColor : 1,
+        inactiveSelectionBackgroundColor : 9
+    },
+
+    TerraScrollPaneSkin : {
+        backgroundColor : 4
+    },
+
+    TerraTreeViewSkin : {
+        // Taken from TerraTreeViewSkin constructor...
+        color : 1,
+        disabledColor : 7,
+        backgroundColor : 4,
+        selectionColor : 4,
+        selectionBackgroundColor : 14,
+        inactiveSelectionColor : 1,
+        inactiveSelectionBackgroundColor : 10,
+        highlightColor : 1,
+        highlightBackgroundColor : 10,
+        spacing : 6,
+        indent : 16,
+        showHighlight : true,
+        showBranchControls : true,
+        showEmptyBranchControls : true,
+        branchControlColor : 12,
+        branchControlSelectionColor : 4,
+        branchControlInactiveSelectionColor : 14,
+        gridColor : 11,
+        showGridLines : false
     }
 
     /* More to come ... */

@@ -60,22 +60,22 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         /**
          * Starts spinning the specified spinner.
          *
-         * @param spinnerArgument The spinner to spin
-         * @param directionArgument <code>1</code> to adjust the spinner's selected
+         * @param spinnerValue The spinner to spin
+         * @param directionValue <code>1</code> to adjust the spinner's selected
          * index larger; <code>-1</code> to adjust it smaller
          * @exception IllegalStateException If automatic spinner of any spinner
          * is already in progress. Only one spinner may be automatically spun at
          * one time
          */
-        public void start(Spinner spinnerArgument, int directionArgument) {
-            assert (directionArgument != 0) : "Spinner direction must be positive or negative";
+        public void start(final Spinner spinnerValue, final int directionValue) {
+            assert (directionValue != 0) : "Spinner direction must be positive or negative";
 
             if (scheduledSpinnerCallback != null) {
                 throw new IllegalStateException("Spinner is already running");
             }
 
-            this.spinner = spinnerArgument;
-            this.direction = directionArgument;
+            this.spinner = spinnerValue;
+            this.direction = directionValue;
 
             // Run once to register we've started, then wait a timeout period and begin rapidly spinning
             scheduledSpinnerCallback = ApplicationContext.runAndScheduleRecurringCallback(() -> spin(), 400, 30);
@@ -136,10 +136,10 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
      */
     protected class SpinnerContentSkin extends ComponentSkin {
         @Override
-        public int getPreferredWidth(int height) {
+        public int getPreferredWidth(final int height) {
             int preferredWidth = 0;
 
-            Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+            Spinner spinner = getSpinner();
             Spinner.ItemRenderer itemRenderer = spinner.getItemRenderer();
 
             if (sizeToContent) {
@@ -158,10 +158,10 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public int getPreferredHeight(int width) {
+        public int getPreferredHeight(final int width) {
             int preferredHeight = 0;
 
-            Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+            Spinner spinner = getSpinner();
             Spinner.ItemRenderer itemRenderer = spinner.getItemRenderer();
 
             itemRenderer.render(spinner.getSelectedItem(), spinner);
@@ -171,8 +171,8 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public int getBaseline(int width, int height) {
-            Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+        public int getBaseline(final int width, final int height) {
+            Spinner spinner = getSpinner();
 
             int baseline = -1;
 
@@ -187,7 +187,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         public Dimensions getPreferredSize() {
             Dimensions preferredSize;
 
-            Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+            Spinner spinner = getSpinner();
             Spinner.ItemRenderer itemRenderer = spinner.getItemRenderer();
 
             if (sizeToContent) {
@@ -206,9 +206,9 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public void paint(Graphics2D graphics) {
+        public void paint(final Graphics2D graphics) {
             SpinnerContent spinnerContentLocal = (SpinnerContent) getComponent();
-            Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+            Spinner spinner = getSpinner();
 
             int width = getWidth();
             int height = getHeight();
@@ -243,7 +243,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public void focusedChanged(Component component, Component obverseComponent) {
+        public void focusedChanged(final Component component, final Component obverseComponent) {
             super.focusedChanged(component, obverseComponent);
 
             repaintComponent();
@@ -254,10 +254,10 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
          * {@link KeyCode#DOWN DOWN} Select the next spinner item.
          */
         @Override
-        public boolean keyPressed(Component component, int keyCode, KeyLocation keyLocation) {
+        public boolean keyPressed(final Component component, final int keyCode, final KeyLocation keyLocation) {
             boolean consumed = false;
 
-            Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+            Spinner spinner = getSpinner();
 
             boolean circular = spinner.isCircular();
             int count = spinner.getSpinnerData().getLength();
@@ -294,10 +294,10 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
          * rendered text matches the typed key (case insensitive).
          */
         @Override
-        public boolean keyTyped(Component component, char character) {
+        public boolean keyTyped(final Component component, final char character) {
             boolean consumed = super.keyTyped(component, character);
 
-            Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+            Spinner spinner = getSpinner();
             List<?> spinnerData = spinner.getSpinnerData();
             Spinner.ItemRenderer itemRenderer = spinner.getItemRenderer();
 
@@ -328,7 +328,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         private int direction;
         private Image buttonImage;
 
-        public SpinButton(int direction, Image buttonImage) {
+        public SpinButton(final int direction, final Image buttonImage) {
             this.direction = direction;
             this.buttonImage = buttonImage;
 
@@ -352,12 +352,12 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         private boolean pressed = false;
 
         @Override
-        public int getPreferredWidth(int height) {
+        public int getPreferredWidth(final int height) {
             return BUTTON_IMAGE_SIZE + 6;
         }
 
         @Override
-        public int getPreferredHeight(int width) {
+        public int getPreferredHeight(final int width) {
             return BUTTON_IMAGE_SIZE + 2;
         }
 
@@ -367,7 +367,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public void paint(Graphics2D graphics) {
+        public void paint(final Graphics2D graphics) {
             // Apply spinner styles to the button
             SpinButton spinButton = (SpinButton) getComponent();
 
@@ -396,7 +396,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public void enabledChanged(Component component) {
+        public void enabledChanged(final Component component) {
             super.enabledChanged(component);
 
             automaticSpinner.stop();
@@ -407,7 +407,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public void mouseOver(Component component) {
+        public void mouseOver(final Component component) {
             super.mouseOver(component);
 
             highlighted = true;
@@ -415,7 +415,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public void mouseOut(Component component) {
+        public void mouseOut(final Component component) {
             super.mouseOut(component);
 
             automaticSpinner.stop();
@@ -426,12 +426,12 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public boolean mouseDown(Component component, Mouse.Button button, int x, int y) {
+        public boolean mouseDown(final Component component, final Mouse.Button button, final int x, final int y) {
             boolean consumed = super.mouseDown(component, button, x, y);
 
             if (button == Mouse.Button.LEFT) {
                 SpinButton spinButton = (SpinButton) getComponent();
-                Spinner spinner = (Spinner) TerraSpinnerSkin.this.getComponent();
+                Spinner spinner = getSpinner();
 
                 // Start the automatic spinner. It'll be stopped when we
                 // mouse up or mouse out
@@ -445,7 +445,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public boolean mouseUp(Component component, Mouse.Button button, int x, int y) {
+        public boolean mouseUp(final Component component, final Mouse.Button button, final int x, final int y) {
             boolean consumed = super.mouseUp(component, button, x, y);
 
             if (button == Mouse.Button.LEFT) {
@@ -474,7 +474,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         }
 
         @Override
-        public void paint(Graphics2D graphics) {
+        public void paint(final Graphics2D graphics) {
             graphics.setStroke(new BasicStroke(0));
             graphics.setPaint(buttonColor);
         }
@@ -482,7 +482,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
 
     protected class SpinUpImage extends SpinButtonImage {
         @Override
-        public void paint(Graphics2D graphics) {
+        public void paint(final Graphics2D graphics) {
             super.paint(graphics);
 
             int[] xPoints = {0, 2, 4};
@@ -494,7 +494,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
 
     protected class SpinDownImage extends SpinButtonImage {
         @Override
-        public void paint(Graphics2D graphics) {
+        public void paint(final Graphics2D graphics) {
             super.paint(graphics);
 
             int[] xPoints = {0, 2, 4};
@@ -524,19 +524,15 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
     public static final int BUTTON_IMAGE_SIZE = 5;
 
     public TerraSpinnerSkin() {
-        setColor(1);
-        setBackgroundColor(4);
-        setDisabledColor(7);
-        setBorderColor(7);
-        setButtonColor(1);
-        setButtonBackgroundColor(10);
+        setFont(getThemeFont());
+    }
 
-        Theme theme = currentTheme();
-        setFont(theme.getFont());
+    private Spinner getSpinner() {
+        return (Spinner) getComponent();
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(final int width, final int height) {
         int previousWidth = getWidth();
         int previousHeight = getHeight();
 
@@ -548,8 +544,10 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
     }
 
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
+
+        setDefaultStyles();
 
         Spinner spinner = (Spinner) component;
         spinner.getSpinnerListeners().add(this);
@@ -561,29 +559,30 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
     }
 
     @Override
-    public int getPreferredWidth(int height) {
+    public int getPreferredWidth(final int trialHeight) {
         // Preferred width is the sum of our maximum button width plus the
         // content width, plus the border
 
         // Border thickness
         int preferredWidth = 2;
 
-        int buttonHeight = (height < 0 ? -1 : height / 2);
+        int buttonHeight = (trialHeight < 0 ? -1 : trialHeight / 2);
         preferredWidth += Math.max(upButton.getPreferredWidth(buttonHeight),
             downButton.getPreferredWidth(buttonHeight));
 
-        if (height >= 0) {
+        int heightConstraint = trialHeight;
+        if (heightConstraint >= 0) {
             // Subtract border thickness from height constraint
-            height = Math.max(height - 2, 0);
+            heightConstraint = Math.max(heightConstraint - 2, 0);
         }
 
-        preferredWidth += spinnerContent.getPreferredWidth(height);
+        preferredWidth += spinnerContent.getPreferredWidth(heightConstraint);
 
         return preferredWidth;
     }
 
     @Override
-    public int getPreferredHeight(int width) {
+    public int getPreferredHeight(final int trialWidth) {
         // Preferred height is the maximum of the button height and the
         // renderer's preferred height (plus the border), where button
         // height is defined as the larger of the two buttons' preferred
@@ -594,20 +593,21 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
 
         int preferredHeight = Math.max(upButtonPreferredSize.height, downButtonPreferredSize.height) * 2;
 
-        if (width >= 0) {
+        int widthConstraint = trialWidth;
+        if (widthConstraint >= 0) {
             // Subtract the button and border width from width constraint
             int buttonWidth = Math.max(upButtonPreferredSize.width, downButtonPreferredSize.width);
 
-            width = Math.max(width - buttonWidth - 2, 0);
+            widthConstraint = Math.max(widthConstraint - buttonWidth - 2, 0);
         }
 
-        preferredHeight = Math.max(preferredHeight, spinnerContent.getPreferredHeight(width)) + 1;
+        preferredHeight = Math.max(preferredHeight, spinnerContent.getPreferredHeight(widthConstraint)) + 1;
 
         return preferredHeight;
     }
 
     @Override
-    public int getBaseline(int width, int height) {
+    public int getBaseline(final int width, final int height) {
         Dimensions upButtonPreferredSize = upButton.getPreferredSize();
         Dimensions downButtonPreferredSize = downButton.getPreferredSize();
         int buttonWidth = Math.max(upButtonPreferredSize.width, downButtonPreferredSize.width);
@@ -644,7 +644,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
     }
 
     @Override
-    public void paint(Graphics2D graphics) {
+    public void paint(final Graphics2D graphics) {
         super.paint(graphics);
 
         int width = getWidth();
@@ -672,13 +672,14 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
     }
 
     @Override
-    public void enabledChanged(Component component) {
+    public void enabledChanged(final Component component) {
         super.enabledChanged(component);
         repaintComponent();
     }
 
     @Override
-    public boolean mouseClick(Component component, Mouse.Button button, int x, int y, int count) {
+    public boolean mouseClick(final Component component, final Mouse.Button button,
+            final int x, final int y, final int count) {
         spinnerContent.requestFocus();
         return false;
     }
@@ -692,125 +693,120 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(final Color color) {
         Utils.checkNull(color, "color");
 
         this.color = color;
         repaintComponent();
     }
 
-    public final void setColor(String color) {
+    public final void setColor(final String color) {
         setColor(GraphicsUtilities.decodeColor(color, "color"));
     }
 
-    public final void setColor(int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
+    public final void setColor(final int color) {
+        setColor(getColor(color));
     }
 
     public Color getDisabledColor() {
         return disabledColor;
     }
 
-    public void setDisabledColor(Color disabledColor) {
+    public void setDisabledColor(final Color disabledColor) {
         Utils.checkNull(disabledColor, "disabledColor");
 
         this.disabledColor = disabledColor;
         repaintComponent();
     }
 
-    public final void setDisabledColor(String disabledColor) {
-        setDisabledColor(GraphicsUtilities.decodeColor(disabledColor, "disabledColor"));
+    public final void setDisabledColor(final String disabledColorString) {
+        setDisabledColor(GraphicsUtilities.decodeColor(disabledColorString, "disabledColor"));
     }
 
-    public final void setDisabledColor(int disabledColor) {
-        Theme theme = currentTheme();
-        setDisabledColor(theme.getColor(disabledColor));
+    public final void setDisabledColor(final int disabledColorIndex) {
+        setDisabledColor(getColor(disabledColorIndex));
     }
 
     public Color getBorderColor() {
         return borderColor;
     }
 
-    public void setBorderColor(Color borderColor) {
+    public void setBorderColor(final Color borderColor) {
         Utils.checkNull(borderColor, "borderColor");
 
         this.borderColor = borderColor;
         repaintComponent();
     }
 
-    public final void setBorderColor(String borderColor) {
-        setBorderColor(GraphicsUtilities.decodeColor(borderColor, "borderColor"));
+    public final void setBorderColor(final String borderColorString) {
+        setBorderColor(GraphicsUtilities.decodeColor(borderColorString, "borderColor"));
     }
 
-    public final void setBorderColor(int borderColor) {
-        Theme theme = currentTheme();
-        setBorderColor(theme.getColor(borderColor));
+    public final void setBorderColor(final int borderColorIndex) {
+        setBorderColor(getColor(borderColorIndex));
     }
 
     public Color getButtonColor() {
         return buttonColor;
     }
 
-    public void setButtonColor(Color buttonColor) {
+    public void setButtonColor(final Color buttonColor) {
         // TODO: is null acceptable here?
         this.buttonColor = buttonColor;
         repaintComponent();
     }
 
-    public final void setButtonColor(String buttonColor) {
-        setButtonColor(GraphicsUtilities.decodeColor(buttonColor, "buttonColor"));
+    public final void setButtonColor(final String buttonColorString) {
+        setButtonColor(GraphicsUtilities.decodeColor(buttonColorString, "buttonColor"));
     }
 
-    public final void setButtonColor(int buttonColor) {
-        Theme theme = currentTheme();
-        setButtonColor(theme.getColor(buttonColor));
+    public final void setButtonColor(final int buttonColorIndex) {
+        setButtonColor(getColor(buttonColorIndex));
     }
 
     public Color getButtonBackgroundColor() {
         return buttonBackgroundColor;
     }
 
-    public void setButtonBackgroundColor(Color buttonBackgroundColor) {
+    public void setButtonBackgroundColor(final Color buttonBackgroundColor) {
         // TODO: not sure if null is acceptable here (certainly if theme is flat)
         this.buttonBackgroundColor = buttonBackgroundColor;
         this.buttonBevelColor = TerraTheme.brighten(buttonBackgroundColor);
         repaintComponent();
     }
 
-    public final void setButtonBackgroundColor(String buttonBackgroundColor) {
-        setButtonBackgroundColor(GraphicsUtilities.decodeColor(buttonBackgroundColor, "buttonBackgroundColor"));
+    public final void setButtonBackgroundColor(final String buttonBackgroundColorString) {
+        setButtonBackgroundColor(GraphicsUtilities.decodeColor(buttonBackgroundColorString, "buttonBackgroundColor"));
     }
 
-    public final void setButtonBackgroundColor(int buttonBackgroundColor) {
-        Theme theme = currentTheme();
-        setButtonBackgroundColor(theme.getColor(buttonBackgroundColor));
+    public final void setButtonBackgroundColor(final int buttonBackgroundColorIndex) {
+        setButtonBackgroundColor(getColor(buttonBackgroundColorIndex));
     }
 
     public Font getFont() {
         return font;
     }
 
-    public void setFont(Font font) {
+    public void setFont(final Font font) {
         Utils.checkNull(font, "font");
 
         this.font = font;
         invalidateContent();
     }
 
-    public final void setFont(String font) {
-        setFont(decodeFont(font));
+    public final void setFont(final String fontString) {
+        setFont(decodeFont(fontString));
     }
 
-    public final void setFont(Dictionary<String, ?> font) {
-        setFont(Theme.deriveFont(font));
+    public final void setFont(final Dictionary<String, ?> fontDictionary) {
+        setFont(Theme.deriveFont(fontDictionary));
     }
 
     public boolean isSizeToContent() {
         return sizeToContent;
     }
 
-    public void setSizeToContent(boolean sizeToContent) {
+    public void setSizeToContent(final boolean sizeToContent) {
         this.sizeToContent = sizeToContent;
         invalidateContent();
     }
@@ -825,28 +821,28 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
     // SpinnerListener methods
 
     @Override
-    public void spinnerDataChanged(Spinner spinner, List<?> previousSpinnerData) {
+    public void spinnerDataChanged(final Spinner spinner, final List<?> previousSpinnerData) {
         invalidateContent();
     }
 
     @Override
-    public void itemRendererChanged(Spinner spinner, Spinner.ItemRenderer previousItemRenderer) {
+    public void itemRendererChanged(final Spinner spinner, final Spinner.ItemRenderer previousItemRenderer) {
         invalidateContent();
     }
 
     @Override
-    public void circularChanged(Spinner spinner) {
+    public void circularChanged(final Spinner spinner) {
         // No-op
     }
 
     // SpinnerSelectionListener methods
     @Override
-    public void selectedIndexChanged(Spinner spinner, int previousSelectedIndex) {
+    public void selectedIndexChanged(final Spinner spinner, final int previousSelectedIndex) {
         // No-op
     }
 
     @Override
-    public void selectedItemChanged(Spinner spinner, Object previousSelectedItem) {
+    public void selectedItemChanged(final Spinner spinner, final Object previousSelectedItem) {
         invalidateContent();
     }
 }

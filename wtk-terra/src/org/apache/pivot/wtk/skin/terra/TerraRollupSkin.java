@@ -213,8 +213,7 @@ public class TerraRollupSkin extends RollupSkin {
         rollupButton = new RollupButton();
         rollup.add(rollupButton);
 
-        Theme theme = currentTheme();
-        theme.setDefaultStyles(this);
+        setDefaultStyles();
 
         // Initialize state
         headingChanged(rollup, null);

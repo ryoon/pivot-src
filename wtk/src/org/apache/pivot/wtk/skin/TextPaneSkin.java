@@ -274,7 +274,7 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
 
     private boolean caretOn = false;
 
-    protected boolean doingCaretCalculations = false;
+    private boolean doingCaretCalculations = false;
 
     private int anchor = -1;
     private SelectDirection selectDirection = null;
@@ -306,8 +306,7 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
     private static final int SCROLL_RATE = 30;
 
     public TextPaneSkin() {
-        Theme theme = Theme.getTheme();
-        font = theme.getFont();
+        font = getThemeFont();
 
         color = defaultForegroundColor();
         selectionBackgroundColor = defaultForegroundColor();
@@ -326,6 +325,8 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
     @Override
     public void install(final Component component) {
         super.install(component);
+
+        setDefaultStyles();
 
         TextPane textPane = (TextPane) component;
         textPane.getTextPaneListeners().add(this);
@@ -550,6 +551,11 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
         return characterBounds;
     }
 
+    /** @return Current flag value that indicates we are doing caret location calculations. */
+    public boolean getDoingCaretCalculations() {
+        return doingCaretCalculations;
+    }
+
     /**
      * Gets current value of style that determines the behavior of <code>TAB</code>
      * and <code>Ctrl-TAB</code> characters.
@@ -567,13 +573,13 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
      * Sets current value of style that determines the behavior of <code>TAB</code>
      * and <code>Ctrl-TAB</code> characters.
      *
-     * @param acceptsTab {@code true} if <code>TAB</code> inserts an appropriate
+     * @param acceptsTabValue {@code true} if <code>TAB</code> inserts an appropriate
      * number of spaces, while <code>Ctrl-TAB</code> shifts focus to next component.
      * {@code false} (default) means <code>TAB</code> shifts focus and
      * <code>Ctrl-TAB</code> inserts spaces.
      */
-    public void setAcceptsTab(final boolean acceptsTab) {
-        this.acceptsTab = acceptsTab;
+    public void setAcceptsTab(final boolean acceptsTabValue) {
+        this.acceptsTab = acceptsTabValue;
     }
 
     @Override
@@ -581,10 +587,10 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
         return tabWidth;
     }
 
-    public void setTabWidth(final int tabWidth) {
-        Utils.checkNonNegative(tabWidth, "tabWidth");
+    public void setTabWidth(final int tabWidthValue) {
+        Utils.checkNonNegative(tabWidthValue, "tabWidth");
 
-        this.tabWidth = tabWidth;
+        this.tabWidth = tabWidthValue;
     }
 
     private void scrollCharacterToVisible(final int offset) {
@@ -606,31 +612,31 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
     /**
      * Sets the font of the text.
      *
-     * @param font The new font for all the text.
+     * @param newFont The new font for all the text.
      */
-    public void setFont(final Font font) {
-        Utils.checkNull(font, "font");
+    public void setFont(final Font newFont) {
+        Utils.checkNull(newFont, "font");
 
-        this.font = font;
+        this.font = newFont;
         invalidateComponent();
     }
 
     /**
      * Sets the font of the text.
      *
-     * @param font A {@link ComponentSkin#decodeFont(String) font specification}
+     * @param fontString A {@link ComponentSkin#decodeFont(String) font specification}
      */
-    public final void setFont(final String font) {
-        setFont(decodeFont(font));
+    public final void setFont(final String fontString) {
+        setFont(decodeFont(fontString));
     }
 
     /**
      * Sets the font of the text.
      *
-     * @param font A dictionary {@link Theme#deriveFont describing a font}
+     * @param fontDictionary A dictionary {@link Theme#deriveFont describing a font}
      */
-    public final void setFont(final Dictionary<String, ?> font) {
-        setFont(Theme.deriveFont(font));
+    public final void setFont(final Dictionary<String, ?> fontDictionary) {
+        setFont(Theme.deriveFont(fontDictionary));
     }
 
     /**
@@ -643,68 +649,68 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
     /**
      * Sets the foreground color of the text.
      *
-     * @param color The new text color.
+     * @param colorValue The new text color.
      */
-    public void setColor(final Color color) {
-        Utils.checkNull(color, "color");
+    public void setColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "color");
 
-        this.color = color;
+        this.color = colorValue;
         repaintComponent();
     }
 
     /**
      * Sets the foreground color of the text.
      *
-     * @param color Any of the {@linkplain GraphicsUtilities#decodeColor color
+     * @param colorString Any of the {@linkplain GraphicsUtilities#decodeColor color
      * values recognized by Pivot}.
      */
-    public final void setColor(final String color) {
-        setColor(GraphicsUtilities.decodeColor(color, "color"));
+    public final void setColor(final String colorString) {
+        setColor(GraphicsUtilities.decodeColor(colorString, "color"));
     }
 
     public Color getInactiveColor() {
         return inactiveColor;
     }
 
-    public void setInactiveColor(final Color inactiveColor) {
-        Utils.checkNull(inactiveColor, "inactiveColor");
+    public void setInactiveColor(final Color inactiveColorValue) {
+        Utils.checkNull(inactiveColorValue, "inactiveColor");
 
-        this.inactiveColor = inactiveColor;
+        this.inactiveColor = inactiveColorValue;
         repaintComponent();
     }
 
-    public final void setInactiveColor(final String inactiveColor) {
-        setColor(GraphicsUtilities.decodeColor(inactiveColor, "inactiveColor"));
+    public final void setInactiveColor(final String inactiveColorString) {
+        setColor(GraphicsUtilities.decodeColor(inactiveColorString, "inactiveColor"));
     }
 
     public Color getSelectionColor() {
         return selectionColor;
     }
 
-    public void setSelectionColor(final Color selectionColor) {
-        Utils.checkNull(selectionColor, "selectionColor");
+    public void setSelectionColor(final Color selectionColorValue) {
+        Utils.checkNull(selectionColorValue, "selectionColor");
 
-        this.selectionColor = selectionColor;
+        this.selectionColor = selectionColorValue;
         repaintComponent();
     }
 
-    public final void setSelectionColor(final String selectionColor) {
-        setSelectionColor(GraphicsUtilities.decodeColor(selectionColor, "selectionColor"));
+    public final void setSelectionColor(final String selectionColorString) {
+        setSelectionColor(GraphicsUtilities.decodeColor(selectionColorString, "selectionColor"));
     }
 
     public Color getSelectionBackgroundColor() {
         return selectionBackgroundColor;
     }
 
-    public void setSelectionBackgroundColor(final Color selectionBackgroundColor) {
-        Utils.checkNull(selectionBackgroundColor, "selectionBackgroundColor");
+    public void setSelectionBackgroundColor(final Color selectionBackgroundColorValue) {
+        Utils.checkNull(selectionBackgroundColorValue, "selectionBackgroundColor");
 
-        this.selectionBackgroundColor = selectionBackgroundColor;
+        this.selectionBackgroundColor = selectionBackgroundColorValue;
         repaintComponent();
     }
 
-    public final void setSelectionBackgroundColor(final String selectionBackgroundColor) {
-        setSelectionBackgroundColor(GraphicsUtilities.decodeColor(selectionBackgroundColor,
+    public final void setSelectionBackgroundColor(final String selectionBackgroundColorString) {
+        setSelectionBackgroundColor(GraphicsUtilities.decodeColor(selectionBackgroundColorString,
             "selectionBackgroundColor"));
     }
 
@@ -712,15 +718,15 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
         return inactiveSelectionColor;
     }
 
-    public void setInactiveSelectionColor(final Color inactiveSelectionColor) {
-        Utils.checkNull(inactiveSelectionColor, "inactiveSelectionColor");
+    public void setInactiveSelectionColor(final Color inactiveSelectionColorValue) {
+        Utils.checkNull(inactiveSelectionColorValue, "inactiveSelectionColor");
 
-        this.inactiveSelectionColor = inactiveSelectionColor;
+        this.inactiveSelectionColor = inactiveSelectionColorValue;
         repaintComponent();
     }
 
-    public final void setInactiveSelectionColor(final String inactiveSelectionColor) {
-        setInactiveSelectionColor(GraphicsUtilities.decodeColor(inactiveSelectionColor,
+    public final void setInactiveSelectionColor(final String inactiveSelectionColorString) {
+        setInactiveSelectionColor(GraphicsUtilities.decodeColor(inactiveSelectionColorString,
             "inactiveSelectionColor"));
     }
 
@@ -728,15 +734,15 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
         return inactiveSelectionBackgroundColor;
     }
 
-    public void setInactiveSelectionBackgroundColor(final Color inactiveSelectionBackgroundColor) {
-        Utils.checkNull(inactiveSelectionBackgroundColor, "inactiveSelectionBackgroundColor");
+    public void setInactiveSelectionBackgroundColor(final Color inactiveSelectionBackgroundColorValue) {
+        Utils.checkNull(inactiveSelectionBackgroundColorValue, "inactiveSelectionBackgroundColor");
 
-        this.inactiveSelectionBackgroundColor = inactiveSelectionBackgroundColor;
+        this.inactiveSelectionBackgroundColor = inactiveSelectionBackgroundColorValue;
         repaintComponent();
     }
 
-    public final void setInactiveSelectionBackgroundColor(final String inactiveSelectionBackgroundColor) {
-        setInactiveSelectionBackgroundColor(GraphicsUtilities.decodeColor(inactiveSelectionBackgroundColor,
+    public final void setInactiveSelectionBackgroundColor(final String inactiveSelectionBackgroundColorString) {
+        setInactiveSelectionBackgroundColor(GraphicsUtilities.decodeColor(inactiveSelectionBackgroundColorString,
             "inactiveSelectionBackgroundColor"));
     }
 
@@ -750,68 +756,68 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
     /**
      * Sets the amount of space between the edge of the TextPane and its Document.
      *
-     * @param margin The new set of margin values.
+     * @param marginValue The new set of margin values.
      */
-    public void setMargin(final Insets margin) {
-        Utils.checkNull(margin, "margin");
+    public void setMargin(final Insets marginValue) {
+        Utils.checkNull(marginValue, "margin");
 
-        this.margin = margin;
+        this.margin = marginValue;
         invalidateComponent();
     }
 
     /**
      * Sets the amount of space between the edge of the TextPane and its Document.
      *
-     * @param margin A dictionary with keys in the set {top, left, bottom, right}.
+     * @param marginDictionary A dictionary with keys in the set {top, left, bottom, right}.
      */
-    public final void setMargin(final Dictionary<String, ?> margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final Dictionary<String, ?> marginDictionary) {
+        setMargin(new Insets(marginDictionary));
     }
 
     /**
      * Sets the amount of space between the edge of the TextPane and its Document.
      *
-     * @param margin A sequence with values in the order [top, left, bottom, right].
+     * @param marginSequence A sequence with values in the order [top, left, bottom, right].
      */
-    public final void setMargin(final Sequence<?> margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final Sequence<?> marginSequence) {
+        setMargin(new Insets(marginSequence));
     }
 
     /**
      * Sets the amount of space between the edge of the TextPane and its Document.
      *
-     * @param margin The single margin value for all edges.
+     * @param marginValue The single margin value for all edges.
      */
-    public final void setMargin(final int margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final int marginValue) {
+        setMargin(new Insets(marginValue));
     }
 
     /**
      * Sets the amount of space between the edge of the TextPane and its Document.
      *
-     * @param margin The new single margin value for all the edges.
+     * @param marginValue The new single margin value for all the edges.
      */
-    public final void setMargin(final Number margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final Number marginValue) {
+        setMargin(new Insets(marginValue));
     }
 
     /**
      * Sets the amount of space between the edge of the TextPane and its Document.
      *
-     * @param margin A string containing an integer or a JSON dictionary with
+     * @param marginString A string containing an integer or a JSON dictionary with
      * keys left, top, bottom, and/or right.
      */
-    public final void setMargin(final String margin) {
-        setMargin(Insets.decode(margin));
+    public final void setMargin(final String marginString) {
+        setMargin(Insets.decode(marginString));
     }
 
     public boolean getWrapText() {
         return wrapText;
     }
 
-    public void setWrapText(final boolean wrapText) {
-        if (this.wrapText != wrapText) {
-            this.wrapText = wrapText;
+    public void setWrapText(final boolean wrapTextValue) {
+        if (this.wrapText != wrapTextValue) {
+            this.wrapText = wrapTextValue;
 
             if (documentView != null) {
                 documentView.invalidateUpTree();
@@ -1012,6 +1018,59 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
         return null;
     }
 
+    private boolean commandKey(final TextPane textPane, final Document document,
+        final int keyCode, final boolean isEditable, final boolean shiftPressed) {
+        boolean consumed = false;
+
+        if (keyCode == Keyboard.KeyCode.A) {
+            textPane.setSelection(0, document.getCharacterCount());
+            consumed = true;
+        } else if (keyCode == Keyboard.KeyCode.C) {
+            textPane.copy();
+            consumed = true;
+        } else if (isEditable) {
+            switch (keyCode) {
+                case Keyboard.KeyCode.X:
+                    textPane.cut();
+                    consumed = true;
+                    break;
+                case Keyboard.KeyCode.V:
+                    textPane.paste();
+                    consumed = true;
+                    break;
+                case Keyboard.KeyCode.Z:
+                    if (shiftPressed) {
+                        textPane.redo();
+                    } else {
+                        textPane.undo();
+                    }
+                    consumed = true;
+                    break;
+                case Keyboard.KeyCode.ENTER:
+                    textPane.insertParagraph();
+                    consumed = true;
+                    break;
+                case Keyboard.KeyCode.DELETE:
+                    textPane.delete(false);
+                    consumed = true;
+                    break;
+                case Keyboard.KeyCode.BACKSPACE:
+                    textPane.delete(true);
+                    consumed = true;
+                    break;
+                case Keyboard.KeyCode.INSERT:
+                    if (shiftPressed) {
+                        textPane.paste();
+                        consumed = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return consumed;
+    }
+
     @Override
     public boolean keyPressed(final Component component, final int keyCode,
         final Keyboard.KeyLocation keyLocation) {
@@ -1030,18 +1089,12 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
         boolean isEditable = textPane.isEditable();
 
         if (document != null) {
-            if (keyCode == Keyboard.KeyCode.ENTER && isEditable) {
-                textPane.insertParagraph();
-
-                consumed = true;
-            } else if (keyCode == Keyboard.KeyCode.DELETE && isEditable) {
-                textPane.delete(false);
-
-                consumed = true;
-            } else if (keyCode == Keyboard.KeyCode.BACKSPACE && isEditable) {
-                textPane.delete(true);
-
-                consumed = true;
+            if (isEditable
+             && (keyCode == Keyboard.KeyCode.ENTER
+              || keyCode == Keyboard.KeyCode.DELETE
+              || keyCode == Keyboard.KeyCode.BACKSPACE
+              || keyCode == Keyboard.KeyCode.INSERT)) {
+                consumed = commandKey(textPane, document, keyCode, isEditable, shiftPressed);
             } else if (keyCode == Keyboard.KeyCode.HOME
                    || (keyCode == Keyboard.KeyCode.LEFT && metaPressed)) {
                 int start;
@@ -1054,7 +1107,6 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
                 }
 
                 if (shiftPressed) {
-
                     // TODO: if last direction was left, then extend further left
                     // but if right, then reverse selection from the pivot point
                     selectionLength += selectionStart - start;
@@ -1065,7 +1117,6 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
                 if (start >= 0) {
                     textPane.setSelection(start, selectionLength);
                     scrollCharacterToVisible(start);
-
                     consumed = true;
                 }
             } else if (keyCode == Keyboard.KeyCode.END
@@ -1095,7 +1146,6 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
                 if (selectionStart + selectionLength <= textPane.getCharacterCount()) {
                     textPane.setSelection(selectionStart, selectionLength);
                     scrollCharacterToVisible(selectionStart + selectionLength);
-
                     consumed = true;
                 }
             } else if (keyCode == Keyboard.KeyCode.LEFT) {
@@ -1141,7 +1191,6 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
                 scrollCharacterToVisible(selectionStart);
 
                 caretX = caret.x;
-
                 consumed = true;
             } else if (keyCode == Keyboard.KeyCode.RIGHT) {
                 if (shiftPressed) {
@@ -1187,7 +1236,6 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
 
                     caretX = caret.x;
                 }
-
                 consumed = true;
             } else if (keyCode == Keyboard.KeyCode.UP) {
                 int offset = getNextInsertionPoint(caretX, selectionStart,
@@ -1205,10 +1253,8 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
 
                 textPane.setSelection(offset, selectionLength);
                 scrollCharacterToVisible(offset);
-
                 consumed = true;
             } else if (keyCode == Keyboard.KeyCode.DOWN) {
-
                 if (shiftPressed) {
                     int from;
                     int x;
@@ -1259,7 +1305,6 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
                     textPane.setSelection(offset, 0);
                     scrollCharacterToVisible(offset);
                 }
-
                 consumed = true;
             } else if (keyCode == Keyboard.KeyCode.TAB
                 && (acceptsTab != Keyboard.isPressed(Keyboard.Modifier.CTRL))
@@ -1275,35 +1320,9 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
                     textPane.insert("\t");
                 }
                 showCaret(true);
-
                 consumed = true;
-            } else if (keyCode == Keyboard.KeyCode.INSERT) {
-                if (shiftPressed && isEditable) {
-                    textPane.paste();
-                    consumed = true;
-                }
             } else if (commandPressed) {
-                if (keyCode == Keyboard.KeyCode.A) {
-                    textPane.setSelection(0, document.getCharacterCount());
-                    consumed = true;
-                } else if (keyCode == Keyboard.KeyCode.X && isEditable) {
-                    textPane.cut();
-                    consumed = true;
-                } else if (keyCode == Keyboard.KeyCode.C) {
-                    textPane.copy();
-                    consumed = true;
-                } else if (keyCode == Keyboard.KeyCode.V && isEditable) {
-                    textPane.paste();
-                    consumed = true;
-                } else if (keyCode == Keyboard.KeyCode.Z && isEditable) {
-                    if (shiftPressed) {
-                        textPane.redo();
-                    } else {
-                        textPane.undo();
-                    }
-
-                    consumed = true;
-                }
+                consumed = commandKey(textPane, document, keyCode, isEditable, shiftPressed);
             } else {
                 consumed = super.keyPressed(component, keyCode, keyLocation);
             }

@@ -255,8 +255,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
         titleRow.add(titleBoxPane);
         titleRow.add(buttonBoxPane);
 
-        Theme theme = currentTheme();
-        Font titleFont = theme.getFont().deriveFont(Font.BOLD);
+        Font titleFont = getThemeFont().deriveFont(Font.BOLD);
         titleLabel.getStyles().put(Style.font, titleFont);
         titleBoxPane.add(titleLabel);
 
@@ -277,8 +276,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
 
         shadeButton.getButtonPressListeners().add(this);
 
-        Theme theme = currentTheme();
-        theme.setDefaultStyles(this);
+        setDefaultStyles();
 
         titleChanged(expander, null);
         collapsibleChanged(expander);
@@ -490,8 +488,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     }
 
     public final void setTitleBarColor(int titleBarColor) {
-        Theme theme = currentTheme();
-        setTitleBarColor(theme.getColor(titleBarColor));
+        setTitleBarColor(getColor(titleBarColor));
     }
 
     public Color getTitleBarBackgroundColor() {
@@ -509,8 +506,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     }
 
     public final void setTitleBarBackgroundColor(int titleBarBackgroundColor) {
-        Theme theme = currentTheme();
-        setTitleBarBackgroundColor(theme.getColor(titleBarBackgroundColor));
+        setTitleBarBackgroundColor(getColor(titleBarBackgroundColor));
     }
 
     public Color getTitleBarBorderColor() {
@@ -527,8 +523,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     }
 
     public final void setTitleBarBorderColor(int titleBarBorderColor) {
-        Theme theme = currentTheme();
-        setTitleBarBorderColor(theme.getColor(titleBarBorderColor));
+        setTitleBarBorderColor(getColor(titleBarBorderColor));
     }
 
     public Color getShadeButtonColor() {
@@ -545,8 +540,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     }
 
     public final void setShadeButtonColor(int shadeButtonColor) {
-        Theme theme = currentTheme();
-        setShadeButtonColor(theme.getColor(shadeButtonColor));
+        setShadeButtonColor(getColor(shadeButtonColor));
     }
 
     public Color getDisabledShadeButtonColor() {
@@ -564,8 +558,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     }
 
     public final void setDisabledShadeButtonColor(int disabledShadeButtonColor) {
-        Theme theme = currentTheme();
-        setDisabledShadeButtonColor(theme.getColor(disabledShadeButtonColor));
+        setDisabledShadeButtonColor(getColor(disabledShadeButtonColor));
     }
 
     public Color getBorderColor() {
@@ -583,8 +576,7 @@ public class TerraExpanderSkin extends ExpanderSkin implements ButtonPressListen
     }
 
     public final void setBorderColor(int borderColor) {
-        Theme theme = currentTheme();
-        setBorderColor(theme.getColor(borderColor));
+        setBorderColor(getColor(borderColor));
     }
 
     public Insets getPadding() {

@@ -24,7 +24,6 @@ import java.awt.font.LineMetrics;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.wtk.Bounds;
 import org.apache.pivot.wtk.Dimensions;
-import org.apache.pivot.wtk.HorizontalAlignment;
 import org.apache.pivot.wtk.Platform;
 import org.apache.pivot.wtk.TextPane;
 import org.apache.pivot.wtk.text.Paragraph;
@@ -45,16 +44,16 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
         public TextPaneSkinNodeView nodeView;
         public int offset;
 
-        public RowSegment(TextPaneSkinNodeView nodeView, int offset) {
-            this.nodeView = nodeView;
-            this.offset = offset;
+        RowSegment(final TextPaneSkinNodeView nodeViewValue, final int offsetValue) {
+            this.nodeView = nodeViewValue;
+            this.offset = offsetValue;
         }
     }
 
     private ArrayList<Row> rows = null;
-    private Bounds terminatorBounds = new Bounds(0, 0, 0, 0);
+    private Bounds terminatorBounds = Bounds.EMPTY;
 
-    public TextPaneSkinParagraphView(TextPaneSkin textPaneSkin, Paragraph paragraph) {
+    TextPaneSkinParagraphView(final TextPaneSkin textPaneSkin, final Paragraph paragraph) {
         super(textPaneSkin, paragraph);
     }
 
@@ -65,7 +64,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
     }
 
     @Override
-    protected void childLayout(int breakWidth) {
+    protected void childLayout(final int breakWidth) {
         // Break the views into multiple rows
 
         Paragraph paragraph = (Paragraph) getNode();
@@ -136,8 +135,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
             terminatorY = layouter.rowY - terminatorHeight;
         }
 
-        terminatorBounds = new Bounds(layouter.x, terminatorY, PARAGRAPH_TERMINATOR_WIDTH,
-            terminatorHeight);
+        terminatorBounds = new Bounds(layouter.x, terminatorY, PARAGRAPH_TERMINATOR_WIDTH, terminatorHeight);
 
         // Ensure that the paragraph is visible even when empty
         layouter.paragraphWidth += terminatorBounds.width;
@@ -147,7 +145,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
     }
 
     @Override
-    public Dimensions getPreferredSize(int breakWidth) {
+    public Dimensions getPreferredSize(final int breakWidth) {
         // Break the views into multiple rows
 
         Paragraph paragraph = (Paragraph) getNode();
@@ -228,7 +226,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
         return new Dimensions(layouter.paragraphWidth, height);
     }
 
-    private static TextPaneSkinNodeView getNext(TextPaneSkinNodeView child) {
+    private static TextPaneSkinNodeView getNext(final TextPaneSkinNodeView child) {
         // Using instanceof checks because there is no nice place in the hierarchy
         // to put an abstract method
         if (child instanceof TextPaneSkinSpanView) {
@@ -251,12 +249,12 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
         public int paragraphWidth = 0;
         public int rowY = 0;
 
-        public void startSegment(RowSegment segment) {
+        public void startSegment(final RowSegment segment) {
             segment.nodeView.setLocation(x, segment.nodeView.getY());
             x += segment.nodeView.getWidth();
         }
 
-        public void endRow(Row row) {
+        public void endRow(final Row row) {
             row.y = rowY;
 
             // Determine the row height
@@ -285,7 +283,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
             rowY += row.height;
         }
 
-        public void end(Paragraph paragraph, ArrayList<Row> rows) {
+        public void end(final Paragraph paragraph, final ArrayList<Row> rows) {
             // calculate paragraph width
             for (Row row : rows) {
                 paragraphWidth = Math.max(paragraphWidth, row.width);
@@ -293,15 +291,18 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
 
             // adjust for horizontal alignment
             for (Row row : rows) {
-                if (paragraph.getHorizontalAlignment() == HorizontalAlignment.LEFT) {
-                    x = 0;
-                } else if (paragraph.getHorizontalAlignment() == HorizontalAlignment.CENTER) {
-                    x = (paragraphWidth - row.width) / 2;
-                } else if (paragraph.getHorizontalAlignment() == HorizontalAlignment.RIGHT) {
-                    // right alignment
-                    x = paragraphWidth - row.width;
-                } else {
-                    throw new IllegalStateException();
+                switch (paragraph.getHorizontalAlignment()) {
+                    case LEFT:
+                        x = 0;
+                        break;
+                    case CENTER:
+                        x = (paragraphWidth - row.width) / 2;
+                        break;
+                    case RIGHT:
+                        x = paragraphWidth - row.width;
+                        break;
+                    default:
+                        throw new IllegalStateException();
                 }
                 for (RowSegment segment : row.rowSegments) {
                     segment.nodeView.setLocation(x, segment.nodeView.getY());
@@ -312,24 +313,24 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
     }
 
     @Override
-    protected void setSkinLocation(int skinX, int skinY) {
+    protected void setSkinLocation(final int skinX, final int skinY) {
         super.setSkinLocation(skinX, skinY);
         for (int i = 0, n = rows.getLength(); i < n; i++) {
             Row row = rows.get(i);
             for (RowSegment segment : row.rowSegments) {
-                segment.nodeView.setSkinLocation(skinX + segment.nodeView.getX(), skinY
-                    + segment.nodeView.getY());
+                segment.nodeView.setSkinLocation(skinX + segment.nodeView.getX(),
+                    skinY + segment.nodeView.getY());
             }
         }
     }
 
     @Override
-    public void paint(Graphics2D graphics) {
+    public void paint(final Graphics2D graphics) {
         // The default paint() method paints the document children, but because of row-splitting,
         // the children we want to paint are not the same.
 
         // Determine the paint bounds
-        Bounds paintBounds = new Bounds(0, 0, getWidth(), getHeight());
+        Bounds paintBounds = new Bounds(getSize());
         Rectangle clipBounds = graphics.getClipBounds();
         if (clipBounds != null) {
             paintBounds = paintBounds.intersect(clipBounds);
@@ -344,7 +345,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
     }
 
     @Override
-    public int getInsertionPoint(int x, int y) {
+    public int getInsertionPoint(final int x, final int y) {
         int offset = -1;
 
         int n = rows.getLength();
@@ -390,7 +391,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
     }
 
     @Override
-    public int getNextInsertionPoint(int x, int from, TextPane.ScrollDirection direction) {
+    public int getNextInsertionPoint(final int x, final int from, final TextPane.ScrollDirection direction) {
         int offset = -1;
 
         int n = rows.getLength();
@@ -435,7 +436,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
 
                 for (RowSegment segment : row.rowSegments) {
                     Bounds bounds = segment.nodeView.getBounds();
-                    if (x >= bounds.x && x < bounds.x + bounds.width) {
+                    if (bounds.containsX(x)) {
                         offset = segment.nodeView.getNextInsertionPoint(
                             x - segment.nodeView.getX(), -1, direction) + segment.offset;
                         break;
@@ -458,7 +459,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
     }
 
     @Override
-    public int getRowAt(int offset) {
+    public int getRowAt(final int offset) {
         int rowIndex = -1;
 
         if (offset == getCharacterCount() - 1) {
@@ -487,12 +488,12 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
     }
 
     @Override
-    public Bounds getCharacterBounds(int offset) {
+    public Bounds getCharacterBounds(final int offset) {
         Bounds characterBounds = null;
         // This is really ugly, but *sometimes* during caret calculations we don't
         // want the terminator size here because it includes the composed text width.
         TextPaneSkin textPaneSkin = getTextPaneSkin();
-        if (offset >= getCharacterCount() - 1 && (!textPaneSkin.doingCaretCalculations || rows.getLength() == 0)) {
+        if (offset >= getCharacterCount() - 1 && (!textPaneSkin.getDoingCaretCalculations() || rows.getLength() == 0)) {
             characterBounds = terminatorBounds;
         } else {
             if (rows != null) {
@@ -506,8 +507,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
                             characterBounds = segment.nodeView.getCharacterBounds(offset - nodeViewOffset);
 
                             if (characterBounds != null) {
-                                characterBounds = characterBounds.translate(
-                                    segment.nodeView.getX(), segment.nodeView.getY());
+                                characterBounds = characterBounds.translate(segment.nodeView.getLocation());
                             }
 
                             break;
@@ -517,7 +517,7 @@ class TextPaneSkinParagraphView extends TextPaneSkinBlockView {
             }
 
             if (characterBounds != null) {
-                characterBounds = characterBounds.intersect(0, 0, getWidth(), getHeight());
+                characterBounds = characterBounds.intersect(getSize());
             }
         }
 

@@ -56,24 +56,28 @@ import org.apache.pivot.wtk.Theme;
  */
 public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAreaListener,
     TextAreaContentListener, TextAreaSelectionListener {
-    /** Callback to blink the caret waiting for input. */
+    /**
+     * Callback to blink the caret waiting for input.
+     */
     private class BlinkCaretCallback implements Runnable {
         @Override
         public void run() {
             caretOn = !caretOn;
 
             if (selection == null) {
-                TextArea textArea = (TextArea) getComponent();
+                TextArea textArea = getTextArea();
                 textArea.repaint(caret.x, caret.y, caret.width, caret.height);
             }
         }
     }
 
-    /** Callback to scroll a selection during mouse movement. */
+    /**
+     * Callback to scroll a selection during mouse movement.
+     */
     private class ScrollSelectionCallback implements Runnable {
         @Override
         public void run() {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
             int selectionStart = textArea.getSelectionStart();
             int selectionLength = textArea.getSelectionLength();
             int selectionEnd = selectionStart + selectionLength - 1;
@@ -114,50 +118,94 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         }
     }
 
+    /** X-position of the caret/input cursor. */
     private int caretX = 0;
+    /** The current caret area. */
     private Rectangle caret = new Rectangle();
+    /** A possibly irregular selection area, often spanning multiple lines. */
     private Area selection = null;
 
+    /** Whether the caret is currently being displayed; toggled during caret blinking. */
     private boolean caretOn = false;
 
+    /** The anchor point set at the beginning of an area selection. */
     private int anchor = -1;
+    /** The current direction of scrolling. */
     private TextArea.ScrollDirection scrollDirection = null;
+    /** The current direction of selecting. */
     private SelectDirection selectDirection = null;
+    /** The initial mouse click X-position. */
     private int mouseX = -1;
 
+    /** The callback function used to blink the caret. */
     private BlinkCaretCallback blinkCaretCallback = new BlinkCaretCallback();
+    /** The caret blink callback currently in effect. */
     private ApplicationContext.ScheduledCallback scheduledBlinkCaretCallback = null;
 
+    /** The callback function used to automatically scroll. */
     private ScrollSelectionCallback scrollSelectionCallback = new ScrollSelectionCallback();
+    /** The scrolling callback currently in effect. */
     private ApplicationContext.ScheduledCallback scheduledScrollSelectionCallback = null;
 
+    /** Current font to use to display all the text. */
     private Font font;
+    /** Current foreground text color. */
     private Color color;
+    /** Current background color. */
     private Color backgroundColor;
+    /** Foreground color to display the text when the control is inactive. */
     private Color inactiveColor;
+    /** Color used to paint the currently selected area. */
     private Color selectionColor;
+    /** Background color for the selection area. */
     private Color selectionBackgroundColor;
+    /** Foreground to use to paint the selection when the control is inactive. */
     private Color inactiveSelectionColor;
+    /** Background color to paint the selection when inactive. */
     private Color inactiveSelectionBackgroundColor;
+    /** Margins to use between the border of the control and the text. */
     private Insets margin;
+    /** Whether to wrap the text inside the margins. */
     private boolean wrapText;
+    /** The number of normal characters to use to represent a tab. */
     private int tabWidth;
+    /** Line width used to wrap text if greater than zero. */
     private int lineWidth;
+    /**
+     * Flag used to decide whether the {@code Enter} key is accepted to start a new line,
+     * or whether it is passed to the enclosing form/window (for instance, to accept
+     * and close the dialog).
+     */
     private boolean acceptsEnter = true;
+    /**
+     * Flag to decide whether {@code Enter} or {@code Ctrl-Enter} is used to enter a tab
+     * into the text, and which is used to tab among fields of the form.
+     */
     private boolean acceptsTab = false;
 
+    /**
+     * The average character size of the font, used along with {@link #lineWidth} to
+     * decide where to wrap the text.
+     */
     private Dimensions averageCharacterSize;
 
+    /** The actual list of paragraphs being displayed. */
     private ArrayList<TextAreaSkinParagraphView> paragraphViews = new ArrayList<>();
 
+    /** Constant of how many mouse clicks constitute a "double click". */
     private static final int DOUBLE_CLICK_COUNT = 2;
+    /** How many mouse clicks constitute a "triple click" (used to select whole lines). */
     private static final int TRIPLE_CLICK_COUNT = 3;
 
+    /** Constant milliseconds between scroll intervals. */
     private static final int SCROLL_RATE = 30;
 
+
+    /**
+     * Default constructor that sets the default colors, fonts, etc.
+     */
     public TextAreaSkin() {
-        Theme theme = currentTheme();
-        font = theme.getFont();
+        font = getThemeFont();
 
         // TODO: find a way to set this in the theme defaults.json file
         // but these conflict with the values set in TerraTextAreaSkin...
@@ -175,12 +223,16 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         // Remaining default styles set in the theme defaults.json file
     }
 
+    /** @return The {@code TextArea} component we are attached to. */
+    public TextArea getTextArea() {
+        return (TextArea) getComponent();
+    }
+
     @Override
     public void install(final Component component) {
         super.install(component);
 
-        Theme theme = currentTheme();
-        theme.setDefaultStyles(this);
+        setDefaultStyles();
 
         TextArea textArea = (TextArea) component;
         textArea.getTextAreaListeners().add(this);
@@ -246,7 +298,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
     @SuppressWarnings("unused")
     @Override
     public void layout() {
-        TextArea textArea = (TextArea) getComponent();
+        TextArea textArea = getTextArea();
 
         int width = getWidth();
         int breakWidth = (wrapText) ? Math.max(width - margin.getWidth(), 0)
@@ -292,7 +344,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
 
     @Override
     public void paint(final Graphics2D graphics) {
-        TextArea textArea = (TextArea) getComponent();
+        TextArea textArea = getTextArea();
         int width = getWidth();
         int height = getHeight();
 
@@ -389,7 +441,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
                     index += paragraphView.getParagraph().getOffset();
                 }
             } else {
-                TextArea textArea = (TextArea) getComponent();
+                TextArea textArea = getTextArea();
                 int i = textArea.getParagraphAt(from);
 
                 TextAreaSkinParagraphView paragraphView = paragraphViews.get(i);
@@ -425,7 +477,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         int rowIndex = -1;
 
         if (paragraphViews.getLength() > 0) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
             TextAreaSkinParagraphView paragraphView = paragraphViews.get(textArea.getParagraphAt(index));
 
             rowIndex = paragraphView.getRowAt(index - paragraphView.getParagraph().getOffset())
@@ -440,7 +492,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         int rowOffset = -1;
 
         if (paragraphViews.getLength() > 0) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
             TextAreaSkinParagraphView paragraphView = paragraphViews.get(textArea.getParagraphAt(index));
 
             rowOffset = paragraphView.getRowOffset(index - paragraphView.getParagraph().getOffset())
@@ -455,7 +507,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         int rowLength = -1;
 
         if (paragraphViews.getLength() > 0) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
             TextAreaSkinParagraphView paragraphView = paragraphViews.get(textArea.getParagraphAt(index));
 
             rowLength = paragraphView.getRowLength(index - paragraphView.getParagraph().getOffset());
@@ -480,7 +532,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         Bounds characterBounds = null;
 
         if (paragraphViews.getLength() > 0) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
             TextAreaSkinParagraphView paragraphView = paragraphViews.get(textArea.getParagraphAt(index));
             characterBounds = paragraphView.getCharacterBounds(index
                 - paragraphView.getParagraph().getOffset());
@@ -493,6 +545,10 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return characterBounds;
     }
 
+    /**
+     * @return The current selection area (can be {@code null} if nothing
+     * is selected).
+     */
     public Area getSelection() {
         return selection;
     }
@@ -501,7 +557,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         Bounds characterBounds = getCharacterBounds(index);
 
         if (characterBounds != null) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
             textArea.scrollAreaToVisible(characterBounds.x, characterBounds.y,
                 characterBounds.width, characterBounds.height);
         }
@@ -515,14 +571,14 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
     }
 
     /**
-     * Sets the font of the text.
+     * Sets the font for the text.
      *
-     * @param font The new font for the text.
+     * @param newFont The new font for the text.
      */
-    public final void setFont(final Font font) {
-        Utils.checkNull(font, "font");
+    public final void setFont(final Font newFont) {
+        Utils.checkNull(newFont, "font");
 
-        this.font = font;
+        font = newFont;
 
         averageCharacterSize = GraphicsUtilities.getAverageCharacterSize(font);
 
@@ -530,21 +586,21 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
     }
 
     /**
-     * Sets the font of the text.
+     * Sets the font for the text.
      *
-     * @param font A {@link ComponentSkin#decodeFont(String) font specification}
+     * @param fontString A {@link ComponentSkin#decodeFont(String) font specification}
      */
-    public final void setFont(final String font) {
-        setFont(decodeFont(font));
+    public final void setFont(final String fontString) {
+        setFont(decodeFont(fontString));
     }
 
     /**
-     * Sets the font of the text.
+     * Sets the font for the text.
      *
-     * @param font A dictionary {@link Theme#deriveFont describing a font}
+     * @param fontDictionary A dictionary {@link Theme#deriveFont describing a font}
      */
-    public final void setFont(final Dictionary<String, ?> font) {
-        setFont(Theme.deriveFont(font));
+    public final void setFont(final Dictionary<String, ?> fontDictionary) {
+        setFont(Theme.deriveFont(fontDictionary));
     }
 
     /**
@@ -557,82 +613,82 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
     /**
      * Sets the foreground color of the text.
      *
-     * @param color The new foreground text color.
+     * @param colorValue The new foreground text color.
      */
-    public final void setColor(final Color color) {
-        Utils.checkNull(color, "color");
+    public final void setColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "color");
 
-        this.color = color;
+        color = colorValue;
         repaintComponent();
     }
 
     /**
      * Sets the foreground color of the text.
      *
-     * @param color Any of the {@linkplain GraphicsUtilities#decodeColor color
+     * @param colorString Any of the {@linkplain GraphicsUtilities#decodeColor color
      * values recognized by Pivot}.
      */
-    public final void setColor(final String color) {
-        setColor(GraphicsUtilities.decodeColor(color, "color"));
+    public final void setColor(final String colorString) {
+        setColor(GraphicsUtilities.decodeColor(colorString, "color"));
     }
 
     public final Color getBackgroundColor() {
         return backgroundColor;
     }
 
-    public final void setBackgroundColor(final Color backgroundColor) {
+    public final void setBackgroundColor(final Color colorValue) {
         // Null background is allowed here
-        this.backgroundColor = backgroundColor;
+        backgroundColor = colorValue;
         repaintComponent();
     }
 
-    public final void setBackgroundColor(final String backgroundColor) {
-        setBackgroundColor(GraphicsUtilities.decodeColor(backgroundColor, "backgroundColor"));
+    public final void setBackgroundColor(final String colorString) {
+        setBackgroundColor(GraphicsUtilities.decodeColor(colorString, "backgroundColor"));
     }
 
     public final Color getInactiveColor() {
         return inactiveColor;
     }
 
-    public final void setInactiveColor(final Color inactiveColor) {
-        Utils.checkNull(inactiveColor, "inactiveColor");
+    public final void setInactiveColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "inactiveColor");
 
-        this.inactiveColor = inactiveColor;
+        inactiveColor = colorValue;
         repaintComponent();
     }
 
-    public final void setInactiveColor(final String inactiveColor) {
-        setColor(GraphicsUtilities.decodeColor(inactiveColor, "inactiveColor"));
+    public final void setInactiveColor(final String colorString) {
+        setColor(GraphicsUtilities.decodeColor(colorString, "inactiveColor"));
     }
 
     public final Color getSelectionColor() {
         return selectionColor;
     }
 
-    public final void setSelectionColor(final Color selectionColor) {
-        Utils.checkNull(selectionColor, "selectionColor");
+    public final void setSelectionColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "selectionColor");
 
-        this.selectionColor = selectionColor;
+        selectionColor = colorValue;
         repaintComponent();
     }
 
-    public final void setSelectionColor(final String selectionColor) {
-        setSelectionColor(GraphicsUtilities.decodeColor(selectionColor,  "selectionColor"));
+    public final void setSelectionColor(final String colorString) {
+        setSelectionColor(GraphicsUtilities.decodeColor(colorString,  "selectionColor"));
     }
 
     public final Color getSelectionBackgroundColor() {
         return selectionBackgroundColor;
     }
 
-    public final void setSelectionBackgroundColor(final Color selectionBackgroundColor) {
-        Utils.checkNull(selectionBackgroundColor, "selectionBackgroundColor");
+    public final void setSelectionBackgroundColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "selectionBackgroundColor");
 
-        this.selectionBackgroundColor = selectionBackgroundColor;
+        selectionBackgroundColor = colorValue;
         repaintComponent();
     }
 
-    public final void setSelectionBackgroundColor(final String selectionBackgroundColor) {
-        setSelectionBackgroundColor(GraphicsUtilities.decodeColor(selectionBackgroundColor,
+    public final void setSelectionBackgroundColor(final String colorString) {
+        setSelectionBackgroundColor(GraphicsUtilities.decodeColor(colorString,
             "selectionBackgroundColor"));
     }
 
@@ -640,15 +696,15 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return inactiveSelectionColor;
     }
 
-    public final void setInactiveSelectionColor(final Color inactiveSelectionColor) {
-        Utils.checkNull(inactiveSelectionColor, "inactiveSelectionColor");
+    public final void setInactiveSelectionColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "inactiveSelectionColor");
 
-        this.inactiveSelectionColor = inactiveSelectionColor;
+        inactiveSelectionColor = colorValue;
         repaintComponent();
     }
 
-    public final void setInactiveSelectionColor(final String inactiveSelectionColor) {
-        setInactiveSelectionColor(GraphicsUtilities.decodeColor(inactiveSelectionColor,
+    public final void setInactiveSelectionColor(final String colorString) {
+        setInactiveSelectionColor(GraphicsUtilities.decodeColor(colorString,
             "inactiveSelectionColor"));
     }
 
@@ -656,15 +712,15 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return inactiveSelectionBackgroundColor;
     }
 
-    public final void setInactiveSelectionBackgroundColor(final Color inactiveSelectionBackgroundColor) {
-        Utils.checkNull(inactiveSelectionBackgroundColor, "inactiveSelectionBackgroundColor");
+    public final void setInactiveSelectionBackgroundColor(final Color colorValue) {
+        Utils.checkNull(colorValue, "inactiveSelectionBackgroundColor");
 
-        this.inactiveSelectionBackgroundColor = inactiveSelectionBackgroundColor;
+        inactiveSelectionBackgroundColor = colorValue;
         repaintComponent();
     }
 
-    public final void setInactiveSelectionBackgroundColor(final String inactiveSelectionBackgroundColor) {
-        setInactiveSelectionBackgroundColor(GraphicsUtilities.decodeColor(inactiveSelectionBackgroundColor,
+    public final void setInactiveSelectionBackgroundColor(final String colorString) {
+        setInactiveSelectionBackgroundColor(GraphicsUtilities.decodeColor(colorString,
             "inactiveSelectionBackgroundColor"));
     }
 
@@ -678,67 +734,67 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
     /**
      * Sets the amount of space between the edge of the TextArea and its text.
      *
-     * @param margin The individual margin values for all edges.
+     * @param newMargin The individual margin values for all edges.
      */
-    public final void setMargin(final Insets margin) {
-        Utils.checkNull(margin, "margin");
+    public final void setMargin(final Insets newMargin) {
+        Utils.checkNull(newMargin, "margin");
 
-        this.margin = margin;
+        margin = newMargin;
         invalidateComponent();
     }
 
     /**
      * Sets the amount of space between the edge of the TextArea and its text.
      *
-     * @param margin A dictionary with keys in the set {top, left, bottom, right}.
+     * @param marginDictionary A dictionary with keys in the set {top, left, bottom, right}.
      */
-    public final void setMargin(final Dictionary<String, ?> margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final Dictionary<String, ?> marginDictionary) {
+        setMargin(new Insets(marginDictionary));
     }
 
     /**
      * Sets the amount of space between the edge of the TextArea and its text.
      *
-     * @param margin A sequence with values in the order [top, left, bottom, right].
+     * @param marginSequence A sequence with values in the order [top, left, bottom, right].
      */
-    public final void setMargin(final Sequence<?> margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final Sequence<?> marginSequence) {
+        setMargin(new Insets(marginSequence));
     }
 
     /**
      * Sets the amount of space between the edge of the TextArea and its text.
      *
-     * @param margin The single value to use for all the margins.
+     * @param marginValue The single value to use for all the margins.
      */
-    public final void setMargin(final int margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final int marginValue) {
+        setMargin(new Insets(marginValue));
     }
 
     /**
      * Sets the amount of space between the edge of the TextArea and its text.
      *
-     * @param margin The single value to use for all the margins.
+     * @param marginValue The single value to use for all the margins.
      */
-    public final void setMargin(final Number margin) {
-        setMargin(new Insets(margin));
+    public final void setMargin(final Number marginValue) {
+        setMargin(new Insets(marginValue));
     }
 
     /**
      * Sets the amount of space between the edge of the TextArea and its text.
      *
-     * @param margin A string containing an integer or a JSON dictionary or list with
+     * @param marginString A string containing an integer or a JSON dictionary or list with
      * keys top, left, bottom, and/or right.
      */
-    public final void setMargin(final String margin) {
-        setMargin(Insets.decode(margin));
+    public final void setMargin(final String marginString) {
+        setMargin(Insets.decode(marginString));
     }
 
     public final boolean getWrapText() {
         return wrapText;
     }
 
-    public final void setWrapText(final boolean wrapText) {
-        this.wrapText = wrapText;
+    public final void setWrapText(final boolean wrapValue) {
+        wrapText = wrapValue;
         invalidateComponent();
     }
 
@@ -746,8 +802,8 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return acceptsEnter;
     }
 
-    public final void setAcceptsEnter(final boolean acceptsEnter) {
-        this.acceptsEnter = acceptsEnter;
+    public final void setAcceptsEnter(final boolean acceptsValue) {
+        acceptsEnter = acceptsValue;
     }
 
     /**
@@ -767,13 +823,13 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
      * Sets current value of style that determines the behavior of <code>TAB</code>
      * and <code>Ctrl-TAB</code> characters.
      *
-     * @param acceptsTab {@code true} if <code>TAB</code> inserts an appropriate
+     * @param acceptsValue {@code true} if <code>TAB</code> inserts an appropriate
      * number of spaces, while <code>Ctrl-TAB</code> shifts focus to next component.
      * {@code false} (default) means <code>TAB</code> shifts focus and
      * <code>Ctrl-TAB</code> inserts spaces.
      */
-    public final void setAcceptsTab(final boolean acceptsTab) {
-        this.acceptsTab = acceptsTab;
+    public final void setAcceptsTab(final boolean acceptsValue) {
+        acceptsTab = acceptsValue;
     }
 
     @Override
@@ -781,19 +837,19 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return tabWidth;
     }
 
-    public final void setTabWidth(final int tabWidth) {
-        Utils.checkNonNegative(tabWidth, "tabWidth");
+    public final void setTabWidth(final int tabValue) {
+        Utils.checkNonNegative(tabValue, "tabWidth");
 
-        this.tabWidth = tabWidth;
+        tabWidth = tabValue;
     }
 
     public final int getLineWidth() {
         return lineWidth;
     }
 
-    public final void setLineWidth(final int lineWidth) {
-        if (this.lineWidth != lineWidth) {
-            this.lineWidth = lineWidth;
+    public final void setLineWidth(final int widthValue) {
+        if (lineWidth != widthValue) {
+            lineWidth = widthValue;
 
             int missingGlyphCode = font.getMissingGlyphCode();
             FontRenderContext fontRenderContext = Platform.getFontRenderContext();
@@ -815,7 +871,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         boolean consumed = super.mouseMove(component, x, y);
 
         if (Mouse.getCapturer() == component) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
 
             Bounds visibleArea = textArea.getVisibleArea();
             visibleArea = new Bounds(visibleArea.x, visibleArea.y, visibleArea.width,
@@ -953,7 +1009,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         boolean consumed = super.keyTyped(component, character);
 
         if (paragraphViews.getLength() > 0) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
 
             if (textArea.isEditable()) {
                 // Ignore characters in the control range and the ASCII delete
@@ -976,6 +1032,16 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return consumed;
     }
 
+    /**
+     * Process the {@code Home} action, with appropriate modifications for the modifiers pressed.
+     *
+     * @param textArea The component.
+     * @param commandPressed Whether the {@code Cmd} key (platform-dependent) is pressed - move/select
+     * to the beginning of the text, or just the beginning of the line.
+     * @param shiftPressed Whether the {@code Shift} key is pressed - select or just move.
+     * @param charSelection The current selection values.
+     * @return Whether the key was actually processed (consumed).
+     */
     private boolean doHome(final TextArea textArea, final boolean commandPressed, final boolean shiftPressed,
         final CharSpan charSelection) {
         boolean consumed = false;
@@ -1015,6 +1081,17 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return consumed;
     }
 
+    /**
+     * Process the {@code End} action, with appropriate modifications for the modifiers.
+     *
+     * @param textArea The component.
+     * @param commandPressed Whether the {@code Cmd} key (platform-dependent) is pressed - move/select
+     * to the end of the text, or just the end of the line.
+     * @param shiftPressed Whether the {@code Shift} key is pressed - select or just move.
+     * @param charSelection The current selection values.
+     * @param count The total character count (for {@code Cmd-End} movement).
+     * @return Whether the key was actually processed (consumed).
+     */
     private boolean doEnd(final TextArea textArea, final boolean commandPressed, final boolean shiftPressed,
         final CharSpan charSelection, final int count) {
         boolean consumed = false;
@@ -1063,6 +1140,16 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return consumed;
     }
 
+    /**
+     * Process the {@code Left} action, with appropriate modifications for the modifiers.
+     *
+     * @param textArea The component.
+     * @param wordNavPressed Whether the "word navigation" modifier (platform-dependent) is pressed -
+     * move by words or just by characters.
+     * @param shiftPressed Whether the {@code Shift} key is pressed - select or just move.
+     * @param charSelection The current selection values.
+     * @return Whether the key was actually processed (consumed).
+     */
     private boolean doLeft(final TextArea textArea, final boolean wordNavPressed, final boolean shiftPressed,
         final CharSpan charSelection) {
         boolean consumed = false;
@@ -1136,6 +1223,17 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return consumed;
     }
 
+    /**
+     * Process the {@code Right} action, with appropriate modifications for the modifiers.
+     *
+     * @param textArea The component.
+     * @param wordNavPressed Whether the "word navigation" modifier (platform-dependent) is pressed -
+     * move by words or just by characters.
+     * @param shiftPressed Whether the {@code Shift} key is pressed - select or just move.
+     * @param charSelection The current selection values.
+     * @param count The total count of characters to decide how far to move right.
+     * @return Whether the key was actually processed (consumed).
+     */
     private boolean doRight(final TextArea textArea, final boolean wordNavPressed, final boolean shiftPressed,
         final CharSpan charSelection, final int count) {
         boolean consumed = false;
@@ -1200,6 +1298,14 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return consumed;
     }
 
+    /**
+     * Process the {@code Up} action, with appropriate modifications for the modifiers.
+     *
+     * @param textArea The component.
+     * @param shiftPressed Whether the {@code Shift} key is pressed - select or just move.
+     * @param charSelection The current selection values.
+     * @return Whether the key was actually processed (consumed).
+     */
     private boolean doUp(final TextArea textArea, final boolean shiftPressed, final CharSpan charSelection) {
         int start = charSelection.start;
         int length = charSelection.length;
@@ -1251,6 +1357,15 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return true;
     }
 
+    /**
+     * Process the {@code Down} action, with appropriate modifications for the modifiers.
+     *
+     * @param textArea The component.
+     * @param shiftPressed Whether the {@code Shift} key is pressed - select or just move.
+     * @param charSelection The current selection values.
+     * @param count The total character count (to decide how far down to move).
+     * @return Whether the key was actually processed (consumed).
+     */
     private boolean doDown(final TextArea textArea, final boolean shiftPressed,
         final CharSpan charSelection, final int count) {
         int start = charSelection.start;
@@ -1331,6 +1446,17 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         return true;
     }
 
+    /**
+     * Process the (few) applicable command keys.
+     *
+     * @param textArea The component.
+     * @param keyCode Which key was pressed.
+     * @param isEditable Whether editing is allowed (allows {@code Paste} and {@code Undo}
+     * for instance.
+     * @param shiftPressed Shift key is pressed - affects {@code Undo}.
+     * @param count The total character count - for {@code Select All}.
+     * @return Whether the key was actually processed (consumed).
+     */
     private boolean doCommand(final TextArea textArea, final int keyCode,
         final boolean isEditable, final boolean shiftPressed, final int count) {
         boolean consumed = false;
@@ -1376,7 +1502,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         boolean consumed = false;
 
         if (paragraphViews.getLength() > 0) {
-            TextArea textArea = (TextArea) getComponent();
+            TextArea textArea = getTextArea();
             boolean commandPressed = Keyboard.isPressed(Platform.getCommandModifier());
             boolean wordNavPressed = Keyboard.isPressed(Platform.getWordNavigationModifier());
             boolean shiftPressed = Keyboard.isPressed(Keyboard.Modifier.SHIFT);
@@ -1468,7 +1594,7 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
     public void focusedChanged(final Component component, final Component obverseComponent) {
         super.focusedChanged(component, obverseComponent);
 
-        TextArea textArea = (TextArea) getComponent();
+        TextArea textArea = getTextArea();
         if (textArea.isFocused() && textArea.getSelectionLength() == 0) {
             if (textArea.isValid()) {
                 scrollCharacterToVisible(textArea.getSelectionStart());
@@ -1557,8 +1683,11 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         }
     }
 
+    /**
+     * Update the displayed selection area following a selection change.
+     */
     private void updateSelection() {
-        TextArea textArea = (TextArea) getComponent();
+        TextArea textArea = getTextArea();
 
         if (paragraphViews.getLength() > 0) {
             // Update the caret
@@ -1613,6 +1742,12 @@ public class TextAreaSkin extends ComponentSkin implements TextArea.Skin, TextAr
         }
     }
 
+    /**
+     * Process a change to the caret visibility.
+     * <p> Starts or ends the caret blink callback, as necessary.
+     *
+     * @param show Whether to show the caret or not.
+     */
     private void showCaret(final boolean show) {
         if (scheduledBlinkCaretCallback != null) {
             scheduledBlinkCaretCallback.cancel();

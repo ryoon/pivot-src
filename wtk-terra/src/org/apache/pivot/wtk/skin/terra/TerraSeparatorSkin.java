@@ -16,23 +16,35 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
-import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.skin.SeparatorSkin;
 
 /**
  * Terra separator skin.
  */
 public class TerraSeparatorSkin extends SeparatorSkin {
+    /**
+     * Specific constructor with nothing to do.
+     * <p> Default colors, etc. set by call to {@link TerraTheme#setDefaultStyles}
+     * from {@link SeparatorSkin#install}.
+     */
     public TerraSeparatorSkin() {
     }
 
-    public void setColor(int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
+    /**
+     * Set the foreground color to the theme index color.
+     *
+     * @param color The theme color index for the new foreground color.
+     */
+    public void setColor(final int color) {
+        setColor(getColor(color));
     }
 
-    public void setHeadingColor(int headingColor) {
-        Theme theme = currentTheme();
-        setHeadingColor(theme.getColor(headingColor));
+    /**
+     * Set the heading color to the theme index color.
+     *
+     * @param headingColor The theme color index for the new heading color.
+     */
+    public void setHeadingColor(final int headingColor) {
+        setHeadingColor(getColor(headingColor));
     }
 }

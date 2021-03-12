@@ -16,7 +16,6 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
-import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.skin.TextAreaSkin;
 
 /**
@@ -24,42 +23,75 @@ import org.apache.pivot.wtk.skin.TextAreaSkin;
  * the current theme.
  */
 public class TerraTextAreaSkin extends TextAreaSkin {
+    /**
+     * Specific constructor with nothing to do.
+     * <p> Default colors, etc. set by call to {@link TerraTheme#setDefaultStyles}
+     * from {@link TextAreaSkin#install}.
+     */
     public TerraTextAreaSkin() {
-        // Defaults set in the "terra_theme_defaults.json" file
     }
 
-    public final void setColor(int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
+    /**
+     * Set the foreground color to the given theme color.
+     *
+     * @param color The theme color index for the foreground color.
+     */
+    public final void setColor(final int color) {
+        setColor(getColor(color));
     }
 
-    public final void setInactiveColor(int inactiveColor) {
-        Theme theme = currentTheme();
-        setInactiveColor(theme.getColor(inactiveColor));
+    /**
+     * Set the inactive color to the given theme color.
+     *
+     * @param inactiveColor The theme color index for the inactive color.
+     */
+    public final void setInactiveColor(final int inactiveColor) {
+        setInactiveColor(getColor(inactiveColor));
     }
 
-    public final void setBackgroundColor(int backgroundColor) {
-        Theme theme = currentTheme();
-        setBackgroundColor(theme.getColor(backgroundColor));
+    /**
+     * Set the background color to the given theme color.
+     *
+     * @param backgroundColor The theme color index for the background color.
+     */
+    public final void setBackgroundColor(final int backgroundColor) {
+        setBackgroundColor(getColor(backgroundColor));
     }
 
-    public final void setSelectionColor(int selectionColor) {
-        Theme theme = currentTheme();
-        setSelectionColor(theme.getColor(selectionColor));
+    /**
+     * Set the selection color to the given theme color.
+     *
+     * @param selectionColor The theme color index for the selection color.
+     */
+    public final void setSelectionColor(final int selectionColor) {
+        setSelectionColor(getColor(selectionColor));
     }
 
-    public final void setSelectionBackgroundColor(int selectionBackgroundColor) {
-        Theme theme = currentTheme();
-        setSelectionBackgroundColor(theme.getColor(selectionBackgroundColor));
+    /**
+     * Set the selection background color to the given theme color.
+     *
+     * @param selectionBackgroundColor The theme color index for the selection background color.
+     */
+    public final void setSelectionBackgroundColor(final int selectionBackgroundColor) {
+        setSelectionBackgroundColor(getColor(selectionBackgroundColor));
     }
 
-    public final void setInactiveSelectionColor(int inactiveSelectionColor) {
-        Theme theme = currentTheme();
-        setInactiveSelectionColor(theme.getColor(inactiveSelectionColor));
+    /**
+     * Set the inactive selection color to the given theme color.
+     *
+     * @param inactiveSelectionColor The theme color index for the inactive selection color.
+     */
+    public final void setInactiveSelectionColor(final int inactiveSelectionColor) {
+        setInactiveSelectionColor(getColor(inactiveSelectionColor));
     }
 
-    public final void setInactiveSelectionBackgroundColor(int inactiveSelectionBackgroundColor) {
-        Theme theme = currentTheme();
-        setInactiveSelectionBackgroundColor(theme.getColor(inactiveSelectionBackgroundColor));
+    /**
+     * Set the inactive selection background color to the given theme color.
+     *
+     * @param inactiveSelectionBackgroundColor The theme color index for the inactive
+     * selection background color.
+     */
+    public final void setInactiveSelectionBackgroundColor(final int inactiveSelectionBackgroundColor) {
+        setInactiveSelectionBackgroundColor(getColor(inactiveSelectionBackgroundColor));
     }
 }

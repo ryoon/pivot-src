@@ -41,28 +41,33 @@ import org.apache.pivot.wtk.Theme;
  * Separator skin.
  */
 public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
+    /** Current font used to render any text for the separator. */
     private Font font;
+    /** Color used to draw the separator. */
     private Color color;
+    /** Color used to paint the heading text. */
     private Color headingColor;
+    /** Thickness of the separator line. */
     private int thickness;
+    /** Padding around the separator. */
     private Insets padding;
 
+    /** Construct and set defaults. */
     public SeparatorSkin() {
     }
 
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
-        Theme theme = currentTheme();
-        theme.setDefaultStyles(this);
+        setDefaultStyles();
 
         Separator separator = (Separator) component;
         separator.getSeparatorListeners().add(this);
     }
 
     @Override
-    public int getPreferredWidth(int height) {
+    public int getPreferredWidth(final int height) {
         int preferredWidth = 0;
 
         Separator separator = (Separator) getComponent();
@@ -78,7 +83,7 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
     }
 
     @Override
-    public int getPreferredHeight(int width) {
+    public int getPreferredHeight(final int width) {
         int preferredHeight = thickness;
 
         Separator separator = (Separator) getComponent();
@@ -127,7 +132,7 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
     }
 
     @Override
-    public void paint(Graphics2D graphics) {
+    public void paint(final Graphics2D graphics) {
         Separator separator = (Separator) getComponent();
         int width = getWidth();
         int separatorY = padding.top;
@@ -173,31 +178,31 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
     /**
      * Sets the font used in rendering the Separator's heading.
      *
-     * @param font The new font for the heading.
+     * @param newFont The new font for the heading.
      */
-    public void setFont(Font font) {
-        Utils.checkNull(font, "font");
+    public void setFont(final Font newFont) {
+        Utils.checkNull(newFont, "font");
 
-        this.font = font;
+        this.font = newFont;
         invalidateComponent();
     }
 
     /**
      * Sets the font used in rendering the Separator's heading.
      *
-     * @param font A {@linkplain ComponentSkin#decodeFont(String) font specification}.
+     * @param fontString A {@linkplain ComponentSkin#decodeFont(String) font specification}.
      */
-    public final void setFont(String font) {
-        setFont(decodeFont(font));
+    public final void setFont(final String fontString) {
+        setFont(decodeFont(fontString));
     }
 
     /**
      * Sets the font used in rendering the Separator's heading.
      *
-     * @param font A dictionary {@link Theme#deriveFont describing a font}.
+     * @param fontDictionary A dictionary {@link Theme#deriveFont describing a font}.
      */
-    public final void setFont(Dictionary<String, ?> font) {
-        setFont(Theme.deriveFont(font));
+    public final void setFont(final Dictionary<String, ?> fontDictionary) {
+        setFont(Theme.deriveFont(fontDictionary));
     }
 
     /**
@@ -210,23 +215,23 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
     /**
      * Sets the color of the Separator's horizontal rule.
      *
-     * @param color The new color for the horizontal rule.
+     * @param newColor The new color for the horizontal rule.
      */
-    public void setColor(Color color) {
-        Utils.checkNull(color, "color");
+    public void setColor(final Color newColor) {
+        Utils.checkNull(newColor, "color");
 
-        this.color = color;
+        this.color = newColor;
         repaintComponent();
     }
 
     /**
      * Sets the color of the Separator's horizontal rule.
      *
-     * @param color Any of the {@linkplain GraphicsUtilities#decodeColor color
+     * @param colorString Any of the {@linkplain GraphicsUtilities#decodeColor color
      * values recognized by Pivot}.
      */
-    public final void setColor(String color) {
-        setColor(GraphicsUtilities.decodeColor(color, "color"));
+    public final void setColor(final String colorString) {
+        setColor(GraphicsUtilities.decodeColor(colorString, "color"));
     }
 
     /**
@@ -239,23 +244,23 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
     /**
      * Sets the color of the text in the heading.
      *
-     * @param headingColor The new color for the heading text.
+     * @param newHeadingColor The new color for the heading text.
      */
-    public void setHeadingColor(Color headingColor) {
-        Utils.checkNull(headingColor, "headingColor");
+    public void setHeadingColor(final Color newHeadingColor) {
+        Utils.checkNull(newHeadingColor, "headingColor");
 
-        this.headingColor = headingColor;
+        this.headingColor = newHeadingColor;
         repaintComponent();
     }
 
     /**
      * Sets the color of the text in the heading.
      *
-     * @param headingColor Any of the {@linkplain GraphicsUtilities#decodeColor
+     * @param headingColorString Any of the {@linkplain GraphicsUtilities#decodeColor
      * color values recognized by Pivot}.
      */
-    public final void setHeadingColor(String headingColor) {
-        setHeadingColor(GraphicsUtilities.decodeColor(headingColor, "headingColor"));
+    public final void setHeadingColor(final String headingColorString) {
+        setHeadingColor(GraphicsUtilities.decodeColor(headingColorString, "headingColor"));
     }
 
     /**
@@ -268,24 +273,24 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
     /**
      * Sets the thickness of the Separator's horizontal rule.
      *
-     * @param thickness The new rule thickness (in pixels).
+     * @param newThickness The new rule thickness (in pixels).
      */
-    public void setThickness(int thickness) {
-        Utils.checkNonNegative(thickness, "thickness");
+    public void setThickness(final int newThickness) {
+        Utils.checkNonNegative(newThickness, "thickness");
 
-        this.thickness = thickness;
+        this.thickness = newThickness;
         invalidateComponent();
     }
 
     /**
      * Sets the thickness of the Separator's horizontal rule.
      *
-     * @param thickness The new integer value for the rule thickness (in pixels).
+     * @param newThickness The new integer value for the rule thickness (in pixels).
      */
-    public final void setThickness(Number thickness) {
-        Utils.checkNull(thickness, "thickness");
+    public final void setThickness(final Number newThickness) {
+        Utils.checkNull(newThickness, "thickness");
 
-        setThickness(thickness.intValue());
+        setThickness(newThickness.intValue());
     }
 
     /**
@@ -300,12 +305,12 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
      * Sets the amount of space to leave around the Separator's heading, and
      * above and below the entire component.
      *
-     * @param padding The new padding values.
+     * @param paddingInsets The new padding values.
      */
-    public void setPadding(Insets padding) {
-        Utils.checkNull(padding, "padding");
+    public void setPadding(final Insets paddingInsets) {
+        Utils.checkNull(paddingInsets, "padding");
 
-        this.padding = padding;
+        this.padding = paddingInsets;
         invalidateComponent();
     }
 
@@ -313,51 +318,57 @@ public class SeparatorSkin extends ComponentSkin implements SeparatorListener {
      * Sets the amount of space to leave around the Separator's heading, and
      * above and below the entire component.
      *
-     * @param padding A dictionary with keys in the set {left, top, bottom,
+     * @param paddingDictionary A dictionary with keys in the set {left, top, bottom,
      * right}.
      */
-    public final void setPadding(Dictionary<String, ?> padding) {
-        setPadding(new Insets(padding));
-    }
-
-    public final void setPadding(Sequence<?> padding) {
-        setPadding(new Insets(padding));
+    public final void setPadding(final Dictionary<String, ?> paddingDictionary) {
+        setPadding(new Insets(paddingDictionary));
     }
 
     /**
      * Sets the amount of space to leave around the Separator's heading, and
      * above and below the entire component.
      *
-     * @param padding The new single padding value for all areas.
+     * @param paddingSequence A sequence of values in the order of [top, left, bottom, right].
      */
-    public final void setPadding(int padding) {
-        setPadding(new Insets(padding));
+    public final void setPadding(final Sequence<?> paddingSequence) {
+        setPadding(new Insets(paddingSequence));
     }
 
     /**
      * Sets the amount of space to leave around the Separator's heading, and
      * above and below the entire component.
      *
-     * @param padding The new integer value to use for padding in all areas.
+     * @param paddingValue The new single padding value for all areas.
      */
-    public final void setPadding(Number padding) {
-        setPadding(new Insets(padding));
+    public final void setPadding(final int paddingValue) {
+        setPadding(new Insets(paddingValue));
     }
 
     /**
      * Sets the amount of space to leave around the Separator's heading, and
      * above and below the entire component.
      *
-     * @param padding A string containing an integer or a JSON dictionary with
+     * @param paddingValue The new integer value to use for padding in all areas.
+     */
+    public final void setPadding(final Number paddingValue) {
+        setPadding(new Insets(paddingValue));
+    }
+
+    /**
+     * Sets the amount of space to leave around the Separator's heading, and
+     * above and below the entire component.
+     *
+     * @param paddingString A string containing an integer or a JSON dictionary with
      * keys left, top, bottom, and/or right.
      */
-    public final void setPadding(String padding) {
-        setPadding(Insets.decode(padding));
+    public final void setPadding(final String paddingString) {
+        setPadding(Insets.decode(paddingString));
     }
 
     // Separator events
     @Override
-    public void headingChanged(Separator separator, String previousHeading) {
+    public void headingChanged(final Separator separator, final String previousHeading) {
         invalidateComponent();
     }
 

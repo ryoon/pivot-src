@@ -42,8 +42,11 @@ import org.apache.pivot.wtk.text.TextSpan;
  * Abstract base class for node views.
  */
 abstract class TextPaneSkinNodeView implements NodeListener {
+    /** The skin we are attached to. */
     protected final TextPaneSkin textPaneSkin;
+    /** The document node we describe. */
     private Node node = null;
+    /** Our parent view. */
     private TextPaneSkinElementView parent = null;
 
     private int width = 0;
@@ -54,9 +57,9 @@ abstract class TextPaneSkinNodeView implements NodeListener {
 
     private boolean valid = false;
 
-    public TextPaneSkinNodeView(final TextPaneSkin textPaneSkin, final Node node) {
-        this.textPaneSkin = textPaneSkin;
-        this.node = node;
+    TextPaneSkinNodeView(final TextPaneSkin textPaneSkinValue, final Node nodeValue) {
+        this.textPaneSkin = textPaneSkinValue;
+        this.node = nodeValue;
     }
 
     public Node getNode() {
@@ -67,8 +70,8 @@ abstract class TextPaneSkinNodeView implements NodeListener {
         return parent;
     }
 
-    protected void setParent(final TextPaneSkinElementView parent) {
-        this.parent = parent;
+    protected void setParent(final TextPaneSkinElementView parentValue) {
+        this.parent = parentValue;
     }
 
     protected TextPaneSkin getTextPaneSkin() {
@@ -91,23 +94,19 @@ abstract class TextPaneSkinNodeView implements NodeListener {
         return height;
     }
 
-    public abstract int getBaseline();
-
-    public abstract void paint(Graphics2D g);
-
     public Dimensions getSize() {
         return new Dimensions(width, height);
     }
 
-    public void setSize(final int width, final int height) {
-        assert (width >= 0);
-        assert (height >= 0);
+    public void setSize(final int widthValue, final int heightValue) {
+        assert (widthValue >= 0);
+        assert (heightValue >= 0);
 
         // Redraw the region formerly occupied by this view
         repaint();
 
-        this.width = width;
-        this.height = height;
+        this.width = widthValue;
+        this.height = heightValue;
 
         // Redraw the region currently occupied by this view
         repaint();
@@ -130,25 +129,16 @@ abstract class TextPaneSkinNodeView implements NodeListener {
         return new Point(x, y);
     }
 
-    protected void setLocation(final int x, final int y) {
+    protected void setLocation(final int xValue, final int yValue) {
         // Redraw the region formerly occupied by this view
         repaint();
 
-        this.x = x;
-        this.y = y;
+        this.x = xValue;
+        this.y = yValue;
 
         // Redraw the region currently occupied by this view
         repaint();
     }
-
-    /**
-     * Set location of the NodeView relative to the skin component. This is
-     * needed by the ComponentViewNode to correctly position child Component's.
-     *
-     * @param skinX the X coordinate in the skin's frame of reference
-     * @param skinY the Y coordinate in the skin's frame of reference
-     */
-    protected abstract void setSkinLocation(int skinX, int skinY);
 
     public Bounds getBounds() {
         return new Bounds(x, y, width, height);
@@ -183,8 +173,13 @@ abstract class TextPaneSkinNodeView implements NodeListener {
         valid = false;
     }
 
+    /**
+     * Layout our children given the width to use for line breaks.
+     *
+     * @param breakWidth The width at which lines should break.
+     */
     public final void layout(final int breakWidth) {
-        // reduce the number of layout calculations we need to do by only
+        // Reduce the number of layout calculations we need to do by only
         // redoing them if necessary
         if (!valid || previousBreakWidth != breakWidth) {
             childLayout(breakWidth);
@@ -193,21 +188,43 @@ abstract class TextPaneSkinNodeView implements NodeListener {
         }
     }
 
-    public abstract Dimensions getPreferredSize(int breakWidth);
-
-    protected abstract void childLayout(int breakWidth);
-
+    /**
+     * @return The offset of our node relative to our parent.
+     */
     public int getOffset() {
         return node.getOffset();
     }
 
+    /**
+     * @return The offset of our node within the complete document.
+     */
     public int getDocumentOffset() {
         return (parent == null) ? 0 : parent.getDocumentOffset() + getOffset();
     }
 
+    /**
+     * @return The character count of our node.
+     */
     public int getCharacterCount() {
         return node.getCharacterCount();
     }
+
+    public abstract int getBaseline();
+
+    public abstract void paint(Graphics2D g);
+
+    /**
+     * Set location of the NodeView relative to the skin component. This is
+     * needed by the ComponentViewNode to correctly position child {@code Component}s.
+     *
+     * @param skinX the X coordinate in the skin's frame of reference
+     * @param skinY the Y coordinate in the skin's frame of reference
+     */
+    protected abstract void setSkinLocation(int skinX, int skinY);
+
+    public abstract Dimensions getPreferredSize(int breakWidth);
+
+    protected abstract void childLayout(int breakWidth);
 
     public abstract int getInsertionPoint(int xArgument, int yArgument);
 
@@ -261,6 +278,7 @@ abstract class TextPaneSkinNodeView implements NodeListener {
         TextPaneSkinNodeView create(TextPaneSkin textPaneSkin, Node node);
     }
 
+    /** The map from document node classes to their associated view constructors. */
     private static HashMap<Class<? extends Node>, NodeCreator> nodeViewCreatorMap = new HashMap<>();
     static {
         nodeViewCreatorMap.put(Document.class, (textPaneSkin, node) ->
@@ -291,8 +309,6 @@ abstract class TextPaneSkinNodeView implements NodeListener {
      * @return The corresponding view node.
      */
     public static TextPaneSkinNodeView createNodeView(final TextPaneSkin textPaneSkin, final Node node) {
-        TextPaneSkinNodeView nodeView = null;
-
         NodeCreator creator = nodeViewCreatorMap.get(node.getClass());
         if (creator != null) {
             return creator.create(textPaneSkin, node);
