@@ -21,14 +21,15 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Button press listener interface.
  */
+@FunctionalInterface
 public interface ButtonPressListener {
     /**
      * Button press listeners.
      */
-    public static class Listeners extends ListenerList<ButtonPressListener>
+    final class Listeners extends ListenerList<ButtonPressListener>
         implements ButtonPressListener {
         @Override
-        public void buttonPressed(Button button) {
+        public void buttonPressed(final Button button) {
             forEach(listener -> listener.buttonPressed(button));
         }
     }
@@ -38,5 +39,5 @@ public interface ButtonPressListener {
      *
      * @param button The button that was just pressed.
      */
-    public void buttonPressed(Button button);
+    void buttonPressed(Button button);
 }
