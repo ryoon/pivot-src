@@ -39,47 +39,69 @@ public abstract class Viewport extends Container {
          * @return The bounds of the Viewport within the container, for example, in
          * ScrollPaneSkin, this excludes the scrollbars.
          */
-        public Bounds getViewportBounds();
+        Bounds getViewportBounds();
     }
 
+    /** Current top scroll offset. */
     private int scrollTop = 0;
+    /** Current left scroll offset. */
     private int scrollLeft = 0;
+    /** The current component (typically a {@link Container}) that we are viewing. */
     private Component view;
 
+    /** Whether we are consuming or propagating repaints. */
     private boolean consumeRepaint = false;
+    /** Whether repainting is optimized, or whether a full repaint is required. */
     private boolean repaintAllViewport = false;
 
+    /** Current set of listeners for events. */
     private ViewportListener.Listeners viewportListeners = new ViewportListener.Listeners();
 
     @Override
-    protected void setSkin(org.apache.pivot.wtk.Skin skin) {
+    protected void setSkin(final org.apache.pivot.wtk.Skin skin) {
         checkSkin(skin, Viewport.Skin.class);
 
         super.setSkin(skin);
     }
 
+    /**
+     * @return The current top scroll offset.
+     */
     public int getScrollTop() {
         return scrollTop;
     }
 
-    public void setScrollTop(int scrollTop) {
-        int previousScrollTop = this.scrollTop;
+    /**
+     * Set the new top scroll offset.
+     *
+     * @param newScrollTop The new top offset.
+     */
+    public void setScrollTop(final int newScrollTop) {
+        int previousScrollTop = scrollTop;
 
-        if (scrollTop != previousScrollTop) {
-            this.scrollTop = scrollTop;
+        if (newScrollTop != previousScrollTop) {
+            scrollTop = newScrollTop;
             viewportListeners.scrollTopChanged(this, previousScrollTop);
         }
     }
 
+    /**
+     * @return The current left scroll offset.
+     */
     public int getScrollLeft() {
         return scrollLeft;
     }
 
-    public void setScrollLeft(int scrollLeft) {
-        int previousScrollLeft = this.scrollLeft;
+    /**
+     * Set the new left scroll offset.
+     *
+     * @param newScrollLeft The new left offset.
+     */
+    public void setScrollLeft(final int newScrollLeft) {
+        int previousScrollLeft = scrollLeft;
 
-        if (scrollLeft != previousScrollLeft) {
-            this.scrollLeft = scrollLeft;
+        if (newScrollLeft != previousScrollLeft) {
+            scrollLeft = newScrollLeft;
             viewportListeners.scrollLeftChanged(this, previousScrollLeft);
         }
     }
@@ -96,25 +118,25 @@ public abstract class Viewport extends Container {
      * Set the single component (typically a {@link Container}) that we will
      * provide a windowed (or scrollable) view of.
      *
-     * @param view The new component (container) we are viewing.
+     * @param newView The new component (container) we are viewing.
      */
-    public void setView(Component view) {
-        Component previousView = this.view;
+    public void setView(final Component newView) {
+        Component previousView = view;
 
-        if (view != previousView) {
+        if (newView != previousView) {
             // Remove any previous view component
-            this.view = null;
+            view = null;
 
             if (previousView != null) {
                 remove(previousView);
             }
 
             // Set the new view component
-            if (view != null) {
-                insert(view, 0);
+            if (newView != null) {
+                insert(newView, 0);
             }
 
-            this.view = view;
+            view = newView;
 
             viewportListeners.viewChanged(this, previousView);
         }
@@ -139,11 +161,11 @@ public abstract class Viewport extends Container {
      * enables skins to optimize viewport scrolling by blitting the display to
      * reduce the required repaint area.
      *
-     * @param consumeRepaint {@code true} to consume repaints that bubble up
+     * @param newConsumeRepaint {@code true} to consume repaints that bubble up
      * through this viewport; {@code false} to propagate them up like normal.
      */
-    public void setConsumeRepaint(boolean consumeRepaint) {
-        this.consumeRepaint = consumeRepaint;
+    public void setConsumeRepaint(final boolean newConsumeRepaint) {
+        consumeRepaint = newConsumeRepaint;
     }
 
     /**
@@ -156,7 +178,7 @@ public abstract class Viewport extends Container {
     }
 
     @Override
-    public void repaint(int x, int y, int width, int height, boolean immediate) {
+    public void repaint(final int x, final int y, final int width, final int height, final boolean immediate) {
         if (!consumeRepaint) {
             super.repaint(x, y, width, height, immediate);
         }
@@ -169,7 +191,7 @@ public abstract class Viewport extends Container {
      * method will result in an exception.
      */
     @Override
-    public Sequence<Component> remove(int index, int count) {
+    public Sequence<Component> remove(final int index, final int count) {
         for (int i = index, n = index + count; i < n; i++) {
             Component component = get(i);
             if (component == view) {
@@ -181,6 +203,9 @@ public abstract class Viewport extends Container {
         return super.remove(index, count);
     }
 
+    /**
+     * @return The current list of listeners for events on this viewport.
+     */
     public ListenerList<ViewportListener> getViewportListeners() {
         return viewportListeners;
     }
@@ -206,11 +231,11 @@ public abstract class Viewport extends Container {
      * problems with the scrolled-in area not being painted properly by default,
      * consider setting this property {@code true} (default is {@code false}).
      *
-     * @param repaintAllViewport {@code false} means optimized (repaint only
+     * @param newRepaintAllViewport {@code false} means optimized (repaint only
      * needed area, default), while {@code true} means repaint all
      */
-    public void setRepaintAllViewport(boolean repaintAllViewport) {
-        this.repaintAllViewport = repaintAllViewport;
+    public void setRepaintAllViewport(final boolean newRepaintAllViewport) {
+        repaintAllViewport = newRepaintAllViewport;
     }
 
 }

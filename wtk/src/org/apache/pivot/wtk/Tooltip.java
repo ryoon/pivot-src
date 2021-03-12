@@ -22,11 +22,19 @@ package org.apache.pivot.wtk;
  * amount of time has passed and closes when the user moves the mouse.
  */
 public class Tooltip extends Window {
+    /**
+     * Default constructor without a content component (yet).
+     */
     public Tooltip() {
         this(null);
     }
 
-    public Tooltip(Component content) {
+    /**
+     * Construct a tooltip with the given content.
+     *
+     * @param content The content to be shown in this tooltip window.
+     */
+    public Tooltip(final Component content) {
         super(content);
 
         installSkin(Tooltip.class);

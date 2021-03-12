@@ -20,11 +20,19 @@ package org.apache.pivot.wtk;
  * Container that provides a scrollable view of a component.
  */
 public class Panorama extends Viewport {
+    /**
+     * Default constructor without a view component (yet).
+     */
     public Panorama() {
         this(null);
     }
 
-    public Panorama(Component view) {
+    /**
+     * Constructor supplying the view component.
+     *
+     * @param view The component we will be viewing.
+     */
+    public Panorama(final Component view) {
         installSkin(Panorama.class);
         setView(view);
     }

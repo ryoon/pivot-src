@@ -24,12 +24,15 @@ import org.apache.pivot.wtk.Style;
  * Default list button data renderer.
  */
 public class ListButtonDataRenderer extends ButtonDataRenderer {
+    /**
+     * Default constructor - set necessary styles.
+     */
     public ListButtonDataRenderer() {
         getStyles().put(Style.horizontalAlignment, HorizontalAlignment.LEFT);
     }
 
     @Override
-    public void render(final Object data, final Button button, boolean highlight) {
+    public void render(final Object data, final Button button, final boolean highlight) {
         Object localData = data;
         if (localData == null) {
             localData = "";

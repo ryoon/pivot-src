@@ -78,7 +78,7 @@ public final class ExceptionUtils {
      * @param       ex      The exception in question.
      * @return              A "nicer" or more readable name to use in reporting.
      */
-    private static String exceptionName(Throwable ex) {
+    private static String exceptionName(final Throwable ex) {
         String simpleName = ex.getClass().getSimpleName();
         String nicerName  = simpleName;
 

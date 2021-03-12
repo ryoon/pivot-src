@@ -60,23 +60,36 @@ public final class GraphicsUtilities {
         RADIAL_GRADIENT
     }
 
+    /** Dictionary key for the paint type value. */
     public static final String PAINT_TYPE_KEY = "paintType";
 
+    /** Dictionary key for the color value. */
     public static final String COLOR_KEY = "color";
 
+    /** Dictionary key for the starting X-position value. */
     public static final String START_X_KEY = "startX";
+    /** Dictionary key for the starting Y-position value. */
     public static final String START_Y_KEY = "startY";
+    /** Dictionary key for the ending X-position value. */
     public static final String END_X_KEY = "endX";
+    /** Dictionary key for the ending Y-position value. */
     public static final String END_Y_KEY = "endY";
 
+    /** Dictionary key for the starting color value for a gradient. */
     public static final String START_COLOR_KEY = "startColor";
+    /** Dictionary key for the ending color value for a gradient. */
     public static final String END_COLOR_KEY = "endColor";
 
+    /** Dictionary key for the center X-position value for a radial gradient. */
     public static final String CENTER_X_KEY = "centerX";
+    /** Dictionary key for the center Y-position value for a radial gradient. */
     public static final String CENTER_Y_KEY = "centerY";
+    /** Dictionary key for the radius value for a radial gradient. */
     public static final String RADIUS_KEY = "radius";
 
+    /** Dictionary key for the dictionary of gradient stop values. */
     public static final String STOPS_KEY = "stops";
+    /** Dictionary key for the gradient offset values. */
     public static final String OFFSET_KEY = "offset";
 
     /** A bit mask for 8 bits (max size of a color value). */

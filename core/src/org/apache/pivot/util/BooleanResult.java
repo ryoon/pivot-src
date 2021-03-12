@@ -22,7 +22,9 @@ package org.apache.pivot.util;
  * final or effectively final.
  */
 public class BooleanResult {
-    /** The current boolean value. */
+    /**
+     * The current boolean value.
+     */
     private boolean result;
 
     /**
@@ -30,7 +32,7 @@ public class BooleanResult {
      *
      * @param initialValue The initial boolean value.
      */
-    public BooleanResult(boolean initialValue) {
+    public BooleanResult(final boolean initialValue) {
         result = initialValue;
     }
 
@@ -48,7 +50,7 @@ public class BooleanResult {
      *
      * @param value The new value to OR into the saved one.
      */
-    public void or(boolean value) {
+    public void or(final boolean value) {
         result |= value;
     }
 
@@ -58,7 +60,7 @@ public class BooleanResult {
      *
      * @param value The new value to AND into the saved one.
      */
-    public void and(boolean value) {
+    public void and(final boolean value) {
         result &= value;
     }
 
@@ -68,7 +70,7 @@ public class BooleanResult {
      *
      * @param value The new value to XOR into the saved one.
      */
-    public void xor(boolean value) {
+    public void xor(final boolean value) {
         result ^= value;
     }
 
@@ -92,7 +94,7 @@ public class BooleanResult {
      *
      * @param value The new value to set.
      */
-    public void set(boolean value) {
+    public void set(final boolean value) {
         result = value;
     }
 
