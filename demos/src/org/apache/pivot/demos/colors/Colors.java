@@ -43,14 +43,14 @@ public final class Colors implements Application {
 
     private Label makeLabel(final String text) {
         Label label = new Label(text);
-        label.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        label.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
         return label;
     }
 
     @Override
     public void startup(final Display display, final Map<String, String> properties) {
         GridPane gridPane = new GridPane(CELLS_PER_ROW);
-        gridPane.getStyles().put(Style.padding, 6);
+        gridPane.putStyle(Style.padding, 6);
 
         Font fontBold    = FontUtilities.getFont(FontUtilities.SANS_SERIF_FONTS, Font.BOLD,   13);
         Font fontRegular = FontUtilities.getFont(FontUtilities.SANS_SERIF_FONTS, Font.PLAIN,  12);
@@ -67,8 +67,8 @@ public final class Colors implements Application {
             }
 
             BoxPane container = new BoxPane(Orientation.VERTICAL);
-            container.getStyles().put(Style.padding, 4);
-            container.getStyles().put(Style.fill, true);
+            container.putStyle(Style.padding, 4);
+            container.putStyle(Style.fill, true);
 
             BoxPane colorFill = new BoxPane(Orientation.VERTICAL);
 
@@ -78,7 +78,7 @@ public final class Colors implements Application {
             int g = fillColor.getGreen();
             int b = fillColor.getBlue();
 
-            colorFill.getStyles().put(Style.backgroundColor, fillColor);
+            colorFill.putStyle(Style.backgroundColor, fillColor);
             colorFill.setPreferredWidth(372);
             colorFill.setPreferredHeight(100);
             Set<CSSColor> matchingColors = CSSColor.getMatchingColors(color);
@@ -88,21 +88,21 @@ public final class Colors implements Application {
             colorFill.setTooltipText(matches);
 
             Label nameLabel = makeLabel(color.toString());
-            nameLabel.getStyles().put(Style.font, fontBold);
+            nameLabel.putStyle(Style.font, fontBold);
 
             String rgbText = String.format("R=%1$3d, G=%2$3d, B=%3$3d", r, g, b);
             Label rgbLabel = makeLabel(rgbText);
-            rgbLabel.getStyles().put(Style.font, fontRegular);
+            rgbLabel.putStyle(Style.font, fontRegular);
 
             float[] hsbValues = Color.RGBtoHSB(r, g, b, null);
             String hsbText = String.format("H=%1$5.3f, S=%2$5.3f, V=%3$5.3f",
                 hsbValues[0], hsbValues[1], hsbValues[2]);
             Label hsbLabel = makeLabel(hsbText);
-            hsbLabel.getStyles().put(Style.font, fontRegular);
+            hsbLabel.putStyle(Style.font, fontRegular);
 
             String seqText = String.format("%1$d / %2$d", cell + 1, numColors);
             Label seqLabel = makeLabel(seqText);
-            seqLabel.getStyles().put(Style.font, fontItalic);
+            seqLabel.putStyle(Style.font, fontItalic);
 
             container.add(colorFill);
             container.add(nameLabel);

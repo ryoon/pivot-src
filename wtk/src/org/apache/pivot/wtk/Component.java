@@ -2242,6 +2242,26 @@ public abstract class Component implements ConstrainedVisual {
     }
 
     /**
+     * Put the given key/value style into the style dictionary.
+     *
+     * @param style The enumerated style key.
+     * @param value The value for this style.
+     */
+    public final void putStyle(final Style style, final Object value) {
+        styleDictionary.put(style, value);
+    }
+
+    /**
+     * Put the given key/value style into the style dictionary.
+     *
+     * @param style The style key.
+     * @param value The value for this style.
+     */
+    public final void putStyle(final String style, final Object value) {
+        styleDictionary.put(style, value);
+    }
+
+    /**
      * Applies a set of styles.
      *
      * @param styles A map containing the styles to apply.
@@ -2250,7 +2270,7 @@ public abstract class Component implements ConstrainedVisual {
         Utils.checkNull(styles, "styles");
 
         for (String key : styles) {
-            getStyles().put(key, styles.get(key));
+            putStyle(key, styles.get(key));
         }
     }
 
