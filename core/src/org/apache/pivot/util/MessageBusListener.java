@@ -18,6 +18,8 @@ package org.apache.pivot.util;
 
 /**
  * Message bus listener interface.
+ *
+ * @param <T> The type of message being sent.
  */
 public interface MessageBusListener<T> {
     /**
@@ -26,5 +28,5 @@ public interface MessageBusListener<T> {
      *
      * @param message The message that was just sent.
      */
-    public void messageSent(T message);
+    void messageSent(T message);
 }

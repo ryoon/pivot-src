@@ -25,9 +25,9 @@ public interface NodeListener {
     /**
      * Node listeners.
      */
-    public static class Listeners extends ListenerList<NodeListener> implements NodeListener {
+    final class Listeners extends ListenerList<NodeListener> implements NodeListener {
         @Override
-        public void parentChanged(Node node, Element previousParent) {
+        public void parentChanged(final Node node, final Element previousParent) {
             forEach(listener -> listener.parentChanged(node, previousParent));
         }
     }
@@ -38,5 +38,5 @@ public interface NodeListener {
      * @param node The node that has moved.
      * @param previousParent The previous parent of this node.
      */
-    public void parentChanged(Node node, Element previousParent);
+    void parentChanged(Node node, Element previousParent);
 }

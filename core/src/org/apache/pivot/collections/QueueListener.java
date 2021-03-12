@@ -21,57 +21,63 @@ import org.apache.pivot.util.ListenerList;
 
 /**
  * Queue listener interface.
+ *
+ * @param <T> The type of object stored in this queue.
  */
 public interface QueueListener<T> {
     /**
      * Queue listeners.
+     *
+     * @param <T> Type of object stored in the queue.
      */
-    public static class Listeners<T> extends ListenerList<QueueListener<T>> implements
+    class Listeners<T> extends ListenerList<QueueListener<T>> implements
         QueueListener<T> {
         @Override
-        public void itemEnqueued(Queue<T> queue, T item) {
+        public void itemEnqueued(final Queue<T> queue, final T item) {
             forEach(listener -> listener.itemEnqueued(queue, item));
         }
 
         @Override
-        public void itemDequeued(Queue<T> queue, T item) {
+        public void itemDequeued(final Queue<T> queue, final T item) {
             forEach(listener -> listener.itemDequeued(queue, item));
         }
 
         @Override
-        public void queueCleared(Queue<T> queue) {
+        public void queueCleared(final Queue<T> queue) {
             forEach(listener -> listener.queueCleared(queue));
         }
 
         @Override
-        public void comparatorChanged(Queue<T> queue, Comparator<T> previousComparator) {
+        public void comparatorChanged(final Queue<T> queue, final Comparator<T> previousComparator) {
             forEach(listener -> listener.comparatorChanged(queue, previousComparator));
         }
     }
 
     /**
      * QueueListener adapter.
+     *
+     * @param <T> Type of object stored in the queue.
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter<T> implements QueueListener<T> {
+    final class Adapter<T> implements QueueListener<T> {
         @Override
-        public void itemEnqueued(Queue<T> queue, T item) {
+        public void itemEnqueued(final Queue<T> queue, final T item) {
             // empty block
         }
 
         @Override
-        public void itemDequeued(Queue<T> queue, T item) {
+        public void itemDequeued(final Queue<T> queue, final T item) {
             // empty block
         }
 
         @Override
-        public void queueCleared(Queue<T> queue) {
+        public void queueCleared(final Queue<T> queue) {
             // empty block
         }
 
         @Override
-        public void comparatorChanged(Queue<T> queue, Comparator<T> previousComparator) {
+        public void comparatorChanged(final Queue<T> queue, final Comparator<T> previousComparator) {
             // empty block
         }
     }

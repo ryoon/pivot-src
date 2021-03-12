@@ -20,36 +20,40 @@ import java.util.Comparator;
 
 /**
  * List listener interface.
+ *
+ * @param <T> Type of object stored in this list.
  */
 public interface ListListener<T> {
     /**
      * List listener adapter.
+     *
+     * @param <T> Type of object stored in this list.
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter<T> implements ListListener<T> {
+    final class Adapter<T> implements ListListener<T> {
         @Override
-        public void itemInserted(List<T> list, int index) {
+        public void itemInserted(final List<T> list, final int index) {
             // empty block
         }
 
         @Override
-        public void itemsRemoved(List<T> list, int index, Sequence<T> items) {
+        public void itemsRemoved(final List<T> list, final int index, final Sequence<T> items) {
             // empty block
         }
 
         @Override
-        public void itemUpdated(List<T> list, int index, T previousItem) {
+        public void itemUpdated(final List<T> list, final int index, final T previousItem) {
             // empty block
         }
 
         @Override
-        public void listCleared(List<T> list) {
+        public void listCleared(final List<T> list) {
             // empty block
         }
 
         @Override
-        public void comparatorChanged(List<T> list, Comparator<T> previousComparator) {
+        public void comparatorChanged(final List<T> list, final Comparator<T> previousComparator) {
             // empty block
         }
     }

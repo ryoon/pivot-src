@@ -27,50 +27,50 @@ public interface JSONSerializerListener {
     /**
      * JSON Serializer listeners.
      */
-    public static class Listeners extends ListenerList<JSONSerializerListener>
+    final class Listeners extends ListenerList<JSONSerializerListener>
         implements JSONSerializerListener {
         @Override
-        public void beginDictionary(JSONSerializer jsonSerializer, Dictionary<String, ?> value) {
+        public void beginDictionary(final JSONSerializer jsonSerializer, final Dictionary<String, ?> value) {
             forEach(listener -> listener.beginDictionary(jsonSerializer, value));
         }
 
         @Override
-        public void endDictionary(JSONSerializer jsonSerializer) {
+        public void endDictionary(final JSONSerializer jsonSerializer) {
             forEach(listener -> listener.endDictionary(jsonSerializer));
         }
 
         @Override
-        public void readKey(JSONSerializer jsonSerializer, String key) {
+        public void readKey(final JSONSerializer jsonSerializer, final String key) {
             forEach(listener -> listener.readKey(jsonSerializer, key));
         }
 
         @Override
-        public void beginSequence(JSONSerializer jsonSerializer, Sequence<?> value) {
+        public void beginSequence(final JSONSerializer jsonSerializer, final Sequence<?> value) {
             forEach(listener -> listener.beginSequence(jsonSerializer, value));
         }
 
         @Override
-        public void endSequence(JSONSerializer jsonSerializer) {
+        public void endSequence(final JSONSerializer jsonSerializer) {
             forEach(listener -> listener.endSequence(jsonSerializer));
         }
 
         @Override
-        public void readString(JSONSerializer jsonSerializer, String value) {
+        public void readString(final JSONSerializer jsonSerializer, final String value) {
             forEach(listener -> listener.readString(jsonSerializer, value));
         }
 
         @Override
-        public void readNumber(JSONSerializer jsonSerializer, Number value) {
+        public void readNumber(final JSONSerializer jsonSerializer, final Number value) {
             forEach(listener -> listener.readNumber(jsonSerializer, value));
         }
 
         @Override
-        public void readBoolean(JSONSerializer jsonSerializer, Boolean value) {
+        public void readBoolean(final JSONSerializer jsonSerializer, final Boolean value) {
             forEach(listener -> listener.readBoolean(jsonSerializer, value));
         }
 
         @Override
-        public void readNull(JSONSerializer jsonSerializer) {
+        public void readNull(final JSONSerializer jsonSerializer) {
             forEach(listener -> listener.readNull(jsonSerializer));
         }
     }
@@ -80,49 +80,49 @@ public interface JSONSerializerListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements JSONSerializerListener {
+    final class Adapter implements JSONSerializerListener {
         @Override
-        public void beginDictionary(JSONSerializer jsonSerializer, Dictionary<String, ?> value) {
+        public void beginDictionary(final JSONSerializer jsonSerializer, final Dictionary<String, ?> value) {
             // empty block
         }
 
         @Override
-        public void endDictionary(JSONSerializer jsonSerializer) {
+        public void endDictionary(final JSONSerializer jsonSerializer) {
             // empty block
         }
 
         @Override
-        public void readKey(JSONSerializer jsonSerializer, String key) {
+        public void readKey(final JSONSerializer jsonSerializer, final String key) {
             // empty block
         }
 
         @Override
-        public void beginSequence(JSONSerializer jsonSerializer, Sequence<?> value) {
+        public void beginSequence(final JSONSerializer jsonSerializer, final Sequence<?> value) {
             // empty block
         }
 
         @Override
-        public void endSequence(JSONSerializer jsonSerializer) {
+        public void endSequence(final JSONSerializer jsonSerializer) {
             // empty block
         }
 
         @Override
-        public void readString(JSONSerializer jsonSerializer, String value) {
+        public void readString(final JSONSerializer jsonSerializer, final String value) {
             // empty block
         }
 
         @Override
-        public void readNumber(JSONSerializer jsonSerializer, Number value) {
+        public void readNumber(final JSONSerializer jsonSerializer, final Number value) {
             // empty block
         }
 
         @Override
-        public void readBoolean(JSONSerializer jsonSerializer, Boolean value) {
+        public void readBoolean(final JSONSerializer jsonSerializer, final Boolean value) {
             // empty block
         }
 
         @Override
-        public void readNull(JSONSerializer jsonSerializer) {
+        public void readNull(final JSONSerializer jsonSerializer) {
             // empty block
         }
     }

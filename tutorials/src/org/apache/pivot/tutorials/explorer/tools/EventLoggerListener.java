@@ -28,25 +28,25 @@ public interface EventLoggerListener {
     /**
      * Event logger listeners.
      */
-    public static class Listeners extends ListenerList<EventLoggerListener>
+    final class Listeners extends ListenerList<EventLoggerListener>
         implements EventLoggerListener {
         @Override
-        public void sourceChanged(EventLogger eventLogger, Component previousSource) {
+        public void sourceChanged(final EventLogger eventLogger, final Component previousSource) {
             forEach(listener -> listener.sourceChanged(eventLogger, previousSource));
         }
 
         @Override
-        public void eventIncluded(EventLogger eventLogger, Method event) {
+        public void eventIncluded(final EventLogger eventLogger, final Method event) {
             forEach(listener -> listener.eventIncluded(eventLogger, event));
         }
 
         @Override
-        public void eventExcluded(EventLogger eventLogger, Method event) {
+        public void eventExcluded(final EventLogger eventLogger, final Method event) {
             forEach(listener -> listener.eventExcluded(eventLogger, event));
         }
 
         @Override
-        public void eventFired(EventLogger eventLogger, Method event, Object[] arguments) {
+        public void eventFired(final EventLogger eventLogger, final Method event, final Object[] arguments) {
             forEach(listener -> listener.eventFired(eventLogger, event, arguments));
         }
     }
@@ -54,8 +54,8 @@ public interface EventLoggerListener {
     /**
      * Called when an event logger's source has changed.
      *
-     * @param eventLogger
-     * @param previousSource
+     * @param eventLogger The event logger that has changed.
+     * @param previousSource The previous source component.
      */
     default void sourceChanged(EventLogger eventLogger, Component previousSource) {
     }
@@ -64,8 +64,8 @@ public interface EventLoggerListener {
      * Called when a declared event has been included in the list of logged
      * events.
      *
-     * @param eventLogger
-     * @param event
+     * @param eventLogger The event logger that has changed.
+     * @param event The new included event.
      */
     default void eventIncluded(EventLogger eventLogger, Method event) {
     }
@@ -74,8 +74,8 @@ public interface EventLoggerListener {
      * Called when a declared event has been excluded from the list of logged
      * events.
      *
-     * @param eventLogger
-     * @param event
+     * @param eventLogger The event logger that has changed.
+     * @param event The newly excluded event.
      */
     default void eventExcluded(EventLogger eventLogger, Method event) {
     }
@@ -84,9 +84,9 @@ public interface EventLoggerListener {
      * Called when an included event has been fired by the event logger's
      * source.
      *
-     * @param eventLogger
-     * @param event
-     * @param arguments
+     * @param eventLogger The event logger that has changed.
+     * @param event The event that was fired.
+     * @param arguments Arguments sent along with the event.
      */
     default void eventFired(EventLogger eventLogger, Method event, Object[] arguments) {
     }

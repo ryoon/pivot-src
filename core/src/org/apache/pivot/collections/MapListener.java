@@ -21,67 +21,76 @@ import org.apache.pivot.util.ListenerList;
 
 /**
  * Map listener interface.
+ *
+ * @param <K> Type of key object used in this map.
+ * @param <V> Type of value object stored for each key.
  */
 public interface MapListener<K, V> {
     /**
      * Map listeners.
+     *
+     * @param <K> Type of key object used in this map.
+     * @param <V> Type of value object stored for each key.
      */
-    public static class Listeners<K, V> extends ListenerList<MapListener<K, V>> implements
+    class Listeners<K, V> extends ListenerList<MapListener<K, V>> implements
         MapListener<K, V> {
         @Override
-        public void valueAdded(Map<K, V> map, K key) {
+        public void valueAdded(final Map<K, V> map, final K key) {
             forEach(listener -> listener.valueAdded(map, key));
         }
 
         @Override
-        public void valueRemoved(Map<K, V> map, K key, V value) {
+        public void valueRemoved(final Map<K, V> map, final K key, final V value) {
             forEach(listener -> listener.valueRemoved(map, key, value));
         }
 
         @Override
-        public void valueUpdated(Map<K, V> map, K key, V previousValue) {
+        public void valueUpdated(final Map<K, V> map, final K key, final V previousValue) {
             forEach(listener -> listener.valueUpdated(map, key, previousValue));
         }
 
         @Override
-        public void mapCleared(Map<K, V> map) {
+        public void mapCleared(final Map<K, V> map) {
             forEach(listener -> listener.mapCleared(map));
         }
 
         @Override
-        public void comparatorChanged(Map<K, V> map, Comparator<K> previousComparator) {
+        public void comparatorChanged(final Map<K, V> map, final Comparator<K> previousComparator) {
             forEach(listener -> listener.comparatorChanged(map, previousComparator));
         }
     }
 
     /**
      * Map listener adapter.
+     *
+     * @param <K> Type of key object used in this map.
+     * @param <V> Type of value object stored for each key.
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter<K, V> implements MapListener<K, V> {
+    final class Adapter<K, V> implements MapListener<K, V> {
         @Override
-        public void valueAdded(Map<K, V> map, K key) {
+        public void valueAdded(final Map<K, V> map, final K key) {
             // empty block
         }
 
         @Override
-        public void valueUpdated(Map<K, V> map, K key, V previousValue) {
+        public void valueUpdated(final Map<K, V> map, final K key, final V previousValue) {
             // empty block
         }
 
         @Override
-        public void valueRemoved(Map<K, V> map, K key, V value) {
+        public void valueRemoved(final Map<K, V> map, final K key, final V value) {
             // empty block
         }
 
         @Override
-        public void mapCleared(Map<K, V> map) {
+        public void mapCleared(final Map<K, V> map) {
             // empty block
         }
 
         @Override
-        public void comparatorChanged(Map<K, V> map, Comparator<K> previousComparator) {
+        public void comparatorChanged(final Map<K, V> map, final Comparator<K> previousComparator) {
             // empty block
         }
     }

@@ -25,30 +25,29 @@ public interface ChartViewSeriesListener {
     /**
      * Chart view series listener list.
      */
-    public static class Listeners extends ListenerList<ChartViewSeriesListener>
-        implements ChartViewSeriesListener {
+    final class Listeners extends ListenerList<ChartViewSeriesListener> implements ChartViewSeriesListener {
         @Override
-        public void seriesInserted(ChartView chartView, int index) {
+        public void seriesInserted(final ChartView chartView, final int index) {
             forEach(listener -> listener.seriesInserted(chartView, index));
         }
 
         @Override
-        public void seriesRemoved(ChartView chartView, int index, int count) {
+        public void seriesRemoved(final ChartView chartView, final int index, final int count) {
             forEach(listener -> listener.seriesRemoved(chartView, index, count));
         }
 
         @Override
-        public void seriesUpdated(ChartView chartView, int index) {
+        public void seriesUpdated(final ChartView chartView, final int index) {
             forEach(listener -> listener.seriesUpdated(chartView, index));
         }
 
         @Override
-        public void seriesCleared(ChartView chartView) {
+        public void seriesCleared(final ChartView chartView) {
             forEach(listener -> listener.seriesCleared(chartView));
         }
 
         @Override
-        public void seriesSorted(ChartView chartView) {
+        public void seriesSorted(final ChartView chartView) {
             forEach(listener -> listener.seriesSorted(chartView));
         }
     }
@@ -59,7 +58,7 @@ public interface ChartViewSeriesListener {
      * @param chartView The chart that has changed.
      * @param index Index of the series that was inserted.
      */
-    public void seriesInserted(ChartView chartView, int index);
+    void seriesInserted(ChartView chartView, int index);
 
     /**
      * Fired when a series is removed from a chart view's data set.
@@ -68,14 +67,14 @@ public interface ChartViewSeriesListener {
      * @param index Starting index of the removed series.
      * @param count Number of series removed.
      */
-    public void seriesRemoved(ChartView chartView, int index, int count);
+    void seriesRemoved(ChartView chartView, int index, int count);
 
     /**
      * Fired when a chart view's series data is cleared.
      *
      * @param chartView The chart that has changed.
      */
-    public void seriesCleared(ChartView chartView);
+    void seriesCleared(ChartView chartView);
 
     /**
      * Fired when a series is updated in a chart view's data set.
@@ -83,12 +82,12 @@ public interface ChartViewSeriesListener {
      * @param chartView The chart that has changed.
      * @param index Index of the series that was updated.
      */
-    public void seriesUpdated(ChartView chartView, int index);
+    void seriesUpdated(ChartView chartView, int index);
 
     /**
      * Fired when a chart view's series data is sorted.
      *
      * @param chartView Chart that changed.
      */
-    public void seriesSorted(ChartView chartView);
+    void seriesSorted(ChartView chartView);
 }

@@ -21,34 +21,36 @@ import org.apache.pivot.util.ListenerList;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.media.Image;
 
+/**
+ * Listener for events on our "fake" window.
+ */
 public interface FakeWindowListener {
     /**
      * Fake window listeners.
      */
-    public static class Listeners extends ListenerList<FakeWindowListener>
-        implements FakeWindowListener {
+    final class Listeners extends ListenerList<FakeWindowListener> implements FakeWindowListener {
         @Override
-        public void titleChanged(FakeWindow window, String previousTitle) {
+        public void titleChanged(final FakeWindow window, final String previousTitle) {
             forEach(listener -> listener.titleChanged(window, previousTitle));
         }
 
         @Override
-        public void iconAdded(FakeWindow window, Image addedIcon) {
+        public void iconAdded(final FakeWindow window, final Image addedIcon) {
             forEach(listener -> listener.iconAdded(window, addedIcon));
         }
 
         @Override
-        public void iconInserted(FakeWindow window, Image addedIcon, int index) {
+        public void iconInserted(final FakeWindow window, final Image addedIcon, final int index) {
             forEach(listener -> listener.iconInserted(window, addedIcon, index));
         }
 
         @Override
-        public void iconsRemoved(FakeWindow window, int index, Sequence<Image> removed) {
+        public void iconsRemoved(final FakeWindow window, final int index, final Sequence<Image> removed) {
             forEach(listener -> listener.iconsRemoved(window, index, removed));
         }
 
         @Override
-        public void contentChanged(FakeWindow window, Component previousContent) {
+        public void contentChanged(final FakeWindow window, final Component previousContent) {
             forEach(listener -> listener.contentChanged(window, previousContent));
         }
 
@@ -57,36 +59,37 @@ public interface FakeWindowListener {
     /**
      * Called when a window's title has changed.
      *
-     * @param window
-     * @param previousTitle
+     * @param window The window that has changed.
+     * @param previousTitle Previous title for the window.
      */
     default void titleChanged(FakeWindow window, String previousTitle) {
     }
 
     /**
-     * Called when a window's icon has changed.
+     * Called when an icon has been added to the window.
      *
-     * @param window
-     * @param addedIcon
+     * @param window The window that has changed.
+     * @param addedIcon The new icon that has been added to the window.
      */
     default void iconAdded(FakeWindow window, Image addedIcon) {
     }
 
     /**
-     * Called when a window's icon has changed.
+     * Called when an icon has been inserted in the window's icon list.
      *
-     * @param window
-     * @param addedIcon
+     * @param window The window that has changed.
+     * @param addedIcon The new icon that was inserted.
+     * @param index The index where the insertion occurred.
      */
     default void iconInserted(FakeWindow window, Image addedIcon, int index) {
     }
 
     /**
-     * Called when a window's icon has changed.
+     * Called when an icon has been removed from the window's icon list.
      *
-     * @param window
-     * @param index
-     * @param removed
+     * @param window The window that has changed.
+     * @param index The starting index of the removal.
+     * @param removed The list of removed icons.
      */
     default void iconsRemoved(FakeWindow window, int index, Sequence<Image> removed) {
     }
@@ -94,8 +97,8 @@ public interface FakeWindowListener {
     /**
      * Called when a window's content component has changed.
      *
-     * @param window
-     * @param previousContent
+     * @param window The window that has changed.
+     * @param previousContent The previous window content component.
      */
     default void contentChanged(FakeWindow window, Component previousContent) {
     }

@@ -26,39 +26,40 @@ public interface ElementListener {
     /**
      * Element listeners.
      */
-    public static class Listeners extends ListenerList<ElementListener> implements ElementListener {
+    final class Listeners extends ListenerList<ElementListener> implements ElementListener {
         @Override
-        public void defaultNamespaceURIChanged(Element element, String previousDefaultNamespaceURI) {
+        public void defaultNamespaceURIChanged(final Element element, final String previousDefaultNamespaceURI) {
             forEach(listener -> listener.defaultNamespaceURIChanged(element, previousDefaultNamespaceURI));
         }
 
         @Override
-        public void namespaceAdded(Element element, String prefix) {
+        public void namespaceAdded(final Element element, final String prefix) {
             forEach(listener -> listener.namespaceAdded(element, prefix));
         }
 
         @Override
-        public void namespaceUpdated(Element element, String prefix, String previousURI) {
+        public void namespaceUpdated(final Element element, final String prefix, final String previousURI) {
             forEach(listener -> listener.namespaceUpdated(element, prefix, previousURI));
         }
 
         @Override
-        public void namespaceRemoved(Element element, String prefix, String uri) {
+        public void namespaceRemoved(final Element element, final String prefix, final String uri) {
             forEach(listener -> listener.namespaceRemoved(element, prefix, uri));
         }
 
         @Override
-        public void attributeInserted(Element element, int index) {
+        public void attributeInserted(final Element element, final int index) {
             forEach(listener -> listener.attributeInserted(element, index));
         }
 
         @Override
-        public void attributesRemoved(Element element, int index, Sequence<Element.Attribute> attributes) {
+        public void attributesRemoved(final Element element, final int index,
+            final Sequence<Element.Attribute> attributes) {
             forEach(listener -> listener.attributesRemoved(element, index, attributes));
         }
 
         @Override
-        public void attributeValueChanged(Element.Attribute attribute, String previousValue) {
+        public void attributeValueChanged(final Element.Attribute attribute, final String previousValue) {
             forEach(listener -> listener.attributeValueChanged(attribute, previousValue));
         }
     }
@@ -68,40 +69,40 @@ public interface ElementListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements ElementListener {
+    final class Adapter implements ElementListener {
         @Override
-        public void defaultNamespaceURIChanged(Element element, String previousDefaultNamespaceURI) {
+        public void defaultNamespaceURIChanged(final Element element, final String previousDefaultNamespaceURI) {
             // empty block
         }
 
         @Override
-        public void namespaceAdded(Element element, String prefix) {
+        public void namespaceAdded(final Element element, final String prefix) {
             // empty block
         }
 
         @Override
-        public void namespaceUpdated(Element element, String prefix, String previousURI) {
+        public void namespaceUpdated(final Element element, final String prefix, final String previousURI) {
             // empty block
         }
 
         @Override
-        public void namespaceRemoved(Element element, String prefix, String uri) {
+        public void namespaceRemoved(final Element element, final String prefix, final String uri) {
             // empty block
         }
 
         @Override
-        public void attributeInserted(Element element, int index) {
+        public void attributeInserted(final Element element, final int index) {
             // empty block
         }
 
         @Override
-        public void attributesRemoved(Element element, int index,
-            Sequence<Element.Attribute> attributes) {
+        public void attributesRemoved(final Element element, final int index,
+            final Sequence<Element.Attribute> attributes) {
             // empty block
         }
 
         @Override
-        public void attributeValueChanged(Element.Attribute attribute, String previousValue) {
+        public void attributeValueChanged(final Element.Attribute attribute, final String previousValue) {
             // empty block
         }
     }

@@ -22,14 +22,15 @@ import org.apache.pivot.wtk.Component;
 /**
  * Component inspector listener interface.
  */
+@FunctionalInterface
 public interface ComponentInspectorListener {
     /**
      * The component inspector listeners.
      */
-    public static class Listeners extends
+    final class Listeners extends
         ListenerList<ComponentInspectorListener> implements ComponentInspectorListener {
         @Override
-        public void sourceChanged(ComponentInspector componentInspector, Component previousSource) {
+        public void sourceChanged(final ComponentInspector componentInspector, final Component previousSource) {
             forEach(listener -> listener.sourceChanged(componentInspector, previousSource));
         }
     }
@@ -37,8 +38,8 @@ public interface ComponentInspectorListener {
     /**
      * Called when an component inspector's source component has changed.
      *
-     * @param componentInspector
-     * @param previousSource
+     * @param componentInspector The inspector issuing this notification.
+     * @param previousSource The previous source component.
      */
-    public void sourceChanged(ComponentInspector componentInspector, Component previousSource);
+    void sourceChanged(ComponentInspector componentInspector, Component previousSource);
 }

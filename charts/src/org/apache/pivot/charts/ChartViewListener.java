@@ -26,34 +26,34 @@ public interface ChartViewListener {
     /**
      * Chart view listener list.
      */
-    public static class Listeners extends ListenerList<ChartViewListener> implements ChartViewListener {
+    final class Listeners extends ListenerList<ChartViewListener> implements ChartViewListener {
         @Override
-        public void chartDataChanged(ChartView chartView, List<?> previousChartData) {
+        public void chartDataChanged(final ChartView chartView, final List<?> previousChartData) {
             forEach(listener -> listener.chartDataChanged(chartView, previousChartData));
         }
 
         @Override
-        public void seriesNameKeyChanged(ChartView chartView, String previousSeriesNameKey) {
+        public void seriesNameKeyChanged(final ChartView chartView, final String previousSeriesNameKey) {
             forEach(listener -> listener.seriesNameKeyChanged(chartView, previousSeriesNameKey));
         }
 
         @Override
-        public void titleChanged(ChartView chartView, String previousTitle) {
+        public void titleChanged(final ChartView chartView, final String previousTitle) {
             forEach(listener -> listener.titleChanged(chartView, previousTitle));
         }
 
         @Override
-        public void horizontalAxisLabelChanged(ChartView chartView, String previousXAxisLabel) {
+        public void horizontalAxisLabelChanged(final ChartView chartView, final String previousXAxisLabel) {
             forEach(listener -> listener.horizontalAxisLabelChanged(chartView, previousXAxisLabel));
         }
 
         @Override
-        public void verticalAxisLabelChanged(ChartView chartView, String previousYAxisLabel) {
+        public void verticalAxisLabelChanged(final ChartView chartView, final String previousYAxisLabel) {
             forEach(listener -> listener.verticalAxisLabelChanged(chartView, previousYAxisLabel));
         }
 
         @Override
-        public void showLegendChanged(ChartView chartView) {
+        public void showLegendChanged(final ChartView chartView) {
             forEach(listener -> listener.showLegendChanged(chartView));
         }
     }
@@ -64,7 +64,7 @@ public interface ChartViewListener {
      * @param chartView The chart that is changing.
      * @param previousChartData Previous data for the chart.
      */
-    public void chartDataChanged(ChartView chartView, List<?> previousChartData);
+    void chartDataChanged(ChartView chartView, List<?> previousChartData);
 
     /**
      * Fired when a chart view's series name key changes.
@@ -72,7 +72,7 @@ public interface ChartViewListener {
      * @param chartView The chart that is changing.
      * @param previousSeriesNameKey Previous value of the key for the series name.
      */
-    public void seriesNameKeyChanged(ChartView chartView, String previousSeriesNameKey);
+    void seriesNameKeyChanged(ChartView chartView, String previousSeriesNameKey);
 
     /**
      * Fired when a chart view's title changes.
@@ -80,7 +80,7 @@ public interface ChartViewListener {
      * @param chartView The chart that changed.
      * @param previousTitle Previous title for this chart.
      */
-    public void titleChanged(ChartView chartView, String previousTitle);
+    void titleChanged(ChartView chartView, String previousTitle);
 
     /**
      * Fired when a chart view's horizontal axis label changes.
@@ -88,7 +88,7 @@ public interface ChartViewListener {
      * @param chartView The chart that has changed.
      * @param previousHorizontalAxisLabel Previous value of the horizontal axis label.
      */
-    public void horizontalAxisLabelChanged(ChartView chartView, String previousHorizontalAxisLabel);
+    void horizontalAxisLabelChanged(ChartView chartView, String previousHorizontalAxisLabel);
 
     /**
      * Fired when a chart view's vertical axis label changes.
@@ -96,12 +96,12 @@ public interface ChartViewListener {
      * @param chartView The chart that has changed.
      * @param previousVerticalAxisLabel Previous value of the vertical axis label.
      */
-    public void verticalAxisLabelChanged(ChartView chartView, String previousVerticalAxisLabel);
+    void verticalAxisLabelChanged(ChartView chartView, String previousVerticalAxisLabel);
 
     /**
      * Fired when a chart view's "show legend" flag changes.
      *
      * @param chartView The chart that has changed.
      */
-    public void showLegendChanged(ChartView chartView);
+    void showLegendChanged(ChartView chartView);
 }

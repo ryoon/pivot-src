@@ -21,57 +21,63 @@ import org.apache.pivot.util.ListenerList;
 
 /**
  * Stack listener interface.
+ *
+ * @param <T> Type of object stored in this stack.
  */
 public interface StackListener<T> {
     /**
      * Stack listeners.
+     *
+     * @param <T> Type of object stored in this stack.
      */
-    public static class Listeners<T> extends ListenerList<StackListener<T>> implements
+    class Listeners<T> extends ListenerList<StackListener<T>> implements
         StackListener<T> {
         @Override
-        public void itemPushed(Stack<T> stack, T item) {
+        public void itemPushed(final Stack<T> stack, final T item) {
             forEach(listener -> listener.itemPushed(stack, item));
         }
 
         @Override
-        public void itemPopped(Stack<T> stack, T item) {
+        public void itemPopped(final Stack<T> stack, final T item) {
             forEach(listener -> listener.itemPopped(stack, item));
         }
 
         @Override
-        public void stackCleared(Stack<T> stack) {
+        public void stackCleared(final Stack<T> stack) {
             forEach(listener -> listener.stackCleared(stack));
         }
 
         @Override
-        public void comparatorChanged(Stack<T> stack, Comparator<T> previousComparator) {
+        public void comparatorChanged(final Stack<T> stack, final Comparator<T> previousComparator) {
             forEach(listener -> listener.comparatorChanged(stack, previousComparator));
         }
     }
 
     /**
      * StackListener adapter.
+     *
+     * @param <T> Type of object stored in this stack.
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter<T> implements StackListener<T> {
+    final class Adapter<T> implements StackListener<T> {
         @Override
-        public void itemPushed(Stack<T> stack, T item) {
+        public void itemPushed(final Stack<T> stack, final T item) {
             // empty block
         }
 
         @Override
-        public void itemPopped(Stack<T> stack, T item) {
+        public void itemPopped(final Stack<T> stack, final T item) {
             // empty block
         }
 
         @Override
-        public void stackCleared(Stack<T> stack) {
+        public void stackCleared(final Stack<T> stack) {
             // empty block
         }
 
         @Override
-        public void comparatorChanged(Stack<T> stack, Comparator<T> previousComparator) {
+        public void comparatorChanged(final Stack<T> stack, final Comparator<T> previousComparator) {
             // empty block
         }
     }

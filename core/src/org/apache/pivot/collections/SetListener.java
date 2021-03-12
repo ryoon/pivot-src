@@ -21,57 +21,62 @@ import org.apache.pivot.util.ListenerList;
 
 /**
  * Set listener interface.
+ *
+ * @param <E> Type of objects stored in this set.
  */
 public interface SetListener<E> {
     /**
      * Set listeners.
+     *
+     * @param <E> Type of object stored in this set.
      */
-    public static class Listeners<E> extends ListenerList<SetListener<E>> implements
-        SetListener<E> {
+    class Listeners<E> extends ListenerList<SetListener<E>> implements SetListener<E> {
         @Override
-        public void elementAdded(Set<E> set, E element) {
+        public void elementAdded(final Set<E> set, final E element) {
             forEach(listener -> listener.elementAdded(set, element));
         }
 
         @Override
-        public void elementRemoved(Set<E> set, E element) {
+        public void elementRemoved(final Set<E> set, final E element) {
             forEach(listener -> listener.elementRemoved(set, element));
         }
 
         @Override
-        public void setCleared(Set<E> set) {
+        public void setCleared(final Set<E> set) {
             forEach(listener -> listener.setCleared(set));
         }
 
         @Override
-        public void comparatorChanged(Set<E> set, Comparator<E> previousComparator) {
+        public void comparatorChanged(final Set<E> set, final Comparator<E> previousComparator) {
             forEach(listener -> listener.comparatorChanged(set, previousComparator));
         }
     }
 
     /**
      * Set listener adapter.
+     *
+     * @param <E> Type of object stored in this set.
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter<E> implements SetListener<E> {
+    final class Adapter<E> implements SetListener<E> {
         @Override
-        public void elementAdded(Set<E> set, E element) {
+        public void elementAdded(final Set<E> set, final E element) {
             // empty block
         }
 
         @Override
-        public void elementRemoved(Set<E> set, E element) {
+        public void elementRemoved(final Set<E> set, final E element) {
             // empty block
         }
 
         @Override
-        public void setCleared(Set<E> set) {
+        public void setCleared(final Set<E> set) {
             // empty block
         }
 
         @Override
-        public void comparatorChanged(Set<E> set, Comparator<E> previousComparator) {
+        public void comparatorChanged(final Set<E> set, final Comparator<E> previousComparator) {
             // empty block
         }
     }

@@ -27,8 +27,7 @@ public interface QueryListener<V> {
      * Query listener listeners list.
      * @param <V> The type associated with the query.
      */
-    class Listeners<V> extends ListenerList<QueryListener<V>>
-        implements QueryListener<V> {
+    class Listeners<V> extends ListenerList<QueryListener<V>> implements QueryListener<V> {
         @Override
         public synchronized void connected(final Query<V> query) {
             forEach(listener -> listener.connected(query));

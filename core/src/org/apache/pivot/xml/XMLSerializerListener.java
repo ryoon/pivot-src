@@ -25,20 +25,20 @@ public interface XMLSerializerListener {
     /**
      * XML Serializer listeners.
      */
-    public static class Listeners extends ListenerList<XMLSerializerListener>
+    final class Listeners extends ListenerList<XMLSerializerListener>
         implements XMLSerializerListener {
         @Override
-        public void beginElement(XMLSerializer xmlSerializer, Element element) {
+        public void beginElement(final XMLSerializer xmlSerializer, final Element element) {
             forEach(listener -> listener.beginElement(xmlSerializer, element));
         }
 
         @Override
-        public void endElement(XMLSerializer xmlSerializer) {
+        public void endElement(final XMLSerializer xmlSerializer) {
             forEach(listener -> listener.endElement(xmlSerializer));
         }
 
         @Override
-        public void readTextNode(XMLSerializer xmlSerializer, TextNode textNode) {
+        public void readTextNode(final XMLSerializer xmlSerializer, final TextNode textNode) {
             forEach(listener -> listener.readTextNode(xmlSerializer, textNode));
         }
     }
@@ -48,19 +48,19 @@ public interface XMLSerializerListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements XMLSerializerListener {
+    final class Adapter implements XMLSerializerListener {
         @Override
-        public void beginElement(XMLSerializer xmlSerializer, Element element) {
+        public void beginElement(final XMLSerializer xmlSerializer, final Element element) {
             // empty block
         }
 
         @Override
-        public void endElement(XMLSerializer xmlSerializer) {
+        public void endElement(final XMLSerializer xmlSerializer) {
             // empty block
         }
 
         @Override
-        public void readTextNode(XMLSerializer xmlSerializer, TextNode textNode) {
+        public void readTextNode(final XMLSerializer xmlSerializer, final TextNode textNode) {
             // empty block
         }
     }
