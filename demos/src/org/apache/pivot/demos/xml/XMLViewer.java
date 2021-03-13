@@ -77,8 +77,8 @@ public final class XMLViewer implements Application {
         bxmlSerializer.bind(this);
 
         Label prompt = new Label("Drag or paste XML here");
-        prompt.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        prompt.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        prompt.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        prompt.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
         promptDecorator.setOverlay(prompt);
         treeView.getDecorators().add(promptDecorator);
 

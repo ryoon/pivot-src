@@ -44,8 +44,8 @@ public class ResultItemRenderer extends BoxPane implements ListView.ItemRenderer
         add(addressLabel);
         add(phoneLabel);
 
-        getStyles().put(Style.padding, new Insets(3, 2, 3, 2));
-        getStyles().put(Style.spacing, 2);
+        putStyle(Style.padding, new Insets(3, 2, 3, 2));
+        putStyle(Style.spacing, 2);
     }
 
     @Override
@@ -77,28 +77,30 @@ public class ResultItemRenderer extends BoxPane implements ListView.ItemRenderer
             }
         }
 
-        Font font = listView.getStyles().getFont(Style.font);
-        titleLabel.getStyles().put(Style.font, font.deriveFont(font.getStyle() | Font.BOLD));
-        phoneLabel.getStyles().put(Style.font, font);
-        addressLabel.getStyles().put(Style.font, font);
+        Font font = listView.getStyleFont(Style.font);
+        titleLabel.putStyle(Style.font, font.deriveFont(font.getStyle() | Font.BOLD));
+        phoneLabel.putStyle(Style.font, font);
+        addressLabel.putStyle(Style.font, font);
 
-        Color color;
+        Style colorStyle;
         if (listView.isEnabled() && !disabled) {
             if (selected) {
                 if (listView.isFocused()) {
-                    color = listView.getStyles().getColor(Style.selectionColor);
+                    colorStyle = Style.selectionColor;
                 } else {
-                    color = listView.getStyles().getColor(Style.inactiveSelectionColor);
+                    colorStyle = Style.inactiveSelectionColor;
                 }
             } else {
-                color = listView.getStyles().getColor(Style.color);
+                colorStyle = Style.color;
             }
         } else {
-            color = listView.getStyles().getColor(Style.disabledColor);
+            colorStyle = Style.disabledColor;
         }
 
-        titleLabel.getStyles().put(Style.color, color);
-        phoneLabel.getStyles().put(Style.color, color);
-        addressLabel.getStyles().put(Style.color, color);
+        Color color = listView.getStyleColor(colorStyle);
+
+        titleLabel.putStyle(Style.color, color);
+        phoneLabel.putStyle(Style.color, color);
+        addressLabel.putStyle(Style.color, color);
     }
 }

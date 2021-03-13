@@ -77,12 +77,12 @@ public final class JSONViewer implements Application {
         bxmlSerializer.bind(this);
 
         Label prompt = new Label("Drag or paste JSON here");
-        prompt.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        prompt.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        prompt.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        prompt.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
         promptDecorator.setOverlay(prompt);
         treeView.getDecorators().add(promptDecorator);
-        treeView.getStyles().put(Style.showGridLines, true);
-        treeView.getStyles().put(Style.showHighlight, true);
+        treeView.putStyle(Style.showGridLines, true);
+        treeView.putStyle(Style.showHighlight, true);
 
         window.setTitle(WINDOW_TITLE);
         window.open(display);

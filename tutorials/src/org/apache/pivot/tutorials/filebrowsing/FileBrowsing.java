@@ -68,7 +68,7 @@ public class FileBrowsing extends Window implements Bindable {
                             ListView listView = new ListView();
                             listView.setListData(new ArrayList<>(selectedFiles));
                             listView.setSelectMode(ListView.SelectMode.NONE);
-                            listView.getStyles().put(Style.backgroundColor, null);
+                            listView.putStyle(Style.backgroundColor, null);
 
                             Alert.alert(MessageType.INFO, "You selected:", listView,
                                 FileBrowsing.this);

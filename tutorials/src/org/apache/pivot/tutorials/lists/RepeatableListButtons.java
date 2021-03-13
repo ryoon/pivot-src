@@ -50,7 +50,7 @@ public class RepeatableListButtons extends Window implements Bindable {
             for (Component component : checkboxBoxPane) {
                 Checkbox checkbox = (Checkbox) component;
                 if (checkbox.isSelected()) {
-                    checkbox.getStyles().put(Style.color, color);
+                    checkbox.putStyle(Style.color, color);
                     checkbox.setSelected(false);
                 }
             }

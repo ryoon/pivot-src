@@ -56,7 +56,7 @@ public class DOMInteractionDemo implements Application {
     @Override
     public void startup(Display display, Map<String, String> properties) throws Exception {
         BoxPane boxPane = new BoxPane();
-        boxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        boxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
 
         helloButton = new PushButton("Say Hello");
         boxPane.add(helloButton);
@@ -70,8 +70,8 @@ public class DOMInteractionDemo implements Application {
         });
 
         Border border = new Border(boxPane);
-        border.getStyles().put(Style.color, 7);
-        border.getStyles().put(Style.padding, 5);
+        border.putStyle(Style.color, 7);
+        border.putStyle(Style.padding, 5);
         window = new Window(border);
         window.setMaximized(true);
         window.open(display);

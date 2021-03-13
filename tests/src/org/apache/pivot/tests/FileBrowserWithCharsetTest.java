@@ -62,7 +62,7 @@ public class FileBrowserWithCharsetTest extends FileBrowserSheet implements Appl
         super(mode);
         TerraFileBrowserSheetSkin skin = (TerraFileBrowserSheetSkin) getSkin();
         BoxPane box = new BoxPane();
-        box.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        box.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
         box.add(new Label("Character set:"));
         choices = new ArrayList<>(String.CASE_INSENSITIVE_ORDER);
         lb = new ListButton();
@@ -94,18 +94,18 @@ public class FileBrowserWithCharsetTest extends FileBrowserSheet implements Appl
     @Override
     public void startup(Display display, Map<String, String> properties) throws Exception {
         BoxPane windowContent = new BoxPane();
-        windowContent.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        windowContent.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
         final Checkbox showHiddenCheckbox = new Checkbox("Show hidden files");
         windowContent.add(showHiddenCheckbox);
         PushButton button = new PushButton("Open File Browser");
-        button.getStyles().put(Style.padding, "[2, 4, 2, 4]");
+        button.putStyle(Style.padding, "[2, 4, 2, 4]");
         button.getButtonPressListeners().add(new ButtonPressListener() {
             @Override
             public void buttonPressed(Button buttonArgument) {
                 final Window window = Window.getActiveWindow();
                 final FileBrowserWithCharsetTest fileBrowserSheet = new FileBrowserWithCharsetTest(
                     FileBrowserSheet.Mode.OPEN);
-                fileBrowserSheet.getStyles().put(Style.showHiddenFiles, showHiddenCheckbox.isSelected());
+                fileBrowserSheet.putStyle(Style.showHiddenFiles, showHiddenCheckbox.isSelected());
 
                 fileBrowserSheet.open(window, new SheetCloseListener() {
                     @Override
@@ -116,7 +116,7 @@ public class FileBrowserWithCharsetTest extends FileBrowserSheet implements Appl
                             ListView listView = new ListView();
                             listView.setListData(new ArrayList<>(selectedFiles));
                             listView.setSelectMode(ListView.SelectMode.NONE);
-                            listView.getStyles().put(Style.backgroundColor, null);
+                            listView.putStyle(Style.backgroundColor, null);
 
                             Alert.alert(MessageType.INFO,
                                 "You selected (charset " + fileBrowserSheet.getCharsetName() + "):", listView, window);

@@ -33,10 +33,10 @@ public class PushButtonTest implements Application {
     public void startup(Display display, Map<String, String> properties) throws Exception {
         window = new Window();
         BoxPane boxPane = new BoxPane();
-        boxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
+        boxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
 
         PushButton uploadButton = new PushButton("Upload");
-        uploadButton.getStyles().put(Style.minimumAspectRatio, 3.0f);
+        uploadButton.putStyle(Style.minimumAspectRatio, 3.0f);
         boxPane.add(uploadButton);
 
         window.setContent(boxPane);

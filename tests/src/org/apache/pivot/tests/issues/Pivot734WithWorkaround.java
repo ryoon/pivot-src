@@ -56,7 +56,7 @@ public class Pivot734WithWorkaround implements Application {
         treeButtonAdd = (PushButton) bxmlSerializer.getNamespace().get("treeButtonAdd");
         treeButtonRemove = (PushButton) bxmlSerializer.getNamespace().get("treeButtonRemove");
         tree = (TreeView) bxmlSerializer.getNamespace().get("tree");
-        boolean treeStyleForShowEmptyBranchControls = tree.getStyles().getBoolean(
+        boolean treeStyleForShowEmptyBranchControls = tree.getStyleBoolean(
             Style.showEmptyBranchControls);
         System.out.println("tree style for showEmptyBranchControls is "
             + treeStyleForShowEmptyBranchControls);

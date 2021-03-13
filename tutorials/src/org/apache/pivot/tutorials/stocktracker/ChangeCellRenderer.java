@@ -18,6 +18,7 @@ package org.apache.pivot.tutorials.stocktracker;
 
 import java.awt.Color;
 
+import org.apache.pivot.wtk.CSSColor;
 import org.apache.pivot.wtk.Style;
 import org.apache.pivot.wtk.TableView;
 import org.apache.pivot.wtk.content.TableViewNumberCellRenderer;
@@ -26,8 +27,8 @@ import org.apache.pivot.wtk.content.TableViewNumberCellRenderer;
  * Table view cell renderer that presents a formatted change value.
  */
 public class ChangeCellRenderer extends TableViewNumberCellRenderer {
-    public static final Color UP_COLOR = new Color(0x00, 0x80, 0x00);
-    public static final Color DOWN_COLOR = new Color(0xff, 0x00, 0x00);
+    public static final Color UP_COLOR = CSSColor.Green.getColor();
+    public static final Color DOWN_COLOR = CSSColor.Red.getColor();
 
     @Override
     public void render(Object row, int rowIndex, int columnIndex, TableView tableView,
@@ -38,7 +39,7 @@ public class ChangeCellRenderer extends TableViewNumberCellRenderer {
         if (row != null && !selected) {
             StockQuote stockQuote = (StockQuote) row;
             float change = stockQuote.getChange();
-            getStyles().put(Style.color, change < 0 ? DOWN_COLOR : UP_COLOR);
+            putStyle(Style.color, change < 0 ? DOWN_COLOR : UP_COLOR);
         }
     }
 }

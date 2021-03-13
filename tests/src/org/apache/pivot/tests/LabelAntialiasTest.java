@@ -56,10 +56,10 @@ public final class LabelAntialiasTest implements Application {
         Font fontDerived = font.deriveFont(fontAT);
 
         label.setText("Hello at " + rotation + " degrees.");
-        label.getStyles().put(Style.color, Color.RED);
-        label.getStyles().put(Style.font, fontDerived);
-        label.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        label.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        label.putStyle(Style.color, Color.RED);
+        label.putStyle(Style.font, fontDerived);
+        label.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        label.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         return label;
     }
@@ -108,7 +108,7 @@ public final class LabelAntialiasTest implements Application {
         TablePane content = new TablePane();
         new TablePane.Column(content, 1, true);
         BoxPane topBox = new BoxPane(Orientation.HORIZONTAL);
-        topBox.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        topBox.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
         topBox.add(new Label("Rotation angle:"));
         rotationAngleSpinner = new Spinner(new NumericSpinnerData(0, 359));
         rotationAngleSpinner.setCircular(true);

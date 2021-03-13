@@ -123,12 +123,12 @@ public class TabPanes extends Window implements Bindable {
         tabPane.setCollapsible(collapsibleCheckbox.isSelected());
 
         if (horizontalRadioButton.isSelected()) {
-            tabPane.getStyles().put(Style.tabOrientation, Orientation.HORIZONTAL);
+            tabPane.putStyle(Style.tabOrientation, Orientation.HORIZONTAL);
             if (tabPane.getCorner() == null) {
                 tabPane.setCorner(cornerBoxPane);
             }
         } else {
-            tabPane.getStyles().put(Style.tabOrientation, Orientation.VERTICAL);
+            tabPane.putStyle(Style.tabOrientation, Orientation.VERTICAL);
             if (tabPane.getCorner() == cornerBoxPane) {
                 tabPane.setCorner(null);
             }

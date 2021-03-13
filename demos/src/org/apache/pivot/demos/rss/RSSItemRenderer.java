@@ -39,16 +39,16 @@ public class RSSItemRenderer extends BoxPane implements ListView.ItemRenderer {
     public RSSItemRenderer() {
         super(Orientation.VERTICAL);
 
-        getStyles().put(Style.padding, new Insets(2, 2, 8, 2));
-        getStyles().put(Style.fill, true);
+        putStyle(Style.padding, new Insets(2, 2, 8, 2));
+        putStyle(Style.fill, true);
 
-        titleLabel.getStyles().put(Style.wrapText, true);
+        titleLabel.putStyle(Style.wrapText, true);
         add(titleLabel);
 
-        categoriesLabel.getStyles().put(Style.wrapText, true);
+        categoriesLabel.putStyle(Style.wrapText, true);
         add(categoriesLabel);
 
-        submitterLabel.getStyles().put(Style.wrapText, true);
+        submitterLabel.putStyle(Style.wrapText, true);
         add(submitterLabel);
     }
 
@@ -90,30 +90,32 @@ public class RSSItemRenderer extends BoxPane implements ListView.ItemRenderer {
             submitterLabel.setText("Submitter: " + submitter);
         }
 
-        Font font = listView.getStyles().getFont(Style.font);
+        Font font = listView.getStyleFont(Style.font);
         Font largeFont = font.deriveFont(Font.BOLD, 14);
-        titleLabel.getStyles().put(Style.font, largeFont);
-        categoriesLabel.getStyles().put(Style.font, font);
-        submitterLabel.getStyles().put(Style.font, font);
+        titleLabel.putStyle(Style.font, largeFont);
+        categoriesLabel.putStyle(Style.font, font);
+        submitterLabel.putStyle(Style.font, font);
 
-        Color color;
+        Style colorStyle;
         if (listView.isEnabled() && !disabled) {
             if (selected) {
                 if (listView.isFocused()) {
-                    color = listView.getStyles().getColor(Style.selectionColor);
+                    colorStyle = Style.selectionColor;
                 } else {
-                    color = listView.getStyles().getColor(Style.inactiveSelectionColor);
+                    colorStyle = Style.inactiveSelectionColor;
                 }
             } else {
-                color = listView.getStyles().getColor(Style.color);
+                colorStyle = Style.color;
             }
         } else {
-            color = listView.getStyles().getColor(Style.disabledColor);
+            colorStyle = Style.disabledColor;
         }
 
-        titleLabel.getStyles().put(Style.color, color);
-        categoriesLabel.getStyles().put(Style.color, color);
-        submitterLabel.getStyles().put(Style.color, color);
+        Color color = listView.getStyleColor(colorStyle);
+
+        titleLabel.putStyle(Style.color, color);
+        categoriesLabel.putStyle(Style.color, color);
+        submitterLabel.putStyle(Style.color, color);
     }
 
     @Override

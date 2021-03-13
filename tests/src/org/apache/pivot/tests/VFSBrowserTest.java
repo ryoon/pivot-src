@@ -49,13 +49,13 @@ public final class VFSBrowserTest implements Application {
     @Override
     public void startup(final Display display, final Map<String, String> properties) throws Exception {
         BoxPane windowContent = new BoxPane();
-        windowContent.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        windowContent.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         final Checkbox showHiddenCheckbox = new Checkbox("Show hidden files");
         windowContent.add(showHiddenCheckbox);
 
         PushButton button = new PushButton("Open File Browser");
-        button.getStyles().put(Style.padding, "[2, 4, 2, 4]");
+        button.putStyle(Style.padding, "[2, 4, 2, 4]");
         button.getButtonPressListeners().add(new ButtonPressListener() {
             @Override
             public void buttonPressed(final Button buttonArgument) {
@@ -63,7 +63,7 @@ public final class VFSBrowserTest implements Application {
                     final VFSBrowserSheet vfsBrowserSheet = new VFSBrowserSheet(
                         VFSBrowserSheet.Mode.OPEN);
 
-                    vfsBrowserSheet.getStyles().put(Style.showHiddenFiles, showHiddenCheckbox.isSelected());
+                    vfsBrowserSheet.putStyle(Style.showHiddenFiles, showHiddenCheckbox.isSelected());
 
                     vfsBrowserSheet.open(frame, new SheetCloseListener() {
                         @Override
@@ -74,7 +74,7 @@ public final class VFSBrowserTest implements Application {
                                 ListView listView = new ListView();
                                 listView.setListData(new ArrayList<>(selectedFiles));
                                 listView.setSelectMode(ListView.SelectMode.NONE);
-                                listView.getStyles().put(Style.backgroundColor, null);
+                                listView.putStyle(Style.backgroundColor, null);
 
                                 Alert.alert(MessageType.INFO, "You selected:", listView, frame);
                             } else {

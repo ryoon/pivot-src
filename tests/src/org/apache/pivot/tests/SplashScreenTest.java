@@ -104,7 +104,7 @@ public final class SplashScreenTest implements Application {
         private void configureMeter(final int width, final int height) {
             meter.setSize(width, height);
             meter.setPercentage(0);
-            meter.getStyles().put(Style.gridFrequency, 1);
+            meter.putStyle(Style.gridFrequency, 1);
         }
 
         // Align the Meter on the SplashScreen, centered horizontally,

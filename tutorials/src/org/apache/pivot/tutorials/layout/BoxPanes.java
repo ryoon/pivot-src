@@ -99,7 +99,7 @@ public class BoxPanes extends Window implements Bindable {
         }
 
         if (horizontalAlignment != null) {
-            boxPane.getStyles().put(Style.horizontalAlignment, horizontalAlignment);
+            boxPane.putStyle(Style.horizontalAlignment, horizontalAlignment);
         }
 
         VerticalAlignment verticalAlignment = null;
@@ -112,9 +112,9 @@ public class BoxPanes extends Window implements Bindable {
         }
 
         if (verticalAlignment != null) {
-            boxPane.getStyles().put(Style.verticalAlignment, verticalAlignment);
+            boxPane.putStyle(Style.verticalAlignment, verticalAlignment);
         }
 
-        boxPane.getStyles().put(Style.fill, fillCheckbox.isSelected());
+        boxPane.putStyle(Style.fill, fillCheckbox.isSelected());
     }
 }

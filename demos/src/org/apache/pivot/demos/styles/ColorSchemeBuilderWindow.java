@@ -82,7 +82,7 @@ public class ColorSchemeBuilderWindow extends Window implements Bindable {
 
             NumericSpinnerData colorSpinnerData = new NumericSpinnerData(0, 255);
             SpinnerItemRenderer colorSpinnerItemRenderer = new SpinnerItemRenderer();
-            colorSpinnerItemRenderer.getStyles().put(Style.horizontalAlignment,
+            colorSpinnerItemRenderer.putStyle(Style.horizontalAlignment,
                 HorizontalAlignment.RIGHT);
 
             final Spinner redSpinner = new Spinner();
@@ -104,8 +104,8 @@ public class ColorSchemeBuilderWindow extends Window implements Bindable {
             blueSpinner.setSelectedIndex(0);
 
             BoxPane colorBoxPane = new BoxPane();
-            colorBoxPane.getStyles().put(Style.fill, true);
-            colorBoxPane.getStyles().put(Style.padding, "{left:4}");
+            colorBoxPane.putStyle(Style.fill, true);
+            colorBoxPane.putStyle(Style.padding, "{left:4}");
             colorBoxPane.add(redSpinner);
             colorBoxPane.add(greenSpinner);
             colorBoxPane.add(blueSpinner);
@@ -135,7 +135,7 @@ public class ColorSchemeBuilderWindow extends Window implements Bindable {
                     int offset = iLocal * 3;
                     for (int j = 0; j < 3; j++) {
                         Component colorPaletteCell = colorPaletteTablePane.getRows().get(iLocal).get(j);
-                        colorPaletteCell.getStyles().put(Style.backgroundColor, offset + j);
+                        colorPaletteCell.putStyle(Style.backgroundColor, offset + j);
                     }
 
                     // Reload the sample part of the content (but not all the application),
@@ -206,26 +206,26 @@ public class ColorSchemeBuilderWindow extends Window implements Bindable {
             row.add(createColorPaletteCell(offset + 2));
         }
 
-        colorPaletteTablePane.getStyles().put(Style.horizontalSpacing, 4);
-        colorPaletteTablePane.getStyles().put(Style.verticalSpacing, 4);
+        colorPaletteTablePane.putStyle(Style.horizontalSpacing, 4);
+        colorPaletteTablePane.putStyle(Style.verticalSpacing, 4);
     }
 
     private static Component createColorPaletteCell(int index) {
         Border border = new Border();
-        border.getStyles().put(Style.backgroundColor, index);
+        border.putStyle(Style.backgroundColor, index);
 
         Theme theme = Theme.getTheme();
 
         Label label = new Label();
         label.setText(Integer.toString(index));
-        label.getStyles().put(Style.font, "{size:'80%'}");
-        label.getStyles().put(Style.backgroundColor, 4);
-        label.getStyles().put(Style.padding, 1);
+        label.putStyle(Style.font, "{size:'80%'}");
+        label.putStyle(Style.backgroundColor, 4);
+        label.putStyle(Style.padding, 1);
 
         BoxPane boxPane = new BoxPane();
-        boxPane.getStyles().put(Style.padding, 2);
-        boxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        boxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        boxPane.putStyle(Style.padding, 2);
+        boxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        boxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         boxPane.add(new Border(label));
         border.setContent(boxPane);

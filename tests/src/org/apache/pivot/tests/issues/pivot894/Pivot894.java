@@ -57,7 +57,7 @@ public class Pivot894 implements Application {
         Thread.sleep(2000);
 
         final CardPane cardPane = new CardPane();
-        cardPane.getStyles().put(Style.selectionChangeEffect,
+        cardPane.putStyle(Style.selectionChangeEffect,
             CardPaneSkin.SelectionChangeEffect.HORIZONTAL_SLIDE);
 
         final Window window = new Window(cardPane);

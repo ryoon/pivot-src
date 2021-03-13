@@ -130,7 +130,7 @@ public class DataBindingTest implements Application {
                 window.getContent().store(context);
                 try {
                     textLabel.setText(JSONSerializer.toString(context));
-                    textLabel.getStyles().put(Style.color, getNextColor());
+                    textLabel.putStyle(Style.color, getNextColor());
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }

@@ -72,9 +72,9 @@ public class FlowPanes extends Window implements Bindable {
         }
 
         if (alignment != null) {
-            flowPane.getStyles().put(Style.alignment, alignment);
+            flowPane.putStyle(Style.alignment, alignment);
         }
 
-        flowPane.getStyles().put(Style.alignToBaseline, alignToBaselineCheckbox.isSelected());
+        flowPane.putStyle(Style.alignToBaseline, alignToBaselineCheckbox.isSelected());
     }
 }

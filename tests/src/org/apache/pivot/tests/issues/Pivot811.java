@@ -50,10 +50,10 @@ public class Pivot811 implements Application {
         listFrame.setTitle("List Frame");
         listFrame.setPreferredSize(400, 300);
         listFrame.setLocation(20, 20);
-        listFrame.getStyles().put(Style.padding, Insets.NONE);
+        listFrame.putStyle(Style.padding, Insets.NONE);
 
         BoxPane boxPane = new BoxPane();
-        boxPane.getStyles().put(Style.fill, true);
+        boxPane.putStyle(Style.fill, true);
         boxPane.setOrientation(Orientation.VERTICAL);
         listFrame.setContent(boxPane);
 
@@ -96,10 +96,10 @@ public class Pivot811 implements Application {
                     detailFrame.setPreferredSize(400, 300);
                     int selectedIndex = listView.getSelectedIndex();
                     detailFrame.setLocation(80 + (selectedIndex * 10), 80 + (selectedIndex * 10));
-                    detailFrame.getStyles().put(Style.padding, Insets.NONE);
+                    detailFrame.putStyle(Style.padding, Insets.NONE);
 
                     BoxPane boxPaneLocal = new BoxPane();
-                    boxPaneLocal.getStyles().put(Style.fill, true);
+                    boxPaneLocal.putStyle(Style.fill, true);
                     boxPaneLocal.setOrientation(Orientation.VERTICAL);
                     detailFrame.setContent(boxPaneLocal);
 

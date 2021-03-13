@@ -88,12 +88,12 @@ public class TextPaneDemo implements Application {
 
     private void setupFontControls() {
         // make the text on the "bold" button bold
-        Font boldButtonFont = boldButton.getStyles().getFont(Style.font);
-        boldButton.getStyles().put(Style.font, boldButtonFont.deriveFont(Font.BOLD));
+        Font boldButtonFont = boldButton.getStyleFont(Style.font);
+        boldButton.putStyle(Style.font, boldButtonFont.deriveFont(Font.BOLD));
 
         // make the text on the "italic" button italic
-        Font italicButtonFont = italicButton.getStyles().getFont(Style.font);
-        italicButton.getStyles().put(Style.font, italicButtonFont.deriveFont(Font.ITALIC));
+        Font italicButtonFont = italicButton.getStyleFont(Style.font);
+        italicButton.putStyle(Style.font, italicButtonFont.deriveFont(Font.ITALIC));
 
         fontFamilyListButton.setListData(new ArrayList<>(
             GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
@@ -106,7 +106,7 @@ public class TextPaneDemo implements Application {
                 super.render(item, index, listView, selected, state, highlighted, disabled);
                 if (item != null) {
                     String fontFamilyName = (String) item;
-                    label.getStyles().put(Style.font, FontUtilities.decode(fontFamilyName + "-12"));
+                    label.putStyle(Style.font, FontUtilities.decode(fontFamilyName + "-12"));
                 }
             }
         });
@@ -116,7 +116,7 @@ public class TextPaneDemo implements Application {
                 super.render(data, button, highlight);
                 if (data != null) {
                     String fontFamilyName = (String) data;
-                    label.getStyles().put(Style.font, FontUtilities.decode(fontFamilyName + "-12"));
+                    label.putStyle(Style.font, FontUtilities.decode(fontFamilyName + "-12"));
                 }
             }
         });
@@ -253,7 +253,7 @@ public class TextPaneDemo implements Application {
             });
 
         wrapTextCheckbox.getButtonPressListeners().add(button -> {
-            textPane.getStyles().put(Style.wrapText, wrapTextCheckbox.isSelected());
+            textPane.putStyle(Style.wrapText, wrapTextCheckbox.isSelected());
             requestTextPaneFocus();
         });
 

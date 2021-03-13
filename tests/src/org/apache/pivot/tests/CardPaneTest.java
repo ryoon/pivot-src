@@ -43,7 +43,7 @@ public class CardPaneTest implements Application {
     @Override
     public void startup(Display display, Map<String, String> properties) throws Exception {
         frame = new Frame(new BoxPane());
-        frame.getStyles().put(Style.padding, 0);
+        frame.putStyle(Style.padding, 0);
         frame.setTitle("Component Pane Test");
         frame.setPreferredSize(800, 600);
         frame.setLocation(20, 20);

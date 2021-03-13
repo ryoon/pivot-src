@@ -616,7 +616,7 @@ public class KitchenSink implements Application, Application.AboutHandler {
                             SpinnersRollupStateHandler.this.redSlider.getValue(),
                             SpinnersRollupStateHandler.this.greenSlider.getValue(),
                             SpinnersRollupStateHandler.this.blueSlider.getValue());
-                        SpinnersRollupStateHandler.this.colorBorder.getStyles().put(
+                        SpinnersRollupStateHandler.this.colorBorder.putStyle(
                             Style.backgroundColor, color);
                     }
                 };
@@ -627,7 +627,7 @@ public class KitchenSink implements Application, Application.AboutHandler {
 
                 Color color = new Color(this.redSlider.getValue(), this.greenSlider.getValue(),
                     this.blueSlider.getValue());
-                this.colorBorder.getStyles().put(Style.backgroundColor, color);
+                this.colorBorder.putStyle(Style.backgroundColor, color);
             }
 
             return Vote.APPROVE;
@@ -920,7 +920,7 @@ public class KitchenSink implements Application, Application.AboutHandler {
                         if (imageView.getImage() == null && dragContent.containsImage()
                             && DropAction.MOVE.isSelected(supportedDropActions)) {
                             dropAction = DropAction.MOVE;
-                            comp.getStyles().put(Style.backgroundColor, "#f0e68c");
+                            comp.putStyle(Style.backgroundColor, "#f0e68c");
                         }
 
                         return dropAction;
@@ -928,7 +928,7 @@ public class KitchenSink implements Application, Application.AboutHandler {
 
                     @Override
                     public void dragExit(Component comp) {
-                        comp.getStyles().put(Style.backgroundColor, null);
+                        comp.putStyle(Style.backgroundColor, null);
                     }
 
                     @Override

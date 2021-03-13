@@ -36,8 +36,8 @@ public class LinkButtonTest implements Application {
     @Override
     public void startup(Display display, Map<String, String> properties) throws Exception {
         BoxPane boxPane = new BoxPane();
-        boxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
-        boxPane.getStyles().put(Style.spacing, 8);
+        boxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
+        boxPane.putStyle(Style.spacing, 8);
         boxPane.getComponentMouseListeners().add(new ComponentMouseListener() {
             @Override
             public boolean mouseMove(Component component, int x, int y) {

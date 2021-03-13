@@ -47,7 +47,7 @@ public class DragDropTest implements Application {
     public void startup(Display display, Map<String, String> properties) throws Exception {
         frame1.setTitle("Frame 1");
         frame1.setPreferredSize(160, 120);
-        frame1.getStyles().put(Style.resizable, false);
+        frame1.putStyle(Style.resizable, false);
 
         DragSource imageDragSource = new DragSource() {
             private Image image = null;
@@ -118,7 +118,7 @@ public class DragDropTest implements Application {
                 if (imageView.getImage() == null && dragContent.containsImage()
                     && DropAction.MOVE.isSelected(supportedDropActions)) {
                     dropAction = DropAction.MOVE;
-                    component.getStyles().put(Style.backgroundColor, IMAGE_VIEW_DROP_HIGHLIGHT_COLOR);
+                    component.putStyle(Style.backgroundColor, IMAGE_VIEW_DROP_HIGHLIGHT_COLOR);
                 }
 
                 return dropAction;
@@ -126,7 +126,7 @@ public class DragDropTest implements Application {
 
             @Override
             public void dragExit(Component component) {
-                component.getStyles().put(Style.backgroundColor, IMAGE_VIEW_BACKGROUND_COLOR);
+                component.putStyle(Style.backgroundColor, IMAGE_VIEW_BACKGROUND_COLOR);
             }
 
             @Override
@@ -164,7 +164,7 @@ public class DragDropTest implements Application {
 
         ImageView imageView1 = new ImageView();
         imageView1.setImage(Image.load(getClass().getResource("go-home.png")));
-        imageView1.getStyles().put(Style.backgroundColor, IMAGE_VIEW_BACKGROUND_COLOR);
+        imageView1.putStyle(Style.backgroundColor, IMAGE_VIEW_BACKGROUND_COLOR);
         imageView1.setDragSource(imageDragSource);
         imageView1.setDropTarget(imageDropTarget);
 
@@ -176,7 +176,7 @@ public class DragDropTest implements Application {
         frame2.setLocation(180, 0);
 
         ImageView imageView2 = new ImageView();
-        imageView2.getStyles().put(Style.backgroundColor, IMAGE_VIEW_BACKGROUND_COLOR);
+        imageView2.putStyle(Style.backgroundColor, IMAGE_VIEW_BACKGROUND_COLOR);
         imageView2.setDragSource(imageDragSource);
         imageView2.setDropTarget(imageDropTarget);
 

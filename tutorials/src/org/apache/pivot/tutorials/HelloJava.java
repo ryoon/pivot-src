@@ -39,10 +39,10 @@ public class HelloJava implements Application {
 
         Label label = new Label();
         label.setText("Hello World!");
-        label.getStyles().put(Style.font, new Font(FontUtilities.ARIAL, Font.BOLD, 24));
-        label.getStyles().put(Style.color, Color.RED);
-        label.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        label.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        label.putStyle(Style.font, new Font(FontUtilities.ARIAL, Font.BOLD, 24));
+        label.putStyle(Style.color, Color.RED);
+        label.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        label.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         this.window.setContent(label);
         this.window.setTitle("Hello World!");

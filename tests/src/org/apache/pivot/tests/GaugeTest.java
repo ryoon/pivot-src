@@ -64,7 +64,7 @@ public final class GaugeTest implements Application {
         } else if (speed > speedGauge.getWarningLevel()) {
             color = warningColor;
         }
-        speedGauge.getStyles().put(Style.textColor, color);
+        speedGauge.putStyle(Style.textColor, color);
         speedGauge.setText(Integer.toString(speed) + " MpH");
     }
 
@@ -86,7 +86,7 @@ public final class GaugeTest implements Application {
     }
 
     private void toggleMax(final Button.State state) {
-        speedGauge.getStyles().put(Style.onlyMaxColor, state == Button.State.SELECTED);
+        speedGauge.putStyle(Style.onlyMaxColor, state == Button.State.SELECTED);
     }
 
     @Override
@@ -98,8 +98,8 @@ public final class GaugeTest implements Application {
         brakePedal = (PushButton) bxmlSerializer.getNamespace().get("brakePedal");
         speedGauge = (Gauge<Integer>) bxmlSerializer.getNamespace().get("speedGauge");
         maxCheck = (Checkbox) bxmlSerializer.getNamespace().get("maxCheck");
-        warningColor = speedGauge.getStyles().getColor(Style.warningColor);
-        criticalColor = speedGauge.getStyles().getColor(Style.criticalColor);
+        warningColor = speedGauge.getStyleColor(Style.warningColor);
+        criticalColor = speedGauge.getStyleColor(Style.criticalColor);
         textColor = Theme.getTheme().getColor(6);
         setSpeed(speedGauge.getValue());
         gasPedal.getButtonPressListeners().add((button) -> hitTheGas());

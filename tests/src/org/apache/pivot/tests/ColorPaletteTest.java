@@ -58,11 +58,11 @@ public class ColorPaletteTest implements Application {
             row.add(createCell(i * 3 + 2));
         }
 
-        tablePane.getStyles().put(Style.horizontalSpacing, 4);
-        tablePane.getStyles().put(Style.verticalSpacing, 4);
+        tablePane.putStyle(Style.horizontalSpacing, 4);
+        tablePane.putStyle(Style.verticalSpacing, 4);
 
         Border border = new Border(tablePane);
-        border.getStyles().put(Style.padding, 6);
+        border.putStyle(Style.padding, 6);
 
         this.window = new Window(border);
         this.window.setTitle("Color Palette");
@@ -83,25 +83,25 @@ public class ColorPaletteTest implements Application {
         StackPane stackPane = new StackPane();
 
         Border border = new Border();
-        border.getStyles().put(Style.backgroundColor, index);
+        border.putStyle(Style.backgroundColor, index);
 
         stackPane.add(border);
 
         Label label = new Label();
         label.setText(Integer.toString(index));
-        label.getStyles().put(Style.backgroundColor, Color.WHITE);
-        label.getStyles().put(Style.padding, 2);
+        label.putStyle(Style.backgroundColor, Color.WHITE);
+        label.putStyle(Style.padding, 2);
 
-        Color themeColor = border.getStyles().getColor(Style.backgroundColor);
+        Color themeColor = border.getStyleColor(Style.backgroundColor);
         Label colorLabel = new Label();
         colorLabel.setText(String.format("R:%1$d,G:%2$d,B:%3$d",
              themeColor.getRed(), themeColor.getGreen(), themeColor.getBlue()));
-        colorLabel.getStyles().put(Style.backgroundColor, Color.WHITE);
-        colorLabel.getStyles().put(Style.padding, 2);
+        colorLabel.putStyle(Style.backgroundColor, Color.WHITE);
+        colorLabel.putStyle(Style.padding, 2);
 
         BoxPane boxPane = new BoxPane(Orientation.VERTICAL);
-        boxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        boxPane.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        boxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        boxPane.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         boxPane.add(new Border(label));
         boxPane.add(new Border(colorLabel));

@@ -156,7 +156,7 @@ public class TablePanes extends Window implements Bindable {
                 row.add(new Label("-1"));
                 for (int i = 1, n = tablePane.getColumns().getLength(); i < n; i++) {
                     Panel panel = new Panel();
-                    panel.getStyles().put(Style.backgroundColor, "#dddcd5");
+                    panel.putStyle(Style.backgroundColor, "#dddcd5");
                     row.add(panel);
                 }
 
@@ -182,7 +182,7 @@ public class TablePanes extends Window implements Bindable {
                 ArrayList<String> options = new ArrayList<>("OK", "Cancel");
                 String message = "Remove Row?";
                 Label body = new Label("Are you sure you want to remove the row?");
-                body.getStyles().put(Style.wrapText, true);
+                body.putStyle(Style.wrapText, true);
 
                 final Prompt prompt = new Prompt(MessageType.QUESTION, message, options, body);
                 prompt.setSelectedOptionIndex(0);
@@ -239,7 +239,7 @@ public class TablePanes extends Window implements Bindable {
                 rows.get(0).insert(new Label("-1"), columnIndex);
                 for (int i = 1, n = rows.getLength(); i < n; i++) {
                     Panel panel = new Panel();
-                    panel.getStyles().put(Style.backgroundColor, "#dddcd5");
+                    panel.putStyle(Style.backgroundColor, "#dddcd5");
                     rows.get(i).insert(panel, columnIndex);
                 }
 
@@ -265,7 +265,7 @@ public class TablePanes extends Window implements Bindable {
                 ArrayList<String> options = new ArrayList<>("OK", "Cancel");
                 String message = "Remove Column?";
                 Label body = new Label("Are you sure you want to remove the column?");
-                body.getStyles().put(Style.wrapText, true);
+                body.putStyle(Style.wrapText, true);
 
                 final Prompt prompt = new Prompt(MessageType.QUESTION, message, options, body);
                 prompt.setSelectedOptionIndex(0);

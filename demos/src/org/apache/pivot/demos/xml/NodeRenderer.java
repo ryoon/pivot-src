@@ -65,25 +65,24 @@ public class NodeRenderer extends Label implements TreeView.NodeRenderer {
 
             setText(text);
 
-            Font font = treeView.getStyles().getFont(Style.font);
-            getStyles().put(Style.font, font);
+            copyStyle(Style.font, treeView);
 
-            Color color;
+            Style colorStyle;
             if (treeView.isEnabled() && !disabled) {
                 if (selected) {
                     if (treeView.isFocused()) {
-                        color = treeView.getStyles().getColor(Style.selectionColor);
+                        colorStyle = Style.selectionColor;
                     } else {
-                        color = treeView.getStyles().getColor(Style.inactiveSelectionColor);
+                        colorStyle = Style.inactiveSelectionColor;
                     }
                 } else {
-                    color = treeView.getStyles().getColor(Style.color);
+                    colorStyle = Style.color;
                 }
             } else {
-                color = treeView.getStyles().getColor(Style.disabledColor);
+                colorStyle = Style.disabledColor;
             }
 
-            getStyles().put(Style.color, color);
+            putStyle(Style.color, treeView.getStyleColor(colorStyle));
         }
     }
 

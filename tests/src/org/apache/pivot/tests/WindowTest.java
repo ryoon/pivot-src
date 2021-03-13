@@ -58,7 +58,7 @@ public final class WindowTest implements Application {
             }
         });
 
-        display.getStyles().put(Style.backgroundColor, new Color(0, 127, 127));
+        display.putStyle(Style.backgroundColor, new Color(0, 127, 127));
         window1.setContent(new Label("Hello Bar"));
         window1.open(display);
 

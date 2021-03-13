@@ -59,13 +59,13 @@ public final class SheetTest implements Application {
 
         BoxPane windowContent = new BoxPane();
         PushButton button = new PushButton(picture);
-        button.getStyles().put(Style.toolbar, true);
+        button.putStyle(Style.toolbar, true);
 
         windowContent.add(button);
 
         frame = new Frame(windowContent);
         frame.setPreferredSize(480, 360);
-        frame.getStyles().put(Style.padding, 0);
+        frame.putStyle(Style.padding, 0);
         frame.open(display);
 
         final TablePane tablePane = new TablePane();
@@ -75,18 +75,18 @@ public final class SheetTest implements Application {
         TablePane.Row row1 = new TablePane.Row(tablePane, -1);
 
         final Label sheetContent = new Label("Sheet Content");
-        sheetContent.getStyles().put(Style.wrapText, true);
-        sheetContent.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.CENTER);
-        sheetContent.getStyles().put(Style.verticalAlignment, VerticalAlignment.CENTER);
+        sheetContent.putStyle(Style.wrapText, true);
+        sheetContent.putStyle(Style.horizontalAlignment, HorizontalAlignment.CENTER);
+        sheetContent.putStyle(Style.verticalAlignment, VerticalAlignment.CENTER);
 
         row0.add(sheetContent);
 
         Label promptBody = new Label(LICENSE_TEXT);
-        promptBody.getStyles().put(Style.wrapText, true);
+        promptBody.putStyle(Style.wrapText, true);
 
         final Prompt prompt = new Prompt(MessageType.INFO, "Prompt", new ArrayList<>("OK"), promptBody);
         prompt.setTitle("Prompt");
-        prompt.getStyles().put(Style.resizable, true);
+        prompt.putStyle(Style.resizable, true);
 
         prompt.getComponentMouseListeners().add(new ComponentMouseListener() {
             @Override
@@ -101,7 +101,7 @@ public final class SheetTest implements Application {
         });
 
         Label alertBody = new Label(LICENSE_TEXT);
-        alertBody.getStyles().put(Style.wrapText, true);
+        alertBody.putStyle(Style.wrapText, true);
 
         final Alert alert = new Alert(MessageType.INFO, "Alert", new ArrayList<>("OK"), alertBody);
         alert.setTitle("Alert");
@@ -109,10 +109,10 @@ public final class SheetTest implements Application {
         BoxPane boxPane = new BoxPane();
         row1.add(boxPane);
 
-        boxPane.getStyles().put(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
+        boxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.RIGHT);
 
         final PushButton closeButton = new PushButton("Close");
-        closeButton.getStyles().put(Style.minimumAspectRatio, 3);
+        closeButton.putStyle(Style.minimumAspectRatio, 3);
         boxPane.add(closeButton);
 
         sheet = new Sheet(tablePane);
