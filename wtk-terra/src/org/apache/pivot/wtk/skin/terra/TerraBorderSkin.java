@@ -16,7 +16,6 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
-import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.skin.BorderSkin;
 
 /**
@@ -31,13 +30,11 @@ public class TerraBorderSkin extends BorderSkin {
     }
 
     public final void setColor(int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
+        setColor(getColor(color));
     }
 
     public final void setTitleColor(int titleColor) {
-        Theme theme = currentTheme();
-        setTitleColor(theme.getColor(titleColor));
+        setTitleColor(getColor(titleColor));
     }
 
 }
