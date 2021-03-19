@@ -51,27 +51,29 @@ import org.apache.pivot.util.Utils;
  */
 public class BeanAdapter implements Map<String, Object> {
     /**
-     * Property iterator. Returns a value for each getter method and public,
+     * Property iterator. Returns a property name for each getter method and public,
      * non-final field defined by the bean.
      */
     private class PropertyIterator implements Iterator<String> {
         private Method[] methods = null;
         private Field[] fields = null;
 
-        private int i = 0;
-        private int j = 0;
-        private String nextProperty = null;
+        private int methodIndex = 0;
+        private int fieldIndex = 0;
+        private String nextPropertyName = null;
 
-        public PropertyIterator() {
-            Class<?> type = bean.getClass();
-            methods = type.getMethods();
-            fields = type.getFields();
+        /**
+         * Construct the property iterator over our bean object.
+         */
+        PropertyIterator() {
+            methods = beanClass.getMethods();
+            fields = beanClass.getFields();
             nextProperty();
         }
 
         @Override
         public boolean hasNext() {
-            return (nextProperty != null);
+            return (nextPropertyName != null);
         }
 
         @Override
@@ -80,17 +82,20 @@ public class BeanAdapter implements Map<String, Object> {
                 throw new NoSuchElementException();
             }
 
-            String nextPropertyLocal = this.nextProperty;
+            String nameToReturn = nextPropertyName;
             nextProperty();
 
-            return nextPropertyLocal;
+            return nameToReturn;
         }
 
+        /**
+         * Iterate to the next acceptable property method/field in the bean object.
+         */
         private void nextProperty() {
-            nextProperty = null;
+            nextPropertyName = null;
 
-            while (i < methods.length && nextProperty == null) {
-                Method method = methods[i++];
+            while (methodIndex < methods.length && nextPropertyName == null) {
+                Method method = methods[methodIndex++];
 
                 if (method.getParameterTypes().length == 0
                     && (method.getModifiers() & Modifier.STATIC) == 0) {
@@ -107,33 +112,27 @@ public class BeanAdapter implements Map<String, Object> {
 
                     if (prefix != null) {
                         int propertyOffset = prefix.length();
-                        nextProperty = Character.toLowerCase(methodName.charAt(propertyOffset))
+                        String propertyName = Character.toLowerCase(methodName.charAt(propertyOffset))
                             + methodName.substring(propertyOffset + 1);
 
-                        if (nextProperty.equals("class")) {
-                            nextProperty = null;
+                        if (!propertyName.equals("class")) {
+                            if (!ignoreReadOnlyProperties || !isReadOnly(propertyName)) {
+                               nextPropertyName = propertyName;
+                            }
                         }
-                    }
-
-                    if (nextProperty != null && ignoreReadOnlyProperties
-                        && isReadOnly(nextProperty)) {
-                        nextProperty = null;
                     }
                 }
             }
 
-            if (nextProperty == null) {
-                while (j < fields.length && nextProperty == null) {
-                    Field field = fields[j++];
+            if (nextPropertyName == null) {
+                while (fieldIndex < fields.length && nextPropertyName == null) {
+                    Field field = fields[fieldIndex++];
 
                     int modifiers = field.getModifiers();
                     if ((modifiers & Modifier.PUBLIC) != 0 && (modifiers & Modifier.STATIC) == 0) {
-                        nextProperty = field.getName();
-                    }
-
-                    if (nextProperty != null && ignoreReadOnlyProperties
-                        && (modifiers & Modifier.FINAL) != 0) {
-                        nextProperty = null;
+                        if (!ignoreReadOnlyProperties || (modifiers & Modifier.FINAL) == 0) {
+                            nextPropertyName = field.getName();
+                        }
                     }
                 }
             }
@@ -146,8 +145,10 @@ public class BeanAdapter implements Map<String, Object> {
         }
     }
 
-    private Object bean;
-    private boolean ignoreReadOnlyProperties;
+    private final Object bean;
+    private final Class<?> beanClass;
+    private final String beanClassName;
+    private final boolean ignoreReadOnlyProperties;
 
     private MapListener.Listeners<String, Object> mapListeners = new MapListener.Listeners<>();
 
@@ -165,10 +166,10 @@ public class BeanAdapter implements Map<String, Object> {
     /**
      * Creates a new bean dictionary.
      *
-     * @param bean The bean object to wrap.
+     * @param beanObject The bean object to wrap.
      */
-    public BeanAdapter(final Object bean) {
-        this(bean, false);
+    public BeanAdapter(final Object beanObject) {
+        this(beanObject, false);
     }
 
     /**
@@ -176,15 +177,17 @@ public class BeanAdapter implements Map<String, Object> {
      * straight fields marked as <code>final</code> or bean properties where
      * there is a "get" method but no corresponding "set" method).
      *
-     * @param bean The bean object to wrap.
-     * @param ignoreReadOnlyProperties {@code true} if {@code final} or non-settable
+     * @param beanObject The bean object to wrap.
+     * @param ignoreReadOnlyValue {@code true} if {@code final} or non-settable
      * fields should be excluded from the dictionary, {@code false} to include all fields.
      */
-    public BeanAdapter(final Object bean, final boolean ignoreReadOnlyProperties) {
-        Utils.checkNull(bean, "bean object");
+    public BeanAdapter(final Object beanObject, final boolean ignoreReadOnlyValue) {
+        Utils.checkNull(beanObject, "bean object");
 
-        this.bean = bean;
-        this.ignoreReadOnlyProperties = ignoreReadOnlyProperties;
+        bean = beanObject;
+        beanClass = bean.getClass();
+        beanClassName = beanClass.getName();
+        ignoreReadOnlyProperties = ignoreReadOnlyValue;
     }
 
     /**
@@ -209,17 +212,17 @@ public class BeanAdapter implements Map<String, Object> {
 
         Object value = null;
 
-        Method getterMethod = getGetterMethod(key);
+        Method getterMethod = getGetterMethod(beanClass, key);
 
         if (getterMethod == null) {
-            Field field = getField(key);
+            Field field = getField(beanClass, key);
 
             if (field != null) {
                 try {
                     value = field.get(bean);
                 } catch (IllegalAccessException exception) {
                     throw new RuntimeException(String.format(
-                        ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT, key, bean.getClass().getName()),
+                        ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT, key, beanClassName),
                         exception);
                 }
             }
@@ -228,10 +231,10 @@ public class BeanAdapter implements Map<String, Object> {
                 value = getterMethod.invoke(bean, new Object[] {});
             } catch (IllegalAccessException exception) {
                 throw new RuntimeException(String.format(ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT,
-                    key, bean.getClass().getName()), exception);
+                    key, beanClassName), exception);
             } catch (InvocationTargetException exception) {
                 throw new RuntimeException(String.format(
-                    "Error getting property \"%s\" for type %s.", key, bean.getClass().getName()),
+                    "Error getting property \"%s\" for type %s.", key, beanClassName),
                     exception.getCause());
             }
         }
@@ -261,7 +264,7 @@ public class BeanAdapter implements Map<String, Object> {
 
         if (valueUpdated != null) {
             // Get the setter method for the value type
-            setterMethod = getSetterMethod(key, valueUpdated.getClass());
+            setterMethod = getSetterMethod(beanClass, key, valueUpdated.getClass());
         }
 
         if (setterMethod == null) {
@@ -269,18 +272,18 @@ public class BeanAdapter implements Map<String, Object> {
             Class<?> propertyType = getType(key);
 
             if (propertyType != null) {
-                setterMethod = getSetterMethod(key, propertyType);
+                setterMethod = getSetterMethod(beanClass, key, propertyType);
                 valueUpdated = coerce(valueUpdated, propertyType, key);
             }
         }
 
         if (setterMethod == null) {
-            Field field = getField(key);
+            Field field = getField(beanClass, key);
 
             if (field == null) {
                 throw new PropertyNotFoundException("Property \"" + key + "\""
                     + " does not exist or is read-only for type "
-                    + bean.getClass().getName() + ".");
+                    + beanClassName + ".");
             }
 
             Class<?> fieldType = field.getType();
@@ -295,18 +298,18 @@ public class BeanAdapter implements Map<String, Object> {
                 field.set(bean, valueUpdated);
             } catch (IllegalAccessException exception) {
                 throw new RuntimeException(String.format(ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT,
-                    key, bean.getClass().getName()), exception);
+                    key, beanClassName), exception);
             }
         } else {
             try {
                 setterMethod.invoke(bean, new Object[] {valueUpdated});
             } catch (IllegalAccessException exception) {
                 throw new RuntimeException(String.format(ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT,
-                    key, bean.getClass().getName()), exception);
+                    key, beanClassName), exception);
             } catch (InvocationTargetException exception) {
                 throw new RuntimeException(String.format(
                     "Error setting property \"%s\" for type %s to value \"%s\"", key,
-                    bean.getClass().getName(), "" + valueUpdated), exception.getCause());
+                    beanClassName, "" + valueUpdated), exception.getCause());
             }
 
         }
@@ -376,10 +379,10 @@ public class BeanAdapter implements Map<String, Object> {
     public boolean containsKey(final String key) {
         Utils.checkNullOrEmpty(key, "key");
 
-        boolean containsKey = (getGetterMethod(key) != null);
+        boolean containsKey = (getGetterMethod(beanClass, key) != null);
 
         if (!containsKey) {
-            containsKey = (getField(key) != null);
+            containsKey = (getField(beanClass, key) != null);
         }
 
         return containsKey;
@@ -425,7 +428,7 @@ public class BeanAdapter implements Map<String, Object> {
      * otherwise.
      */
     public boolean isReadOnly(final String key) {
-        return isReadOnly(bean.getClass(), key);
+        return isReadOnly(beanClass, key);
     }
 
     /**
@@ -436,7 +439,7 @@ public class BeanAdapter implements Map<String, Object> {
      * @see #getType(Class, String)
      */
     public Class<?> getType(final String key) {
-        return getType(bean.getClass(), key);
+        return getType(beanClass, key);
     }
 
     /**
@@ -447,7 +450,7 @@ public class BeanAdapter implements Map<String, Object> {
      * @see #getGenericType(Class, String)
      */
     public Type getGenericType(final String key) {
-        return getGenericType(bean.getClass(), key);
+        return getGenericType(beanClass, key);
     }
 
     /**
@@ -463,39 +466,6 @@ public class BeanAdapter implements Map<String, Object> {
     @Override
     public ListenerList<MapListener<String, Object>> getMapListeners() {
         return mapListeners;
-    }
-
-    /**
-     * Returns the getter method for a property.
-     *
-     * @param key The property name.
-     * @return The getter method, or {@code null} if the method does not exist.
-     */
-    private Method getGetterMethod(final String key) {
-        return getGetterMethod(bean.getClass(), key);
-    }
-
-    /**
-     * Returns the setter method for a property.
-     *
-     * @param key The property name.
-     * @param valueType The value type of the property in question.
-     * @return The getter method, or {@code null} if the method does not exist.
-     */
-    private Method getSetterMethod(final String key, final Class<?> valueType) {
-        return getSetterMethod(bean.getClass(), key, valueType);
-    }
-
-    /**
-     * Returns the public, non-static field for a property. Note that fields
-     * will only be consulted for bean properties after bean methods.
-     *
-     * @param key The property name
-     * @return The field, or {@code null} if the field does not exist, or is
-     * non-public or static
-     */
-    private Field getField(final String key) {
-        return getField(bean.getClass(), key);
     }
 
     /**
@@ -652,12 +622,72 @@ public class BeanAdapter implements Map<String, Object> {
     }
 
     /**
+     * Simplified version of {@link #getSetterMethod(Class, String, Class)} that
+     * doesn't do the null checks, or have to redo the method name calculation.
+     *
+     * @param beanClass The bean class.
+     * @param methodName The setter method name we are looking for.
+     * @param valueType The type of the property value.
+     * @return The setter method, or {@code null} if the method cannot be found.
+     */
+    private static Method internalGetSetterMethod(final Class<?> beanClass, final String methodName,
+            final Class<?> valueType) {
+        Method setterMethod = null;
+
+        try {
+            setterMethod = beanClass.getMethod(methodName, valueType);
+        } catch (NoSuchMethodException exception) {
+            // No-op
+        }
+
+        if (setterMethod == null) {
+            // Look for a match on the value's super type
+            Class<?> superType = valueType.getSuperclass();
+            setterMethod = internalGetSetterMethod(beanClass, methodName, superType);
+        }
+
+        if (setterMethod == null) {
+            // If value type is a primitive wrapper, look for a method
+            // signature with the corresponding primitive type
+            try {
+                Field primitiveTypeField = valueType.getField("TYPE");
+                Class<?> primitiveValueType = (Class<?>) primitiveTypeField.get(null);
+
+                try {
+                    setterMethod = beanClass.getMethod(methodName, primitiveValueType);
+                } catch (NoSuchMethodException exception) {
+                    // No-op
+                }
+            } catch (NoSuchFieldException exception) {
+                // No-op
+            } catch (IllegalAccessException exception) {
+                throw new RuntimeException(String.format(
+                    ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT, methodName, beanClass.getName()),
+                    exception);
+            }
+        }
+
+        if (setterMethod == null) {
+            // Walk the interface graph to find a matching method
+            Class<?>[] interfaces = valueType.getInterfaces();
+
+            int i = 0, n = interfaces.length;
+            while (setterMethod == null && i < n) {
+                Class<?> interfaceType = interfaces[i++];
+                setterMethod = internalGetSetterMethod(beanClass, methodName, interfaceType);
+            }
+        }
+
+        return setterMethod;
+    }
+
+    /**
      * Returns the setter method for a property.
      *
      * @param beanClass The bean class.
      * @param key The property name.
      * @param valueType The type of the property.
-     * @return The getter method, or {@code null} if the method does not exist.
+     * @return The setter method, or {@code null} if the method does not exist.
      */
     public static Method getSetterMethod(final Class<?> beanClass, final String key,
             final Class<?> valueType) {
@@ -672,49 +702,7 @@ public class BeanAdapter implements Map<String, Object> {
             String keyUpdated = Character.toUpperCase(key.charAt(0)) + key.substring(1);
             final String methodName = SET_PREFIX + keyUpdated;
 
-            try {
-                setterMethod = beanClass.getMethod(methodName, valueType);
-            } catch (NoSuchMethodException exception) {
-                // No-op
-            }
-
-            if (setterMethod == null) {
-                // Look for a match on the value's super type
-                Class<?> superType = valueType.getSuperclass();
-                setterMethod = getSetterMethod(beanClass, key, superType);
-            }
-
-            if (setterMethod == null) {
-                // If value type is a primitive wrapper, look for a method
-                // signature with the corresponding primitive type
-                try {
-                    Field primitiveTypeField = valueType.getField("TYPE");
-                    Class<?> primitiveValueType = (Class<?>) primitiveTypeField.get(null);
-
-                    try {
-                        setterMethod = beanClass.getMethod(methodName, primitiveValueType);
-                    } catch (NoSuchMethodException exception) {
-                        // No-op
-                    }
-                } catch (NoSuchFieldException exception) {
-                    // No-op
-                } catch (IllegalAccessException exception) {
-                    throw new RuntimeException(String.format(
-                        ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT, keyUpdated, beanClass.getName()),
-                        exception);
-                }
-            }
-
-            if (setterMethod == null) {
-                // Walk the interface graph to find a matching method
-                Class<?>[] interfaces = valueType.getInterfaces();
-
-                int i = 0, n = interfaces.length;
-                while (setterMethod == null && i < n) {
-                    Class<?> interfaceType = interfaces[i++];
-                    setterMethod = getSetterMethod(beanClass, key, interfaceType);
-                }
-            }
+            setterMethod = internalGetSetterMethod(beanClass, methodName, valueType);
         }
 
         return setterMethod;
@@ -739,85 +727,72 @@ public class BeanAdapter implements Map<String, Object> {
         if (value == null) {
             // Null values can only be coerced to null
             coercedValue = null;
-        } else {
-            if (type.isAssignableFrom(value.getClass())) {
-                // Value doesn't need coercion
-                coercedValue = value;
-            } else if (type.isEnum()) {
-                // Find and invoke the valueOf(String) method using an upper
-                // case conversion of the supplied Object's toString() value
-                try {
-                    String valueString = value.toString().toUpperCase(Locale.ENGLISH);
-                    Method valueOfMethod = type.getMethod(ENUM_VALUE_OF_METHOD_NAME, String.class);
-                    coercedValue = valueOfMethod.invoke(null, valueString);
-                } catch (IllegalAccessException | InvocationTargetException
-                        | SecurityException | NoSuchMethodException e) {
-                    // Nothing to be gained by handling the getMethod() & invoke() exceptions separately
-                    throw new IllegalArgumentException(String.format(
-                        ENUM_COERCION_EXCEPTION_MESSAGE, value.getClass().getName(), value, type,
-                        Arrays.toString(type.getEnumConstants())), e);
-                }
-            } else {
-                // Coerce the value to the requested type
-                if (type == String.class) {
-                    coercedValue = value.toString();
-                } else if (type == Boolean.class || type == Boolean.TYPE) {
-                    coercedValue = Boolean.parseBoolean(value.toString());
-                } else if (type == Character.class || type == Character.TYPE) {
-                    coercedValue = value.toString().charAt(0);
-                } else if (type == Byte.class || type == Byte.TYPE) {
-                    if (value instanceof Number) {
-                        coercedValue = ((Number) value).byteValue();
-                    } else {
-                        coercedValue = Byte.parseByte(value.toString());
-                    }
-                } else if (type == Short.class || type == Short.TYPE) {
-                    if (value instanceof Number) {
-                        coercedValue = ((Number) value).shortValue();
-                    } else {
-                        coercedValue = Short.parseShort(value.toString());
-                    }
-                } else if (type == Integer.class || type == Integer.TYPE) {
-                    if (value instanceof Number) {
-                        coercedValue = ((Number) value).intValue();
-                    } else {
-                        coercedValue = Integer.parseInt(value.toString());
-                    }
-                } else if (type == Long.class || type == Long.TYPE) {
-                    if (value instanceof Number) {
-                        coercedValue = ((Number) value).longValue();
-                    } else {
-                        coercedValue = Long.parseLong(value.toString());
-                    }
-                } else if (type == Float.class || type == Float.TYPE) {
-                    if (value instanceof Number) {
-                        coercedValue = ((Number) value).floatValue();
-                    } else {
-                        coercedValue = Float.parseFloat(value.toString());
-                    }
-                } else if (type == Double.class || type == Double.TYPE) {
-                    if (value instanceof Number) {
-                        coercedValue = ((Number) value).doubleValue();
-                    } else {
-                        coercedValue = Double.parseDouble(value.toString());
-                    }
-                } else if (type == BigInteger.class) {
-                    if (value instanceof Number) {
-                        coercedValue = new BigInteger(((Number) value).toString());
-                    } else {
-                        coercedValue = new BigInteger(value.toString());
-                    }
-                } else if (type == BigDecimal.class) {
-                    if (value instanceof Number) {
-                        coercedValue = new BigDecimal(((Number) value).toString());
-                    } else {
-                        coercedValue = new BigDecimal(value.toString());
-                    }
-                } else {
-                    throw new IllegalArgumentException("Unable to coerce "
-                        + value.getClass().getName() + " to " + type + " for \"" + key + "\" property.");
-                }
+        } else if (type == Object.class || type.isAssignableFrom(value.getClass())) {
+            // Value doesn't need coercion
+            coercedValue = value;
+        } else if (type.isEnum()) {
+            // Find and invoke the valueOf(String) method using an upper
+            // case conversion of the supplied Object's toString() value
+            try {
+                String valueString = value.toString().toUpperCase(Locale.ENGLISH);
+                Method valueOfMethod = type.getMethod(ENUM_VALUE_OF_METHOD_NAME, String.class);
+                coercedValue = valueOfMethod.invoke(null, valueString);
+            } catch (IllegalAccessException | InvocationTargetException
+                    | SecurityException | NoSuchMethodException e) {
+                // Nothing to be gained by handling the getMethod() & invoke() exceptions separately
+                throw new IllegalArgumentException(String.format(
+                    ENUM_COERCION_EXCEPTION_MESSAGE, value.getClass().getName(), value, type,
+                    Arrays.toString(type.getEnumConstants())), e);
             }
+        } else if (type == String.class) {
+            coercedValue = value.toString();
+        } else if (type == Boolean.class || type == Boolean.TYPE) {
+            coercedValue = Boolean.parseBoolean(value.toString());
+        } else if (type == Character.class || type == Character.TYPE) {
+            coercedValue = value.toString().charAt(0);
+        } else if (type == Byte.class || type == Byte.TYPE) {
+            if (value instanceof Number) {
+                coercedValue = ((Number) value).byteValue();
+            } else {
+                coercedValue = Byte.parseByte(value.toString());
+            }
+        } else if (type == Short.class || type == Short.TYPE) {
+            if (value instanceof Number) {
+                coercedValue = ((Number) value).shortValue();
+            } else {
+                coercedValue = Short.parseShort(value.toString());
+            }
+        } else if (type == Integer.class || type == Integer.TYPE) {
+            if (value instanceof Number) {
+                coercedValue = ((Number) value).intValue();
+            } else {
+                coercedValue = Integer.parseInt(value.toString());
+            }
+        } else if (type == Long.class || type == Long.TYPE) {
+            if (value instanceof Number) {
+                coercedValue = ((Number) value).longValue();
+            } else {
+                coercedValue = Long.parseLong(value.toString());
+            }
+        } else if (type == Float.class || type == Float.TYPE) {
+            if (value instanceof Number) {
+                coercedValue = ((Number) value).floatValue();
+            } else {
+                coercedValue = Float.parseFloat(value.toString());
+            }
+        } else if (type == Double.class || type == Double.TYPE) {
+            if (value instanceof Number) {
+                coercedValue = ((Number) value).doubleValue();
+            } else {
+                coercedValue = Double.parseDouble(value.toString());
+            }
+        } else if (type == BigInteger.class) {
+            coercedValue = new BigInteger(value.toString());
+        } else if (type == BigDecimal.class) {
+            coercedValue = new BigDecimal(value.toString());
+        } else {
+            throw new IllegalArgumentException("Unable to coerce "
+                + value.getClass().getName() + " to " + type + " for \"" + key + "\" property.");
         }
 
         return (T) coercedValue;
