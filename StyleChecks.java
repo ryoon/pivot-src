@@ -642,8 +642,9 @@ public final class StyleChecks {
                 sortedList.add(info);
             }
 
-            System.out.println("Style Check Results");
-            System.out.println("-------------------");
+            System.out.println("=====================");
+            System.out.println(" Style Check Results");
+            System.out.println("=====================");
             System.out.println();
 
             if (sortedList.isEmpty()) {
@@ -703,6 +704,7 @@ public final class StyleChecks {
                 // The list is sorted by count, with highest count first
                 fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
                 System.out.println(twoReports ? "Files with the most problems:" : "File problem counts:");
+                System.out.println(twoReports ? "-----------------------------" : "--------------------");
                 int num = 1;
                 for (FileInfo info : fileCountList) {
                     System.out.format(FORMAT4, info.getName(), info.getCount());
@@ -717,6 +719,7 @@ public final class StyleChecks {
                         // The list is sorted by count, with lowest count first
                         fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
                         System.out.println("Files with the fewest problems:");
+                        System.out.println("-------------------------------");
                         for (int i = leastRemaining; i > 0; i--) {
                             FileInfo info = fileCountList.get(i - 1);
                             System.out.format(FORMAT4, info.getName(), info.getCount());
