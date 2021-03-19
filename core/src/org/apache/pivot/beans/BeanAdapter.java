@@ -55,11 +55,26 @@ public class BeanAdapter implements Map<String, Object> {
      * non-final field defined by the bean.
      */
     private class PropertyIterator implements Iterator<String> {
+        /**
+         * The list of methods in the bean object.
+         */
         private Method[] methods = null;
+        /**
+         * The list of fields in the bean object.
+         */
         private Field[] fields = null;
 
+        /**
+         * Current index into the {@link #methods} array.
+         */
         private int methodIndex = 0;
+        /**
+         * Current index into the {@link #fields} array.
+         */
         private int fieldIndex = 0;
+        /**
+         * The next property name to return (if any) during the iteration.
+         */
         private String nextPropertyName = null;
 
         /**
@@ -145,21 +160,43 @@ public class BeanAdapter implements Map<String, Object> {
         }
     }
 
+    /**
+     * The POJO object we are wrapping in order to get/set its properties.
+     */
     private final Object bean;
+    /**
+     * For convenience, the class of the bean object.
+     */
     private final Class<?> beanClass;
+    /**
+     * For convenience, name of the bean object's class.
+     */
     private final String beanClassName;
+    /**
+     * Flag to say whether or not we ignore properties that have no "setting" methods
+     * and are thus "readonly".
+     */
     private final boolean ignoreReadOnlyProperties;
 
+    /**
+     * List of listeners for changes to properties (that is, values) in this map (bean).
+     */
     private MapListener.Listeners<String, Object> mapListeners = new MapListener.Listeners<>();
 
+    /** Prefix for "getProperty" method names. */
     public static final String GET_PREFIX = "get";
+    /** Prefix for "isProperty" method names. */
     public static final String IS_PREFIX = "is";
+    /** Prefix for "setProperty" method names. */
     public static final String SET_PREFIX = "set";
 
+    /** Method name of an enum class to return an enum value from a String. */
     private static final String ENUM_VALUE_OF_METHOD_NAME = "valueOf";
 
+    /** Error message format for illegal access exceptions. */
     private static final String ILLEGAL_ACCESS_EXCEPTION_MESSAGE_FORMAT =
             "Unable to access property \"%s\" for type %s.";
+    /** Error message for failed attempt to coerce to an enum value. */
     private static final String ENUM_COERCION_EXCEPTION_MESSAGE =
             "Unable to coerce %s (\"%s\") to %s.\nValid enum constants - %s";
 
@@ -407,7 +444,7 @@ public class BeanAdapter implements Map<String, Object> {
     }
 
     @Override
-    public Comparator<String> getComparator() {
+    public final Comparator<String> getComparator() {
         return null;
     }
 
@@ -464,7 +501,7 @@ public class BeanAdapter implements Map<String, Object> {
     }
 
     @Override
-    public ListenerList<MapListener<String, Object>> getMapListeners() {
+    public final ListenerList<MapListener<String, Object>> getMapListeners() {
         return mapListeners;
     }
 
@@ -643,7 +680,9 @@ public class BeanAdapter implements Map<String, Object> {
         if (setterMethod == null) {
             // Look for a match on the value's super type
             Class<?> superType = valueType.getSuperclass();
-            setterMethod = internalGetSetterMethod(beanClass, methodName, superType);
+            if (superType != null) {
+                setterMethod = internalGetSetterMethod(beanClass, methodName, superType);
+            }
         }
 
         if (setterMethod == null) {
