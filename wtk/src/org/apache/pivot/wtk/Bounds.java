@@ -320,7 +320,7 @@ public final class Bounds implements Serializable {
      * @return A new enlarged bounds.
      */
     public Bounds enlarge(final int amt) {
-        return new Bounds(x - amt, y - amt, width + (2 * amt), height + (2 * amt));
+        return enlarge(amt, amt);
     }
 
     /**
