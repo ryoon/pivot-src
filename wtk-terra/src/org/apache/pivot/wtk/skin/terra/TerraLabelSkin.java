@@ -16,32 +16,19 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
-import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.skin.LabelSkin;
 
 /**
- * Terra Label skin.  Only deals with colors that depend on
- * the current theme.
+ * Terra Label skin. Nothing to do here.
  */
 public class TerraLabelSkin extends LabelSkin {
+
+    /**
+     * Specific constructor with nothing to do.
+     * <p> Default colors, etc. set by call to {@link TerraTheme#setDefaultStyles}
+     * from {@link LabelSkin#install}.
+     */
     public TerraLabelSkin() {
-        setColor(1);
-        setDisabledColor(7);
-    }
-
-    public final void setColor(int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
-    }
-
-    public final void setDisabledColor(int color) {
-        Theme theme = currentTheme();
-        setDisabledColor(theme.getColor(color));
-    }
-
-    public final void setBackgroundColor(int backgroundColor) {
-        Theme theme = currentTheme();
-        setBackgroundColor(theme.getColor(backgroundColor));
     }
 
 }

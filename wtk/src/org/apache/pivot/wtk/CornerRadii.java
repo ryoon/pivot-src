@@ -30,14 +30,30 @@ import org.apache.pivot.util.Utils;
 public final class CornerRadii implements Serializable {
     private static final long serialVersionUID = -433469769555042467L;
 
+    /**
+     * Radius of the top left corner.
+     */
     public final int topLeft;
+    /**
+     * Radius of the top right corner.
+     */
     public final int topRight;
+    /**
+     * Radius of the bottom left corner.
+     */
     public final int bottomLeft;
+    /**
+     * Radius of the bottom right corner.
+     */
     public final int bottomRight;
 
+    /** Dictionary key for the top left value. */
     public static final String TOP_LEFT_KEY = "topLeft";
+    /** Dictionary key for the top right value. */
     public static final String TOP_RIGHT_KEY = "topRight";
+    /** Dictionary key for the bottom left value. */
     public static final String BOTTOM_LEFT_KEY = "bottomLeft";
+    /** Dictionary key for the bottom right value. */
     public static final String BOTTOM_RIGHT_KEY = "bottomRight";
 
     /**
@@ -45,50 +61,91 @@ public final class CornerRadii implements Serializable {
      */
     public static final CornerRadii NONE = new CornerRadii(0);
 
-    public CornerRadii(int radius) {
+    /**
+     * Construct with a single value for all four corners.
+     *
+     * @param radius The single value for all corners.
+     */
+    public CornerRadii(final int radius) {
         this(radius, radius, radius, radius);
     }
 
-    public CornerRadii(Number radius) {
+    /**
+     * Construct with a single value for all corners.
+     *
+     * @param radius The (integer) value for all corners.
+     */
+    public CornerRadii(final Number radius) {
         Utils.checkNull(radius, "radius");
         int radii = radius.intValue();
         Utils.checkNonNegative(radii, "radii");
 
-        this.topLeft = radii;
-        this.topRight = radii;
-        this.bottomLeft = radii;
-        this.bottomRight = radii;
+        topLeft = radii;
+        topRight = radii;
+        bottomLeft = radii;
+        bottomRight = radii;
     }
 
-    private void check(CornerRadii radii) {
+    /**
+     * Check for valid values for all corners.
+     *
+     * @param radii The complete object to check all its values.
+     * @throws IllegalArgumentException if any of the values are negative.
+     */
+    private void check(final CornerRadii radii) {
         check(radii.topLeft, radii.topRight, radii.bottomLeft, radii.bottomRight);
     }
 
-    private void check(int topLeft, int topRight, int bottomLeft, int bottomRight) {
-        Utils.checkNonNegative(topLeft, "topLeft");
-        Utils.checkNonNegative(topRight, "topRight");
-        Utils.checkNonNegative(bottomLeft, "bottomLeft");
-        Utils.checkNonNegative(bottomRight, "bottomRight");
+    /**
+     * Check the individual corner radius values.
+     *
+     * @param tL The top left value.
+     * @param tR The top right value.
+     * @param bL The bottom left value.
+     * @param bR The bottom right value.
+     * @throws IllegalArgumentException if any of the values are negative.
+     */
+    private void check(final int tL, final int tR, final int bL, final int bR) {
+        Utils.checkNonNegative(tL, "topLeft");
+        Utils.checkNonNegative(tR, "topRight");
+        Utils.checkNonNegative(bL, "bottomLeft");
+        Utils.checkNonNegative(bR, "bottomRight");
     }
 
-    public CornerRadii(CornerRadii cornerRadii) {
+    /**
+     * "Copy" constructor from another corner radii object.
+     *
+     * @param cornerRadii The other object to copy from.
+     * @throws IllegalArgumentException if the object is {@code null}.
+     */
+    public CornerRadii(final CornerRadii cornerRadii) {
         Utils.checkNull(cornerRadii, "cornerRadii");
 
         check(cornerRadii);
 
-        this.topLeft = cornerRadii.topLeft;
-        this.topRight = cornerRadii.topRight;
-        this.bottomLeft = cornerRadii.bottomLeft;
-        this.bottomRight = cornerRadii.bottomRight;
+        topLeft = cornerRadii.topLeft;
+        topRight = cornerRadii.topRight;
+        bottomLeft = cornerRadii.bottomLeft;
+        bottomRight = cornerRadii.bottomRight;
     }
 
-    public CornerRadii(int topLeft, int topRight, int bottomLeft, int bottomRight) {
-        check(topLeft, topRight, bottomLeft, bottomRight);
+    /**
+     * Construct given the individual corner radius values.
+     *
+     * @param topLeftValue The new top left radius value.
+     * @param topRightValue The new top right radius value.
+     * @param bottomLeftValue The new bottom left radius.
+     * @param bottomRightValue The bottom right radius value.
+     * @throws IllegalArgumentException if any of the values are negative.
+     */
+    public CornerRadii(final int topLeftValue, final int topRightValue,
+            final int bottomLeftValue, final int bottomRightValue) {
+        check(topLeftValue, topRightValue, bottomLeftValue, bottomRightValue);
 
-        this.topLeft = topLeft;
-        this.topRight = topRight;
-        this.bottomLeft = bottomLeft;
-        this.bottomRight = bottomRight;
+        topLeft = topLeftValue;
+        topRight = topRightValue;
+        bottomLeft = bottomLeftValue;
+        bottomRight = bottomRightValue;
     }
 
     /**
@@ -100,7 +157,7 @@ public final class CornerRadii implements Serializable {
      * {@value #BOTTOM_RIGHT_KEY}, all with numeric values. Omitted values are
      * treated as zero.
      */
-    public CornerRadii(Dictionary<String, ?> cornerRadii) {
+    public CornerRadii(final Dictionary<String, ?> cornerRadii) {
         Utils.checkNull(cornerRadii, "cornerRadii");
 
         topLeft = cornerRadii.getInt(TOP_LEFT_KEY, 0);
@@ -111,7 +168,15 @@ public final class CornerRadii implements Serializable {
         check(this);
     }
 
-    public CornerRadii(Sequence<?> cornerRadii) {
+    /**
+     * Construct from a sequence of four numeric values.
+     *
+     * @param cornerRadii Sequence of values in the order of:
+     * top left, top right, bottom left, bottom right.
+     * @throws IllegalArgumentException if the input is {@code null} or if any
+     * of the values are negative.
+     */
+    public CornerRadii(final Sequence<?> cornerRadii) {
         Utils.checkNull(cornerRadii, "cornerRadii");
 
         topLeft = ((Number) cornerRadii.get(0)).intValue();
@@ -123,7 +188,7 @@ public final class CornerRadii implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         boolean equals = false;
 
         if (object instanceof CornerRadii) {
@@ -153,6 +218,37 @@ public final class CornerRadii implements Serializable {
     }
 
     /**
+     * Convert any of our supported object sources into a {@code CornerRadii} object.
+     *
+     * @param source Any supported object ({@code Integer}, {@code Number}, {@code String}, etc.).
+     * @return       The constructed {@code CornerRadii} object.
+     * @throws       IllegalArgumentException if the source if {@code null} or we can't
+     *               figure out how to convert.
+     */
+    public static CornerRadii fromObject(final Object source) {
+        Utils.checkNull(source, "cornerRadii");
+
+        if (source instanceof CornerRadii) {
+            return (CornerRadii) source;
+        } else if (source instanceof String) {
+            return decode((String) source);
+        } else if (source instanceof Integer) {
+            return new CornerRadii((Integer) source);
+        } else if (source instanceof Number) {
+            return new CornerRadii((Number) source);
+        } else if (source instanceof Dictionary) {
+            @SuppressWarnings("unchecked")
+            Dictionary<String, ?> dictionary = (Dictionary<String, ?>) source;
+            return new CornerRadii(dictionary);
+        } else if (source instanceof Sequence) {
+            return new CornerRadii((Sequence<?>) source);
+        } else {
+            throw new IllegalArgumentException("Unable to convert "
+                + source.getClass().getSimpleName() + " to CornerRadii!");
+        }
+    }
+
+    /**
      * Convert a string into corner radii.
      * <p> If the string value is a JSON map, then parse the map
      * and construct using the {@link #CornerRadii(Dictionary)} method.
@@ -174,7 +270,7 @@ public final class CornerRadii implements Serializable {
      * a JSON map, or if it starts with <code>"["</code> but cannot be parsed
      * as a JSON list.
      */
-    public static CornerRadii decode(String value) {
+    public static CornerRadii decode(final String value) {
         Utils.checkNullOrEmpty(value, "value");
 
         CornerRadii cornerRadii;

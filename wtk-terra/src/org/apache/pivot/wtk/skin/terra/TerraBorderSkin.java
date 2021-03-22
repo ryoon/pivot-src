@@ -19,22 +19,16 @@ package org.apache.pivot.wtk.skin.terra;
 import org.apache.pivot.wtk.skin.BorderSkin;
 
 /**
- * Terra Border skin. Deals with colors that depend on
- * the current theme.
+ * Terra Border skin. Nothing to do here.
  */
 public class TerraBorderSkin extends BorderSkin {
+
+    /**
+     * Specific constructor with nothing to do.
+     * <p> Default colors, etc. set by call to {@link TerraTheme#setDefaultStyles}
+     * from {@link BorderSkin#install}.
+     */
     public TerraBorderSkin() {
-        setBackgroundColor(4);
-        setColor(7);
-        setTitleColor(12);
-    }
-
-    public final void setColor(int color) {
-        setColor(getColor(color));
-    }
-
-    public final void setTitleColor(int titleColor) {
-        setTitleColor(getColor(titleColor));
     }
 
 }

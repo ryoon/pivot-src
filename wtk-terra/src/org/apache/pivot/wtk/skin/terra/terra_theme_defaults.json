@@ -40,21 +40,24 @@
     },
 
     TerraSeparatorSkin : {
-        // TODO: conflicts between SeparatorSkin and TerraSeparatorSkin
-
-        // color = defaultForegroundColor();
-        // headingColor = defaultForegroundColor();
-
         font : { bold : true },
         thickness : 1,
         padding : [ 4, 0, 4, 4 ],
 
-        // These are from TerraSeparatorSkin
+        // TODO: conflicts between SeparatorSkin and TerraSeparatorSkin
+        // color = defaultForegroundColor();
+        // headingColor = defaultForegroundColor();
+
+        // While these are from TerraSeparatorSkin
         color : 7,
         headingColor : 12
     },
 
     TerraTextAreaSkin : {
+        margin : 4,
+        wrapText : true,
+        tabWidth : 4,
+
         // TODO: conflicts here b/w TextAreaSkin and TerraTextAreaSkin:
         // This is what TextAreaSkin says right now:
         // color = defaultForegroundColor();
@@ -67,13 +70,8 @@
         //    selectionColor = Color.DARK_GRAY;
         //    inactiveSelectionColor = Color.DARK_GRAY;
         // }
-
-        // These were taken from TextAreaSkin (after the preceding code):
-        backgroundColor : 'null',
-        inactiveColor : 'GRAY',
-        margin : 4,
-        wrapText : true,
-        tabWidth : 4,
+        // backgroundColor = null;
+        // inactiveColor = Color.GRAY;
 
         // But, the colors below were taken from TerraTextAreaSkin...
         color : 1,
@@ -113,6 +111,22 @@
         backgroundColor : 4
     },
 
+    TerraLabelSkin : {
+        // These are set only in LabelSkin
+        backgroundColor : null,
+        textDecoration : null,
+        horizontalAlignment : 'LEFT',
+        verticalAlignment : 'TOP',
+        padding : 0,
+        wrapText : false,
+        // Conflict: LabelSkin has:
+        //   color = defaultForegroundColor()
+        //   disabledColor = Color.GRAY
+        // While these are from TerraLabelSkin...
+        color : 1,
+        disabledColor : 7
+    },
+
     TerraTreeViewSkin : {
         // Taken from TerraTreeViewSkin constructor...
         color : 1,
@@ -134,6 +148,20 @@
         branchControlInactiveSelectionColor : 14,
         gridColor : 11,
         showGridLines : false
+    },
+
+    TerraBorderSkin : {
+        // Taken from BorderSkin constructor
+        //   setBackgroundColor(defaultBackgroundColor());
+        //   color = defaultForegroundColor();
+        //   titleColor = defaultForegroundColor();
+        thickness : 1,
+        padding : 0,
+        cornerRadii : 0,
+        // Taken from TerraBorderSkin constructor
+        backgroundColor : 4,
+        color : 7,
+        titleColor : 12
     }
 
     /* More to come ... */

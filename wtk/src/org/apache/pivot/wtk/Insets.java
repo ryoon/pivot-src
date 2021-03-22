@@ -238,6 +238,50 @@ public final class Insets implements Serializable {
     }
 
     /**
+     * Convert any of our supported object sources into a {@code Insets} object.
+     *
+     * @param source  Any supported object ({@code Integer}, {@code Number}, {@code String}, etc.).
+     * @return        The constructed {@code Insets} object.
+     * @throws        IllegalArgumentException if the source if {@code null} or we can't
+     *                figure out how to convert.
+     */
+    public static Insets fromObject(final Object source) {
+        return fromObject(source, null);
+    }
+
+    /**
+     * Convert any of our supported object sources into a {@code Insets} object.
+     *
+     * @param source  Any supported object ({@code Integer}, {@code Number}, {@code String}, etc.).
+     * @param message Description of the setting we are converting (eg, "margin", "padding", etc.).
+     * @return        The constructed {@code Insets} object.
+     * @throws        IllegalArgumentException if the source if {@code null} or we can't
+     *                figure out how to convert.
+     */
+    public static Insets fromObject(final Object source, final String message) {
+        Utils.checkNull(source, message);
+
+        if (source instanceof String) {
+            return decode((String) source);
+        } else if (source instanceof Integer) {
+            return new Insets((Integer) source);
+        } else if (source instanceof Number) {
+            return new Insets((Number) source);
+        } else if (source instanceof Dictionary) {
+            @SuppressWarnings("unchecked")
+            Dictionary<String, ?> dictionary = (Dictionary<String, ?>) source;
+            return new Insets(dictionary);
+        } else if (source instanceof Sequence) {
+            return new Insets((Sequence<?>) source);
+        } else if (source instanceof Dimensions) {
+            return new Insets((Dimensions) source);
+        } else {
+            throw new IllegalArgumentException("Unable to convert "
+                + source.getClass().getSimpleName() + " to " + ((message == null) ? "Insets" : message) + "!");
+        }
+    }
+
+    /**
      * Decode a possible Insets value. The value can be in one of the
      * following forms:
      * <ul>

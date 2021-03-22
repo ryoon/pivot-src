@@ -19,7 +19,9 @@ package org.apache.pivot.wtk.skin;
 import java.awt.Color;
 import java.awt.Font;
 
+import org.apache.pivot.collections.Dictionary;
 import org.apache.pivot.collections.EnumSet;
+import org.apache.pivot.util.Utils;
 import org.apache.pivot.wtk.Bounds;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ComponentKeyListener;
@@ -30,6 +32,7 @@ import org.apache.pivot.wtk.ComponentMouseWheelListener;
 import org.apache.pivot.wtk.ComponentStateListener;
 import org.apache.pivot.wtk.ComponentTooltipListener;
 import org.apache.pivot.wtk.Container;
+import org.apache.pivot.wtk.CSSColor;
 import org.apache.pivot.wtk.Cursor;
 import org.apache.pivot.wtk.Dimensions;
 import org.apache.pivot.wtk.Display;
@@ -37,6 +40,7 @@ import org.apache.pivot.wtk.DragSource;
 import org.apache.pivot.wtk.DropTarget;
 import org.apache.pivot.wtk.FocusTraversalDirection;
 import org.apache.pivot.wtk.FontUtilities;
+import org.apache.pivot.wtk.GraphicsUtilities;
 import org.apache.pivot.wtk.Keyboard;
 import org.apache.pivot.wtk.Keyboard.KeyCode;
 import org.apache.pivot.wtk.Keyboard.KeyLocation;
@@ -484,6 +488,33 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
     }
 
     /**
+     * Convert any object we support into its corresponding font.
+     * <p> Uses {@link FontUtilities#decodeFont} or {@link Theme#deriveFont}
+     * to do the work.
+     *
+     * @param fontValue The object to be converted to a font.
+     * @return The converted font.
+     * @throws IllegalArgumentException if the value is {@code null} or
+     * cannot be converted.
+     */
+    public Font fontFromObject(final Object fontValue) {
+        Utils.checkNull(fontValue, "font");
+
+        if (fontValue instanceof Font) {
+            return (Font) fontValue;
+        } else if (fontValue instanceof String) {
+            return FontUtilities.decodeFont((String) fontValue);
+        } else if (fontValue instanceof Dictionary) {
+            @SuppressWarnings("unchecked")
+            Dictionary<String, ?> fontDictionary = (Dictionary<String, ?>) fontValue;
+            return Theme.deriveFont(fontDictionary);
+        } else {
+            throw new IllegalArgumentException("Unable to convert "
+                + fontValue.getClass().getSimpleName() + " to Font!");
+        }
+    }
+
+    /**
      * Returns the current Theme.
      *
      * @return The currently loaded theme.
@@ -554,6 +585,89 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      */
     public final Color getColor(final int index) {
         return currentTheme().getColor(index);
+    }
+
+    /**
+     * Interpret an object as a color value.
+     *
+     * @param colorValue One of a {@link String} (interpreted by {@link GraphicsUtilities#decodeColor(String,String)}),
+     * a straight {@link Color}, one of our {@link CSSColor} values, or an integer index into the theme's
+     * color palette.
+     * @return The real {@link Color} value.
+     * @throws IllegalArgumentException if the {@code colorValue} is {@code null} or of a type we don't recognize.
+     */
+    public final Color colorFromObject(final Object colorValue) {
+        return colorFromObject(colorValue, null, false);
+    }
+
+    /**
+     * Interpret an object as a color value.
+     *
+     * @param colorValue One of a {@link String} (interpreted by {@link GraphicsUtilities#decodeColor(String,String)}),
+     * a straight {@link Color}, one of our {@link CSSColor} values, or an integer index into the theme's
+     * color palette.
+     * @param allowNull Whether or not to allow a null color.
+     * @return The real {@link Color} value.
+     * @throws IllegalArgumentException if the {@code colorValue} is {@code null} (unless {@code allowNull}
+     * is {@code true}), or of a type we don't recognize.
+     */
+    public final Color colorFromObject(final Object colorValue, final boolean allowNull) {
+        return colorFromObject(colorValue, null, allowNull);
+    }
+
+    /**
+     * Interpret an object as a color value.
+     *
+     * @param colorValue One of a {@link String} (interpreted by {@link GraphicsUtilities#decodeColor(String,String)}),
+     * a straight {@link Color}, one of our {@link CSSColor} values, or an integer index into the theme's
+     * color palette.
+     * @param description An optional description for the call to {@link Utils#checkNull} in case of a null input value.
+     * @return The real {@link Color} value.
+     * @throws IllegalArgumentException if the {@code colorValue} is {@code null}, or of a type we don't recognize.
+     */
+    public final Color colorFromObject(final Object colorValue, final String description) {
+        return colorFromObject(colorValue, description, false);
+    }
+
+    /**
+     * Interpret an object as a color value.
+     *
+     * @param colorValue One of a {@link String} (interpreted by {@link GraphicsUtilities#decodeColor(String,String)}),
+     * a straight {@link Color}, one of our {@link CSSColor} values, or an integer index into the theme's
+     * color palette.
+     * @param description An optional description for the call to {@link Utils#checkNull} in case of a null input value.
+     * @param allowNull Whether or not to allow a null color.
+     * @return The real {@link Color} value.
+     * @throws IllegalArgumentException if the {@code colorValue} is {@code null} (unless {@code allowNull}
+     * is {@code true}), or of a type we don't recognize.
+     */
+    public final Color colorFromObject(final Object colorValue, final String description, final boolean allowNull) {
+        if (!allowNull) {
+            Utils.checkNull(colorValue, description);
+        }
+
+        Color color;
+
+        if (allowNull && colorValue == null) {
+            color = null;
+        } else if (colorValue instanceof Color) {
+            color = (Color) colorValue;
+        } else if (colorValue instanceof String) {
+            Color decodedColor = GraphicsUtilities.decodeColor((String) colorValue);
+            if (!allowNull) {
+                Utils.checkNull(decodedColor, description);
+            }
+            color = decodedColor;
+        } else if (colorValue instanceof CSSColor) {
+            color = ((CSSColor) colorValue).getColor();
+        } else if (colorValue instanceof Number) {
+            color = getColor(((Number) colorValue).intValue());
+        } else {
+            throw new IllegalArgumentException("Object of type "
+                + colorValue.getClass().getName() + " cannot be converted to a Color.");
+        }
+
+        return color;
     }
 
     /**

@@ -30,19 +30,15 @@ import java.awt.geom.Rectangle2D;
 import java.text.StringCharacterIterator;
 
 import org.apache.pivot.collections.ArrayList;
-import org.apache.pivot.collections.Dictionary;
-import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.util.Utils;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Dimensions;
-import org.apache.pivot.wtk.GraphicsUtilities;
 import org.apache.pivot.wtk.HorizontalAlignment;
 import org.apache.pivot.wtk.Insets;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.LabelListener;
 import org.apache.pivot.wtk.Platform;
 import org.apache.pivot.wtk.TextDecoration;
-import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.VerticalAlignment;
 
 /**
@@ -62,29 +58,36 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
     private ArrayList<GlyphVector> glyphVectors = null;
     private float textHeight = 0;
 
+    /**
+     * Default constructor.
+     */
     public LabelSkin() {
-        font = currentTheme().getFont();
+        font = getThemeFont();
+        // Note: the following are overridden by "setDefaultStyles" in "install"
         color = defaultForegroundColor();
         disabledColor = Color.GRAY;
-        backgroundColor = null;
-        textDecoration = null;
-        horizontalAlignment = HorizontalAlignment.LEFT;
-        verticalAlignment = VerticalAlignment.TOP;
-        padding = Insets.NONE;
-        wrapText = false;
+    }
+
+    /**
+     * @return Our component cast to a {@link Label} object, for use internally.
+     */
+    private Label getLabel() {
+        return (Label) getComponent();
     }
 
     @Override
     public void install(final Component component) {
         super.install(component);
 
-        Label label = (Label) getComponent();
+        setDefaultStyles();
+
+        Label label = (Label) component;
         label.getLabelListeners().add(this);
     }
 
     @Override
     public int getPreferredWidth(final int height) {
-        Label label = (Label) getComponent();
+        Label label = getLabel();
         String text = label.getText();
 
         int preferredWidth = 0;
@@ -114,7 +117,7 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
 
     @Override
     public int getPreferredHeight(final int width) {
-        Label label = (Label) getComponent();
+        Label label = getLabel();
         String text = label.getText();
 
         float preferredHeight;
@@ -175,7 +178,7 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
 
     @Override
     public Dimensions getPreferredSize() {
-        Label label = (Label) getComponent();
+        Label label = getLabel();
         String text = label.getText();
 
         FontRenderContext fontRenderContext = Platform.getFontRenderContext();
@@ -248,9 +251,28 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
         return baseline;
     }
 
+    /**
+     * Internal method used by {@link #layout} to setup values for each individual line
+     * of text (assuming we're wrapping).
+     *
+     * @param text    The complete text of the label.
+     * @param start   Starting offset (inclusive) of the text for this line.
+     * @param end     The ending offset (exclusive) of the text for this line.
+     * @param fontRenderContext The context used for font measurement.
+     */
+    private void appendLine(final String text, final int start, final int end,
+        final FontRenderContext fontRenderContext) {
+        StringCharacterIterator line = new StringCharacterIterator(text, start, end, start);
+        GlyphVector glyphVector = font.createGlyphVector(fontRenderContext, line);
+        glyphVectors.add(glyphVector);
+
+        Rectangle2D textBounds = glyphVector.getLogicalBounds();
+        textHeight += textBounds.getHeight();
+    }
+
     @Override
     public void layout() {
-        Label label = (Label) getComponent();
+        Label label = getLabel();
         String text = label.getText();
 
         glyphVectors = new ArrayList<>();
@@ -313,19 +335,9 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
         }
     }
 
-    private void appendLine(final String text, final int start, final int end,
-        final FontRenderContext fontRenderContext) {
-        StringCharacterIterator line = new StringCharacterIterator(text, start, end, start);
-        GlyphVector glyphVector = font.createGlyphVector(fontRenderContext, line);
-        glyphVectors.add(glyphVector);
-
-        Rectangle2D textBounds = glyphVector.getLogicalBounds();
-        textHeight += textBounds.getHeight();
-    }
-
     @Override
     public void paint(final Graphics2D graphics) {
-        Label label = (Label) this.getComponent();
+        Label label = getLabel();
 
         int width = getWidth();
         int height = getHeight();
@@ -446,35 +458,12 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
     /**
      * Sets the font used in rendering the Label's text.
      *
-     * @param font The new font to use to render the text.
+     * @param fontValue The new font to use to render the text of a type supported
+     * by {@link fontFromObject(Object)}.
      */
-    public void setFont(final Font font) {
-        Utils.checkNull(font, "font");
-
-        this.font = font;
+    public void setFont(final Object fontValue) {
+        font = fontFromObject(fontValue);
         invalidateComponent();
-    }
-
-    /**
-     * Sets the font used in rendering the Label's text.
-     *
-     * @param font A {@linkplain ComponentSkin#decodeFont(String) font specification}.
-     */
-    public final void setFont(final String font) {
-        Utils.checkNull(font, "font");
-
-        setFont(decodeFont(font));
-    }
-
-    /**
-     * Sets the font used in rendering the Label's text.
-     *
-     * @param font A dictionary {@linkplain Theme#deriveFont describing a font}.
-     */
-    public final void setFont(final Dictionary<String, ?> font) {
-        Utils.checkNull(font, "font");
-
-        setFont(Theme.deriveFont(font));
     }
 
     /**
@@ -487,25 +476,12 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
     /**
      * Sets the foreground color of the text of the label.
      *
-     * @param color The new foreground color for the label text.
+     * @param colorValue The new foreground color for the label text, which can
+     * be interpreted by {@link colorFromObject(Object)}.
      */
-    public void setColor(final Color color) {
-        Utils.checkNull(color, "color");
-
-        this.color = color;
+    public void setColor(final Object colorValue) {
+        color = colorFromObject(colorValue, "color");
         repaintComponent();
-    }
-
-    /**
-     * Sets the foreground color of the text of the label.
-     *
-     * @param color Any of the {@linkplain GraphicsUtilities#decodeColor color
-     * values recognized by Pivot}.
-     */
-    public final void setColor(final String color) {
-        Utils.checkNull(color, "color");
-
-        setColor(GraphicsUtilities.decodeColor(color, "color"));
     }
 
     /**
@@ -518,25 +494,12 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
     /**
      * Sets the foreground color of the text of the label when disabled.
      *
-     * @param color The new disabled text color.
+     * @param colorValue The new disabled text color, which can be interpreted by
+     * {@link colorFromObject(Object)}.
      */
-    public void setDisabledColor(final Color color) {
-        Utils.checkNull(color, "disabledColor");
-
-        this.disabledColor = color;
+    public void setDisabledColor(final Object colorValue) {
+        disabledColor = colorFromObject(colorValue, "disabledColor");
         repaintComponent();
-    }
-
-    /**
-     * Sets the foreground color of the text of the label when disabled.
-     *
-     * @param color Any of the {@linkplain GraphicsUtilities#decodeColor color
-     * values recognized by Pivot}.
-     */
-    public final void setDisabledColor(final String color) {
-        Utils.checkNull(color, "disabledColor");
-
-        setDisabledColor(GraphicsUtilities.decodeColor(color, "disabledColor"));
     }
 
     /**
@@ -549,126 +512,91 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
     /**
      * Sets the background color of the label.
      *
-     * @param backgroundColor The new background color for the label
-     * (can be {@code null} to let the parent background show through).
+     * @param colorValue The new background color for the label
+     * (can be {@code null} to let the parent background show through), or
+     * a value that can be interpreted by {@link colorFromObject(Object)}.
      */
-    public void setBackgroundColor(final Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public final void setBackgroundColor(final Object colorValue) {
+        backgroundColor = colorFromObject(colorValue, "backgroundColor", true);
         repaintComponent();
     }
 
     /**
-     * Sets the background color of the label.
-     *
-     * @param backgroundColor Any of the
-     * {@linkplain GraphicsUtilities#decodeColor color values recognized by
-     * Pivot}.
+     * @return The current text decoration (strikethrough, underline, etc) for the label
+     * (can be {@code null}).
      */
-    public final void setBackgroundColor(final String backgroundColor) {
-        setBackgroundColor(GraphicsUtilities.decodeColor(backgroundColor, "backgroundColor"));
-    }
-
     public TextDecoration getTextDecoration() {
         return textDecoration;
     }
 
-    public void setTextDecoration(final TextDecoration textDecoration) {
-        this.textDecoration = textDecoration;
-        repaintComponent();
-    }
-
-    public HorizontalAlignment getHorizontalAlignment() {
-        return horizontalAlignment;
-    }
-
-    public void setHorizontalAlignment(final HorizontalAlignment horizontalAlignment) {
-        Utils.checkNull(horizontalAlignment, "horizontalAlignment");
-
-        this.horizontalAlignment = horizontalAlignment;
-        repaintComponent();
-    }
-
-    public VerticalAlignment getVerticalAlignment() {
-        return verticalAlignment;
-    }
-
-    public void setVerticalAlignment(final VerticalAlignment verticalAlignment) {
-        Utils.checkNull(verticalAlignment, "verticalAlignment");
-
-        this.verticalAlignment = verticalAlignment;
+    /**
+     * Sets the text decoration (eg, strikethrough, underline, etc) for this label.
+     *
+     * @param textDecorationValue The new setting (can be {@code null} to cancel
+     * any decoration for the label).
+     */
+    public void setTextDecoration(final TextDecoration textDecorationValue) {
+        textDecoration = textDecorationValue;
         repaintComponent();
     }
 
     /**
-     * @return The amount of space to leave between the edge of the Label and
-     * its text.
+     * @return The horizontal alignment for the label to use when drawing the text
+     * inside the label's total width.
+     */
+    public HorizontalAlignment getHorizontalAlignment() {
+        return horizontalAlignment;
+    }
+
+    /**
+     * Set the horizontal alignment for the text inside the label's total width.
+     *
+     * @param horizontalAlignmentValue The new setting.
+     * @throws IllegalArgumentException if the value is {@code null}.
+     */
+    public void setHorizontalAlignment(final HorizontalAlignment horizontalAlignmentValue) {
+        Utils.checkNull(horizontalAlignmentValue, "horizontalAlignment");
+
+        horizontalAlignment = horizontalAlignmentValue;
+        repaintComponent();
+    }
+
+    /**
+     * @return The vertical alignment used to draw the text inside the label's total height.
+     */
+    public VerticalAlignment getVerticalAlignment() {
+        return verticalAlignment;
+    }
+
+    /**
+     * Set the new vertical alignment value for the text inside the label's height.
+     *
+     * @param verticalAlignmentValue The new setting.
+     * @throws IllegalArgumentException if the new value is {@code null}.
+     */
+    public void setVerticalAlignment(final VerticalAlignment verticalAlignmentValue) {
+        Utils.checkNull(verticalAlignmentValue, "verticalAlignment");
+
+        verticalAlignment = verticalAlignmentValue;
+        repaintComponent();
+    }
+
+    /**
+     * @return The amount of space to leave between the edge of the Label and its text.
      */
     public Insets getPadding() {
         return padding;
     }
 
     /**
-     * Sets the amount of space to leave between the edge of the Label and its
-     * text.
+     * Sets the amount of space to leave between the edge of the Label and its text.
      *
-     * @param padding The new value of the padding for each edge.
+     * @param paddingValues The new value of the padding for each edge, of any
+     * type supported by {@link Insets#fromObject}.
      */
-    public void setPadding(final Insets padding) {
-        Utils.checkNull(padding, "padding");
-
-        this.padding = padding;
+    public void setPadding(final Object paddingValues) {
+        padding = Insets.fromObject(paddingValues, "padding");
         invalidateComponent();
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Label and its
-     * text.
-     *
-     * @param padding A dictionary with keys in the set {top, left, bottom, right}.
-     */
-    public final void setPadding(final Dictionary<String, ?> padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Label and its
-     * text.
-     *
-     * @param padding A sequence with values in the order [top, left, bottom, right].
-     */
-    public final void setPadding(final Sequence<?> padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Label and its
-     * text, uniformly on all four edges.
-     *
-     * @param padding The new single padding value to use for all edges.
-     */
-    public final void setPadding(final int padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Label and its
-     * text, uniformly on all four edges.
-     *
-     * @param padding The new (integer) padding value to use for all edges.
-     */
-    public final void setPadding(final Number padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Label and its
-     * text.
-     *
-     * @param padding A string containing an integer or a JSON dictionary with
-     * keys left, top, bottom, and/or right.
-     */
-    public final void setPadding(final String padding) {
-        setPadding(Insets.decode(padding));
     }
 
     /**
@@ -686,10 +614,10 @@ public class LabelSkin extends ComponentSkin implements LabelListener {
      * <p>Also note that newline characters (if wrapping is set true) will cause a
      * hard line break.
      *
-     * @param wrapText Whether or not to wrap the Label's text within its width.
+     * @param wrapTextValue Whether or not to wrap the Label's text within its width.
      */
-    public void setWrapText(final boolean wrapText) {
-        this.wrapText = wrapText;
+    public void setWrapText(final boolean wrapTextValue) {
+        wrapText = wrapTextValue;
         invalidateComponent();
     }
 

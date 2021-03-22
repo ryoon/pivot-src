@@ -27,8 +27,6 @@ import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
-import org.apache.pivot.collections.Dictionary;
-import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.util.Utils;
 import org.apache.pivot.wtk.Border;
 import org.apache.pivot.wtk.BorderListener;
@@ -38,7 +36,6 @@ import org.apache.pivot.wtk.Dimensions;
 import org.apache.pivot.wtk.GraphicsUtilities;
 import org.apache.pivot.wtk.Insets;
 import org.apache.pivot.wtk.Platform;
-import org.apache.pivot.wtk.Theme;
 
 /**
  * Border skin. <p> TODO Add styles to support different border styles (e.g.
@@ -54,25 +51,30 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     private Insets padding;
     private CornerRadii cornerRadii;
 
+    /**
+     * Default constructor.
+     */
     public BorderSkin() {
         font = getThemeFont().deriveFont(Font.BOLD);
 
+        // Note: these get overridden by "setDefaultStyles" in "install"
         setBackgroundColor(defaultBackgroundColor());
         color = defaultForegroundColor();
         titleColor = defaultForegroundColor();
-
-        thickness = 1;
-        padding = Insets.NONE;
-        cornerRadii = CornerRadii.NONE;
     }
 
+    /**
+     * @return Our component, cast to a {@link Border} object, for use internally.
+     */
     private Border getBorder() {
         return (Border) getComponent();
     }
 
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
+
+        setDefaultStyles();
 
         Border border = (Border) component;
         border.getBorderListeners().add(this);
@@ -80,16 +82,24 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
         calculateTitleSize();
     }
 
+    /**
+     * @return The total padding width plus twice the thickness, for use in
+     * width calculations.
+     */
     private int paddingThicknessWidth() {
         return padding.getWidth() + (thickness * 2);
     }
 
+    /**
+     * @return The total padding height plus top and bottom thickenss, for use in
+     * height calculations.
+     */
     private int paddingThicknessHeight() {
         return padding.getHeight() + (topThickness + thickness);
     }
 
     @Override
-    public int getPreferredWidth(int height) {
+    public int getPreferredWidth(final int trialHeight) {
         int preferredWidth = 0;
 
         Border border = getBorder();
@@ -103,7 +113,7 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
 
         Component content = border.getContent();
         if (content != null) {
-            int heightUpdated = height;
+            int heightUpdated = trialHeight;
             if (heightUpdated != -1) {
                 heightUpdated = Math.max(heightUpdated - paddingThicknessHeight(), 0);
             }
@@ -117,14 +127,14 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     }
 
     @Override
-    public int getPreferredHeight(int width) {
+    public int getPreferredHeight(final int trialWidth) {
         int preferredHeight = 0;
 
         Border border = getBorder();
 
         Component content = border.getContent();
         if (content != null) {
-            int widthUpdated = width;
+            int widthUpdated = trialWidth;
             if (widthUpdated != -1) {
                 widthUpdated = Math.max(widthUpdated - paddingThicknessWidth(), 0);
             }
@@ -165,7 +175,7 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     }
 
     @Override
-    public int getBaseline(int width, int height) {
+    public int getBaseline(final int trialWidth, final int trialHeight) {
         int baseline = -1;
 
         Border border = getBorder();
@@ -173,8 +183,8 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
         // Delegate baseline calculation to the content component
         Component content = border.getContent();
         if (content != null) {
-            int clientWidth = Math.max(width - paddingThicknessWidth(), 0);
-            int clientHeight = Math.max(height - paddingThicknessHeight(), 0);
+            int clientWidth = Math.max(trialWidth - paddingThicknessWidth(), 0);
+            int clientHeight = Math.max(trialHeight - paddingThicknessHeight(), 0);
 
             baseline = content.getBaseline(clientWidth, clientHeight);
         }
@@ -206,7 +216,7 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     }
 
     @Override
-    public void paint(Graphics2D graphics) {
+    public void paint(final Graphics2D graphics) {
         Border border = getBorder();
 
         String title = border.getTitle();
@@ -282,7 +292,6 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
      * <p> Caches the {@link #topThickness} and {@link #titleAscent} values for painting.
      */
     private void calculateTitleSize() {
-        // Redo the top thickness calculation when the title changes
         topThickness = thickness;
         titleAscent = 0.0f;
 
@@ -305,32 +314,13 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     /**
      * Sets the font used in rendering the title.
      *
-     * @param font The new font to use for the border title.
+     * @param fontValue The new font to use for the border title of a type supported by
+     * {@link fontFromObject(Object)}.
      */
-    public void setFont(Font font) {
-        Utils.checkNull(font, "font");
-
-        this.font = font;
+    public void setFont(final Object fontValue) {
+        font = fontFromObject(fontValue);
         calculateTitleSize();
         invalidateComponent();
-    }
-
-    /**
-     * Sets the font used in rendering the title.
-     *
-     * @param font A {@linkplain ComponentSkin#decodeFont(String) font specification}.
-     */
-    public final void setFont(String font) {
-        setFont(decodeFont(font));
-    }
-
-    /**
-     * Sets the font used in rendering the title.
-     *
-     * @param font A dictionary {@linkplain Theme#deriveFont describing a font}.
-     */
-    public final void setFont(Dictionary<String, ?> font) {
-        setFont(Theme.deriveFont(font));
     }
 
     /**
@@ -343,38 +333,28 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     /**
      * Sets the color of the border.
      *
-     * @param color The new color for the border.
+     * @param colorValue The new color for the border.
      */
-    public void setColor(Color color) {
-        Utils.checkNull(color, "color");
-
-        this.color = color;
+    public void setColor(final Object colorValue) {
+        color = colorFromObject(colorValue, "color");
         repaintComponent();
     }
 
     /**
-     * Sets the color of the border.
-     *
-     * @param color Any of the {@linkplain GraphicsUtilities#decodeColor color
-     * values recognized by Pivot}.
+     * @return The color for the title on the border.
      */
-    public final void setColor(String color) {
-        setColor(GraphicsUtilities.decodeColor(color, "color"));
-    }
-
     public Color getTitleColor() {
         return titleColor;
     }
 
-    public void setTitleColor(Color titleColor) {
-        Utils.checkNull(titleColor, "titleColor");
-
-        this.titleColor = titleColor;
+    /**
+     * Sets the color for the border title.
+     *
+     * @param colorValue The new color for the title.
+     */
+    public void setTitleColor(final Object colorValue) {
+        titleColor = colorFromObject(colorValue, "titleColor");
         repaintComponent();
-    }
-
-    public final void setTitleColor(String titleColor) {
-        setTitleColor(GraphicsUtilities.decodeColor(titleColor, "titleColor"));
     }
 
     /**
@@ -387,99 +367,43 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     /**
      * Sets the thickness of the border.
      *
-     * @param thickness The border thickness (in pixels).
+     * @param thicknessValue The border thickness (in pixels).
      */
-    public void setThickness(int thickness) {
-        Utils.checkNonNegative(thickness, "thickness");
+    public void setThickness(final int thicknessValue) {
+        Utils.checkNonNegative(thicknessValue, "thickness");
 
-        this.thickness = thickness;
-
+        thickness = thicknessValue;
         calculateTitleSize();
-
         invalidateComponent();
     }
 
     /**
      * Sets the thickness of the border.
      *
-     * @param thickness The border thickness (integer value in pixels).
+     * @param thicknessValue The border thickness (integer value in pixels).
      */
-    public void setThickness(Number thickness) {
-        Utils.checkNull(thickness, "thickness");
+    public void setThickness(final Number thicknessValue) {
+        Utils.checkNull(thicknessValue, "thickness");
 
-        setThickness(thickness.intValue());
+        setThickness(thicknessValue.intValue());
     }
 
     /**
-     * @return The amount of space between the edge of the Border and its
-     * content.
+     * @return The amount of space between the edge of the Border and its content.
      */
     public Insets getPadding() {
         return padding;
     }
 
     /**
-     * Sets the amount of space to leave between the edge of the Border and its
-     * content.
+     * Sets the amount of space to leave between the edge of the Border and its content.
      *
-     * @param padding The set of padding values.
+     * @param paddingValues The set of padding values of any type supported by
+     * {@link Insets#fromObject}.
      */
-    public void setPadding(Insets padding) {
-        Utils.checkNull(padding, "padding");
-
-        this.padding = padding;
+    public void setPadding(final Object paddingValues) {
+        padding = Insets.fromObject(paddingValues, "padding");
         invalidateComponent();
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Border and its
-     * content.
-     *
-     * @param padding A dictionary with keys in the set {top, left, bottom, right}.
-     */
-    public final void setPadding(Dictionary<String, ?> padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Border and its
-     * content.
-     *
-     * @param padding A sequence with values in the order [top, left, bottom, right].
-     */
-    public final void setPadding(Sequence<?> padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Border and its
-     * content, uniformly on all four edges.
-     *
-     * @param padding The padding value (in pixels) to use for all four sides.
-     */
-    public final void setPadding(int padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Border and its
-     * content, uniformly on all four edges.
-     *
-     * @param padding The padding value (integer value in pixels) to use for all four sides.
-     */
-    public void setPadding(Number padding) {
-        setPadding(new Insets(padding));
-    }
-
-    /**
-     * Sets the amount of space to leave between the edge of the Border and its
-     * content.
-     *
-     * @param padding A string containing an integer or a JSON dictionary with
-     * keys left, top, bottom, and/or right.
-     */
-    public final void setPadding(String padding) {
-        setPadding(Insets.decode(padding));
     }
 
     /**
@@ -493,63 +417,23 @@ public class BorderSkin extends ContainerSkin implements BorderListener {
     /**
      * Sets the radii of the Border's corners.
      *
-     * @param cornerRadii The radii for each of the corners.
+     * @param cornerRadiiValues The radii for each of the corners of any type
+     * supported by {@link CornerRadii#fromObject}.
      */
-    public void setCornerRadii(CornerRadii cornerRadii) {
-        Utils.checkNull(cornerRadii, "cornerRadii");
-
-        this.cornerRadii = cornerRadii;
+    public void setCornerRadii(final Object cornerRadiiValues) {
+        cornerRadii = CornerRadii.fromObject(cornerRadiiValues);
         repaintComponent();
-    }
-
-    /**
-     * Sets the radii of the Border's corners.
-     *
-     * @param cornerRadii A Dictionary
-     * {@linkplain CornerRadii#CornerRadii(Dictionary) specifying the four corners}.
-     */
-    public final void setCornerRadii(Dictionary<String, ?> cornerRadii) {
-        setCornerRadii(new CornerRadii(cornerRadii));
-    }
-
-    /**
-     * Sets the radii of the Border's four corners to the same value.
-     *
-     * @param cornerRadii The integer value to set all four corners' radii.
-     */
-    public final void setCornerRadii(int cornerRadii) {
-        setCornerRadii(new CornerRadii(cornerRadii));
-    }
-
-    /**
-     * Sets the radii of the Border's four corners to the same value.
-     *
-     * @param cornerRadii The value for the radii (integer value in pixels).
-     */
-    public final void setCornerRadii(Number cornerRadii) {
-        setCornerRadii(new CornerRadii(cornerRadii));
-    }
-
-    /**
-     * Sets the radii of the Border's corners.
-     *
-     * @param cornerRadii A single integer value, or a JSON dictionary
-     * {@linkplain CornerRadii#CornerRadii(Dictionary) specifying the four corners}.
-     */
-    public final void setCornerRadii(String cornerRadii) {
-        setCornerRadii(CornerRadii.decode(cornerRadii));
     }
 
     // Border events
     @Override
-    public void titleChanged(Border border, String previousTitle) {
+    public void titleChanged(final Border border, final String previousTitle) {
         calculateTitleSize();
-
         invalidateComponent();
     }
 
     @Override
-    public void contentChanged(Border border, Component previousContent) {
+    public void contentChanged(final Border border, final Component previousContent) {
         invalidateComponent();
     }
 }
