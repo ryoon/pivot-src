@@ -221,25 +221,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      *
      * @param font The new font used to render the message label text.
      */
-    public final void setMessageFont(final Font font) {
-        messageLabel.putStyle(Style.font, font);
-    }
-
-    /**
-     * Sets the font used in rendering the message label's text.
-     *
-     * @param font A font specification.
-     */
-    public final void setMessageFont(final String font) {
-        messageLabel.putStyle(Style.font, font);
-    }
-
-    /**
-     * Sets the font used in rendering the message label's text.
-     *
-     * @param font A dictionary describing a font.
-     */
-    public final void setMessageFont(final Dictionary<String, ?> font) {
+    public final void setMessageFont(final Object font) {
         messageLabel.putStyle(Style.font, font);
     }
 
@@ -255,16 +237,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      *
      * @param color The new foreground color for the label text.
      */
-    public final void setMessageColor(final Color color) {
-        messageLabel.putStyle(Style.color, color);
-    }
-
-    /**
-     * Sets the foreground color of the text of the message label.
-     *
-     * @param color Any of the recognized color values.
-     */
-    public final void setMessageColor(final String color) {
+    public final void setMessageColor(final Object color) {
         messageLabel.putStyle(Style.color, color);
     }
 
@@ -281,16 +254,7 @@ public class TerraPromptSkin extends TerraSheetSkin implements PromptListener {
      * @param backgroundColor The new background color for the message label
      * (can be {@code null} to let the parent background show through).
      */
-    public final void setMessageBackgroundColor(final Color backgroundColor) {
-        messageLabel.putStyle(Style.backgroundColor, backgroundColor);
-    }
-
-    /**
-     * Sets the background color of the message label.
-     *
-     * @param backgroundColor Any of the recognized color values.
-     */
-    public final void setMessageBackgroundColor(final String backgroundColor) {
+    public final void setMessageBackgroundColor(final Object backgroundColor) {
         messageLabel.putStyle(Style.backgroundColor, backgroundColor);
     }
 
