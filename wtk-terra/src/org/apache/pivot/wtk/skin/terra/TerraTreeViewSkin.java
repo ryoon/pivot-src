@@ -1183,8 +1183,8 @@ public class TerraTreeViewSkin extends ComponentSkin implements TreeView.Skin, T
     }
 
     /**
-     * @return The bounding box defined by the specified node, or <tt>null</tt> if
-     * the node is not currently visible.
+     * @return The bounding box defined by the specified node, or {@code null}
+     * if the node is not currently visible.
      * @param nodeInfo The node information to search for.
      */
     protected final Bounds getNodeBounds(final NodeInfo nodeInfo) {
