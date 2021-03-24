@@ -74,13 +74,13 @@ public final class MacroReader extends Reader {
     }
 
     /**
-     * Add all the characters of the given string to the lookahead queue
-     * for reprocessing.
-     * @param str The string to be queued up again.
+     * Add all the characters of the given character sequence to the
+     * lookahead queue for reprocessing.
+     * @param seq The character sequence to be queued up again.
      */
-    private void queue(final String str) {
-        for (int i = 0; i < str.length(); i++) {
-            lookaheadQueue.add((int) str.charAt(i));
+    private void queue(final CharSequence seq) {
+        for (int i = 0; i < seq.length(); i++) {
+            lookaheadQueue.add((int) seq.charAt(i));
         }
     }
 
@@ -96,6 +96,7 @@ public final class MacroReader extends Reader {
         do {
             ch = getNextChar(true);
         } while (ch != -1 && Character.isWhitespace(ch));
+
         if (ch != -1) {
             buf.append((char) ch);
             while ((ch = getNextChar(true)) != -1
@@ -103,6 +104,7 @@ public final class MacroReader extends Reader {
                     || (buf.length() > 0 && Character.isUnicodeIdentifierPart(ch)))) {
                 buf.append((char) ch);
             }
+
             // Re-queue the character that terminated the word
             queue(ch);
         }
@@ -110,10 +112,6 @@ public final class MacroReader extends Reader {
     }
 
     private void skipToEol() throws IOException {
-        int ch;
-        do {
-            ch = getNextChar(true);
-        } while (ch != -1 && ch != '\n');
     }
 
     /**
@@ -131,82 +129,109 @@ public final class MacroReader extends Reader {
      */
     private int getNextChar(final boolean handleMacros) throws IOException {
         int ret = -1;
-        if (!lookaheadQueue.isEmpty()) {
-            ret = lookaheadQueue.poll().intValue();
+        Integer queuedChar = lookaheadQueue.poll();
+        if (queuedChar != null) {
+            ret = queuedChar.intValue();
         } else {
             ret = in.read();
         }
-        // Check for macro define or undefine (starting with "#"
-        // at the beginning of a line) (unless we're recursing to
-        // skip an unknown declaration keyword).
-        if (ret == '#' && lastCh == '\n' && handleMacros) {
-            String keyword = getNextWord();
-            if (keyword.equalsIgnoreCase("undef")) {
-                String name = getNextWord();
-                skipToEol();
-                variableMap.remove(name);
-                return getNextChar(true);
-            } else if (!keyword.equalsIgnoreCase("define")) {
-                // Basically ignore any commands we don't understand
-                // by simply queueing the text back to be read again
-                // but with the flag set to ignore this command (so
-                // we don't get into infinite recursion!)
-                queue(ret);
-                queue(keyword);
-                queue(' ');
-                return getNextChar(false);
-            }
-            // Define a macro
-            String name = getNextWord();
-            StringBuilder buf = new StringBuilder();
+
+        if (handleMacros) {
             int ch;
-            do {
-                ch = getNextChar(true);
-            } while (ch != -1 && Character.isWhitespace(ch) && ch != '\\' && ch != '\n');
-            queue(ch);
-            do {
-                while ((ch = getNextChar(true)) != -1 && ch != '\\' && ch != '\n') {
-                    buf.append((char) ch);
-                }
-                // Check for line continuation character
-                if (ch == '\\') {
-                    int next = getNextChar(true);
-                    if (next == '\n') {
-                        buf.append((char) next);
-                    } else {
-                        buf.append((char) ch);
-                        buf.append((char) next);
-                    }
-                }
-            } while (ch != -1 && ch != '\n');
-            variableMap.put(name, buf.toString());
-            return getNextChar(true);
-        } else if (ret == '$' && handleMacros) {
-            // Check for macro expansion
-            // Note: this allows for nested expansion
-            int next = getNextChar(true);
-            if (next == '{') {
-                // Beginning of macro expansion
-                StringBuilder buf = new StringBuilder();
-                int ch;
-                while ((ch = getNextChar(true)) != -1 && ch != '}') {
-                    buf.append((char) ch);
-                }
-                String expansion = variableMap.get(buf.toString());
-                if (expansion == null) {
+
+            // Check for macro define or undefine (starting with "#"
+            // at the beginning of a line) (unless we're recursing to
+            // skip an unknown declaration keyword).
+            if (ret == '#' && lastCh == '\n') {
+                String keyword = getNextWord();
+
+                if (keyword.equalsIgnoreCase("undef")) {
+                    String name = getNextWord();
+
+                    do {
+                        ch = getNextChar(false);
+                    } while (ch != -1 && ch != '\n');
+
+                    variableMap.remove(name);
+
+                    return getNextChar(true);
+                } else if (!keyword.equalsIgnoreCase("define")) {
+                    // Basically ignore any commands we don't understand
+                    // by simply queueing the text back to be read again
+                    // but with the flag set to ignore this command (so
+                    // we don't get into infinite recursion!)
+                    ch = getNextChar(false);
                     queue(ret);
-                    queue(next);
-                    queue(buf.toString());
+                    queue(keyword);
                     queue(ch);
-                    ret = getNextChar(false);
-                } else {
-                    queue(expansion);
-                    ret = getNextChar(true);
+
+                    return getNextChar(false);
                 }
-            } else {
-                queue(next);
+
+                // Define a macro
+                String name = getNextWord();
+                StringBuilder buf = new StringBuilder();
+
+                // Skip whitespace after the macro name
+                do {
+                    ch = getNextChar(true);
+                } while (ch != -1 && Character.isWhitespace(ch) && ch != '\\' && ch != '\n');
+
+                queue(ch);
+
+                do {
+                    while ((ch = getNextChar(true)) != -1 && ch != '\\' && ch != '\n') {
+                        buf.append((char) ch);
+                    }
+
+                    // Check for line continuation character
+                    if (ch == '\\') {
+                        int next = getNextChar(true);
+                        if (next == '\n') {
+                            buf.append((char) next);
+                        } else {
+                            buf.append((char) ch);
+                            buf.append((char) next);
+                        }
+                    }
+                } while (ch != -1 && ch != '\n');
+
+                variableMap.put(name, buf.toString());
+
+                return getNextChar(true);
+            } else if (ret == '$') {
+                // Check for macro expansion
+                // Note: this allows for nested expansion
+                int next = getNextChar(true);
+                if (next == '{') {
+                    StringBuilder buf = new StringBuilder();
+
+                    while ((ch = getNextChar(true)) != -1 && ch != '}') {
+                        buf.append((char) ch);
+                    }
+
+                    String expansion = variableMap.get(buf.toString());
+                    if (expansion == null) {
+                        // If the macro is undefined, then we put back the
+                        // original text to be read again, but without expansion
+                        queue(ret);
+                        queue(next);
+                        queue(buf);
+                        queue(ch);
+
+                        ret = getNextChar(false);
+                    } else {
+                        queue(expansion);
+
+                        // By allowing expansion here, we get recursive expansion
+                        ret = getNextChar(true);
+                    }
+                } else {
+                    queue(next);
+                }
             }
         }
+
         return (lastCh = ret);
     }
 
