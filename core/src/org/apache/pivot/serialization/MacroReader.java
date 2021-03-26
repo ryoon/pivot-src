@@ -111,9 +111,6 @@ public final class MacroReader extends Reader {
         return buf.toString();
     }
 
-    private void skipToEol() throws IOException {
-    }
-
     /**
      * Get the next character in the input stream, either from the
      * {@link #lookaheadQueue} if anything is queued, or by reading
