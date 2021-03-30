@@ -261,7 +261,9 @@ public final class Insets implements Serializable {
     public static Insets fromObject(final Object source, final String message) {
         Utils.checkNull(source, message);
 
-        if (source instanceof String) {
+        if (source instanceof Insets) {
+            return (Insets) source;
+        } else if (source instanceof String) {
             return decode((String) source);
         } else if (source instanceof Integer) {
             return new Insets((Integer) source);
