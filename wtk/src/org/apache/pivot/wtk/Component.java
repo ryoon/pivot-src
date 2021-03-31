@@ -94,7 +94,7 @@ public abstract class Component implements ConstrainedVisual {
          * <code>null</code> due to the use of BeanAdapter to set the the new
          * value. (BeanAdapter does not look up the previous value for
          * performance reasons)<br><br> This also means that the logic
-         * determining whether to fire the the event differs from other Pivot
+         * determining whether to fire the event differs from other Pivot
          * event firing code. The event will be fired each time this method is
          * executed, regardless of whether the new value differs from the old
          * value or not.<br><br> This behaviour may change in the future so
@@ -113,8 +113,8 @@ public abstract class Component implements ConstrainedVisual {
                 previousValue = styles.put(key, value);
                 componentStyleListeners.styleUpdated(Component.this, key, previousValue);
             } catch (PropertyNotFoundException exception) {
-                System.err.println("\"" + key + "\" is not a valid style for "
-                    + Component.this.getClass().getName());
+                System.err.println("\"" + key + "\" is not a valid style for an "
+                    + Component.this.getClass().getName() + " component");
             }
 
             return previousValue;
