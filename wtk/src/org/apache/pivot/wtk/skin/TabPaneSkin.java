@@ -26,16 +26,16 @@ import org.apache.pivot.wtk.TabPane;
  */
 public abstract class TabPaneSkin extends ContainerSkin implements TabPane.Skin {
 
-    protected BoxPane tabButtonBoxPane = new BoxPane();
+    protected BoxPane buttonBoxPane = new BoxPane();
 
     @Override
-    public boolean isVisible(int index) {
-        return tabButtonBoxPane.get(index).isVisible();
+    public boolean isVisible(final int index) {
+        return buttonBoxPane.get(index).isVisible();
     }
 
     @Override
-    public void setVisible(int index, boolean value) {
-        tabButtonBoxPane.get(index).setVisible(value);
+    public void setVisible(final int index, final boolean value) {
+        buttonBoxPane.get(index).setVisible(value);
     }
 
 }

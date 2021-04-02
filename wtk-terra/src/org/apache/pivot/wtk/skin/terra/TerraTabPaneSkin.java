@@ -25,7 +25,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.RoundRectangle2D;
 
 import org.apache.pivot.annotations.UnsupportedOperation;
-import org.apache.pivot.collections.Dictionary;
 import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.util.Utils;
 import org.apache.pivot.util.Vote;
@@ -75,8 +74,8 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     public class TabButton extends Button {
         private final Component tab;
 
-        public TabButton(Component tab) {
-            this.tab = tab;
+        public TabButton(final Component tabValue) {
+            tab = tabValue;
             super.setToggleButton(true);
 
             setSkin(new TabButtonSkin());
@@ -89,19 +88,19 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
         @Override
         @UnsupportedOperation
-        public void setButtonData(Object buttonData) {
+        public void setButtonData(final Object buttonData) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         public Button.DataRenderer getDataRenderer() {
-            TabPane tabPane = (TabPane) TerraTabPaneSkin.this.getComponent();
+            TabPane tabPane = getTabPane();
             return tabPane.getTabDataRenderer();
         }
 
         @Override
         @UnsupportedOperation
-        public void setDataRenderer(Button.DataRenderer dataRenderer) {
+        public void setDataRenderer(final Button.DataRenderer dataRenderer) {
             throw new UnsupportedOperationException();
         }
 
@@ -112,19 +111,19 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
         @Override
         @UnsupportedOperation
-        public void setTooltipText(String tooltipText) {
+        public void setTooltipText(final String tooltipText) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         @UnsupportedOperation
-        public void setToggleButton(boolean toggleButton) {
+        public void setToggleButton(final boolean toggleButton) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         @UnsupportedOperation
-        public void setTriState(boolean triState) {
+        public void setTriState(final boolean triState) {
             throw new UnsupportedOperationException();
         }
 
@@ -132,7 +131,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         public void press() {
             // If the tab pane is collapsible, toggle the button selection;
             // otherwise, select it
-            TabPane tabPane = (TabPane) TerraTabPaneSkin.this.getComponent();
+            TabPane tabPane = getTabPane();
             setSelected(tabPane.isCollapsible() ? !isSelected() : true);
             super.press();
         }
@@ -143,22 +142,26 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
      * constraints, because it will never be called to use them.
      */
     public class TabButtonSkin extends ButtonSkin {
+        private TabButton getTabButton() {
+            return (TabButton) getComponent();
+        }
+
         @Override
-        public int getPreferredWidth(int height) {
+        public int getPreferredWidth(final int height) {
             Dimensions preferredSize = getPreferredSize();
             return preferredSize.width;
         }
 
         @Override
-        public int getPreferredHeight(int width) {
+        public int getPreferredHeight(final int width) {
             Dimensions preferredSize = getPreferredSize();
             return preferredSize.height;
         }
 
         @Override
         public Dimensions getPreferredSize() {
-            TabButton tabButton = (TabButton) getComponent();
-            TabPane tabPane = (TabPane) TerraTabPaneSkin.this.getComponent();
+            TabButton tabButton = getTabButton();
+            TabPane tabPane = getTabPane();
 
             Button.DataRenderer dataRenderer = tabButton.getDataRenderer();
             dataRenderer.render(tabButton.getButtonData(), tabButton, false);
@@ -167,13 +170,11 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
             int preferredWidth = 0;
             int preferredHeight = 0;
+
             switch (tabOrientation) {
                 case HORIZONTAL:
-                    preferredWidth = preferredContentSize.width + buttonPadding.left
-                        + buttonPadding.right + 2;
-
-                    preferredHeight = preferredContentSize.height + buttonPadding.top
-                        + buttonPadding.bottom + 2;
+                    preferredWidth = preferredContentSize.width + buttonPadding.getWidth() + 2;
+                    preferredHeight = preferredContentSize.height + buttonPadding.getHeight() + 2;
 
                     if (tabPane.isCloseable() && tabButton.isSelected()) {
                         preferredWidth += CLOSE_TRIGGER_SIZE + buttonSpacing;
@@ -182,11 +183,8 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                     break;
 
                 case VERTICAL:
-                    preferredWidth = preferredContentSize.height + buttonPadding.top
-                        + buttonPadding.bottom + 2;
-
-                    preferredHeight = preferredContentSize.width + buttonPadding.left
-                        + buttonPadding.right + 2;
+                    preferredWidth = preferredContentSize.height + buttonPadding.getHeight() + 2;
+                    preferredHeight = preferredContentSize.width + buttonPadding.getWidth() + 2;
 
                     if (tabPane.isCloseable() && tabButton.isSelected()) {
                         preferredHeight += CLOSE_TRIGGER_SIZE + buttonSpacing;
@@ -203,14 +201,14 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         }
 
         @Override
-        public int getBaseline(int width, int height) {
-            TabButton tabButton = (TabButton) getComponent();
+        public int getBaseline(final int width, final int height) {
+            TabButton tabButton = getTabButton();
 
             Button.DataRenderer dataRenderer = tabButton.getDataRenderer();
             dataRenderer.render(tabButton.getButtonData(), tabButton, false);
 
-            int clientWidth = Math.max(width - (buttonPadding.left + buttonPadding.right + 2), 0);
-            int clientHeight = Math.max(height - (buttonPadding.top + buttonPadding.bottom + 2), 0);
+            int clientWidth = Math.max(width - (buttonPadding.getWidth() + 2), 0);
+            int clientHeight = Math.max(height - (buttonPadding.getHeight() + 2), 0);
 
             int baseline = dataRenderer.getBaseline(clientWidth, clientHeight);
 
@@ -222,9 +220,9 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         }
 
         @Override
-        public void paint(Graphics2D graphics) {
-            TabButton tabButton = (TabButton) getComponent();
-            TabPane tabPane = (TabPane) TerraTabPaneSkin.this.getComponent();
+        public void paint(final Graphics2D graphics) {
+            TabButton tabButton = getTabButton();
+            TabPane tabPane = getTabPane();
 
             boolean active = (selectionChangeTransition != null && selectionChangeTransition.getTab() == tabButton.tab);
 
@@ -399,11 +397,12 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         }
 
         @Override
-        public boolean mouseClick(Component component, Mouse.Button button, int x, int y, int count) {
+        public boolean mouseClick(final Component component, final Mouse.Button button,
+                final int x, final int y, final int count) {
             boolean consumed = super.mouseClick(component, button, x, y, count);
 
-            TabButton tabButton = (TabButton) getComponent();
-            TabPane tabPane = (TabPane) TerraTabPaneSkin.this.getComponent();
+            TabButton tabButton = getTabButton();
+            TabPane tabPane = getTabPane();
 
             if (tabPane.isCloseable() && tabButton.isSelected()
                 && getCloseTriggerBounds().contains(x, y)) {
@@ -428,7 +427,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         }
 
         @Override
-        public void stateChanged(Button button, Button.State previousState) {
+        public void stateChanged(final Button button, final Button.State previousState) {
             super.stateChanged(button, previousState);
             invalidateComponent();
         }
@@ -467,15 +466,15 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
         private Easing easing = new Quadratic();
 
-        public SelectionChangeTransition(int index, boolean expand) {
+        public SelectionChangeTransition(final int indexValue, final boolean expandValue) {
             super(selectionChangeDuration, selectionChangeRate, false);
 
-            this.index = index;
-            this.expand = expand;
+            index = indexValue;
+            expand = expandValue;
         }
 
         public Component getTab() {
-            TabPane tabPane = (TabPane) getComponent();
+            TabPane tabPane = getTabPane();
             return tabPane.getTabs().get(index);
         }
 
@@ -494,8 +493,8 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         }
 
         @Override
-        public void start(TransitionListener transitionListener) {
-            TabPane tabPane = (TabPane) getComponent();
+        public void start(final TransitionListener transitionListener) {
+            TabPane tabPane = getTabPane();
 
             if (expand) {
                 getTab().setVisible(true);
@@ -509,7 +508,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
         @Override
         public void stop() {
-            TabPane tabPane = (TabPane) getComponent();
+            TabPane tabPane = getTabPane();
 
             if (!expand) {
                 getTab().setVisible(false);
@@ -527,7 +526,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         }
     }
 
-    private Panorama tabButtonPanorama = new Panorama();
+    private Panorama buttonPanorama = new Panorama();
     private ButtonGroup tabButtonGroup = new ButtonGroup();
 
     private Color activeTabColor;
@@ -555,10 +554,10 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
     private ComponentStateListener tabStateListener = new ComponentStateListener() {
         @Override
-        public void enabledChanged(Component component) {
-            TabPane tabPane = (TabPane) getComponent();
+        public void enabledChanged(final Component component) {
+            TabPane tabPane = getTabPane();
             int i = tabPane.getTabs().indexOf(component);
-            tabButtonBoxPane.get(i).setEnabled(component.isEnabled());
+            buttonBoxPane.get(i).setEnabled(component.isEnabled());
         }
     };
 
@@ -583,19 +582,19 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         activeButtonBevelColor = TerraTheme.brighten(activeTabColor);
         inactiveButtonBevelColor = TerraTheme.brighten(inactiveTabColor);
 
-        tabButtonBoxPane.putStyle(Style.fill, true);
+        buttonBoxPane.putStyle(Style.fill, true);
 
-        tabButtonPanorama.putStyle(Style.buttonBackgroundColor, borderColor);
-        tabButtonPanorama.putStyle(Style.buttonPadding, 6);
-        tabButtonPanorama.setView(tabButtonBoxPane);
+        buttonPanorama.putStyle(Style.buttonBackgroundColor, borderColor);
+        buttonPanorama.putStyle(Style.buttonPadding, 6);
+        buttonPanorama.setView(buttonBoxPane);
 
         tabButtonGroup.getButtonGroupListeners().add(new ButtonGroupListener() {
             @Override
-            public void selectionChanged(ButtonGroup buttonGroup, Button previousSelection) {
+            public void selectionChanged(final ButtonGroup buttonGroup, final Button previousSelection) {
                 Button button = tabButtonGroup.getSelection();
-                int index = (button == null) ? -1 : tabButtonBoxPane.indexOf(button);
+                int index = (button == null) ? -1 : buttonBoxPane.indexOf(button);
 
-                TabPane tabPane = (TabPane) getComponent();
+                TabPane tabPane = getTabPane();
                 tabPane.setSelectedIndex(index);
             }
         });
@@ -603,8 +602,12 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         setButtonSpacing(2);
     }
 
+    private TabPane getTabPane() {
+        return (TabPane) getComponent();
+    }
+
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         TabPane tabPane = (TabPane) component;
@@ -615,37 +618,53 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         tabPane.getTabPaneAttributeListeners().add(this);
 
         // Add the tab button container
-        tabPane.add(tabButtonPanorama);
+        tabPane.add(buttonPanorama);
+    }
+
+    /**
+     * @return The full padding width, which includes the actual padding plus
+     * two pixels for the border lines.
+     */
+    private int fullPaddingWidth() {
+        return padding.getWidth() + 2;
+    }
+
+    /**
+     * @return The full padding height, which includes the actual padding plus
+     * two pixels for the border lines.
+     */
+    private int fullPaddingHeight() {
+        return padding.getHeight() + 2;
     }
 
     @Override
-    public int getPreferredWidth(int height) {
+    public int getPreferredWidth(final int height) {
         int preferredWidth = 0;
+        int heightValue = height;
 
-        TabPane tabPane = (TabPane) getComponent();
+        TabPane tabPane = getTabPane();
 
         Component selectedTab = tabPane.getSelectedTab();
         Component corner = tabPane.getCorner();
 
         switch (tabOrientation) {
             case HORIZONTAL:
-                if (height != -1) {
+                if (heightValue != -1) {
                     if (corner != null) {
-                        height = Math.max(
-                            height
+                        heightValue = Math.max(
+                            heightValue
                                 - Math.max(corner.getPreferredHeight(-1),
-                                    Math.max(tabButtonPanorama.getPreferredHeight(-1) - 1, 0)), 0);
+                                    Math.max(buttonPanorama.getPreferredHeight(-1) - 1, 0)), 0);
                     } else {
-                        height = Math.max(height - (tabButtonPanorama.getPreferredHeight(-1) - 1),
-                            0);
+                        heightValue = Math.max(heightValue - (buttonPanorama.getPreferredHeight(-1) - 1), 0);
                     }
 
-                    height = Math.max(height - (padding.top + padding.bottom + 2), 0);
+                    heightValue = Math.max(heightValue - fullPaddingHeight(), 0);
                 }
 
-                preferredWidth = getPreferredTabWidth(height) + (padding.left + padding.right + 2);
+                preferredWidth = getPreferredTabWidth(heightValue) + fullPaddingWidth();
 
-                int buttonAreaPreferredWidth = tabButtonPanorama.getPreferredWidth(-1);
+                int buttonAreaPreferredWidth = buttonPanorama.getPreferredWidth(-1);
                 if (corner != null) {
                     buttonAreaPreferredWidth += corner.getPreferredWidth(-1);
                 }
@@ -655,14 +674,14 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                 break;
 
             case VERTICAL:
-                if (height != -1) {
-                    height = Math.max(height - (padding.top + padding.bottom + 2), 0);
+                if (heightValue != -1) {
+                    heightValue = Math.max(heightValue - fullPaddingHeight(), 0);
                 }
 
                 if (selectedTab == null && selectionChangeTransition == null) {
                     preferredWidth = 1;
                 } else {
-                    preferredWidth = getPreferredTabWidth(height) + (padding.left + padding.right);
+                    preferredWidth = getPreferredTabWidth(heightValue) + padding.getWidth();
 
                     if (selectionChangeTransition != null) {
                         float scale = selectionChangeTransition.getScale();
@@ -674,9 +693,9 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
                 if (corner != null) {
                     preferredWidth += Math.max(corner.getPreferredWidth(-1),
-                        Math.max(tabButtonPanorama.getPreferredWidth(-1) - 1, 0));
+                        Math.max(buttonPanorama.getPreferredWidth(-1) - 1, 0));
                 } else {
-                    preferredWidth += Math.max(tabButtonPanorama.getPreferredWidth(-1) - 1, 0);
+                    preferredWidth += Math.max(buttonPanorama.getPreferredWidth(-1) - 1, 0);
                 }
 
                 break;
@@ -689,24 +708,25 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public int getPreferredHeight(int width) {
+    public int getPreferredHeight(final int width) {
         int preferredHeight = 0;
+        int widthValue = width;
 
-        TabPane tabPane = (TabPane) getComponent();
+        TabPane tabPane = getTabPane();
 
         Component selectedTab = tabPane.getSelectedTab();
         Component corner = tabPane.getCorner();
 
         switch (tabOrientation) {
             case HORIZONTAL:
-                if (width != -1) {
-                    width = Math.max(width - (padding.left + padding.right + 2), 0);
+                if (widthValue != -1) {
+                    widthValue = Math.max(widthValue - fullPaddingWidth(), 0);
                 }
 
                 if (selectedTab == null && selectionChangeTransition == null) {
                     preferredHeight = 1;
                 } else {
-                    preferredHeight = getPreferredTabHeight(width) + (padding.top + padding.bottom);
+                    preferredHeight = getPreferredTabHeight(widthValue) + padding.getHeight();
 
                     if (selectionChangeTransition != null) {
                         float scale = selectionChangeTransition.getScale();
@@ -718,30 +738,30 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
                 if (corner != null) {
                     preferredHeight += Math.max(corner.getPreferredHeight(-1),
-                        Math.max(tabButtonPanorama.getPreferredHeight(-1) - 1, 0));
+                        Math.max(buttonPanorama.getPreferredHeight(-1) - 1, 0));
                 } else {
-                    preferredHeight += Math.max(tabButtonPanorama.getPreferredHeight(-1) - 1, 0);
+                    preferredHeight += Math.max(buttonPanorama.getPreferredHeight(-1) - 1, 0);
                 }
 
                 break;
 
             case VERTICAL:
-                if (width != -1) {
+                if (widthValue != -1) {
                     if (corner != null) {
-                        width = Math.max(
-                            width
+                        widthValue = Math.max(
+                            widthValue
                                 - Math.max(corner.getPreferredWidth(-1),
-                                    Math.max(tabButtonPanorama.getPreferredWidth(-1) - 1, 0)), 0);
+                                    Math.max(buttonPanorama.getPreferredWidth(-1) - 1, 0)), 0);
                     } else {
-                        width = Math.max(width - (tabButtonPanorama.getPreferredWidth(-1) - 1), 0);
+                        widthValue = Math.max(widthValue - (buttonPanorama.getPreferredWidth(-1) - 1), 0);
                     }
 
-                    width = Math.max(width - (padding.left + padding.right + 2), 0);
+                    widthValue = Math.max(widthValue - fullPaddingWidth(), 0);
                 }
 
-                preferredHeight = getPreferredTabHeight(width) + (padding.top + padding.bottom + 2);
+                preferredHeight = getPreferredTabHeight(widthValue) + fullPaddingHeight();
 
-                int buttonAreaPreferredHeight = tabButtonPanorama.getPreferredHeight(-1);
+                int buttonAreaPreferredHeight = buttonPanorama.getPreferredHeight(-1);
                 if (corner != null) {
                     buttonAreaPreferredHeight += corner.getPreferredHeight(-1);
                 }
@@ -759,7 +779,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
     @Override
     public Dimensions getPreferredSize() {
-        TabPane tabPane = (TabPane) getComponent();
+        TabPane tabPane = getTabPane();
 
         int preferredWidth;
         int preferredHeight;
@@ -770,12 +790,12 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         switch (tabOrientation) {
             case HORIZONTAL:
                 if (selectedTab == null && selectionChangeTransition == null) {
-                    preferredWidth = getPreferredTabWidth(-1) + (padding.left + padding.right + 2);
+                    preferredWidth = getPreferredTabWidth(-1) + fullPaddingWidth();
                     preferredHeight = 1;
                 } else {
                     Dimensions preferredTabSize = getPreferredTabSize();
-                    preferredWidth = preferredTabSize.width + (padding.left + padding.right + 2);
-                    preferredHeight = preferredTabSize.height + (padding.top + padding.bottom);
+                    preferredWidth = preferredTabSize.width + fullPaddingWidth();
+                    preferredHeight = preferredTabSize.height + padding.getHeight();
 
                     if (selectionChangeTransition != null) {
                         float scale = selectionChangeTransition.getScale();
@@ -785,15 +805,14 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                     preferredHeight += 2;
                 }
 
-                int buttonAreaPreferredWidth = tabButtonPanorama.getPreferredWidth(-1);
+                int buttonAreaPreferredWidth = buttonPanorama.getPreferredWidth(-1);
                 if (corner != null) {
                     buttonAreaPreferredWidth += corner.getPreferredWidth(-1);
                     preferredHeight += Math.max(corner.getPreferredHeight(-1),
-                        Math.max(tabButtonPanorama.getPreferredHeight(-1) - 1, 0));
-                    buttonAreaPreferredWidth += 2; // space between corner and
-                                                   // panorama
+                        Math.max(buttonPanorama.getPreferredHeight(-1) - 1, 0));
+                    buttonAreaPreferredWidth += 2; // space between corner and panorama
                 } else {
-                    preferredHeight += Math.max(tabButtonPanorama.getPreferredHeight(-1) - 1, 0);
+                    preferredHeight += Math.max(buttonPanorama.getPreferredHeight(-1) - 1, 0);
                 }
 
                 preferredWidth = Math.max(preferredWidth, buttonAreaPreferredWidth);
@@ -803,13 +822,12 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
             case VERTICAL:
                 if (selectedTab == null && selectionChangeTransition == null) {
                     preferredWidth = 1;
-                    preferredHeight = getPreferredTabHeight(-1)
-                        + (padding.top + padding.bottom + 2);
+                    preferredHeight = getPreferredTabHeight(-1) + fullPaddingHeight();
                 } else {
                     Dimensions preferredTabSize = getPreferredTabSize();
 
-                    preferredWidth = preferredTabSize.width + (padding.left + padding.right);
-                    preferredHeight = preferredTabSize.height + (padding.top + padding.bottom + 2);
+                    preferredWidth = preferredTabSize.width + padding.getWidth();
+                    preferredHeight = preferredTabSize.height + fullPaddingHeight();
 
                     if (selectionChangeTransition != null) {
                         float scale = selectionChangeTransition.getScale();
@@ -819,15 +837,14 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                     preferredWidth += 2;
                 }
 
-                int buttonAreaPreferredHeight = tabButtonPanorama.getPreferredHeight(-1);
+                int buttonAreaPreferredHeight = buttonPanorama.getPreferredHeight(-1);
                 if (corner != null) {
                     buttonAreaPreferredHeight += corner.getPreferredHeight(-1);
                     preferredWidth += Math.max(corner.getPreferredWidth(-1),
-                        Math.max(tabButtonPanorama.getPreferredWidth(-1) - 1, 0));
-                    buttonAreaPreferredHeight += 2; // space between corner and
-                                                    // panorama
+                        Math.max(buttonPanorama.getPreferredWidth(-1) - 1, 0));
+                    buttonAreaPreferredHeight += 2; // space between corner and panorama
                 } else {
-                    preferredWidth += Math.max(tabButtonPanorama.getPreferredWidth(-1) - 1, 0);
+                    preferredWidth += Math.max(buttonPanorama.getPreferredWidth(-1) - 1, 0);
                 }
 
                 preferredHeight = Math.max(preferredHeight, buttonAreaPreferredHeight);
@@ -844,24 +861,23 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public int getBaseline(int width, int height) {
+    public int getBaseline(final int width, final int height) {
         int baseline = -1;
 
-        if (tabOrientation == Orientation.HORIZONTAL && tabButtonBoxPane.getLength() > 0) {
-            TabButton firstTabButton = (TabButton) tabButtonBoxPane.get(0);
+        if (tabOrientation == Orientation.HORIZONTAL && buttonBoxPane.getLength() > 0) {
+            TabButton firstButton = (TabButton) buttonBoxPane.get(0);
 
-            int buttonHeight = tabButtonBoxPane.getPreferredHeight();
-            baseline = firstTabButton.getBaseline(firstTabButton.getPreferredWidth(buttonHeight),
-                buttonHeight);
+            int buttonHeight = buttonBoxPane.getPreferredHeight();
+            baseline = firstButton.getBaseline(firstButton.getPreferredWidth(buttonHeight), buttonHeight);
         }
 
         return baseline;
     }
 
-    private int getPreferredTabWidth(int height) {
+    private int getPreferredTabWidth(final int height) {
         int preferredTabWidth = 0;
 
-        TabPane tabPane = (TabPane) getComponent();
+        TabPane tabPane = getTabPane();
         for (Component tab : tabPane.getTabs()) {
             preferredTabWidth = Math.max(preferredTabWidth, tab.getPreferredWidth(height));
         }
@@ -869,10 +885,10 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         return preferredTabWidth;
     }
 
-    private int getPreferredTabHeight(int width) {
+    private int getPreferredTabHeight(final int width) {
         int preferredTabHeight = 0;
 
-        TabPane tabPane = (TabPane) getComponent();
+        TabPane tabPane = getTabPane();
         for (Component tab : tabPane.getTabs()) {
             preferredTabHeight = Math.max(preferredTabHeight, tab.getPreferredHeight(width));
         }
@@ -884,7 +900,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         int preferredTabWidth = 0;
         int preferredTabHeight = 0;
 
-        TabPane tabPane = (TabPane) getComponent();
+        TabPane tabPane = getTabPane();
         for (Component tab : tabPane.getTabs()) {
             Dimensions preferredSize = tab.getPreferredSize();
             preferredTabWidth = Math.max(preferredTabWidth, preferredSize.width);
@@ -896,7 +912,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
     @Override
     public void layout() {
-        TabPane tabPane = (TabPane) getComponent();
+        TabPane tabPane = getTabPane();
         int width = getWidth();
         int height = getHeight();
 
@@ -906,7 +922,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         int tabHeight = 0;
 
         Component corner = tabPane.getCorner();
-        Dimensions buttonPanoramaSize = tabButtonPanorama.getPreferredSize();
+        Dimensions buttonPanoramaSize = buttonPanorama.getPreferredSize();
         int buttonPanoramaWidth, buttonPanoramaHeight;
         int buttonPanoramaX, buttonPanoramaY;
 
@@ -936,15 +952,15 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                     corner.setSize(cornerWidth, cornerHeight);
                 }
 
-                tabButtonPanorama.setLocation(0, buttonPanoramaY);
-                tabButtonPanorama.setSize(buttonPanoramaWidth, buttonPanoramaHeight);
+                buttonPanorama.setLocation(0, buttonPanoramaY);
+                buttonPanorama.setSize(buttonPanoramaWidth, buttonPanoramaHeight);
 
                 tabX = padding.left + 1;
                 tabY = padding.top + buttonPanoramaY + buttonPanoramaHeight;
 
-                tabWidth = Math.max(width - (padding.left + padding.right + 2), 0);
+                tabWidth = Math.max(width - fullPaddingWidth(), 0);
                 tabHeight = Math.max(height
-                    - (padding.top + padding.bottom + buttonPanoramaY + buttonPanoramaHeight + 1),
+                    - (padding.getHeight() + buttonPanoramaY + buttonPanoramaHeight + 1),
                     0);
 
                 break;
@@ -974,14 +990,14 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                     corner.setSize(cornerWidth, cornerHeight);
                 }
 
-                tabButtonPanorama.setLocation(buttonPanoramaX, 0);
-                tabButtonPanorama.setSize(buttonPanoramaWidth, buttonPanoramaHeight);
+                buttonPanorama.setLocation(buttonPanoramaX, 0);
+                buttonPanorama.setSize(buttonPanoramaWidth, buttonPanoramaHeight);
 
                 tabX = padding.left + buttonPanoramaX + buttonPanoramaWidth;
                 tabY = padding.top + 1;
                 tabWidth = Math.max(width
                     - (padding.left + padding.right + buttonPanoramaX + buttonPanoramaWidth + 1), 0);
-                tabHeight = Math.max(height - (padding.top + padding.bottom + 2), 0);
+                tabHeight = Math.max(height - fullPaddingHeight(), 0);
 
                 break;
 
@@ -1015,8 +1031,8 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public void paint(Graphics2D graphics) {
-        TabPane tabPane = (TabPane) getComponent();
+    public void paint(final Graphics2D graphics) {
+        TabPane tabPane = getTabPane();
 
         Bounds tabPaneBounds = tabPane.getBounds();
 
@@ -1032,14 +1048,14 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         switch (tabOrientation) {
             case HORIZONTAL:
                 x = 0;
-                y = Math.max(tabButtonPanorama.getY() + tabButtonPanorama.getHeight() - 1, 0);
+                y = Math.max(buttonPanorama.getY() + buttonPanorama.getHeight() - 1, 0);
                 width = tabPaneBounds.width;
                 height = Math.max(tabPaneBounds.height - y, 0);
 
                 break;
 
             case VERTICAL:
-                x = Math.max(tabButtonPanorama.getX() + tabButtonPanorama.getWidth() - 1, 0);
+                x = Math.max(buttonPanorama.getX() + buttonPanorama.getWidth() - 1, 0);
                 y = 0;
                 width = Math.max(tabPaneBounds.width - x, 0);
                 height = tabPaneBounds.height;
@@ -1054,7 +1070,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         if (selectionChangeTransition == null) {
             activeTabButton = (TabButton) tabButtonGroup.getSelection();
         } else {
-            activeTabButton = (TabButton) tabButtonBoxPane.get(selectionChangeTransition.index);
+            activeTabButton = (TabButton) buttonBoxPane.get(selectionChangeTransition.index);
         }
 
         if (activeTabButton != null) {
@@ -1087,8 +1103,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                         graphics.draw(new Line2D.Double(left, top, left, bottom));
 
                         selectedTabButtonLocation = activeTabButton.mapPointToAncestor(tabPane, 0, 0);
-                        graphics.draw(new Line2D.Double(left, top, selectedTabButtonLocation.x + 0.5,
-                            top));
+                        graphics.draw(new Line2D.Double(left, top, selectedTabButtonLocation.x + 0.5, top));
                         graphics.draw(new Line2D.Double(selectedTabButtonLocation.x
                             + activeTabButton.getWidth() - 0.5, top, right, top));
 
@@ -1116,235 +1131,127 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         return activeTabColor;
     }
 
-    public void setActiveTabColor(Color activeTabColor) {
-        Utils.checkNull(activeTabColor, "activeTabColor");
-
-        this.activeTabColor = activeTabColor;
+    public void setActiveTabColor(final Object colorValue) {
+        activeTabColor = colorFromObject(colorValue, "activeTabColor");
         activeButtonBevelColor = TerraTheme.brighten(activeTabColor);
         repaintComponent();
-    }
-
-    public final void setActiveTabColor(String activeTabColor) {
-        setActiveTabColor(GraphicsUtilities.decodeColor(activeTabColor, "activeTabColor"));
-    }
-
-    public final void setActiveTabColor(int activeTabColor) {
-        Theme theme = currentTheme();
-        setActiveTabColor(theme.getColor(activeTabColor));
     }
 
     public Color getInactiveTabColor() {
         return inactiveTabColor;
     }
 
-    public void setInactiveTabColor(Color inactiveTabColor) {
-        Utils.checkNull(inactiveTabColor, "inactiveTabColor");
-
-        this.inactiveTabColor = inactiveTabColor;
+    public void setInactiveTabColor(final Object colorValue) {
+        inactiveTabColor = colorFromObject(colorValue, "inactiveTabColor");
         inactiveButtonBevelColor = TerraTheme.brighten(inactiveTabColor);
         repaintComponent();
-    }
-
-    public final void setInactiveTabColor(String inactiveTabColor) {
-        setInactiveTabColor(GraphicsUtilities.decodeColor(inactiveTabColor, "inactiveTabColor"));
-    }
-
-    public final void setInactiveTabColor(int inactiveTabColor) {
-        Theme theme = currentTheme();
-        setInactiveTabColor(theme.getColor(inactiveTabColor));
     }
 
     public Color getBorderColor() {
         return borderColor;
     }
 
-    public void setBorderColor(Color borderColor) {
-        Utils.checkNull(borderColor, "borderColor");
-
-        this.borderColor = borderColor;
-        tabButtonPanorama.putStyle(Style.buttonBackgroundColor, borderColor);
+    public void setBorderColor(final Object colorValue) {
+        borderColor = colorFromObject(colorValue, "borderColor");
+        buttonPanorama.putStyle(Style.buttonBackgroundColor, borderColor);
         repaintComponent();
-    }
-
-    public final void setBorderColor(String borderColor) {
-        setBorderColor(GraphicsUtilities.decodeColor(borderColor, "borderColor"));
-    }
-
-    public final void setBorderColor(int borderColor) {
-        Theme theme = currentTheme();
-        setBorderColor(theme.getColor(borderColor));
     }
 
     public Color getInactiveBorderColor() {
         return inactiveBorderColor;
     }
 
-    public void setInactiveBorderColor(Color inactiveBorderColor) {
-        Utils.checkNull(inactiveBorderColor, "inactiveBorderColor");
-
-        this.inactiveBorderColor = inactiveBorderColor;
+    public void setInactiveBorderColor(final Object colorValue) {
+        inactiveBorderColor = colorFromObject(colorValue, "inactiveBorderColor");
         repaintComponent();
-    }
-
-    public final void setInactiveBorderColor(String inactiveBorderColor) {
-        setInactiveBorderColor(GraphicsUtilities.decodeColor(inactiveBorderColor, "inactiveBorderColor"));
-    }
-
-    public final void setInactiveBorderColor(int inactiveBorderColor) {
-        Theme theme = currentTheme();
-        setInactiveBorderColor(theme.getColor(inactiveBorderColor));
     }
 
     public Insets getPadding() {
         return padding;
     }
 
-    public void setPadding(Insets padding) {
-        Utils.checkNull(padding, "padding");
-
-        this.padding = padding;
+    public void setPadding(final Object paddingValue) {
+        padding = Insets.fromObject(paddingValue, "padding");
         invalidateComponent();
-    }
-
-    public final void setPadding(Dictionary<String, ?> padding) {
-        setPadding(new Insets(padding));
-    }
-
-    public final void setPadding(Sequence<?> padding) {
-        setPadding(new Insets(padding));
-    }
-
-    public final void setPadding(int padding) {
-        setPadding(new Insets(padding));
-    }
-
-    public final void setPadding(Number padding) {
-        setPadding(new Insets(padding));
-    }
-
-    public final void setPadding(String padding) {
-        setPadding(Insets.decode(padding));
     }
 
     public Font getButtonFont() {
         return buttonFont;
     }
 
-    public void setButtonFont(Font buttonFont) {
-        Utils.checkNull(buttonFont, "buttonFont");
-
-        this.buttonFont = buttonFont;
+    public void setButtonFont(final Object fontValue) {
+        buttonFont = fontFromObject(fontValue);
         invalidateComponent();
-    }
-
-    public final void setButtonFont(String buttonFont) {
-        setButtonFont(decodeFont(buttonFont));
-    }
-
-    public final void setButtonFont(Dictionary<String, ?> buttonFont) {
-        setButtonFont(Theme.deriveFont(buttonFont));
     }
 
     public Color getButtonColor() {
         return buttonColor;
     }
 
-    public void setButtonColor(Color buttonColor) {
-        Utils.checkNull(buttonColor, "buttonColor");
-
-        this.buttonColor = buttonColor;
+    public void setButtonColor(final Object colorValue) {
+        buttonColor = colorFromObject(colorValue, "buttonColor");
         repaintComponent();
-    }
-
-    public final void setButtonColor(String buttonColor) {
-        setButtonColor(GraphicsUtilities.decodeColor(buttonColor, "buttonColor"));
-    }
-
-    public final void setButtonColor(int buttonColor) {
-        Theme theme = currentTheme();
-        setButtonColor(theme.getColor(buttonColor));
     }
 
     public Insets getButtonPadding() {
         return buttonPadding;
     }
 
-    public void setButtonPadding(Insets buttonPadding) {
-        Utils.checkNull(buttonPadding, "buttonPadding");
-
-        this.buttonPadding = buttonPadding;
+    public void setButtonPadding(final Object buttonPaddingValue) {
+        buttonPadding = Insets.fromObject(buttonPaddingValue, "buttonPadding");
         invalidateComponent();
-        for (Component tabButton : tabButtonBoxPane) {
+
+        for (Component tabButton : buttonBoxPane) {
             tabButton.invalidate();
         }
     }
 
-    public final void setButtonPadding(Dictionary<String, ?> padding) {
-        setButtonPadding(new Insets(padding));
-    }
-
-    public final void setButtonPadding(Sequence<?> padding) {
-        setButtonPadding(new Insets(padding));
-    }
-
-    public final void setButtonPadding(int buttonPadding) {
-        setButtonPadding(new Insets(buttonPadding));
-    }
-
-    public final void setButtonPadding(Number padding) {
-        setButtonPadding(new Insets(padding));
-    }
-
-    public final void setButtonPadding(String padding) {
-        setButtonPadding(Insets.decode(padding));
-    }
-
     public int getButtonSpacing() {
-        return tabButtonBoxPane.getStyleInt(Style.spacing);
+        return buttonBoxPane.getStyleInt(Style.spacing);
     }
 
-    public void setButtonSpacing(int buttonSpacing) {
-        tabButtonBoxPane.putStyle(Style.spacing, buttonSpacing);
+    public void setButtonSpacing(final int spacingValue) {
+        buttonBoxPane.putStyle(Style.spacing, spacingValue);
     }
 
-    public final void setButtonCornerRadius(int buttonCornerRadius) {
-        this.buttonCornerRadius = buttonCornerRadius;
+    public final void setButtonCornerRadius(final int radiusValue) {
+        buttonCornerRadius = radiusValue;
     }
 
-    public final void setButtonCornerRadius(Number radius) {
-        Utils.checkNull(radius, "buttonCornerRadius");
+    public final void setButtonCornerRadius(final Number radiusValue) {
+        Utils.checkNull(radiusValue, "buttonCornerRadius");
 
-        setButtonCornerRadius(radius.intValue());
+        setButtonCornerRadius(radiusValue.intValue());
     }
 
-    public final void setButtonCornerRadius(String radius) {
-        Utils.checkNullOrEmpty(radius, "buttonCornerRadius");
+    public final void setButtonCornerRadius(final String radiusString) {
+        Utils.checkNullOrEmpty(radiusString, "buttonCornerRadius");
 
-        setButtonCornerRadius(Integer.valueOf(radius));
+        setButtonCornerRadius(Integer.valueOf(radiusString));
     }
 
     public Orientation getTabOrientation() {
         return tabOrientation;
     }
 
-    public void setTabOrientation(Orientation tabOrientation) {
-        Utils.checkNull(tabOrientation, "tabOrientation");
+    public void setTabOrientation(final Orientation orientationValue) {
+        Utils.checkNull(orientationValue, "tabOrientation");
 
-        this.tabOrientation = tabOrientation;
+        tabOrientation = orientationValue;
 
         // Invalidate the tab buttons since their preferred sizes have changed
-        for (Component tabButton : tabButtonBoxPane) {
+        for (Component tabButton : buttonBoxPane) {
             tabButton.invalidate();
         }
 
-        tabButtonBoxPane.setOrientation(tabOrientation);
+        buttonBoxPane.setOrientation(tabOrientation);
 
         switch (tabOrientation) {
             case HORIZONTAL:
-                tabButtonBoxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
+                buttonBoxPane.putStyle(Style.horizontalAlignment, HorizontalAlignment.LEFT);
                 break;
             case VERTICAL:
-                tabButtonBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.TOP);
+                buttonBoxPane.putStyle(Style.verticalAlignment, VerticalAlignment.TOP);
                 break;
             default:
                 break;
@@ -1355,16 +1262,16 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         return selectionChangeDuration;
     }
 
-    public void setSelectionChangeDuration(int selectionChangeDuration) {
-        this.selectionChangeDuration = selectionChangeDuration;
+    public void setSelectionChangeDuration(final int durationValue) {
+        selectionChangeDuration = durationValue;
     }
 
     public int getSelectionChangeRate() {
         return selectionChangeRate;
     }
 
-    public void setSelectionChangeRate(int selectionChangeRate) {
-        this.selectionChangeRate = selectionChangeRate;
+    public void setSelectionChangeRate(final int rateValue) {
+        selectionChangeRate = rateValue;
     }
 
     /**
@@ -1379,12 +1286,12 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
      * @see Platform#getCommandModifier()
      */
     @Override
-    public boolean keyPressed(Component component, int keyCode, KeyLocation keyLocation) {
+    public boolean keyPressed(final Component component, final int keyCode, final KeyLocation keyLocation) {
         boolean consumed = super.keyPressed(component, keyCode, keyLocation);
 
         Modifier commandModifier = Platform.getCommandModifier();
         if (!consumed && Keyboard.isPressed(commandModifier)) {
-            TabPane tabPane = (TabPane) getComponent();
+            TabPane tabPane = getTabPane();
             TabPane.TabSequence tabs = tabPane.getTabs();
 
             int selectedIndex = -1;
@@ -1468,7 +1375,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
     // Tab pane events
     @Override
-    public void tabInserted(TabPane tabPane, int index) {
+    public void tabInserted(final TabPane tabPane, final int index) {
         if (selectionChangeTransition != null) {
             selectionChangeTransition.end();
         }
@@ -1479,7 +1386,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
         // Create a new button for the tab
         TabButton tabButton = new TabButton(tab);
         tabButton.setButtonGroup(tabButtonGroup);
-        tabButtonBoxPane.insert(tabButton, index);
+        buttonBoxPane.insert(tabButton, index);
 
         // Listen for state changes on the tab
         tabButton.setEnabled(tab.isEnabled());
@@ -1494,23 +1401,23 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public Vote previewRemoveTabs(TabPane tabPane, int index, int count) {
+    public Vote previewRemoveTabs(final TabPane tabPane, final int index, final int count) {
         return Vote.APPROVE;
     }
 
     @Override
-    public void removeTabsVetoed(TabPane tabPane, Vote vote) {
+    public void removeTabsVetoed(final TabPane tabPane, final Vote vote) {
         // No-op
     }
 
     @Override
-    public void tabsRemoved(TabPane tabPane, int index, Sequence<Component> removed) {
+    public void tabsRemoved(final TabPane tabPane, final int index, final Sequence<Component> removed) {
         if (selectionChangeTransition != null) {
             selectionChangeTransition.end();
         }
 
         // Remove the buttons
-        Sequence<Component> removedButtons = tabButtonBoxPane.remove(index, removed.getLength());
+        Sequence<Component> removedButtons = buttonBoxPane.remove(index, removed.getLength());
 
         for (int i = 0, n = removed.getLength(); i < n; i++) {
             TabButton tabButton = (TabButton) removedButtons.get(i);
@@ -1524,19 +1431,19 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public void cornerChanged(TabPane tabPane, Component previousCorner) {
+    public void cornerChanged(final TabPane tabPane, final Component previousCorner) {
         invalidateComponent();
     }
 
     @Override
-    public void tabDataRendererChanged(TabPane tabPane, Button.DataRenderer previousTabDataRenderer) {
-        for (Component tabButton : tabButtonBoxPane) {
+    public void tabDataRendererChanged(final TabPane tabPane, final Button.DataRenderer previousRenderer) {
+        for (Component tabButton : buttonBoxPane) {
             tabButton.invalidate();
         }
     }
 
     @Override
-    public void closeableChanged(TabPane tabPane) {
+    public void closeableChanged(final TabPane tabPane) {
         Button selectedTabButton = tabButtonGroup.getSelection();
 
         if (selectedTabButton != null) {
@@ -1545,13 +1452,13 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public void collapsibleChanged(TabPane tabPane) {
+    public void collapsibleChanged(final TabPane tabPane) {
         // No-op
     }
 
     // Tab pane selection events
     @Override
-    public Vote previewSelectedIndexChange(TabPane tabPane, int selectedIndex) {
+    public Vote previewSelectedIndexChange(final TabPane tabPane, final int selectedIndex) {
         Vote vote;
 
         if (tabPane.isCollapsible()) {
@@ -1573,8 +1480,8 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                 if (selectionChangeTransition != null) {
                     selectionChangeTransition.start(new TransitionListener() {
                         @Override
-                        public void transitionCompleted(Transition transition) {
-                            TabPane tabPaneLocal = (TabPane) getComponent();
+                        public void transitionCompleted(final Transition transition) {
+                            TabPane tabPaneLocal = getTabPane();
 
                             SelectionChangeTransition selChangeTransitionLocal = (SelectionChangeTransition) transition;
 
@@ -1606,7 +1513,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public void selectedIndexChangeVetoed(TabPane tabPane, Vote reason) {
+    public void selectedIndexChangeVetoed(final TabPane tabPane, final Vote reason) {
         if (reason == Vote.DENY && selectionChangeTransition != null) {
             // NOTE We stop, rather than end, the transition so the completion
             // event isn't fired; if the event fires, the listener will set
@@ -1618,7 +1525,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
     }
 
     @Override
-    public void selectedIndexChanged(TabPane tabPane, int previousSelectedIndex) {
+    public void selectedIndexChanged(final TabPane tabPane, final int previousSelectedIndex) {
         int selectedIndex = tabPane.getSelectedIndex();
 
         if (selectedIndex != previousSelectedIndex) {
@@ -1629,7 +1536,7 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
                     button.setSelected(false);
                 }
             } else {
-                final Button button = (Button) tabButtonBoxPane.get(selectedIndex);
+                final Button button = (Button) buttonBoxPane.get(selectedIndex);
                 button.setSelected(true);
 
                 Component selectedTab = tabPane.getTabs().get(selectedIndex);
@@ -1653,13 +1560,15 @@ public class TerraTabPaneSkin extends TabPaneSkin implements TabPaneListener,
 
     // Tab pane attribute events
     @Override
-    public void tabDataChanged(TabPane tabPane, Component component, Object previousTabData) {
+    public void tabDataChanged(final TabPane tabPane, final Component component,
+            final Object previousTabData) {
         int i = tabPane.getTabs().indexOf(component);
-        tabButtonBoxPane.get(i).invalidate();
+        buttonBoxPane.get(i).invalidate();
     }
 
     @Override
-    public void tooltipTextChanged(TabPane tabPane, Component component, String previousTooltipText) {
+    public void tooltipTextChanged(final TabPane tabPane, final Component component,
+            final String previousTooltipText) {
         // No-op
     }
 
