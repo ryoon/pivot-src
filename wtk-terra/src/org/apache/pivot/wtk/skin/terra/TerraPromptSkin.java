@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Font;
 
 import org.apache.pivot.beans.BXMLSerializer;
-import org.apache.pivot.collections.Dictionary;
 import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.util.Vote;
 import org.apache.pivot.wtk.BoxPane;

@@ -42,14 +42,24 @@ public class DropShadowDecorator implements Decorator {
 
     public static final float DEFAULT_SHADOW_OPACITY = 0.25f;
 
+    /**
+     * Default constructor with values of <code>3, 3, 3</code>.
+     */
     public DropShadowDecorator() {
         this(3, 3, 3);
     }
 
-    public DropShadowDecorator(int blurRadius, int xOffset, int yOffset) {
-        this.blurRadius = blurRadius;
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
+    /**
+     * Construct using non-default values of radius and offsets.
+     *
+     * @param radius The radius to blur around the component.
+     * @param xOff   X-offset for the blurring to occur.
+     * @param yOff   Y-offset of the blurring.
+     */
+    public DropShadowDecorator(final int radius, final int xOff, final int yOff) {
+        blurRadius = radius;
+        xOffset = xOff;
+        yOffset = yOff;
     }
 
     /**
@@ -62,21 +72,21 @@ public class DropShadowDecorator implements Decorator {
     /**
      * Sets the color used to draw the shadow.
      *
-     * @param shadowColor The color used to draw the shadow.
+     * @param colorValue The color used to draw the shadow.
      */
-    public void setShadowColor(Color shadowColor) {
-        this.shadowColor = shadowColor;
+    public void setShadowColor(final Color colorValue) {
+        shadowColor = colorValue;
     }
 
     /**
      * Sets the color used to draw the shadow.
      *
-     * @param shadowColor The color used to draw the shadow, which can be any of
+     * @param shadowColorString The color used to draw the shadow, which can be any of
      * the {@linkplain GraphicsUtilities#decodeColor color values recognized by
      * Pivot}.
      */
-    public final void setShadowColor(String shadowColor) {
-        setShadowColor(GraphicsUtilities.decodeColor(shadowColor, "shadowColor"));
+    public final void setShadowColor(final String shadowColorString) {
+        setShadowColor(GraphicsUtilities.decodeColor(shadowColorString, "shadowColor"));
     }
 
     /**
@@ -91,10 +101,10 @@ public class DropShadowDecorator implements Decorator {
     /**
      * Sets the opacity used to draw the shadow.
      *
-     * @param shadowOpacity The opacity used to draw the shadow.
+     * @param opacity The opacity used to draw the shadow.
      */
-    public void setShadowOpacity(float shadowOpacity) {
-        this.shadowOpacity = shadowOpacity;
+    public void setShadowOpacity(final float opacity) {
+        shadowOpacity = opacity;
     }
 
     /**
@@ -107,10 +117,10 @@ public class DropShadowDecorator implements Decorator {
     /**
      * Sets the blur radius used to draw the shadow.
      *
-     * @param blurRadius The blur radius used to draw the shadow.
+     * @param radius The blur radius used to draw the shadow.
      */
-    public void setBlurRadius(int blurRadius) {
-        this.blurRadius = blurRadius;
+    public void setBlurRadius(final int radius) {
+        blurRadius = radius;
     }
 
     /**
@@ -125,10 +135,10 @@ public class DropShadowDecorator implements Decorator {
     /**
      * Sets the amount that the drop shadow will be offset along the x axis.
      *
-     * @param xOffset The x offset used to draw the shadow.
+     * @param xOff The x offset used to draw the shadow.
      */
-    public void setXOffset(int xOffset) {
-        this.xOffset = xOffset;
+    public void setXOffset(final int xOff) {
+        xOffset = xOff;
     }
 
     /**
@@ -143,19 +153,20 @@ public class DropShadowDecorator implements Decorator {
     /**
      * Sets the amount that the drop shadow will be offset along the y axis.
      *
-     * @param yOffset The y offset used to draw the shadow.
+     * @param yOff The y offset used to draw the shadow.
      */
-    public void setYOffset(int yOffset) {
-        this.yOffset = yOffset;
+    public void setYOffset(final int yOff) {
+        yOffset = yOff;
     }
 
     @Override
-    public Graphics2D prepare(Component component, Graphics2D graphics) {
+    public Graphics2D prepare(final Component component, final Graphics2D graphics) {
         int width = component.getWidth();
         int height = component.getHeight();
 
         if (width > 0 && height > 0) {
-            if (shadowImage == null || shadowImage.getWidth() != width + 2 * blurRadius
+            if (shadowImage == null
+                || shadowImage.getWidth() != width + 2 * blurRadius
                 || shadowImage.getHeight() != height + 2 * blurRadius) {
                 // Recreate the shadow
                 BufferedImage rectangleImage = new BufferedImage(width, height,
@@ -181,21 +192,24 @@ public class DropShadowDecorator implements Decorator {
     }
 
     @Override
-    public Bounds getBounds(Component component) {
-        return new Bounds(xOffset - blurRadius, yOffset - blurRadius, component.getWidth()
-            + blurRadius * 2, component.getHeight() + blurRadius * 2);
+    public Bounds getBounds(final Component component) {
+        return new Bounds(
+            xOffset - blurRadius,
+            yOffset - blurRadius,
+            component.getWidth() + blurRadius * 2,
+            component.getHeight() + blurRadius * 2);
     }
 
     /**
      * Generates the shadow for a given picture and the current properties of
      * the decorator. The generated image dimensions are computed as follows:
-     * <pre> width = imageWidth + 2 * blurRadius height = imageHeight + 2 *
-     * blurRadius </pre>
+     * <pre> width = imageWidth + 2 * blurRadius
+     * height = imageHeight + 2 * blurRadius </pre>
      *
      * @param src The image from which the shadow will be cast.
      * @return An image containing the generated shadow.
      */
-    private BufferedImage createShadow(BufferedImage src) {
+    private BufferedImage createShadow(final BufferedImage src) {
         int shadowSize = blurRadius * 2;
 
         int srcWidth = src.getWidth();
@@ -281,8 +295,7 @@ public class DropShadowDecorator implements Decorator {
                 int a = hSumLookup[aSum];
                 dstBuffer[dstOffset++] = a << 24;
 
-                // Subtract the oldest pixel from the sum...and nothing new
-                // to add!
+                // Subtract the oldest pixel from the sum...and nothing new to add!
                 aSum -= aHistory[historyIdx];
 
                 if (++historyIdx >= shadowSize) {

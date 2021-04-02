@@ -68,30 +68,33 @@ public class JSONSerializer implements Serializer<Object> {
 
     private JSONSerializerListener.Listeners jsonSerializerListeners = null;
 
+    private static final String NULL_STRING = "null";
+
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final Type DEFAULT_TYPE = Object.class;
 
     public static final String JSON_EXTENSION = "json";
     public static final String MIME_TYPE = "application/json";
 
+
     public JSONSerializer() {
         this(DEFAULT_CHARSET, DEFAULT_TYPE);
     }
 
-    public JSONSerializer(final Charset charset) {
-        this(charset, DEFAULT_TYPE);
+    public JSONSerializer(final Charset cs) {
+        this(cs, DEFAULT_TYPE);
     }
 
-    public JSONSerializer(final Type type) {
-        this(DEFAULT_CHARSET, type);
+    public JSONSerializer(final Type objType) {
+        this(DEFAULT_CHARSET, objType);
     }
 
-    public JSONSerializer(final Charset charset, final Type type) {
-        Utils.checkNull(charset, "charset");
-        Utils.checkNull(type, "type");
+    public JSONSerializer(final Charset cs, final Type objType) {
+        Utils.checkNull(cs, "charset");
+        Utils.checkNull(objType, "type");
 
-        this.charset = charset;
-        this.type = type;
+        charset = cs;
+        type = objType;
     }
 
     /**
@@ -126,11 +129,11 @@ public class JSONSerializer implements Serializer<Object> {
     /**
      * Sets a flag indicating that map keys should always be quote-delimited.
      *
-     * @param alwaysDelimitMapKeys {@code true} to bound map keys in double
+     * @param delimitKeys {@code true} to bound map keys in double
      * quotes; {@code false} to only quote-delimit keys as necessary.
      */
-    public void setAlwaysDelimitMapKeys(final boolean alwaysDelimitMapKeys) {
-        this.alwaysDelimitMapKeys = alwaysDelimitMapKeys;
+    public void setAlwaysDelimitMapKeys(final boolean delimitKeys) {
+        alwaysDelimitMapKeys = delimitKeys;
     }
 
     /**
@@ -145,10 +148,10 @@ public class JSONSerializer implements Serializer<Object> {
      * Sets the serializer's verbosity flag. When verbosity is enabled, all data
      * read or written will be echoed to the console.
      *
-     * @param verbose {@code true} to set verbose mode, {@code false} to disable.
+     * @param verboseValue {@code true} to set verbose mode, {@code false} to disable.
      */
-    public void setVerbose(final boolean verbose) {
-        this.verbose = verbose;
+    public void setVerbose(final boolean verboseValue) {
+        verbose = verboseValue;
     }
 
     /**
@@ -164,12 +167,12 @@ public class JSONSerializer implements Serializer<Object> {
      * a non-standard feature.  See the documentation in {@link MacroReader} for more details
      * on the specification of macros.
      * <p> Note: must be called before {@link #readObject} is called.
-     * @param macros Flag indicating whether macros are allowed (default is {@code false}).
+     * @param allowMacros Flag indicating whether macros are allowed (default is {@code false}).
      * The flag must be set to true in order to activate this feature, because there is a
      * definitely measured 25x slowdown when using it, even if no macros are defined.
      */
-    public void setAllowMacros(final boolean macros) {
-        this.macros = macros;
+    public void setAllowMacros(final boolean allowMacros) {
+        macros = allowMacros;
     }
 
     /**
@@ -240,7 +243,7 @@ public class JSONSerializer implements Serializer<Object> {
         return object;
     }
 
-    private Object readValue(final Reader reader, final Type typeArgument, final String key)
+    private Object readValue(final Reader reader, final Type objTypeValue, final String key)
         throws IOException, SerializationException {
         Object object = null;
 
@@ -253,15 +256,15 @@ public class JSONSerializer implements Serializer<Object> {
         if (c == 'n') {
             object = readNullValue(reader);
         } else if (c == '"' || c == '\'') {
-            object = readStringValue(reader, typeArgument, key);
+            object = readStringValue(reader, objTypeValue, key);
         } else if (c == '+' || c == '-' || Character.isDigit(c)) {
-            object = readNumberValue(reader, typeArgument, key);
+            object = readNumberValue(reader, objTypeValue, key);
         } else if (c == 't' || c == 'f') {
-            object = readBooleanValue(reader, typeArgument, key);
+            object = readBooleanValue(reader, objTypeValue, key);
         } else if (c == '[') {
-            object = readListValue(reader, typeArgument, key);
+            object = readListValue(reader, objTypeValue, key);
         } else if (c == '{') {
-            object = readMapValue(reader, typeArgument);
+            object = readMapValue(reader, objTypeValue);
         } else {
             throw new SerializationException("Unexpected character in input stream: '" + (char) c + "'");
         }
@@ -310,13 +313,11 @@ public class JSONSerializer implements Serializer<Object> {
     }
 
     private Object readNullValue(final Reader reader) throws IOException, SerializationException {
-        String nullString = "null";
-
-        int n = nullString.length();
+        int n = NULL_STRING.length();
         int i = 0;
 
         while (c != -1 && i < n) {
-            if (nullString.charAt(i) != c) {
+            if (NULL_STRING.charAt(i) != c) {
                 throw new SerializationException("Unexpected character in input stream: '" + (char) c + "'");
             }
 
@@ -395,10 +396,10 @@ public class JSONSerializer implements Serializer<Object> {
         return stringBuilder.toString();
     }
 
-    private Object readStringValue(final Reader reader, final Type typeArgument, final String key)
+    private Object readStringValue(final Reader reader, final Type objTypeValue, final String key)
         throws IOException, SerializationException {
-        if (!(typeArgument instanceof Class<?>)) {
-            throw new SerializationException("Cannot convert string to " + typeArgument + ".");
+        if (!(objTypeValue instanceof Class<?>)) {
+            throw new SerializationException("Cannot convert string to " + objTypeValue + ".");
         }
 
         String string = readString(reader);
@@ -408,13 +409,13 @@ public class JSONSerializer implements Serializer<Object> {
             jsonSerializerListeners.readString(this, string);
         }
 
-        return BeanAdapter.coerce(string, (Class<?>) typeArgument, key);
+        return BeanAdapter.coerce(string, (Class<?>) objTypeValue, key);
     }
 
-    private Object readNumberValue(final Reader reader, final Type typeArgument, final String key)
+    private Object readNumberValue(final Reader reader, final Type objTypeValue, final String key)
         throws IOException, SerializationException {
-        if (!(typeArgument instanceof Class<?>)) {
-            throw new SerializationException("Cannot convert number to " + typeArgument + ".");
+        if (!(objTypeValue instanceof Class<?>)) {
+            throw new SerializationException("Cannot convert number to " + objTypeValue + ".");
         }
 
         Number number = null;
@@ -451,13 +452,13 @@ public class JSONSerializer implements Serializer<Object> {
             jsonSerializerListeners.readNumber(this, number);
         }
 
-        return BeanAdapter.coerce(number, (Class<?>) typeArgument, key);
+        return BeanAdapter.coerce(number, (Class<?>) objTypeValue, key);
     }
 
-    private Object readBooleanValue(final Reader reader, final Type typeArgument, final String key)
+    private Object readBooleanValue(final Reader reader, final Type objTypeValue, final String key)
         throws IOException, SerializationException {
-        if (!(typeArgument instanceof Class<?>)) {
-            throw new SerializationException("Cannot convert boolean to " + typeArgument + ".");
+        if (!(objTypeValue instanceof Class<?>)) {
+            throw new SerializationException("Cannot convert boolean to " + objTypeValue + ".");
         }
 
         String text = (c == 't') ? "true" : "false";
@@ -485,22 +486,22 @@ public class JSONSerializer implements Serializer<Object> {
             jsonSerializerListeners.readBoolean(this, value);
         }
 
-        return BeanAdapter.coerce(value, (Class<?>) typeArgument, key);
+        return BeanAdapter.coerce(value, (Class<?>) objTypeValue, key);
     }
 
     @SuppressWarnings("unchecked")
-    private Object readListValue(final Reader reader, final Type typeArgument, final String key)
+    private Object readListValue(final Reader reader, final Type objTypeValue, final String key)
         throws IOException, SerializationException {
         Sequence<Object> sequence = null;
         Type itemType = null;
 
-        if (typeArgument == Object.class) {
+        if (objTypeValue == Object.class) {
             // Return the default sequence and item types
             sequence = new ArrayList<>();
             itemType = Object.class;
         } else {
             // Determine the item type from generic parameters
-            Type parentType = typeArgument;
+            Type parentType = objTypeValue;
             while (parentType != null) {
                 if (parentType instanceof ParameterizedType) {
                     ParameterizedType parameterizedType = (ParameterizedType) parentType;
@@ -548,11 +549,11 @@ public class JSONSerializer implements Serializer<Object> {
 
             // Instantiate the sequence type
             Class<?> sequenceType;
-            if (typeArgument instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) typeArgument;
+            if (objTypeValue instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) objTypeValue;
                 sequenceType = (Class<?>) parameterizedType.getRawType();
             } else {
-                sequenceType = (Class<?>) typeArgument;
+                sequenceType = (Class<?>) objTypeValue;
             }
 
             try {
@@ -600,18 +601,18 @@ public class JSONSerializer implements Serializer<Object> {
     }
 
     @SuppressWarnings("unchecked")
-    private Object readMapValue(final Reader reader, final Type typeArgument)
+    private Object readMapValue(final Reader reader, final Type objTypeValue)
         throws IOException, SerializationException {
         Dictionary<String, Object> dictionary = null;
         Type valueType = null;
 
-        if (typeArgument == Object.class) {
+        if (objTypeValue == Object.class) {
             // Return the default dictionary and value types
             dictionary = new HashMap<>();
             valueType = Object.class;
         } else {
             // Determine the value type from generic parameters
-            Type parentType = typeArgument;
+            Type parentType = objTypeValue;
             while (parentType != null) {
                 if (parentType instanceof ParameterizedType) {
                     ParameterizedType parameterizedType = (ParameterizedType) parentType;
@@ -655,7 +656,7 @@ public class JSONSerializer implements Serializer<Object> {
 
             // Instantiate the dictionary or bean type
             if (valueType == null) {
-                Class<?> beanType = (Class<?>) typeArgument;
+                Class<?> beanType = (Class<?>) objTypeValue;
 
                 try {
                     dictionary = new BeanAdapter(beanType.getDeclaredConstructor().newInstance());
@@ -665,11 +666,11 @@ public class JSONSerializer implements Serializer<Object> {
                 }
             } else {
                 Class<?> dictionaryType;
-                if (typeArgument instanceof ParameterizedType) {
-                    ParameterizedType parameterizedType = (ParameterizedType) typeArgument;
+                if (objTypeValue instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) objTypeValue;
                     dictionaryType = (Class<?>) parameterizedType.getRawType();
                 } else {
-                    dictionaryType = (Class<?>) typeArgument;
+                    dictionaryType = (Class<?>) objTypeValue;
                 }
 
                 try {

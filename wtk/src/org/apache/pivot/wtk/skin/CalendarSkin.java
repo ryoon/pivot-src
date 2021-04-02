@@ -27,7 +27,7 @@ import org.apache.pivot.wtk.Component;
 public abstract class CalendarSkin extends ContainerSkin implements CalendarListener,
     CalendarSelectionListener {
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         Calendar calendar = (Calendar) component;

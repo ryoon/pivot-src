@@ -23,10 +23,12 @@ import org.apache.pivot.util.concurrent.TaskListener;
 /**
  * Default implementation of the {@link TaskListener} interface
  * with default implementations of the methods.
+ *
+ * @param <V> Return value type for the task.
  */
 public class WTKTaskListener<V> implements TaskListener<V> {
     @Override
-    public void taskExecuted(Task<V> task) {
+    public void taskExecuted(final Task<V> task) {
         // Empty block
     }
 
@@ -35,7 +37,7 @@ public class WTKTaskListener<V> implements TaskListener<V> {
      * with the {@link Task#getBackgroundThread} and {@link Task#getFault}.
      */
     @Override
-    public void executeFailed(Task<V> task) {
+    public void executeFailed(final Task<V> task) {
         ApplicationContext.handleUncaughtException(task.getBackgroundThread(), task.getFault());
     }
 }

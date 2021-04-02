@@ -16,9 +16,6 @@
  */
 package org.apache.pivot.demos.xml;
 
-import java.awt.Color;
-import java.awt.Font;
-
 import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Style;
@@ -30,10 +27,13 @@ import org.apache.pivot.xml.TextNode;
  * Custom tree view node renderer for presenting XML nodes.
  */
 public class NodeRenderer extends Label implements TreeView.NodeRenderer {
+    /**
+     * Maximum text length to display (without ellipsis) for a node.
+     */
     public static final int MAXIMUM_TEXT_LENGTH = 20;
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(final int width, final int height) {
         super.setSize(width, height);
 
         // Since this component doesn't have a parent, it won't be validated
@@ -42,9 +42,9 @@ public class NodeRenderer extends Label implements TreeView.NodeRenderer {
     }
 
     @Override
-    public void render(Object node, Sequence.Tree.Path path, int rowIndex, TreeView treeView,
-        boolean expanded, boolean selected, TreeView.NodeCheckState checkState,
-        boolean highlighted, boolean disabled) {
+    public void render(final Object node, final Sequence.Tree.Path path, final int rowIndex,
+        final TreeView treeView, final boolean expanded, final boolean selected,
+        final TreeView.NodeCheckState checkState, final boolean highlighted, final boolean disabled) {
         if (node != null) {
             String text;
             if (node instanceof Element) {
@@ -87,7 +87,7 @@ public class NodeRenderer extends Label implements TreeView.NodeRenderer {
     }
 
     @Override
-    public String toString(Object node) {
+    public String toString(final Object node) {
         String string;
         if (node instanceof Element) {
             Element element = (Element) node;
