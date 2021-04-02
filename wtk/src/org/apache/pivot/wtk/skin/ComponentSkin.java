@@ -19,7 +19,6 @@ package org.apache.pivot.wtk.skin;
 import java.awt.Color;
 import java.awt.Font;
 
-import org.apache.pivot.collections.Dictionary;
 import org.apache.pivot.collections.EnumSet;
 import org.apache.pivot.util.Utils;
 import org.apache.pivot.wtk.Bounds;
@@ -54,6 +53,7 @@ import org.apache.pivot.wtk.Style;
 import org.apache.pivot.wtk.TextInputMethodListener;
 import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.Tooltip;
+import org.apache.pivot.wtk.util.ColorUtilities;
 
 /**
  * Abstract base class for component skins.
@@ -496,22 +496,10 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * @return The converted font.
      * @throws IllegalArgumentException if the value is {@code null} or
      * cannot be converted.
+     * @see FontUtilities#fromObject
      */
     public Font fontFromObject(final Object fontValue) {
-        Utils.checkNull(fontValue, "font");
-
-        if (fontValue instanceof Font) {
-            return (Font) fontValue;
-        } else if (fontValue instanceof String) {
-            return FontUtilities.decodeFont((String) fontValue);
-        } else if (fontValue instanceof Dictionary) {
-            @SuppressWarnings("unchecked")
-            Dictionary<String, ?> fontDictionary = (Dictionary<String, ?>) fontValue;
-            return Theme.deriveFont(fontDictionary);
-        } else {
-            throw new IllegalArgumentException("Unable to convert "
-                + fontValue.getClass().getSimpleName() + " to Font!");
-        }
+        return FontUtilities.fromObject(fontValue);
     }
 
     /**
@@ -595,9 +583,10 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * color palette.
      * @return The real {@link Color} value.
      * @throws IllegalArgumentException if the {@code colorValue} is {@code null} or of a type we don't recognize.
+     * @see ColorUtilities#fromObject
      */
     public final Color colorFromObject(final Object colorValue) {
-        return colorFromObject(colorValue, null, false);
+        return ColorUtilities.fromObject(colorValue, null, false);
     }
 
     /**
@@ -610,9 +599,10 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * @return The real {@link Color} value.
      * @throws IllegalArgumentException if the {@code colorValue} is {@code null} (unless {@code allowNull}
      * is {@code true}), or of a type we don't recognize.
+     * @see ColorUtilities#fromObject
      */
     public final Color colorFromObject(final Object colorValue, final boolean allowNull) {
-        return colorFromObject(colorValue, null, allowNull);
+        return ColorUtilities.fromObject(colorValue, null, allowNull);
     }
 
     /**
@@ -624,9 +614,10 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * @param description An optional description for the call to {@link Utils#checkNull} in case of a null input value.
      * @return The real {@link Color} value.
      * @throws IllegalArgumentException if the {@code colorValue} is {@code null}, or of a type we don't recognize.
+     * @see ColorUtilities#fromObject
      */
     public final Color colorFromObject(final Object colorValue, final String description) {
-        return colorFromObject(colorValue, description, false);
+        return ColorUtilities.fromObject(colorValue, description, false);
     }
 
     /**
@@ -640,34 +631,10 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * @return The real {@link Color} value.
      * @throws IllegalArgumentException if the {@code colorValue} is {@code null} (unless {@code allowNull}
      * is {@code true}), or of a type we don't recognize.
+     * @see ColorUtilities#fromObject
      */
     public final Color colorFromObject(final Object colorValue, final String description, final boolean allowNull) {
-        if (!allowNull) {
-            Utils.checkNull(colorValue, description);
-        }
-
-        Color color;
-
-        if (allowNull && colorValue == null) {
-            color = null;
-        } else if (colorValue instanceof Color) {
-            color = (Color) colorValue;
-        } else if (colorValue instanceof String) {
-            Color decodedColor = GraphicsUtilities.decodeColor((String) colorValue);
-            if (!allowNull) {
-                Utils.checkNull(decodedColor, description);
-            }
-            color = decodedColor;
-        } else if (colorValue instanceof CSSColor) {
-            color = ((CSSColor) colorValue).getColor();
-        } else if (colorValue instanceof Number) {
-            color = getColor(((Number) colorValue).intValue());
-        } else {
-            throw new IllegalArgumentException("Object of type "
-                + colorValue.getClass().getName() + " cannot be converted to a Color.");
-        }
-
-        return color;
+        return ColorUtilities.fromObject(colorValue, description, allowNull);
     }
 
     /**

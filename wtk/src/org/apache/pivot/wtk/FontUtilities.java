@@ -19,6 +19,7 @@ package org.apache.pivot.wtk;
 import java.awt.Font;
 import java.util.Locale;
 
+import org.apache.pivot.collections.Dictionary;
 import org.apache.pivot.json.JSONSerializer;
 import org.apache.pivot.serialization.SerializationException;
 import org.apache.pivot.util.Utils;
@@ -258,5 +259,33 @@ public final class FontUtilities {
 
         return adjustedSize;
     }
+
+    /**
+     * Convert any object we support into its corresponding font.
+     * <p> Uses {@link #decodeFont} or {@link Theme#deriveFont}
+     * to do the work.
+     *
+     * @param fontValue The object to be converted to a font.
+     * @return The converted font.
+     * @throws IllegalArgumentException if the value is {@code null} or
+     * cannot be converted.
+     */
+    public static Font fromObject(final Object fontValue) {
+        Utils.checkNull(fontValue, "font");
+
+        if (fontValue instanceof Font) {
+            return (Font) fontValue;
+        } else if (fontValue instanceof String) {
+            return decodeFont((String) fontValue);
+        } else if (fontValue instanceof Dictionary) {
+            @SuppressWarnings("unchecked")
+            Dictionary<String, ?> fontDictionary = (Dictionary<String, ?>) fontValue;
+            return Theme.deriveFont(fontDictionary);
+        } else {
+            throw new IllegalArgumentException("Unable to convert "
+                + fontValue.getClass().getSimpleName() + " to Font!");
+        }
+    }
+
 
 }

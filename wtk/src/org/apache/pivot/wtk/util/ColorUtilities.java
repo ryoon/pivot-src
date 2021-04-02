@@ -18,8 +18,10 @@ package org.apache.pivot.wtk.util;
 
 import java.awt.Color;
 
+import org.apache.pivot.util.Utils;
 import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.CSSColor;
+import org.apache.pivot.wtk.GraphicsUtilities;
 
 
 /**
@@ -250,6 +252,48 @@ public final class ColorUtilities {
      */
     public static String toStringValue(final CSSColor color) {
         return toStringValue(color.getColor());
+    }
+
+    /**
+     * Interpret an object as a color value.
+     *
+     * @param colorValue One of a {@link String} (interpreted by {@link GraphicsUtilities#decodeColor(String,String)}),
+     * a straight {@link Color}, one of our {@link CSSColor} values, or an integer index into the theme's
+     * color palette.
+     * @param description An optional description for the call to {@link Utils#checkNull} in case of a null input value.
+     * @param allowNull Whether or not to allow a null color.
+     * @return The real {@link Color} value.
+     * @throws IllegalArgumentException if the {@code colorValue} is {@code null} (unless {@code allowNull}
+     * is {@code true}), or of a type we don't recognize.
+     */
+    public static Color fromObject(final Object colorValue, final String description, final boolean allowNull) {
+        if (!allowNull) {
+            Utils.checkNull(colorValue, description);
+        }
+
+        Color color;
+
+        if (allowNull && colorValue == null) {
+            color = null;
+        } else if (colorValue instanceof Color) {
+            color = (Color) colorValue;
+        } else if (colorValue instanceof String) {
+            Color decodedColor = GraphicsUtilities.decodeColor((String) colorValue);
+            if (!allowNull) {
+                Utils.checkNull(decodedColor, description);
+            }
+            color = decodedColor;
+        } else if (colorValue instanceof CSSColor) {
+            color = ((CSSColor) colorValue).getColor();
+        } else if (colorValue instanceof Number) {
+            Theme theme = Theme.getTheme();
+            color = theme.getColor(((Number) colorValue).intValue());
+        } else {
+            throw new IllegalArgumentException("Object of type "
+                + colorValue.getClass().getName() + " cannot be converted to a Color.");
+        }
+
+        return color;
     }
 
 }
