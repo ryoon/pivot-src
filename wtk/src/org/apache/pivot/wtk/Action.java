@@ -88,11 +88,11 @@ public abstract class Action {
         private Action action;
         private Component source;
 
-        public Callback(final Action action, final Component source) {
-            Utils.checkNull(action, "action");
+        public Callback(final Action actionToPerform, final Component actionSource) {
+            Utils.checkNull(actionToPerform, "action");
 
-            this.action = action;
-            this.source = source;
+            action = actionToPerform;
+            source = actionSource;
         }
 
         @Override
@@ -119,10 +119,10 @@ public abstract class Action {
 
     /**
      * Constructor to build the action and set the enabled state at the beginning.
-     * @param enabled Whether the action is to be initially enabled.
+     * @param initialEnable Whether the action is to be initially enabled.
      */
-    public Action(final boolean enabled) {
-        setEnabled(enabled);
+    public Action(final boolean initialEnable) {
+        setEnabled(initialEnable);
     }
 
     /**
@@ -165,11 +165,23 @@ public abstract class Action {
         return enabled;
     }
 
-    public void setEnabled(final boolean enabled) {
-        if (this.enabled != enabled) {
-            this.enabled = enabled;
+    public void setEnabled(final boolean enabledState) {
+        if (enabled != enabledState) {
+            enabled = enabledState;
             actionListeners.enabledChanged(this);
         }
+    }
+
+    /**
+     * Add this action to the named action dictionary.
+     * <p> This is equivalent to <code>getNamedActions().put(<i>id</i>, <i>action</i>)</code>
+     *
+     * @param id     The name to store this action under (can be referenced from button actions, etc.)
+     * @param action The action to be performed under this name.
+     * @return       The previous action (if any) listed under this name.
+     */
+    public static Action addNamedAction(final String id, final Action action) {
+        return namedActionDictionary.put(id, action);
     }
 
     public static NamedActionDictionary getNamedActions() {
