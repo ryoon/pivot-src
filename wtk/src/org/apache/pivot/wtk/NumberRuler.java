@@ -31,7 +31,7 @@ public class NumberRuler extends Component {
     /** Default number of digits to display for numbers in vertical rulers. */
     private static final int DEFAULT_TEXT_SIZE = 5;
 
-    /** Default orientation for one of these (most commonly used for line numbering). */
+    /** Current orientation for one of these (defaults to vertical, since most commonly used for line numbering). */
     private Orientation orientation = Orientation.VERTICAL;
 
     /**
@@ -46,21 +46,36 @@ public class NumberRuler extends Component {
      */
     private int textSize = DEFAULT_TEXT_SIZE;
 
+    /**
+     * The listeners for changes here.
+     */
     private NumberRulerListener.Listeners rulerListeners = new NumberRulerListener.Listeners();
 
+    /**
+     * Default constructor - instantiate our skin.
+     */
     public NumberRuler() {
         installSkin(NumberRuler.class);
     }
 
+    /**
+     * @return The current orientation of this ruler.
+     */
     public Orientation getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(final Orientation orientation) {
-        Utils.checkNull(orientation, "orientation");
+    /**
+     * Set the ruler orientation.
+     *
+     * @param newOrientation The new orientation of this ruler: vertical for a line number ruler,
+     * or horizontal for a character number ruler.
+     */
+    public void setOrientation(final Orientation newOrientation) {
+        Utils.checkNull(newOrientation, "orientation");
 
-        if (this.orientation != orientation) {
-            this.orientation = orientation;
+        if (newOrientation != orientation) {
+            orientation = newOrientation;
             rulerListeners.orientationChanged(this);
         }
     }
@@ -91,6 +106,21 @@ public class NumberRuler extends Component {
     /**
      * Set the number of digits of space to allow for the numbers.
      *
+     * @param size The (integer) number of digits to allow in vertical
+     * ruler numbers. The default of {@link #DEFAULT_TEXT_SIZE} allows
+     * for 99,999 maximum rows.
+     * @throws IllegalArgumentException if the value is negative,
+     * or exceeds {@link #MAX_TEXT_SIZE}.
+     */
+    public void setTextSize(final Number size) {
+        Utils.checkNullOrEmpty(size, "size");
+
+        setTextSize(size.intValue());
+    }
+
+    /**
+     * Set the number of digits of space to allow for the numbers.
+     *
      * @param size The number of digits to allow in vertical ruler numbers.
      * The default of {@link #DEFAULT_TEXT_SIZE} allows
      * for 99,999 maximum rows.
@@ -104,12 +134,15 @@ public class NumberRuler extends Component {
         }
 
         if (size != textSize) {
-            int previousSize = this.textSize;
-            this.textSize = size;
+            int previousSize = textSize;
+            textSize = size;
             rulerListeners.textSizeChanged(this, previousSize);
         }
     }
 
+    /**
+     * @return The current list of listeners for changes in this component.
+     */
     public ListenerList<NumberRulerListener> getRulerListeners() {
         return rulerListeners;
     }

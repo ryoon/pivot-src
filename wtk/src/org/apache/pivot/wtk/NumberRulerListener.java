@@ -27,7 +27,7 @@ public interface NumberRulerListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements NumberRulerListener {
+    class Adapter implements NumberRulerListener {
         @Override
         public void orientationChanged(final NumberRuler ruler) {
             // Empty block
@@ -42,7 +42,7 @@ public interface NumberRulerListener {
     /**
      * Listeners list for this interface.
      */
-    public static class Listeners extends ListenerList<NumberRulerListener>
+    class Listeners extends ListenerList<NumberRulerListener>
         implements NumberRulerListener {
         @Override
         public void orientationChanged(final NumberRuler ruler) {

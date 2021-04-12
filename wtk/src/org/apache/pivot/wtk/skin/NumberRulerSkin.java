@@ -27,17 +27,13 @@ import java.awt.geom.Rectangle2D;
 import java.text.StringCharacterIterator;
 import java.util.Arrays;
 
-import org.apache.pivot.collections.Dictionary;
-import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.util.Utils;
 import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.GraphicsUtilities;
 import org.apache.pivot.wtk.Insets;
 import org.apache.pivot.wtk.NumberRuler;
 import org.apache.pivot.wtk.NumberRulerListener;
 import org.apache.pivot.wtk.Orientation;
 import org.apache.pivot.wtk.Platform;
-import org.apache.pivot.wtk.Theme;
 
 /**
  * Skin for the {@link NumberRuler} component, which can be used as a horizontal or
@@ -51,46 +47,57 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
     /** Number of pixels to use for regular tic marks. */
     private static final int REGULAR_SIZE = 5;
 
+    /** Font used to draw the numbers. */
     private Font font;
+    /** Foreground color for the tic marks and the numbers. */
     private Color color;
+    /** Background color for the ruler. */
     private Color backgroundColor;
+    /** Fixed amount of padding. */
     private int padding = 2;
+    /** Number of pixels between markers in horizontal orientation. */
     private int markerSpacing;
+    /** Insets for the markers inside the component area. */
     private Insets markerInsets;
+    /** Amount of padding between rows in vertical mode. */
     private Insets rowPadding;
+    /** Major divisions at (fixed) 10 character positions. */
     private int majorDivision;
+    /** Minor divisions at (fixed) 5 character positions. */
     private int minorDivision;
+    /** Whether to show the zero number in horizontal mode. */
     private boolean showZeroNumber;
+    /** Whether to show major numbers on a horizontal ruler. */
     private boolean showMajorNumbers;
+    /** Whether to show minor numbers on a horizontal ruler. */
     private boolean showMinorNumbers;
+    /** Calculated measurements for the font. */
     private float charHeight, descent;
+    /** Pre-calculated line height for drawing. */
     private int lineHeight;
+
 
     @Override
     public void install(final Component component) {
         super.install(component);
 
-        Theme theme = Theme.getTheme();
-        setFont(theme.getFont());
+        setFont(getThemeFont());
 
-        setColor(0);
-        setBackgroundColor(19);
-
-        markerSpacing = 5;
-        markerInsets = new Insets(0);
-
-        rowPadding = new Insets(0);
+        setDefaultStyles();
 
         // Note: these aren't settable
         majorDivision = 10;
         minorDivision = 5;
-        // But these are
-        showZeroNumber = false;
-        showMajorNumbers = true;
-        showMinorNumbers = false;
 
         NumberRuler ruler = (NumberRuler) component;
         ruler.getRulerListeners().add(this);
+    }
+
+    /**
+     * @return The component.
+     */
+    private NumberRuler getNumberRuler() {
+        return (NumberRuler) getComponent();
     }
 
     @Override
@@ -100,7 +107,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
 
     @Override
     public int getPreferredHeight(final int width) {
-        NumberRuler ruler = (NumberRuler) getComponent();
+        NumberRuler ruler = getNumberRuler();
         Orientation orientation = ruler.getOrientation();
 
         // Give a little extra height if showing numbers
@@ -111,7 +118,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
 
     @Override
     public int getPreferredWidth(final int height) {
-        NumberRuler ruler = (NumberRuler) getComponent();
+        NumberRuler ruler = getNumberRuler();
         Orientation orientation = ruler.getOrientation();
 
         if (orientation == Orientation.VERTICAL) {
@@ -129,7 +136,16 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
         return 0;
     }
 
-    private void showNumber(final Graphics2D graphics, final FontRenderContext fontRenderContext,
+    /**
+     * Draw the number at the tip of the marker.
+     *
+     * @param graphics The graphics context to draw in.
+     * @param fontRenderContext Context used to render the font.
+     * @param number The actual number value to draw.
+     * @param x The X-position of the tip of the marker.
+     * @param y The Y-position of the tip of the marker.
+     */
+    private void drawNumber(final Graphics2D graphics, final FontRenderContext fontRenderContext,
             final int number, final int x, final int y) {
         String num = Integer.toString(number);
 
@@ -158,7 +174,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
 
         Rectangle clipRect = graphics.getClipBounds();
 
-        NumberRuler ruler = (NumberRuler) getComponent();
+        NumberRuler ruler = getNumberRuler();
         int textSize = ruler.getTextSize();
 
         graphics.setColor(backgroundColor);
@@ -193,13 +209,13 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
                     if (majorDivision != 0 && i % majorDivision == 0) {
                         graphics.drawLine(x, start, x, end2);
                         if ((showZeroNumber && i == 0) || (showMajorNumbers && i > 0)) {
-                            showNumber(graphics, fontRenderContext, i, x, end2);
+                            drawNumber(graphics, fontRenderContext, i, x, end2);
                         }
                     } else if (minorDivision != 0 && i % minorDivision == 0) {
                         graphics.drawLine(x, start, x, end3);
                         if ((showZeroNumber && i == 0) || (showMinorNumbers && i > 0)) {
                             // Show the minor numbers at the same y point as the major
-                            showNumber(graphics, fontRenderContext, i, x, end2);
+                            drawNumber(graphics, fontRenderContext, i, x, end2);
                         }
                     } else {
                         graphics.drawLine(x, start, x, end4);
@@ -258,64 +274,38 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
         return markerInsets;
     }
 
-    public final void setMarkerInsets(final Insets insets) {
-        Utils.checkNull(insets, "markerInsets");
-
-        this.markerInsets = insets;
+    /**
+     * Set the marker insets (for horizontal rulers).
+     *
+     * @param insets The inset values.
+     */
+    public final void setMarkerInsets(final Object insets) {
+        markerInsets = Insets.fromObject(insets, "markerInsets");
         repaintComponent();
     }
 
-    public final void setMarkerInsets(final Dictionary<String, ?> insets) {
-        setMarkerInsets(new Insets(insets));
+    /**
+     * @return The row padding for vertical rulers.
+     */
+    public final Insets getRowPadding() {
+        return rowPadding;
     }
 
-    public final void setMarkerInsets(final Sequence<?> insets) {
-        setMarkerInsets(new Insets(insets));
-    }
+    /**
+     * Set the row padding for vertical rulers.
+     *
+     * @param paddingValue The row padding value.
+     */
+    public final void setRowPadding(final Object paddingValue) {
+        rowPadding = Insets.fromObject(paddingValue, "rowPadding");
 
-    public final void setMarkerInsets(final int insets) {
-        setMarkerInsets(new Insets(insets));
-    }
-
-    public final void setMarkerInsets(final Number insets) {
-        setMarkerInsets(new Insets(insets));
-    }
-
-    public final void setMarkerInsets(final String insets) {
-        setMarkerInsets(Insets.decode(insets));
-    }
-
-    public final void setRowPadding(final Insets padding) {
-        Utils.checkNull(padding, "rowPadding");
-
-        this.rowPadding = padding;
         // Do the line height calculations again with this new padding
-        if (this.font != null) {
-            setFont(this.font);
+        if (font != null) {
+            setFont(font);
         } else {
             lineHeight = rowPadding.getHeight();
             invalidateComponent();
         }
-    }
-
-    public final void setRowPadding(final Dictionary<String, ?> padding) {
-        setRowPadding(new Insets(padding));
-    }
-
-    public final void setRowPadding(final Sequence<?> padding) {
-        setRowPadding(new Insets(padding));
-    }
-
-    public final void setRowPadding(final int padding) {
-        setRowPadding(new Insets(padding));
-    }
-
-    public final void setRowPadding(final Number padding) {
-        setRowPadding(new Insets(padding));
-    }
-
-    public final void setRowPadding(final String padding) {
-        setRowPadding(Insets.decode(padding));
     }
 
     /**
@@ -334,7 +324,7 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
     public final void setMarkerSpacing(final int spacing) {
         Utils.checkPositive(spacing, "markerSpacing");
 
-        this.markerSpacing = spacing;
+        markerSpacing = spacing;
         invalidateComponent();
     }
 
@@ -362,12 +352,12 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
      * Sets the flag to say whether to show a number at the zero point
      * (only for horizontal orientation).
      *
-     * @param showZeroNumber Whether a number should be shown for the zero point.
+     * @param showZero Whether a number should be shown for the zero point.
      */
-    public final void setShowZeroNumber(final boolean showZeroNumber) {
-        this.showZeroNumber = showZeroNumber;
+    public final void setShowZeroNumber(final boolean showZero) {
+        showZeroNumber = showZero;
 
-        NumberRuler ruler = (NumberRuler) getComponent();
+        NumberRuler ruler = getNumberRuler();
         if (ruler.getOrientation() == Orientation.HORIZONTAL) {
             invalidateComponent();
         }
@@ -385,12 +375,12 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
      * Sets the flag to say whether to show numbers at each major division
      * (only for horizontal orientation).
      *
-     * @param showMajorNumbers Whether numbers should be shown for major divisions.
+     * @param showNumbers Whether numbers should be shown for major divisions.
      */
-    public final void setShowMajorNumbers(final boolean showMajorNumbers) {
-        this.showMajorNumbers = showMajorNumbers;
+    public final void setShowMajorNumbers(final boolean showNumbers) {
+        showMajorNumbers = showNumbers;
 
-        NumberRuler ruler = (NumberRuler) getComponent();
+        NumberRuler ruler = getNumberRuler();
         if (ruler.getOrientation() == Orientation.HORIZONTAL) {
             invalidateComponent();
         }
@@ -408,12 +398,12 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
      * Sets the flag to say whether to show numbers at each minor division
      * (for horizontal orientation only).
      *
-     * @param showMinorNumbers Whether numbers should be shown for minor divisions.
+     * @param showNumbers Whether numbers should be shown for minor divisions.
      */
-    public final void setShowMinorNumbers(final boolean showMinorNumbers) {
-        this.showMinorNumbers = showMinorNumbers;
+    public final void setShowMinorNumbers(final boolean showNumbers) {
+        showMinorNumbers = showNumbers;
 
-        NumberRuler ruler = (NumberRuler) getComponent();
+        NumberRuler ruler = getNumberRuler();
         if (ruler.getOrientation() == Orientation.HORIZONTAL) {
             invalidateComponent();
         }
@@ -429,82 +419,39 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
     /**
      * Sets the font used in rendering the Ruler's text.
      *
-     * @param font The new font to use.
+     * @param fontValue The new font to use.
      */
-    public void setFont(final Font font) {
-        Utils.checkNull(font, "font");
-
-        this.font = font;
+    public void setFont(final Object fontValue) {
+        font = fontFromObject(fontValue);
 
         // Make some size calculations for the drawing code
         FontRenderContext fontRenderContext = Platform.getFontRenderContext();
-        LineMetrics lm = this.font.getLineMetrics("0", fontRenderContext);
-        this.charHeight = lm.getAscent();
-        this.descent = lm.getDescent();
-        this.lineHeight = (int) Math.ceil(lm.getHeight())
+        LineMetrics lm = font.getLineMetrics("0", fontRenderContext);
+        charHeight = lm.getAscent();
+        descent = lm.getDescent();
+        lineHeight = (int) Math.ceil(lm.getHeight())
             + (rowPadding != null ? rowPadding.getHeight() : 0);
 
         invalidateComponent();
     }
 
     /**
-     * Sets the font used in rendering the Ruler's text.
+     * Returns the foreground color of the text and markers of the ruler.
      *
-     * @param font A {@link ComponentSkin#decodeFont(String) font specification}
-     */
-    public final void setFont(final String font) {
-        setFont(decodeFont(font));
-    }
-
-    /**
-     * Sets the font used in rendering the Ruler's text.
-     *
-     * @param font A dictionary {@link Theme#deriveFont describing a font}
-     */
-    public final void setFont(final Dictionary<String, ?> font) {
-        setFont(Theme.deriveFont(font));
-    }
-
-    /**
-     * Returns the foreground color of the text of the ruler.
-     *
-     * @return The foreground (text) color.
+     * @return The foreground (text and marker) color.
      */
     public Color getColor() {
         return color;
     }
 
     /**
-     * Sets the foreground color of the text of the ruler.
+     * Sets the foreground color of the text and markers of the ruler.
      *
-     * @param color The foreground (that is, the text) color.
+     * @param colorValue The foreground (that is, the text and marker) color.
      */
-    public void setColor(final Color color) {
-        Utils.checkNull(color, "color");
-
-        this.color = color;
+    public void setColor(final Object colorValue) {
+        color = colorFromObject(colorValue, "color");
         repaintComponent();
-    }
-
-    /**
-     * Sets the foreground color of the text of the ruler.
-     *
-     * @param color Any of the {@linkplain GraphicsUtilities#decodeColor color
-     * values recognized by Pivot}.
-     */
-    public final void setColor(final String color) {
-        setColor(GraphicsUtilities.decodeColor(color, "color"));
-    }
-
-    /**
-     * Sets the foreground color of the text of the ruler to one of the
-     * theme colors.
-     *
-     * @param color Index of the theme color to use.
-     */
-    public final void setColor(final int color) {
-        Theme theme = currentTheme();
-        setColor(theme.getColor(color));
     }
 
     /**
@@ -519,31 +466,11 @@ public class NumberRulerSkin extends ComponentSkin implements NumberRulerListene
     /**
      * Sets the background color of the ruler.
      *
-     * @param backgroundColor New background color value.
+     * @param colorValue New background color value.
      */
-    public void setBackgroundColor(final Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setBackgroundColor(final Object colorValue) {
+        backgroundColor = colorFromObject(colorValue, "backgroundColor");
         repaintComponent();
-    }
-
-    /**
-     * Sets the background color of the ruler.
-     *
-     * @param backgroundColor Any of the
-     * {@linkplain GraphicsUtilities#decodeColor color values recognized by Pivot}.
-     */
-    public final void setBackgroundColor(final String backgroundColor) {
-        setBackgroundColor(GraphicsUtilities.decodeColor(backgroundColor, "backgroundColor"));
-    }
-
-    /**
-     * Sets the background color of the ruler to one of the theme colors.
-     *
-     * @param backgroundColor Index of the theme color to use for the background.
-     */
-    public final void setBackgroundColor(final int backgroundColor) {
-        Theme theme = currentTheme();
-        setBackgroundColor(theme.getColor(backgroundColor));
     }
 
 }

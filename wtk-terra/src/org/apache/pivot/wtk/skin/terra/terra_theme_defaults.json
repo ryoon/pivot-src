@@ -162,6 +162,17 @@
         backgroundColor : 4,
         color : 7,
         titleColor : 12
+    },
+
+    NumberRulerSkin : {
+        color : 0,
+        backgroundColor : 19,
+        markerSpacing : 5,
+        markerInsets : 0,
+        rowPadding : 0,
+        showZeroNumber : false,
+        showMajorNumbers : true,
+        showMinorNumbers : false
     }
 
     /* More to come ... */
