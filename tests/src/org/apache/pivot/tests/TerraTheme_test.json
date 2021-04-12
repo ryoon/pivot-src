@@ -24,6 +24,8 @@
 
     transitionEnabled: false,
 
+    thickFocusRectangle: false,
+
     colors: [
         "#0a0a0a",
         "#ebebeb",

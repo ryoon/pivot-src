@@ -16,7 +16,6 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -334,9 +333,6 @@ public class TerraSliderSkin extends SliderSkin {
         }
     }
 
-    private static final BasicStroke DASH_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
-        BasicStroke.JOIN_ROUND, 1.0f, new float[] {0.0f, 2.0f}, 0.0f);
-
     @Override
     public void paint(final Graphics2D graphics) {
         super.paint(graphics);
@@ -378,7 +374,7 @@ public class TerraSliderSkin extends SliderSkin {
         }
 
         if (thumb.isFocused()) {
-            graphics.setStroke(DASH_STROKE);
+            graphics.setStroke(getFocusRectangleStroke());
             graphics.setColor(buttonBorderColor);
 
             graphics.drawRect(0, 0, width - 1, height - 1);

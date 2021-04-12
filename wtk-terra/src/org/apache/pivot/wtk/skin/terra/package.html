@@ -54,7 +54,7 @@ The font, color palette, and message icons are defined in a JSON file that shoul
 <td><code>String</code></td>
 <td>
 The default theme font; must be understandable by
-<code>java.awt.Font.decode()</code>.
+<code>org.apache.pivot.wtk.FontUtilities.decodeFont()</code>.
 </td>
 </tr>
 <tr valign="top">
@@ -94,11 +94,22 @@ Set true if enabled (default), false otherwise.
 </td>
 </tr>
 <tr valign="top">
+<td><code>thickFocusRectangle</code></td>
+<td><code>boolean</code></td>
+<td>
+Tell if the theme should draw "thick" focus rectangles.
+The previous version default of one pixel wide dashed lines
+was not very visible on some backgrounds or at high screen
+resolutions, so thicker ones may be more suitable.
+Set true if enabled (default), false otherwise (same as previous versions).
+</td>
+</tr>
+<tr valign="top">
 <td><code>colors</code></td>
 <td><code>List&lt;String&gt;</code></td>
 <td>
 This list should contain eight colors in a form understandable by
-<code>java.awt.Color.decode()</code>. This list represents the theme's
+<code>org.apache.pivot.wtk.GraphicsUtilities.decodeColor()</code>. This list represents the theme's
 "base color palette", from which the full color palette is
 derived. Each of these eight colors will be expanded to three
 colors in the final palette: a darker version, the color itself,

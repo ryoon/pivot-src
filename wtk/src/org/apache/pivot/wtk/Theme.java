@@ -250,6 +250,15 @@ public abstract class Theme {
     public abstract boolean isTransitionEnabled();
 
     /**
+     * Tell if the theme has "thick" focus rectangles, rather than a one pixel version
+     * that may be hard to distinguish in certain color schemes, or screen resolutions.
+     *
+     * @return {@code true} if thick focus rectangles should be drawn, or {@code false}
+     * for thin ones (the default in earlier versions).
+     */
+    public abstract boolean isThickFocusRectangle();
+
+    /**
      * Set appropriate default styles for the given skin object, specified by the
      * current theme.
      *

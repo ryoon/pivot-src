@@ -224,10 +224,7 @@ public class TerraSpinnerSkin extends ContainerSkin implements Spinner.Skin, Spi
 
             // Paint the focus state
             if (spinnerContentLocal.isFocused()) {
-                BasicStroke dashStroke = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND, 1.0f, new float[] {0.0f, 2.0f}, 0.0f);
-
-                graphics.setStroke(dashStroke);
+                graphics.setStroke(getFocusRectangleStroke());
                 graphics.setColor(borderColor);
 
                 GraphicsUtilities.setAntialiasingOn(graphics);

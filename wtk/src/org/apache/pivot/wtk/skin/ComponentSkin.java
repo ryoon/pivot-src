@@ -16,6 +16,7 @@
  */
 package org.apache.pivot.wtk.skin;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 
@@ -546,6 +547,16 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
     }
 
     /**
+     * Returns whether the current Theme has thick focus rectangles.
+     *
+     * @return {@code true} if thick focus rectangles are drawn (new default),
+     * or {@code false} otherwise (default for previous versions).
+     */
+    public final boolean themeHasThickFocusRectangle() {
+        return currentTheme().isThickFocusRectangle();
+    }
+
+    /**
      * Returns the Theme default background color.
      *
      * @return {@link Color#WHITE} if the theme is not dark
@@ -563,6 +574,16 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      */
     public final Color defaultForegroundColor() {
         return currentTheme().getDefaultForegroundColor();
+    }
+
+    /**
+     * Returns a dashed line stroke for drawing focus rectangles, based on
+     * the current theme setting for "thick" ones.
+     *
+     * @return A line stroke object with the correct thickness and dash pattern.
+     */
+    public final BasicStroke getFocusRectangleStroke() {
+        return GraphicsUtilities.getFocusStroke(themeHasThickFocusRectangle());
     }
 
     /**

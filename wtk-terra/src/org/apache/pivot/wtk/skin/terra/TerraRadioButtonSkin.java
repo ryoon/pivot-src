@@ -16,7 +16,6 @@
  */
 package org.apache.pivot.wtk.skin.terra;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -60,7 +59,7 @@ public class TerraRadioButtonSkin extends RadioButtonSkin {
         font = theme.getFont();
         color = theme.getColor(1);
         disabledColor = theme.getColor(7);
-        spacing = 3;
+        spacing = themeHasThickFocusRectangle() ? 4 : 3;
 
         buttonColor = theme.getColor(4);
         buttonBorderColor = theme.getColor(7);
@@ -172,16 +171,13 @@ public class TerraRadioButtonSkin extends RadioButtonSkin {
                 graphics.setColor(focusColor);
                 graphics.fillOval(0, 0, BUTTON_DIAMETER - 1, BUTTON_DIAMETER - 1);
             } else {
-                BasicStroke dashStroke = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND, 1.0f, new float[] {0.0f, 2.0f}, 0.0f);
-
-                graphics.setStroke(dashStroke);
+                graphics.setStroke(getFocusRectangleStroke());
                 graphics.setColor(buttonBorderColor);
 
                 GraphicsUtilities.setAntialiasingOn(graphics);
 
-                Rectangle2D focusRectangle = new Rectangle2D.Double(BUTTON_DIAMETER + 1, 0.5,
-                    dataRenderer.getWidth() + spacing * 2 - 2, dataRenderer.getHeight() - 1);
+                Rectangle2D focusRectangle = new Rectangle2D.Double(BUTTON_DIAMETER + (spacing / 2), 0.5,
+                    dataRenderer.getWidth() + spacing, (double) dataRenderer.getHeight() - 1.5);
                 graphics.draw(focusRectangle);
             }
         }

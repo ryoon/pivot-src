@@ -60,7 +60,7 @@ public class TerraCheckboxSkin extends CheckboxSkin {
         font = theme.getFont();
         color = theme.getColor(1);
         disabledColor = theme.getColor(7);
-        spacing = 3;
+        spacing = themeHasThickFocusRectangle() ? 4 : 3;
 
         buttonColor = theme.getColor(4);
         buttonBorderColor = theme.getColor(7);
@@ -174,16 +174,13 @@ public class TerraCheckboxSkin extends CheckboxSkin {
                 graphics.setColor(focusColor);
                 graphics.fillRect(0, 0, CHECKBOX_SIZE, CHECKBOX_SIZE);
             } else {
-                BasicStroke dashStroke = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND, 1.0f, new float[] {0.0f, 2.0f}, 0.0f);
-
-                graphics.setStroke(dashStroke);
+                graphics.setStroke(getFocusRectangleStroke());
                 graphics.setColor(buttonBorderColor);
 
                 GraphicsUtilities.setAntialiasingOn(graphics);
 
-                Rectangle2D focusRectangle = new Rectangle2D.Double(CHECKBOX_SIZE + 1, 0.5,
-                    dataRenderer.getWidth() + spacing * 2 - 2, dataRenderer.getHeight() - 1);
+                Rectangle2D focusRectangle = new Rectangle2D.Double(CHECKBOX_SIZE + (spacing / 2), 0.5,
+                    dataRenderer.getWidth() + spacing, (double) dataRenderer.getHeight() - 1.5);
                 graphics.draw(focusRectangle);
             }
         }

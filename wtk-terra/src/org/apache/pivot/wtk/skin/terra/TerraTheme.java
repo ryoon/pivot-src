@@ -122,6 +122,8 @@ public final class TerraTheme extends Theme {
     private static boolean themeIsFlat = false;
     /** Whether this theme allows animations during transitions. */
     private static boolean transitionEnabled = true;
+    /** Whether this theme draws "thick" focus rectangles. */
+    private static boolean thickFocusRectangle = true;
 
     /** What the default background of a component should be according to this theme. */
     private Color defaultBackgroundColor;
@@ -141,6 +143,8 @@ public final class TerraTheme extends Theme {
     public static final String THEME_IS_FLAT_PROPERTY = "themeIsFlat";
     /** Property map key for the "transitionEnabled" flag for the theme. */
     public static final String TRANSITION_ENABLED_PROPERTY = "transitionEnabled";
+    /** Property map key for the "thickFocusRectangle" flag for the theme. */
+    public static final String THICK_FOCUS_RECTANGLE_PROPERTY = "thickFocusRectangle";
     /** Property map key for the list of base colors for the theme. */
     public static final String COLORS_PROPERTY = "colors";
     /** Property map key for the name of the default styles file. */
@@ -376,6 +380,7 @@ public final class TerraTheme extends Theme {
             themeIsDark = properties.getBoolean(THEME_IS_DARK_PROPERTY, false);
             themeIsFlat = properties.getBoolean(THEME_IS_FLAT_PROPERTY, false);
             transitionEnabled = properties.getBoolean(TRANSITION_ENABLED_PROPERTY, true);
+            thickFocusRectangle = properties.getBoolean(THICK_FOCUS_RECTANGLE_PROPERTY, true);
 
             // For dark themes, reverse the brighten/darken multipliers so "darker" -> brighter, and vice-versa
             if (themeIsDark) {
@@ -580,6 +585,18 @@ public final class TerraTheme extends Theme {
     @Override
     public boolean isTransitionEnabled() {
         return transitionEnabled;
+    }
+
+    /**
+     * Tell if the theme has thick focus rectangles, which may be more visible in some
+     * color schemes, or some screen resolutions.
+     *
+     * @return {@code true} if the focus rectangle should be thick, or {@code false}
+     * for thin (one-pixel) ones (the default for earlier versions).
+     */
+    @Override
+    public boolean isThickFocusRectangle() {
+        return thickFocusRectangle;
     }
 
     /**

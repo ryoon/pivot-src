@@ -16,6 +16,7 @@
  */
 package org.apache.pivot.wtk;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -110,6 +111,13 @@ public final class GraphicsUtilities {
     private static final int TWO_BYTES = 16;
     /** Shift value for 8 bits (or one color value). */
     private static final int ONE_BYTE = 8;
+
+    /** A "thick" focus rectangle (dashed line) stroke. */
+    private static final BasicStroke THICK_STROKE = new BasicStroke(2.5f, BasicStroke.CAP_ROUND,
+                BasicStroke.JOIN_ROUND, 1.0f, new float[] {1.0f, 4.0f}, 0.0f);
+    /** A "thin" focus rectangle (dashed line) stroke. */
+    private static final BasicStroke THIN_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
+                BasicStroke.JOIN_ROUND, 1.0f, new float[] {0.0f, 2.0f}, 0.0f);
 
 
     /** Utility classes should not have public constructors. */
@@ -670,5 +678,20 @@ public final class GraphicsUtilities {
                 break;
         }
     }
+
+
+    /**
+     * Construct a line stroke object for a focus rectangle, in one of two styles:
+     * very thin with one pixel gaps, and a thicker one of double width and two pixel
+     * gaps.
+     *
+     * @param thick {@code true} to get the thicker style, or {@code false} to get
+     * the (default) thin one.
+     * @return The line stroke needed to draw the line(s).
+     */
+    public static BasicStroke getFocusStroke(final boolean thick) {
+        return thick ? THICK_STROKE : THIN_STROKE;
+    }
+
 }
 

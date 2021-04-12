@@ -375,10 +375,7 @@ public class TerraListButtonSkin extends ListButtonSkin {
 
         // Paint the focus state
         if (listButton.isFocused()) {
-            BasicStroke dashStroke = new BasicStroke(1.0f, BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND, 1.0f, new float[] {0.0f, 2.0f}, 0.0f);
-
-            graphics.setStroke(dashStroke);
+            graphics.setStroke(getFocusRectangleStroke());
             graphics.setColor(borderColorLocal);
 
             graphics.draw(new RoundRectangle2D.Double(2.5, 2.5,
