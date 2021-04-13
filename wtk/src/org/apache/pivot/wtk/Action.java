@@ -26,14 +26,19 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Abstract base class for "actions". Actions are common application behaviors
- * generally triggered by buttons and keyboard shortcuts.
+ * generally triggered by buttons, menu items, and keyboard shortcuts.
  */
 public abstract class Action {
     /**
      * Action dictionary implementation.
+     * <p> We wrap the underlying {@code Map<>} implementation so that only a few methods
+     * are available for use.
      */
     public static final class NamedActionDictionary implements Dictionary<String, Action>,
         Iterable<String> {
+        /**
+         * Private constructor so only we can construct the singleton instance.
+         */
         private NamedActionDictionary() {
         }
 
@@ -60,14 +65,14 @@ public abstract class Action {
 
         @Override
         public Action remove(final String id) {
-            Action action = null;
+            Action removedAction = null;
 
             if (containsKey(id)) {
-                action = namedActions.remove(id);
-                actionClassListeners.actionRemoved(id, action);
+                removedAction = namedActions.remove(id);
+                actionClassListeners.actionRemoved(id, removedAction);
             }
 
-            return action;
+            return removedAction;
         }
 
         @Override
@@ -82,12 +87,25 @@ public abstract class Action {
     }
 
     /**
-     * A callback for the GUI thread to perform the given action there.
+     * A callback for the GUI thread to perform the given action there, unless the
+     * action is disabled at the time {@code run()} is called.
      */
-    public static class Callback implements Runnable {
+    public static final class Callback implements Runnable {
+        /**
+         * The action to be performed in this callback.
+         */
         private Action action;
+        /**
+         * The source component that initiated the action.
+         */
         private Component source;
 
+        /**
+         * Construct a callback to perform the action on the GUI (EDT) thread.
+         *
+         * @param actionToPerform The action.
+         * @param actionSource    The source component.
+         */
         public Callback(final Action actionToPerform, final Component actionSource) {
             Utils.checkNull(actionToPerform, "action");
 
@@ -97,18 +115,36 @@ public abstract class Action {
 
         @Override
         public void run() {
-            action.perform(source);
+            if (action.isEnabled()) {
+                action.perform(source);
+            }
         }
     }
 
+    /**
+     * Flag as to whether this action is currently enabled or not.
+     */
     private boolean enabled = true;
 
+    /**
+     * List per action of the listeners for activity on that action.
+     */
     private ActionListener.Listeners actionListeners = new ActionListener.Listeners();
 
+    /**
+     * The backing map for the named action dictionary.
+     */
     private static HashMap<String, Action> namedActions = new HashMap<>();
+    /**
+     * The global dictionary associating action ids with their implementations.
+     */
     private static NamedActionDictionary namedActionDictionary = new NamedActionDictionary();
 
+    /**
+     * Global list of listeners for all action activity.
+     */
     private static ActionClassListener.Listeners actionClassListeners = new ActionClassListener.Listeners();
+
 
     /**
      * Constructor which builds the action and sets it enabled to begin with.
@@ -119,6 +155,7 @@ public abstract class Action {
 
     /**
      * Constructor to build the action and set the enabled state at the beginning.
+     *
      * @param initialEnable Whether the action is to be initially enabled.
      */
     public Action(final boolean initialEnable) {
@@ -143,7 +180,7 @@ public abstract class Action {
     public abstract void perform(Component source);
 
     /**
-     * Perform the named action.
+     * Perform the named action, unless the action is disabled.
      * <p> This is the equivalent of
      * <code>Action.getNamedActions().get(<i>actionName</i>).perform(<i>comp</i>)</code>.
      *
@@ -158,13 +195,34 @@ public abstract class Action {
         Action action = namedActionDictionary.get(actionName);
         Utils.checkNull(action, "action");
 
-        action.perform(comp);
+        if (action.isEnabled()) {
+            action.perform(comp);
+        }
     }
 
+    /**
+     * Check if this action is currently enabled.
+     *
+     * @return Whether or not this action is currently enabled.
+     * @see #setEnabled
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Set this action enabled or disabled.
+     * <p> Note: in general, the {@link #perform} method can be called whether or not
+     * this flag is set, so it will be incumbent on the caller to determine if this is
+     * appropriate. However, using the {@link Callback} class or the {@link #performAction}
+     * method WILL check this flag before calling {@link #perform}.
+     * <p> Also note: buttons and menu items that invoke this action will automatically
+     * be enabled/disabled by setting this flag.
+     * <p> If the enabled state changes, the associated {@link ActionListener#enabledChanged}
+     * method(s) will be called.
+     *
+     * @param enabledState The new enabled state for the action.
+     */
     public void setEnabled(final boolean enabledState) {
         if (enabled != enabledState) {
             enabled = enabledState;
@@ -184,14 +242,35 @@ public abstract class Action {
         return namedActionDictionary.put(id, action);
     }
 
+    /**
+     * Get the named action from the dictionary.
+     * <p> This is the equivalent of <code>getNamedActions().get(<i>id</i>)</code>
+     *
+     * @param id The name this action was stored under in the dictionary.
+     * @return   The action currently associated with this id (or {@code null} if
+     *           there is no saved action with that id value).
+     */
+    public static Action getNamedAction(final String id) {
+        return namedActionDictionary.get(id);
+    }
+
+    /**
+     * @return The global named action dictionary.
+     */
     public static NamedActionDictionary getNamedActions() {
         return namedActionDictionary;
     }
 
+    /**
+     * @return The list of listeners for this action.
+     */
     public ListenerList<ActionListener> getActionListeners() {
         return actionListeners;
     }
 
+    /**
+     * @return The list of listeners for all action activities.
+     */
     public static ListenerList<ActionClassListener> getActionClassListeners() {
         return actionClassListeners;
     }
