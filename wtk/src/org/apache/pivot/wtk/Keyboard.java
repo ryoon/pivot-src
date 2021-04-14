@@ -39,7 +39,30 @@ public final class Keyboard {
      * Enumeration representing keyboard modifiers.
      */
     public enum Modifier {
-        SHIFT, CTRL, ALT, META;
+        SHIFT(InputEvent.SHIFT_DOWN_MASK),
+        CTRL(InputEvent.CTRL_DOWN_MASK),
+        ALT(InputEvent.ALT_DOWN_MASK),
+        META(InputEvent.META_DOWN_MASK);
+
+        /**
+         * The AWT modifier value.
+         */
+        private final int awtModifier;
+
+        /**
+         * The standard modifier text appropriate for the platform.
+         */
+        private final String keySymbol;
+
+        /**
+         * Define the enum value, along with the AWT modifier value.
+         *
+         * @param modifier The AWT modifier for this enum.
+         */
+        private Modifier(final int modifier) {
+            awtModifier = modifier;
+            keySymbol = InputEvent.getModifiersExText(modifier);
+        }
 
         /**
          * @return The one-bit mask for this modifier, which is
@@ -76,12 +99,54 @@ public final class Keyboard {
         }
 
         /**
+         * Determine the complete set of AWT modifiers for a set of mask values.
+         *
+         * @param mask The complete mask set of our modifiers.
+         * @return     The complete mask for AWT use.
+         */
+        public static int getAWTMask(final int mask) {
+            int awtMask = 0;
+            for (Modifier m : values()) {
+                if ((mask & m.getMask()) > 0) {
+                    awtMask |= m.awtModifier;
+                }
+            }
+            return awtMask;
+        }
+
+        /**
          * The set of all possible keyboard modifiers (for use with {@link #isPressed},
          * or {@link Modifier#getMask(Set)}, {@link #areAllPressed(Set)}, or
          * {@link #areAnyPressed(Set)}).
          */
         public static final Set<Modifier> ALL_MODIFIERS =
             EnumSet.of(Modifier.SHIFT, Modifier.CTRL, Modifier.ALT, Modifier.META);
+
+        /**
+         * Convert the input string into one of our enum values.
+         *
+         * @param input Should be one of the enum constants, but we will also
+         *              recognize the constant regardless of case, and also
+         *              allow the Unicode character equivalent to be valid.
+         * @return The enum value corresponding to the input.
+         * @throws IllegalArgumentException if the input cannot be recognized
+         * @throws NullPointerException if the input value is {@code null}
+         */
+         public static final Modifier decode(final String input) {
+             if (input == null) {
+                 throw new NullPointerException("Null input to Modifier.decode");
+             }
+
+             for (Modifier m : values()) {
+                 if (m.toString().equalsIgnoreCase(input)) {
+                     return m;
+                 } else if (m.keySymbol.equals(input)) {
+                     return m;
+                 }
+             }
+
+             throw new IllegalArgumentException("Illegal input to Modifier.decode: '" + input + "'");
+        }
     }
 
     /**
@@ -108,8 +173,8 @@ public final class Keyboard {
          * @see Keyboard.Modifier
          */
         public KeyStroke(final int code, final int modifiers) {
-            this.keyCode = code;
-            this.keyModifiers = modifiers;
+            keyCode = code;
+            keyModifiers = modifiers;
         }
 
         /**
@@ -143,7 +208,7 @@ public final class Keyboard {
         public int hashCode() {
             // NOTE Key codes are currently defined as 16-bit values, so
             // shifting by 4 bits to append the modifiers should be OK.
-            // However, if Sun changes the key code values in the future,
+            // However, i:w f Sun changes the key code values in the future,
             // this may no longer be safe.
             int hashCode = keyCode << 4 | keyModifiers;
             return hashCode;
@@ -151,27 +216,12 @@ public final class Keyboard {
 
         @Override
         public String toString() {
-            int awtModifiers = 0x00;
-
-            if (((keyModifiers & Modifier.META.getMask()) > 0)) {
-                awtModifiers |= InputEvent.META_DOWN_MASK;
-            }
-
-            if (((keyModifiers & Modifier.CTRL.getMask()) > 0)) {
-                awtModifiers |= InputEvent.CTRL_DOWN_MASK;
-            }
-
-            if (((keyModifiers & Modifier.ALT.getMask()) > 0)) {
-                awtModifiers |= InputEvent.ALT_DOWN_MASK;
-            }
-
-            if (((keyModifiers & Modifier.SHIFT.getMask()) > 0)) {
-                awtModifiers |= InputEvent.SHIFT_DOWN_MASK;
-            }
+            int awtModifiers = Modifier.getAWTMask(keyModifiers);
 
             if (awtModifiers != 0x00) {
-                return InputEvent.getModifiersExText(awtModifiers)
-                    + Platform.getKeyStrokeModifierSeparator() + KeyEvent.getKeyText(keyCode);
+                String sep = Platform.getKeyStrokeModifierSeparator();
+                return InputEvent.getModifiersExText(awtModifiers).replace("+", sep)
+                    + sep + KeyEvent.getKeyText(keyCode);
             }
 
             return KeyEvent.getKeyText(keyCode);
@@ -180,8 +230,8 @@ public final class Keyboard {
         /**
          * Decode a keystroke value from its string representation.
          *
-         * @param value Input value, such as {@code "Cmd-F1"} or
-         *              {@code "Ctrl-Shift-Left"}.
+         * @param value Input value, such as {@code "Cmd-F1"},
+         *              {@code "Ctrl-Shift-Left"}, or even <code>"&#x2303;&#x2318;F1"</code>.
          * @return      The corresponding {@code KeyStroke} value.
          * @throws IllegalArgumentException if the input string cannot be
          *         decoded.
@@ -191,10 +241,12 @@ public final class Keyboard {
 
             int keyCode = KeyCode.UNDEFINED;
             int keyModifiers = 0x00;
+            String sep = Platform.getKeyStrokeModifierSeparator();
+            boolean emptySep = sep.equals("");
 
-            String[] keys = value.split("-");
+            String[] keys = value.split(sep);
             for (int i = 0, n = keys.length; i < n; i++) {
-                if (i < n - 1) {
+                if ((emptySep && keys[i].charAt(0) < 0x1000) || (i < n - 1)) {
                     // The first n-1 parts are Modifier values
                     String modifierAbbreviation = keys[i].toUpperCase(Locale.ENGLISH);
 
@@ -202,14 +254,15 @@ public final class Keyboard {
                     if (modifierAbbreviation.equals(COMMAND_ABBREVIATION)) {
                         modifier = Platform.getCommandModifier();
                     } else {
-                        modifier = Modifier.valueOf(modifierAbbreviation);
+                        modifier = Modifier.decode(modifierAbbreviation);
                     }
 
                     keyModifiers |= modifier.getMask();
                 } else {
                     // The final part is the KeyCode itself
+                    String code = emptySep ? value.substring(i) : keys[i];
                     try {
-                        Field keyCodeField = KeyCode.class.getField(keys[i].toUpperCase(Locale.ENGLISH));
+                        Field keyCodeField = KeyCode.class.getField(code.toUpperCase(Locale.ENGLISH));
                         keyCode = ((Integer) keyCodeField.get(null)).intValue();
                     } catch (Exception exception) {
                         throw new IllegalArgumentException(exception);
