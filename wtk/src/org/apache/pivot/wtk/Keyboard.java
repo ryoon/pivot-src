@@ -20,6 +20,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.pivot.collections.EnumSet;
 import org.apache.pivot.collections.Set;
@@ -59,7 +61,7 @@ public final class Keyboard {
          *
          * @param modifier The AWT modifier for this enum.
          */
-        private Modifier(final int modifier) {
+        Modifier(final int modifier) {
             awtModifier = modifier;
             keySymbol = InputEvent.getModifiersExText(modifier);
         }
@@ -132,7 +134,7 @@ public final class Keyboard {
          * @throws IllegalArgumentException if the input cannot be recognized
          * @throws NullPointerException if the input value is {@code null}
          */
-         public static final Modifier decode(final String input) {
+         public static Modifier decode(final String input) {
              if (input == null) {
                  throw new NullPointerException("Null input to Modifier.decode");
              }
@@ -164,6 +166,20 @@ public final class Keyboard {
         private int keyModifiers = 0x00;
 
         public static final String COMMAND_ABBREVIATION = "CMD";
+
+        /**
+         * Pattern to recognize modifiers and key values. Note: this supports the "current" Unicode symbols used
+         * on OSX to display keystrokes (and what is returned by {@link InputEvent#getModifiersExText})
+         * but could, potentially, be subject to change.
+         * <p> Supported patterns include: <code>F12</code> (key by itself), <code>Cmd+A</code> ("Cmd" modifier,
+         * which is platform-specific, using "+" separator), <code>Ctrl-Shift-Alt-Left</code> (multiple modifiers,
+         * using "-" separator), <code>&#x2303;&#x21E7;Right</code> (OSX-style modifiers without separator),
+         * <code>&#x2325;-&#x21E7;-F4</code> (OSX-style with separators), or <code>ALT+ctrl+R</code> (upper- or
+         * lower-case modifiers).
+         * @see KeyStroke#decode
+         */
+        private static final Pattern KEYSTROKE_PATTERN =
+                Pattern.compile("([\u21E7\u2303\u2325\u2318]+|(([a-zA-Z]+|[\u21E7\u2303\u2325\u2318])[\\-\\+])+)?(.+)");
 
         /**
          * Construct from a key code and the bit mask of the desired modifiers.
@@ -208,7 +224,7 @@ public final class Keyboard {
         public int hashCode() {
             // NOTE Key codes are currently defined as 16-bit values, so
             // shifting by 4 bits to append the modifiers should be OK.
-            // However, i:w f Sun changes the key code values in the future,
+            // However, if Sun changes the key code values in the future,
             // this may no longer be safe.
             int hashCode = keyCode << 4 | keyModifiers;
             return hashCode;
@@ -231,7 +247,7 @@ public final class Keyboard {
          * Decode a keystroke value from its string representation.
          *
          * @param value Input value, such as {@code "Cmd-F1"},
-         *              {@code "Ctrl-Shift-Left"}, or even <code>"&#x2303;&#x2318;F1"</code>.
+         *              {@code "Ctrl+Shift+Left"}, or even <code>"&#x2303;&#x2318;F1"</code>.
          * @return      The corresponding {@code KeyStroke} value.
          * @throws IllegalArgumentException if the input string cannot be
          *         decoded.
@@ -244,30 +260,40 @@ public final class Keyboard {
             String sep = Platform.getKeyStrokeModifierSeparator();
             boolean emptySep = sep.equals("");
 
-            String[] keys = value.split(sep);
-            for (int i = 0, n = keys.length; i < n; i++) {
-                if ((emptySep && keys[i].charAt(0) < 0x1000) || (i < n - 1)) {
-                    // The first n-1 parts are Modifier values
-                    String modifierAbbreviation = keys[i].toUpperCase(Locale.ENGLISH);
-
-                    Modifier modifier;
-                    if (modifierAbbreviation.equals(COMMAND_ABBREVIATION)) {
-                        modifier = Platform.getCommandModifier();
+            Matcher m = KEYSTROKE_PATTERN.matcher(value);
+            if (m.matches()) {
+                String modifiers = m.group(1);
+                if (modifiers != null) {
+                    String[] keys;
+                    if (modifiers.indexOf('-') >= 0 || modifiers.indexOf('+') >= 0) {
+                        keys = modifiers.split("[\\-\\+]");
                     } else {
-                        modifier = Modifier.decode(modifierAbbreviation);
+                        keys  = modifiers.split("");
                     }
+                    for (int i = 0, n = keys.length; i < n; i++) {
+                        String modifierAbbreviation = keys[i].toUpperCase(Locale.ENGLISH);
 
-                    keyModifiers |= modifier.getMask();
-                } else {
-                    // The final part is the KeyCode itself
-                    String code = emptySep ? value.substring(i) : keys[i];
-                    try {
-                        Field keyCodeField = KeyCode.class.getField(code.toUpperCase(Locale.ENGLISH));
-                        keyCode = ((Integer) keyCodeField.get(null)).intValue();
-                    } catch (Exception exception) {
-                        throw new IllegalArgumentException(exception);
+                        Modifier modifier;
+                        if (modifierAbbreviation.equals(COMMAND_ABBREVIATION)) {
+                            modifier = Platform.getCommandModifier();
+                        } else {
+                            modifier = Modifier.decode(modifierAbbreviation);
+                        }
+
+                        keyModifiers |= modifier.getMask();
                     }
                 }
+
+                // The final part is the KeyCode itself
+                String code = m.group(4);
+                try {
+                    Field keyCodeField = KeyCode.class.getField(code.toUpperCase(Locale.ENGLISH));
+                    keyCode = ((Integer) keyCodeField.get(null)).intValue();
+                } catch (Exception exception) {
+                    throw new IllegalArgumentException(exception);
+                }
+            } else {
+                throw new IllegalArgumentException("KeyStroke cannot be decoded from '" + value + "'");
             }
 
             return new KeyStroke(keyCode, keyModifiers);
@@ -525,7 +551,7 @@ public final class Keyboard {
                 dropAction = DropAction.MOVE;
             }
         } else {
-            // TODO: is this correct for Linux / Unix / ???
+            // Note: different desktop managers *may* have different conventions
             if (arePressed(Modifier.CTRL, Modifier.SHIFT)) {
                 dropAction = DropAction.LINK;
             } else if (arePressed(Modifier.CTRL)) {
