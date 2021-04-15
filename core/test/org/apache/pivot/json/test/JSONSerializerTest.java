@@ -151,6 +151,8 @@ public class JSONSerializerTest {
         assertEquals(JSON.get(o2, "k[2].c"), "300");
         assertEquals((Integer) JSON.get(o2, "j"), (Integer) 200);
         assertEquals(JSON.get(o2, "n"), "This is a \"test\" of the 'quoting' in \\JSON\\");
+        assertEquals(JSON.get(o2, "emoji"), "Trying out an emoji unicode value \uD83D\uDC4F!");
+        assertEquals(JSON.get(o2, "uni"), "Regular unicode escape \u2318.");
 
         assertTrue(o1.equals(o2));
 

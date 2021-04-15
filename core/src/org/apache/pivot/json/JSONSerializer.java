@@ -365,13 +365,31 @@ public class JSONSerializer implements Serializer<Object> {
                         c = '\t';
                     } else if (c == 'u') {
                         StringBuilder unicodeBuilder = new StringBuilder();
-                        while (unicodeBuilder.length() < 4) {
+                        c = reader.read();
+                        if (c == '{') {
                             c = reader.read();
+                            while (c != '}') {
+                                unicodeBuilder.append((char) c);
+                                c = reader.read();
+                            }
+                            
+                        } else {
                             unicodeBuilder.append((char) c);
+                            while (unicodeBuilder.length() < 4) {
+                                c = reader.read();
+                                unicodeBuilder.append((char) c);
+                            }
                         }
 
                         String unicode = unicodeBuilder.toString();
-                        c = (char) Integer.parseInt(unicode, 16);
+                        int cp = Integer.parseInt(unicode, 16);
+                        if (cp <= 0xFFFF) {
+                            c = cp;
+                        } else {
+                            stringBuilder.appendCodePoint(cp);
+                            c = reader.read();
+                            continue;
+                        }
                     } else {
                         if (!(c == '\\' || c == '/' || c == '\"' || c == '\'' || c == t)) {
                             throw new SerializationException(

@@ -37,5 +37,7 @@
         {a:1${ZERO}${ZERO}, b:${TWO_HUNDRED}, c:"${THREE_HUNDRED}"}
     ],
     m: "Hello\r\n\tWorld!",
-    n: "This is a \"test\" of the \'quoting\' in \\JSON\\"
+    n: "This is a \"test\" of the \'quoting\' in \\JSON\\",
+    emoji: 'Trying out an emoji unicode value \u{1f44f}!',
+    uni: 'Regular unicode escape \u2318.'
 }
