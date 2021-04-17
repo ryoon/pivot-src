@@ -17,6 +17,7 @@
 package org.apache.pivot.wtk;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.Sequence;
@@ -34,21 +35,46 @@ public class FileBrowser extends Container {
      * File browser skin interface.
      */
     public interface Skin extends org.apache.pivot.wtk.Skin {
-        public File getFileAt(int x, int y);
+        /**
+         * Get the file selection at the given X/Y coordinates.
+         * @param x The mouse X-position.
+         * @param y The mouse Y-position.
+         * @return The file displayed at the given coordinates.
+         */
+        File getFileAt(int x, int y);
     }
 
+    /**
+     * Value of the {@code "user.home"} system property (default root directory).
+     */
     private static final String USER_HOME = System.getProperty("user.home");
 
+    /**
+     * The current root directory (usually set by constructor).
+     */
     private File rootDirectory;
+    /**
+     * Current list of selected files (one for single select, can be many for multi-select).
+     */
     private FileList selectedFiles = new FileList();
+    /**
+     * Whether multiple selection is enabled.
+     */
     private boolean multiSelect = false;
+    /**
+     * Filter for files to disable (make non-selectable).
+     */
     private Filter<File> disabledFileFilter = null;
 
+    /**
+     * List of listeners for events on this file browser.
+     */
     private FileBrowserListener.Listeners fileBrowserListeners = new FileBrowserListener.Listeners();
 
     /**
-     * Creates a new FileBrowser <p> Note that this version set by default mode
-     * to open.
+     * Creates a new FileBrowser with the root directory set to the
+     * <code>"user.home"</code> value.
+     * <p> Note that this version sets the mode to "open".
      */
     public FileBrowser() {
         this(USER_HOME);
@@ -56,24 +82,30 @@ public class FileBrowser extends Container {
 
     /**
      * Creates a new FileBrowser <p> Note that this version of the constructor
-     * must be used when a custom root folder has to be set.
+     * must be used when a custom root directory has to be set.
      *
-     * @param rootFolder The root folder full name.
+     * @param rootDirectoryName The root directory full name.
      */
-    public FileBrowser(String rootFolder) {
-        Utils.checkNull(rootFolder, "rootFolder");
-
-        rootDirectory = new File(rootFolder);
-        if (!rootDirectory.isDirectory()) {
-            throw new IllegalArgumentException(rootFolder + " is not a directory.");
-        }
+    public FileBrowser(final String rootDirectoryName) {
+        Utils.checkNull(rootDirectoryName, "rootDirectoryName");
+        internalSetRootDirectory(new File(rootDirectoryName), false);
 
         installSkin(FileBrowser.class);
     }
 
     /**
-     * Returns the current root directory.
+     * Creates a new FileBrowser <p> Note that this version of the constructor
+     * must be used when a custom root directory has to be set.
      *
+     * @param initialRootDirectory The initial root directory.
+     */
+    public FileBrowser(final File initialRootDirectory) {
+        internalSetRootDirectory(initialRootDirectory, false);
+
+        installSkin(FileBrowser.class);
+    }
+
+    /**
      * @return The current root directory.
      */
     public File getRootDirectory() {
@@ -83,27 +115,51 @@ public class FileBrowser extends Container {
     /**
      * Sets the root directory. Clears any existing file selection.
      *
-     * @param rootDirectory The new root directory to browse in.
+     * @param rootDir The new root directory to browse in.
      * @throws IllegalArgumentException if the argument is {@code null}
      * or is not a directory.
      */
-    public void setRootDirectory(File rootDirectory) {
-        Utils.checkNull(rootDirectory, "rootDirectory");
+    public void setRootDirectory(final File rootDir) {
+        internalSetRootDirectory(rootDir, true);
+    }
 
-        if (!rootDirectory.isDirectory()) {
-            throw new IllegalArgumentException(rootDirectory.getPath() + " is not a directory.");
+    /**
+     * Set the root directory to the canonical path of the given directory, and optionally
+     * notify the listeners of the change. If the listeners are notified, the existing
+     * file selection is cleared.
+     *
+     * @param rootDir The new root directory value to set.
+     * @param invokeListeners Whether or not to invoke the {@link #fileBrowserListeners}.
+     * @throws IllegalArgumentException if the directory is {@code null} or is not a directory.
+     */
+    private void internalSetRootDirectory(final File rootDir, final boolean invokeListeners) {
+        Utils.checkNull(rootDir, "rootDirectory");
+
+        File newRootDirectory = rootDir;
+        try {
+            newRootDirectory = newRootDirectory.getCanonicalFile();
+        } catch (IOException ioe) {
+            // leave newRootDirectory as-is
         }
 
-        if (rootDirectory.exists()) {
-            File previousRootDirectory = this.rootDirectory;
+        if (!newRootDirectory.isDirectory()) {
+            throw new IllegalArgumentException(newRootDirectory.getPath() + " is not a directory.");
+        }
 
-            if (!rootDirectory.equals(previousRootDirectory)) {
-                this.rootDirectory = rootDirectory;
-                selectedFiles.clear();
-                fileBrowserListeners.rootDirectoryChanged(this, previousRootDirectory);
+        if (newRootDirectory.exists()) {
+            if (invokeListeners) {
+                File previousRootDirectory = rootDirectory;
+
+                if (!newRootDirectory.equals(previousRootDirectory)) {
+                    rootDirectory = newRootDirectory;
+                    selectedFiles.clear();
+                    fileBrowserListeners.rootDirectoryChanged(this, previousRootDirectory);
+                }
+            } else {
+                rootDirectory = newRootDirectory;
             }
         } else {
-            setRootDirectory(rootDirectory.getParentFile());
+            setRootDirectory(newRootDirectory.getParentFile());
         }
     }
 
@@ -119,18 +175,23 @@ public class FileBrowser extends Container {
     public boolean addSelectedFile(final File file) {
         Utils.checkNull(file, "file");
 
-        File fileMutable = file;
-        if (fileMutable.isAbsolute()) {
-            if (!fileMutable.getParentFile().equals(rootDirectory)) {
-                throw new IllegalArgumentException(file.getPath() + " is not a child of the root directory.");
+        File selectedFile = file;
+        if (selectedFile.isAbsolute()) {
+            try {
+                selectedFile = selectedFile.getCanonicalFile();
+            } catch (IOException ioe) {
+                // leave the file as-is
+            }
+            if (!selectedFile.getParentFile().equals(rootDirectory)) {
+                throw new IllegalArgumentException(selectedFile.getPath() + " is not a child of the root directory.");
             }
         } else {
-            fileMutable = new File(rootDirectory, fileMutable.getPath());
+            selectedFile = new File(rootDirectory, selectedFile.getPath());
         }
 
-        int index = selectedFiles.add(fileMutable);
+        int index = selectedFiles.add(selectedFile);
         if (index != -1) {
-            fileBrowserListeners.selectedFileAdded(this, fileMutable);
+            fileBrowserListeners.selectedFileAdded(this, selectedFile);
         }
 
         return (index != -1);
@@ -144,7 +205,7 @@ public class FileBrowser extends Container {
      * not already selected.
      * @throws IllegalArgumentException if the file argument is {@code null}.
      */
-    public boolean removeSelectedFile(File file) {
+    public boolean removeSelectedFile(final File file) {
         Utils.checkNull(file, "file");
 
         int index = selectedFiles.remove(file);
@@ -173,7 +234,7 @@ public class FileBrowser extends Container {
      *
      * @param file The only file to select, or {@code null} to select nothing.
      */
-    public void setSelectedFile(File file) {
+    public void setSelectedFile(final File file) {
         if (file == null) {
             clearSelection();
         } else {
@@ -200,17 +261,17 @@ public class FileBrowser extends Container {
     /**
      * Sets the selected files.
      *
-     * @param selectedFiles The files to select.
+     * @param files The files to select.
      * @return The files that were selected, with duplicates eliminated.
      * @throws IllegalArgumentException if the selected files sequence is {@code null}
      * or if the sequence is longer than one file and multi-select is not enabled, or
      * if any entry is the sequence is {@code null} or whose parent is not the
      * current root directory.
      */
-    public Sequence<File> setSelectedFiles(Sequence<File> selectedFiles) {
-        Utils.checkNull(selectedFiles, "selectedFiles");
+    public Sequence<File> setSelectedFiles(final Sequence<File> files) {
+        Utils.checkNull(files, "selectedFiles");
 
-        if (!multiSelect && selectedFiles.getLength() > 1) {
+        if (!multiSelect && files.getLength() > 1) {
             throw new IllegalArgumentException("Multi-select is not enabled.");
         }
 
@@ -218,8 +279,8 @@ public class FileBrowser extends Container {
         Sequence<File> previousSelectedFiles = getSelectedFiles();
 
         FileList fileList = new FileList();
-        for (int i = 0, n = selectedFiles.getLength(); i < n; i++) {
-            File file = selectedFiles.get(i);
+        for (int i = 0, n = files.getLength(); i < n; i++) {
+            File file = files.get(i);
 
             Utils.checkNull(file, "file");
 
@@ -227,14 +288,21 @@ public class FileBrowser extends Container {
                 file = new File(rootDirectory, file.getPath());
             }
 
-            if (!file.getParentFile().equals(rootDirectory)) {
+            File canonicalFile = file;
+            try {
+                canonicalFile = canonicalFile.getCanonicalFile();
+            } catch (IOException ioe) {
+                // Just leave canonicalFile as-is
+            }
+
+            if (!canonicalFile.getParentFile().equals(rootDirectory)) {
                 throw new IllegalArgumentException(file.getPath() + " is not a child of the root directory.");
             }
 
             fileList.add(file);
         }
 
-        this.selectedFiles = fileList;
+        selectedFiles = fileList;
 
         // Notify listeners
         fileBrowserListeners.selectedFilesChanged(this, previousSelectedFiles);
@@ -249,7 +317,12 @@ public class FileBrowser extends Container {
         setSelectedFiles(new ArrayList<File>());
     }
 
-    public boolean isFileSelected(File file) {
+    /**
+     * @return Whether or not the given file is selected.
+     *
+     * @param file The file to test.
+     */
+    public boolean isFileSelected(final File file) {
         return (selectedFiles.indexOf(file) != -1);
     }
 
@@ -263,15 +336,15 @@ public class FileBrowser extends Container {
     /**
      * Sets the file browser's multi-select state.
      *
-     * @param multiSelect {@code true} if multi-select is enabled;
+     * @param selectState {@code true} if multi-select is enabled;
      * {@code false}, otherwise.
      */
-    public void setMultiSelect(boolean multiSelect) {
-        if (this.multiSelect != multiSelect) {
+    public void setMultiSelect(final boolean selectState) {
+        if (multiSelect != selectState) {
             // Clear any existing selection
             selectedFiles.clear();
 
-            this.multiSelect = multiSelect;
+            multiSelect = selectState;
 
             fileBrowserListeners.multiSelectChanged(this);
         }
@@ -289,23 +362,33 @@ public class FileBrowser extends Container {
     /**
      * Sets the file filter.
      *
-     * @param disabledFileFilter The file filter to use, or {@code null} for no
+     * @param disabledFilter The file filter to use, or {@code null} for no
      * filter.
      */
-    public void setDisabledFileFilter(Filter<File> disabledFileFilter) {
-        Filter<File> previousDisabledFileFilter = this.disabledFileFilter;
+    public void setDisabledFileFilter(final Filter<File> disabledFilter) {
+        Filter<File> previousDisabledFileFilter = disabledFileFilter;
 
-        if (previousDisabledFileFilter != disabledFileFilter) {
-            this.disabledFileFilter = disabledFileFilter;
+        if (previousDisabledFileFilter != disabledFilter) {
+            disabledFileFilter = disabledFilter;
             fileBrowserListeners.disabledFileFilterChanged(this, previousDisabledFileFilter);
         }
     }
 
-    public File getFileAt(int x, int y) {
+    /**
+     * Call the skin and return the file at the given position.
+     *
+     * @param x The mouse X-position.
+     * @param y The mouse Y-position.
+     * @return The file displayed at those coordinates.
+     */
+    public File getFileAt(final int x, final int y) {
         FileBrowser.Skin fileBrowserSkin = (FileBrowser.Skin) getSkin();
         return fileBrowserSkin.getFileAt(x, y);
     }
 
+    /**
+     * @return The file browser listeners.
+     */
     public ListenerList<FileBrowserListener> getFileBrowserListeners() {
         return fileBrowserListeners;
     }
