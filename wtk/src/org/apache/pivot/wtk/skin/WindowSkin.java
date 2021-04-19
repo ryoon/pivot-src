@@ -16,21 +16,17 @@
  */
 package org.apache.pivot.wtk.skin;
 
-import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.util.Utils;
-import org.apache.pivot.util.Vote;
 import org.apache.pivot.wtk.Bounds;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Container;
 import org.apache.pivot.wtk.Dimensions;
 import org.apache.pivot.wtk.Display;
-import org.apache.pivot.wtk.FocusTraversalDirection;
 import org.apache.pivot.wtk.FocusTraversalPolicy;
 import org.apache.pivot.wtk.Mouse;
 import org.apache.pivot.wtk.Window;
 import org.apache.pivot.wtk.WindowListener;
 import org.apache.pivot.wtk.WindowStateListener;
-import org.apache.pivot.wtk.media.Image;
 
 /**
  * Window skin.
@@ -41,55 +37,56 @@ public class WindowSkin extends ContainerSkin implements Window.Skin, WindowList
      * Focus traversal policy that always returns the window's content. This
      * ensures that focus does not traverse out of the window.
      */
-    public static class WindowFocusTraversalPolicy implements FocusTraversalPolicy {
-        @Override
-        public Component getNextComponent(Container container, Component component,
-            FocusTraversalDirection direction) {
-            assert (container instanceof Window) : "container is not a Window";
+    private static FocusTraversalPolicy focusTraversalPolicy = (container, component, direction) -> {
+        assert (container instanceof Window) : "container is not a Window";
 
-            Utils.checkNull(direction, "direction");
+        Utils.checkNull(direction, "direction");
 
-            Window window = (Window) container;
+        return ((Window) container).getContent();
+    };
 
-            return window.getContent();
-        }
-    }
-
+    /**
+     * Default and only constructor - set the default color.
+     */
     public WindowSkin() {
         setBackgroundColor(defaultBackgroundColor());
     }
 
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         super.install(component);
 
         Window window = (Window) component;
         window.getWindowListeners().add(this);
         window.getWindowStateListeners().add(this);
 
-        window.setFocusTraversalPolicy(new WindowFocusTraversalPolicy());
+        window.setFocusTraversalPolicy(focusTraversalPolicy);
+    }
+
+    /**
+     * @return The content component of this window.
+     */
+    private Component getContent() {
+        return ((Window) getComponent()).getContent();
     }
 
     @Override
-    public int getPreferredWidth(int height) {
-        Window window = (Window) getComponent();
-        Component content = window.getContent();
+    public int getPreferredWidth(final int height) {
+        Component content = getContent();
 
         return (content != null) ? content.getPreferredWidth(height) : 0;
     }
 
     @Override
-    public int getPreferredHeight(int width) {
-        Window window = (Window) getComponent();
-        Component content = window.getContent();
+    public int getPreferredHeight(final int width) {
+        Component content = getContent();
 
         return (content != null) ? content.getPreferredHeight(width) : 0;
     }
 
     @Override
     public Dimensions getPreferredSize() {
-        Window window = (Window) getComponent();
-        Component content = window.getContent();
+        Component content = getContent();
 
         return (content != null) ? content.getPreferredSize() : Dimensions.ZERO;
     }
@@ -110,7 +107,8 @@ public class WindowSkin extends ContainerSkin implements Window.Skin, WindowList
     }
 
     @Override
-    public boolean mouseDown(Container container, Mouse.Button button, int x, int y) {
+    public boolean mouseDown(final Container container, final Mouse.Button button,
+            final int x, final int y) {
         boolean consumed = super.mouseDown(container, button, x, y);
 
         Window window = (Window) container;
@@ -121,70 +119,15 @@ public class WindowSkin extends ContainerSkin implements Window.Skin, WindowList
 
     // Window events
     @Override
-    public void titleChanged(Window window, String previousTitle) {
-        // No-op
-    }
-
-    @Override
-    public void iconAdded(Window window, Image addedIcon) {
-        // No-op
-    }
-
-    @Override
-    public void iconInserted(Window window, Image addedIcon, int index) {
-        // No-op
-    }
-
-    @Override
-    public void iconsRemoved(Window window, int index, Sequence<Image> removed) {
-        // No-op
-    }
-
-    @Override
-    public void contentChanged(Window window, Component previousContent) {
+    public void contentChanged(final Window window, final Component previousContent) {
         invalidateComponent();
-    }
-
-    @Override
-    public void activeChanged(Window window, Window obverseWindow) {
-        // No-op
-    }
-
-    @Override
-    public void maximizedChanged(Window window) {
-        // No-op
     }
 
     // Window state events
     @Override
-    public void windowOpened(Window window) {
-        // No-op
-    }
-
-    @Override
-    public Vote previewWindowClose(Window window) {
-        return Vote.APPROVE;
-    }
-
-    @Override
-    public void windowCloseVetoed(Window window, Vote reason) {
-        // No-op
-    }
-
-    @Override
-    public void windowClosed(Window window, Display display, Window owner) {
+    public void windowClosed(final Window window, final Display display, final Window owner) {
         window.getIcons().remove(0, window.getIcons().getLength());
         // invalidateComponent();
-    }
-
-    @Override
-    public Vote previewWindowOpen(Window window) {
-        return Vote.APPROVE;
-    }
-
-    @Override
-    public void windowOpenVetoed(Window window, Vote reason) {
-        // No-op
     }
 
 }
