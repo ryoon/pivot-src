@@ -33,24 +33,58 @@ import org.apache.pivot.util.Utils;
 public final class Point implements Serializable {
     private static final long serialVersionUID = 5193175754909343769L;
 
+    /**
+     * The (integer) X-value of this point, representing a distance from the
+     * left of the parent object.
+     */
     public final int x;
+    /**
+     * The (integer) Y-value of this point, representing a distance down
+     * from the top of the parent object.
+     */
     public final int y;
 
+    /**
+     * Map key used to access the X-value.
+     */
     public static final String X_KEY = "x";
+    /**
+     * Map key used to access the Y-value.
+     */
     public static final String Y_KEY = "y";
 
-    public Point(final int x, final int y) {
-        this.x = x;
-        this.y = y;
+    /**
+     * Construct a point given the X/Y coordinates.
+     *
+     * @param xValue The X-position for the point.
+     * @param yValue The Y-position for the point.
+     */
+    public Point(final int xValue, final int yValue) {
+        x = xValue;
+        y = yValue;
     }
 
+    /**
+     * A "copy" constructor to duplicate a point value.
+     *
+     * @param point The other point to copy.
+     */
     public Point(final Point point) {
         Utils.checkNull(point, "point");
 
-        this.x = point.x;
-        this.y = point.y;
+        x = point.x;
+        y = point.y;
     }
 
+    /**
+     * Construct a point from a dictionary containing the X- and Y-position
+     * values as entries.
+     *
+     * @param point The source dictionary containing the values.
+     * @throws IllegalArgumentException if the input is {@code null}.
+     * @see #X_KEY
+     * @see #Y_KEY
+     */
     public Point(final Dictionary<String, ?> point) {
         Utils.checkNull(point, "point");
 
@@ -58,11 +92,19 @@ public final class Point implements Serializable {
         this.y = point.getInt(Y_KEY);
     }
 
+    /**
+     * Construct a point from a sequence of two number values for the
+     * X- and Y-positions respectively.
+     *
+     * @param point The source sequence containing the values (values must be
+     *              {@link Number}s).
+     * @throws IllegalArgumentException if the input is {@code null}.
+     */
     public Point(final Sequence<?> point) {
         Utils.checkNull(point, "point");
 
-        this.x = ((Number) point.get(0)).intValue();
-        this.y = ((Number) point.get(1)).intValue();
+        x = ((Number) point.get(0)).intValue();
+        y = ((Number) point.get(1)).intValue();
     }
 
     /**
@@ -75,8 +117,7 @@ public final class Point implements Serializable {
      * @param dy The distance to move in the vertical
      * direction (positive moves downward on the screen,
      * and negative to move upward).
-     * @return A new object represented the translated
-     * location.
+     * @return A new object represented the translated location.
      */
     public Point translate(final int dx, final int dy) {
         return new Point(x + dx, y + dy);
@@ -105,18 +146,22 @@ public final class Point implements Serializable {
     }
 
     /**
-     * Decode a JSON-formatted string (map or list) that contains the two
-     * values for a new point.
+     * Decode a string value (which could be a JSON-formatted string (map or list))
+     * that contains the two values for a new point.
      * <p> The format of a JSON map would be:
      * <pre>{ "x":nnn, "y":nnn }</pre>
      * <p> The format for a JSON list would be:
      * <pre>[ x, y ]</pre>
+     * <p> Or the string can simply be two numbers:
+     * <pre>x [,;] y</pre>
      *
-     * @param value The JSON string to be interpreted (must not be {@code null}).
+     * @param value The string to be interpreted (must not be {@code null}).
      * @return The new Point object if the string can be decoded successfully.
      * @throws IllegalArgumentException if the input is {@code null} or if the
-     * value could not be successfully decoded as either a JSON map or list.
+     * value could not be successfully decoded as a JSON map or list, or simply
+     * two values.
      * @see #Point(Dictionary)
+     * @see #Point(Sequence)
      * @see #Point(int, int)
      */
     public static Point decode(final String value) {
@@ -136,7 +181,16 @@ public final class Point implements Serializable {
                 throw new IllegalArgumentException(exception);
             }
         } else {
-            throw new IllegalArgumentException("Invalid format for Point.");
+            String[] parts = value.split("\\s*[,;]\\s*");
+            if (parts.length == 2) {
+                try {
+                    point = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+                } catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException(ex);
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid format for Point: '" + value + "'");
+            }
         }
 
         return point;
