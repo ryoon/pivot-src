@@ -18,6 +18,7 @@ package org.apache.pivot.util;
 
 import java.io.Serializable;
 
+
 /**
  * Represents a version number. Version numbers are defined as: <p>
  * <i>major</i>.<i>minor</i>.<i>maintenance</i>_<i>update</i> <p> for example,
@@ -26,50 +27,102 @@ import java.io.Serializable;
 public class Version implements Comparable<Version>, Serializable {
     private static final long serialVersionUID = -3677773163272115116L;
 
-    private short majorRevision = 0;
-    private short minorRevision = 0;
-    private short maintenanceRevision = 0;
+    /**
+     * The default version object (0, 0, 0, 0).
+     */
+    public static final Version ZERO_VERSION = new Version(0, 0, 0, 0L);
+
+    /**
+     * The real major version number.
+     */
+    private short majorVersion = 0;
+    /**
+     * The real minor version number.
+     */
+    private short minorVersion = 0;
+    /**
+     * The real maintenance version number.
+     */
+    private short maintenanceVersion = 0;
+    /**
+     * The real update version number.
+     */
     private long updateRevision = 0;
+    /**
+     * The build string.
+     */
     private String build = null;
 
-    public Version(final int majorRevision, final int minorRevision, final int maintenanceRevision,
-        final long updateRevision) {
-        this(majorRevision, minorRevision, maintenanceRevision, updateRevision, null);
+    /**
+     * Construct a version given all the numeric values.
+     *
+     * @param major       The new major version.
+     * @param minor       The new minor version.
+     * @param maintenance The new maintenance version.
+     * @param update      The new update version.
+     */
+    public Version(final int major, final int minor, final int maintenance, final long update) {
+        this(major, minor, maintenance, update, null);
     }
 
-    public Version(final int majorRevision, final int minorRevision, final int maintenanceRevision,
-        final long updateRevision, final String build) {
-        Utils.checkInRangeOfShort(majorRevision, "majorRevision");
-        Utils.checkInRangeOfShort(minorRevision, "minorRevision");
-        Utils.checkInRangeOfShort(maintenanceRevision, "maintenanceRevision");
+    /**
+     * Construct a version given all the information.
+     *
+     * @param major       The new major version.
+     * @param minor       The new minor version.
+     * @param maintenance The new maintenance version.
+     * @param update      The new update version.
+     * @param buildString The new build string.
+     */
+    public Version(final int major, final int minor, final int maintenance, final long update,
+            final String buildString) {
+        Utils.checkInRangeOfShort(major, "majorVersion");
+        Utils.checkInRangeOfShort(minor, "minorVersion");
+        Utils.checkInRangeOfShort(maintenance, "maintenanceVersion");
 
-        this.majorRevision = (short) majorRevision;
-        this.minorRevision = (short) minorRevision;
-        this.maintenanceRevision = (short) maintenanceRevision;
-        this.updateRevision = updateRevision;
-        this.build = build;
+        majorVersion = (short) major;
+        minorVersion = (short) minor;
+        maintenanceVersion = (short) maintenance;
+        updateRevision = update;
+        build = buildString;
     }
 
+    /**
+     * @return The major version number.
+     */
     public short getMajorRevision() {
-        return majorRevision;
+        return majorVersion;
     }
 
+    /**
+     * @return The minor version number.
+     */
     public short getMinorRevision() {
-        return minorRevision;
+        return minorVersion;
     }
 
+    /**
+     * @return The maintenance version number.
+     */
     public short getMaintenanceRevision() {
-        return maintenanceRevision;
+        return maintenanceVersion;
     }
 
+    /**
+     * @return The update revision number.
+     */
     public long getUpdateRevision() {
         return updateRevision;
     }
 
+    /**
+     * @return A composite value, consisting of all the numeric components
+     *         shifted into parts of a long.
+     */
     public long getNumber() {
-        long number = ((long) ((majorRevision) & 0xffff) << (16 * 3)
-            | (long) ((minorRevision) & 0xffff) << (16 * 2)
-            | (long) ((maintenanceRevision) & 0xffff) << (16 * 1))
+        long number = ((long) ((majorVersion) & 0xffff) << (16 * 3)
+            | (long) ((minorVersion) & 0xffff) << (16 * 2)
+            | (long) ((maintenanceVersion) & 0xffff) << (16 * 1))
             + updateRevision;
 
         return number;
@@ -92,13 +145,13 @@ public class Version implements Comparable<Version>, Serializable {
 
     @Override
     public String toString() {
-        String string = this.majorRevision
-            + "." + this.minorRevision
-            + "." + this.maintenanceRevision
-            + "_" + String.format("%02d", this.updateRevision);
+        String string = majorVersion
+            + "." + minorVersion
+            + "." + maintenanceVersion
+            + "_" + String.format("%02d", updateRevision);
 
-        if (this.build != null) {
-            string += "-" + this.build;
+        if (build != null) {
+            string += "-" + build;
         }
 
         return string;
@@ -109,21 +162,28 @@ public class Version implements Comparable<Version>, Serializable {
      */
     public String simpleToString() {
         return String.format("%1$d.%2$d.%3$d",
-            this.majorRevision,
-            this.minorRevision,
-            this.maintenanceRevision);
+            majorVersion,
+            minorVersion,
+            maintenanceVersion);
     }
 
+    /**
+     * Decode a string into the version parts.
+     *
+     * @param string The input string in a format recognizable as a version string.
+     * @return       The new version object constructed from the string information.
+     */
     public static Version decode(final String string) {
         Version version = null;
 
-        short majorRevision = 0;
-        short minorRevision = 0;
-        short maintenanceRevision = 0;
-        long updateRevision = 0;
-        String build = null;
+        short major = 0;
+        short minor = 0;
+        short maintenance = 0;
+        long update = 0;
+        String buildString = null;
 
         String revision;
+
         // Some "version" strings separate fields with a space
         // While Java 9 uses a new scheme where "build" uses a "+"
         String[] parts = string.split("[ +\\-]");
@@ -132,36 +192,56 @@ public class Version implements Comparable<Version>, Serializable {
         } else {
             int len = parts[0].length();
             revision = string.substring(0, len);
-            build = string.substring(len + 1);
+            buildString = string.substring(len + 1);
         }
 
         String[] revisionNumbers = revision.split("\\.");
 
         if (revisionNumbers.length > 0) {
-            majorRevision = Short.parseShort(revisionNumbers[0]);
+            major = Short.parseShort(revisionNumbers[0]);
 
             if (revisionNumbers.length > 1) {
-                minorRevision = Short.parseShort(revisionNumbers[1]);
+                minor = Short.parseShort(revisionNumbers[1]);
 
                 if (revisionNumbers.length > 2) {
-                    String[] maintenanceRevisionNumbers = revisionNumbers[2].split("[_\\-]");
+                    String[] maintenanceVersionNumbers = revisionNumbers[2].split("[_\\-]");
 
-                    if (maintenanceRevisionNumbers.length > 0) {
-                        maintenanceRevision = Short.parseShort(maintenanceRevisionNumbers[0]);
+                    if (maintenanceVersionNumbers.length > 0) {
+                        maintenance = Short.parseShort(maintenanceVersionNumbers[0]);
 
-                        if (maintenanceRevisionNumbers.length > 1) {
-                            updateRevision = Long.parseLong(maintenanceRevisionNumbers[1]);
+                        if (maintenanceVersionNumbers.length > 1) {
+                            update = Long.parseLong(maintenanceVersionNumbers[1]);
                         }
                     }
                 }
             }
 
-            version = new Version(majorRevision, minorRevision, maintenanceRevision,
-                updateRevision, build);
+            version = new Version(major, minor, maintenance, update, buildString);
         }
 
         return version;
     }
+
+    /**
+     * Added so that any unexpected version string formats that might cause an error
+     * will not also cause the application to fail to start.
+     *
+     * @param versionString A potential version string to parse/decode.
+     * @return The parsed version information (if possible), or an empty version
+     * (that will look like: "0.0.0_00") if there was a parsing problem of any kind.
+     */
+    public static Version safelyDecode(final String versionString) {
+        if (!Utils.isNullOrEmpty(versionString)) {
+            try {
+                return decode(versionString);
+            } catch (Throwable ex) {
+                String exMsg = ExceptionUtils.toString(ex);
+                System.err.println("Error decoding version string \"" + versionString + "\": " + exMsg);
+            }
+        }
+        return ZERO_VERSION;
+    }
+
 
     /**
      * Decode the implementation version found in our jar file manifest into
