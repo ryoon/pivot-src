@@ -67,9 +67,10 @@ public final class ExceptionUtils {
      *
      * @param    ex    The exception to report.
      * @param    buf   The buffer used to build the content.
+     * @return         The input buffer.
      */
-    public static void toString(final Throwable ex, final StringBuilder buf) {
-        toString(ex, buf, false, false, false);
+    public static StringBuilder toString(final Throwable ex, final StringBuilder buf) {
+        return toString(ex, buf, false, false, false);
     }
 
     /**
@@ -115,8 +116,9 @@ public final class ExceptionUtils {
      *                       the chained exceptions.
      * @param    convertTabs Convert any tab characters to single spaces (for use in controls
      *                       that don't deal with tabs correctly; some do).
+     * @return               The input buffer.
      */
-    public static void toString(
+    public static StringBuilder toString(
         final Throwable ex,
         final StringBuilder buf,
         final boolean useToString,
@@ -144,8 +146,9 @@ public final class ExceptionUtils {
                         || (next instanceof FileNotFoundException)
                         || (next instanceof NoSuchFileException)
                         || (next instanceof UnsupportedOperationException)
-                        || (next instanceof NumberFormatException)) {
-                    msg = String.format("%1$s \"%2$s\"", name, msg);
+                        || (next instanceof NumberFormatException)
+                        || (next instanceof IndexOutOfBoundsException)) {
+                    msg = String.format("%1$s '%2$s'", name, msg);
                 }
             }
             buf.append(msg);
@@ -163,6 +166,8 @@ public final class ExceptionUtils {
                 buf.setCharAt(ix++, ' ');
             }
         }
+
+        return buf;
     }
 
 }

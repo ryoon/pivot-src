@@ -372,7 +372,6 @@ public class JSONSerializer implements Serializer<Object> {
                                 unicodeBuilder.append((char) c);
                                 c = reader.read();
                             }
-                            
                         } else {
                             unicodeBuilder.append((char) c);
                             while (unicodeBuilder.length() < 4) {

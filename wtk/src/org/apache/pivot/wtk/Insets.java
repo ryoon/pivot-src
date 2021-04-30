@@ -335,7 +335,7 @@ public final class Insets implements Serializable {
                     throw new IllegalArgumentException(ex);
                 }
             } else {
-                throw new IllegalArgumentException("Unknown format for Insets: " + value);
+                throw new IllegalArgumentException("Invalid format for Insets: '" + value + "'");
             }
         }
 

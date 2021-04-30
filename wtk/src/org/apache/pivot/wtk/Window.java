@@ -393,7 +393,7 @@ public class Window extends Container {
      *
      * @param window The window which could be an owned descendant of this window.
      * @return {@code true} if this window is an owning ancestor of the given
-     * window; {@code false}, otherwise.
+     * window; {@code false} otherwise.
      */
     public boolean isOwner(Window window) {
         Utils.checkNull(window, "window");
@@ -410,7 +410,7 @@ public class Window extends Container {
     /**
      * Returns this window's open state.
      *
-     * @return {@code true} if the window is open; {@code false}, otherwise.
+     * @return {@code true} if the window is open; {@code false} otherwise.
      */
     public boolean isOpen() {
         return (getParent() != null);
@@ -419,7 +419,7 @@ public class Window extends Container {
     /**
      * Returns this window's opening state.
      *
-     * @return {@code true} if the window is opening; {@code false},
+     * @return {@code true} if the window is opening; {@code false}
      * otherwise.
      */
     public boolean isOpening() {
@@ -513,7 +513,7 @@ public class Window extends Container {
     /**
      * Returns this window's closed state.
      *
-     * @return {@code true} if the window is closed; {@code false}, otherwise.
+     * @return {@code true} if the window is closed; {@code false} otherwise.
      */
     public boolean isClosed() {
         return !isOpen();
@@ -522,7 +522,7 @@ public class Window extends Container {
     /**
      * Returns this window's closing state.
      *
-     * @return {@code true} if the window is closing; {@code false},
+     * @return {@code true} if the window is closing; {@code false}
      * otherwise.
      */
     public boolean isClosing() {
@@ -689,7 +689,7 @@ public class Window extends Container {
     /**
      * Requests that this window become the active window.
      *
-     * @return {@code true} if the window became active; {@code false},
+     * @return {@code true} if the window became active; {@code false}
      * otherwise.
      */
     public boolean requestActive() {
