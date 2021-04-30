@@ -25,6 +25,9 @@ import org.junit.Test;
  * Testing the {@link MIMEType} decoding method.
  */
 public class MIMETypeTest {
+    /**
+     * Basic tests.
+     */
     @Test
     public void testMIMEType() {
         MIMEType mimeType = MIMEType.decode("foo; a=123; b=456; c=789");

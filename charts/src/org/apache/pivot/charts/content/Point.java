@@ -17,25 +17,45 @@
 package org.apache.pivot.charts.content;
 
 /**
- * Represents value data for x/y chart views.
+ * Represents value data for X/Y chart views.
  */
 public class Point {
+    /**
+     * The X-position data.
+     */
     private float x = 0;
+    /**
+     * The Y-position data.
+     */
     private float y = 0;
 
+    /**
+     * @return The X-position data.
+     */
     public float getX() {
         return x;
     }
 
-    public void setX(float x) {
-        this.x = x;
+    /**
+     * Set the X-position data.
+     * @param xValue The X-position value.
+     */
+    public void setX(final float xValue) {
+        x = xValue;
     }
 
+    /**
+     * @return The Y-position data.
+     */
     public float getY() {
         return y;
     }
 
-    public void setY(float y) {
-        this.y = y;
+    /**
+     * Set the Y-position data.
+     * @param yValue The Y-position value.
+     */
+    public void setY(final float yValue) {
+        y = yValue;
     }
 }

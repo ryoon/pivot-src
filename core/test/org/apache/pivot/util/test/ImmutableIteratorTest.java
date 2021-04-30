@@ -26,7 +26,15 @@ import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.util.ImmutableIterator;
 
 
+/**
+ * Tests of the {@link ImmutableIterator} class, which is used
+ * for iteration over many things, when we don't need/want to
+ * modify the object we're iterating over.
+ */
 public class ImmutableIteratorTest {
+    /**
+     * Run the basic tests.
+     */
     @Test
     public void test() {
         ArrayList<String> strings = new ArrayList<>();

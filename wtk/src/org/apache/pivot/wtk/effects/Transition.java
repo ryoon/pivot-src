@@ -16,6 +16,8 @@
  */
 package org.apache.pivot.wtk.effects;
 
+import java.util.Optional;
+
 import org.apache.pivot.util.Utils;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Theme;
@@ -25,90 +27,123 @@ import org.apache.pivot.wtk.Theme;
  * effects.
  */
 public abstract class Transition {
-    private int duration;
-    private int rate;
-    private boolean repeating;
-
-    private boolean reversed = false;
-
-    private TransitionListener transitionListener;
-
-    private long startTime = 0;
-    private long currentTime = 0;
-    private ApplicationContext.ScheduledCallback transitionCallback = null;
-
-    private final Runnable updateCallback = new Runnable() {
-        @Override
-        public void run() {
-            currentTime = System.currentTimeMillis();
-
-            long endTime = startTime + duration;
-            if (currentTime >= endTime) {
-                if (repeating) {
-                    startTime = endTime;
-                } else {
-                    currentTime = endTime;
-                    stop();
-
-                    if (transitionListener != null) {
-                        transitionListener.transitionCompleted(Transition.this);
-                    }
-                }
-            }
-
-            update();
-        }
-    };
+    /**
+     * Number of milliseconds per second.
+     */
+    private static final int MILLIS_PER_SECOND = 1000;
 
     /**
-     * Creates a new non-repeating transition with the given duration, rate.
-     *
-     * @param duration Transition duration, in milliseconds.
-     * @param rate Transition rate, in frames per second.
+     * The duration of the transition (milliseconds).
      */
-    public Transition(int duration, int rate) {
-        this(duration, rate, false);
+    private int duration;
+
+    /**
+     * Rate of the transition in frames per second.
+     */
+    private int rate;
+
+    /**
+     * Whether the transition repeats once it is finished.
+     */
+    private boolean repeating;
+
+    /**
+     * Whether the transition is to be run in reverse.
+     */
+    private boolean reversed = false;
+
+    /**
+     * Optional {@code TransitionListener} for transition events.
+     */
+    private Optional<TransitionListener> optionalListener = Optional.empty();
+
+    /**
+     * The transition start time (in milliseconds).
+     */
+    private long startTime = 0;
+    /**
+     * The current millisecond timestamp, set on every callback.
+     */
+    private long currentTime = 0;
+    /**
+     * Set during transition operation to be the current callback for updates,
+     * then cleared once the transition is over.
+     */
+    private ApplicationContext.ScheduledCallback transitionCallback = null;
+
+    /**
+     * Callback for every interval to call {@link #update} and then {@link #stop}
+     * once the transition interval is over.
+     */
+    private final Runnable updateCallback = () -> {
+        currentTime = System.currentTimeMillis();
+
+        long endTime = startTime + duration;
+        if (currentTime >= endTime) {
+            if (repeating) {
+                startTime = endTime;
+            } else {
+                currentTime = endTime;
+                stop();
+
+                optionalListener.ifPresent(listener -> listener.transitionCompleted(Transition.this));
+            }
+        }
+
+        update();
+    };
+
+
+    /**
+     * Creates a new non-repeating transition with the given duration, and rate.
+     *
+     * @param durationValue Transition duration, in milliseconds.
+     * @param rateValue Transition rate, in frames per second.
+     */
+    public Transition(final int durationValue, final int rateValue) {
+        this(durationValue, rateValue, false);
     }
 
     /**
      * Creates a new transition with the given duration, rate, and repeat.
      *
-     * @param duration Transition duration, in milliseconds.
-     * @param rate Transition rate, in frames per second.
-     * @param repeating {@code true} if the transition should repeat;
+     * @param durationValue Transition duration, in milliseconds.
+     * @param rateValue Transition rate, in frames per second.
+     * @param repeat {@code true} if the transition should repeat;
      * {@code false}, otherwise.
      */
-    public Transition(int duration, int rate, boolean repeating) {
-        this(duration, rate, repeating, false);
+    public Transition(final int durationValue, final int rateValue, final boolean repeat) {
+        this(durationValue, rateValue, repeat, false);
     }
 
     /**
      * Creates a new transition with the given duration, rate, and repeat.
      *
      * Note that if the current Theme has transitions not enabled,
-     * will be set default values instead of given arguments.
+     * the duration and rate will both be set to zero, so that the final
+     * update is called once, in a minimum amount of time after the start.
      *
-     * @param duration Transition duration, in milliseconds.
-     * @param rate Transition rate, in frames per second.
-     * @param repeating {@code true} if the transition should repeat;
+     * @param durationValue Transition duration, in milliseconds.
+     * @param rateValue Transition rate, in frames per second.
+     * @param repeat {@code true} if the transition should repeat;
      * {@code false}, otherwise.
-     * @param reversed {@code true} if the transition should run in reverse;
+     * @param reverse {@code true} if the transition should run in reverse;
      * {@code false} otherwise.
      */
-    public Transition(int duration, int rate, boolean repeating, boolean reversed) {
-        Utils.checkNonNegative(duration, "duration");
+    public Transition(final int durationValue, final int rateValue, final boolean repeat, final boolean reverse) {
+        Utils.checkNonNegative(durationValue, "duration");
 
         if (!themeHasTransitionEnabled()) {
             // System.out.println("transitions not enabled, overriding transition values");
-            this.duration = 0;
-            this.rate = 0;
+            duration = 0;
+            rate = 0;
         } else {
-            this.duration = duration;
-            this.rate = rate;
+            duration = durationValue;
+            rate = rateValue;
         }
 
-        this.repeating = repeating;
-        this.reversed = reversed;
+        repeating = repeat;
+        reversed = reverse;
     }
 
     /**
@@ -125,16 +160,16 @@ public abstract class Transition {
      * Sets the transition duration, the length of time the transition is
      * scheduled to run.
      *
-     * @param duration The duration of the transition, in milliseconds.
+     * @param durationValue The duration of the transition, in milliseconds.
      */
-    public void setDuration(int duration) {
-        Utils.checkNonNegative(duration, "duration");
+    public void setDuration(final int durationValue) {
+        Utils.checkNonNegative(durationValue, "duration");
 
-        if (transitionCallback != null) {
+        if (isRunning()) {
             throw new IllegalStateException("Transition is currently running.");
         }
 
-        this.duration = duration;
+        duration = durationValue;
     }
 
     /**
@@ -151,16 +186,16 @@ public abstract class Transition {
      * Sets the transition rate, the number of times the transition will be
      * updated within the span of one second.
      *
-     * @param rate The transition rate, in frames per second.
+     * @param rateValue The transition rate, in frames per second.
      */
-    public void setRate(int rate) {
-        Utils.checkNonNegative(rate, "rate");
+    public void setRate(final int rateValue) {
+        Utils.checkNonNegative(rateValue, "rate");
 
-        if (transitionCallback != null) {
+        if (isRunning()) {
             throw new IllegalStateException("Transition is currently running.");
         }
 
-        this.rate = rate;
+        rate = rateValue;
     }
 
     /**
@@ -172,8 +207,9 @@ public abstract class Transition {
      */
     public int getInterval() {
         int interval;
+
         if (rate != 0) {
-            interval = (int) ((1f / rate) * 1000);
+            interval = (int) ((1.0f / rate) * MILLIS_PER_SECOND);
         } else {
             interval = 1;
         }
@@ -207,8 +243,8 @@ public abstract class Transition {
      */
     public int getElapsedTime() {
         long endTime = startTime + duration;
-
         int elapsedTime;
+
         if (reversed) {
             elapsedTime = (int) (endTime - currentTime);
         } else {
@@ -227,8 +263,9 @@ public abstract class Transition {
      */
     public float getPercentComplete() {
         float percentComplete;
+
         if (duration != 0) {
-            percentComplete = (float) (currentTime - startTime) / (float) (duration);
+            percentComplete = (float) (currentTime - startTime) / (float) duration;
         } else {
             percentComplete = 1.0f;
         }
@@ -246,12 +283,14 @@ public abstract class Transition {
      * @return {@code true} if the transition is currently running;
      * {@code false} if it is not
      */
-    public boolean isRunning() {
+    public final boolean isRunning() {
         return (transitionCallback != null);
     }
 
     /**
-     * Starts the transition with no listener.
+     * Starts the transition. Calls {@link #update()} to establish the initial
+     * state and starts a time that will repeatedly call {@link #update()} at
+     * the current rate. No {@code TransitionListener} will be notified.
      *
      * @see #start(TransitionListener)
      */
@@ -265,15 +304,15 @@ public abstract class Transition {
      * the current rate. The specified {@code TransitionListener} will be
      * notified when the transition completes.
      *
-     * @param transitionListenerArgument The listener to get notified when the
-     * transition completes, or {@code null} if no notification is necessary
+     * @param listener The listener to get notified when the transition completes,
+     * or {@code null} if no notification is necessary.
      */
-    public void start(TransitionListener transitionListenerArgument) {
-        if (transitionCallback != null) {
+    public void start(final TransitionListener listener) {
+        if (isRunning()) {
             throw new IllegalStateException("Transition is currently running.");
         }
 
-        this.transitionListener = transitionListenerArgument;
+        optionalListener = Optional.ofNullable(listener);
 
         startTime = System.currentTimeMillis();
         currentTime = startTime;
@@ -285,11 +324,11 @@ public abstract class Transition {
     }
 
     /**
-     * Stops the transition. Does not fire a
+     * Stops the transition running with no final update, and does not fire a
      * {@link TransitionListener#transitionCompleted(Transition)} event.
      */
     public void stop() {
-        if (transitionCallback != null) {
+        if (isRunning()) {
             transitionCallback.cancel();
         }
 
@@ -297,15 +336,16 @@ public abstract class Transition {
     }
 
     /**
-     * "Fast-forwards" to the end of the transition and fires a
+     * "Fast-forward" to the end of the transition, run {@link #update}
+     * the last time, and fire a
      * {@link TransitionListener#transitionCompleted(Transition)} event.
      */
     public void end() {
-        if (transitionCallback != null) {
+        if (isRunning()) {
             currentTime = startTime + duration;
             stop();
             update();
-            transitionListener.transitionCompleted(this);
+            optionalListener.ifPresent(listener -> listener.transitionCompleted(this));
         }
     }
 
@@ -315,6 +355,11 @@ public abstract class Transition {
      */
     protected abstract void update();
 
+    /**
+     * Is the transition a repeating one?
+     *
+     * @return {@code true} if the transition should repeat; {@code false} if not.
+     */
     public boolean isRepeating() {
         return repeating;
     }
@@ -322,8 +367,7 @@ public abstract class Transition {
     /**
      * Tests whether the transition is reversed.
      *
-     * @return {@code true} if the transition is reversed; {@code false},
-     * otherwise.
+     * @return {@code true} if the transition is reversed; {@code false} otherwise.
      */
     public boolean isReversed() {
         return reversed;
@@ -332,10 +376,10 @@ public abstract class Transition {
     /**
      * Sets the transition's reversed flag.
      *
-     * @param reversed Whether the transition should be reversed.
+     * @param reverse Whether the transition should be reversed.
      */
-    public void setReversed(boolean reversed) {
-        this.reversed = reversed;
+    public void setReversed(final boolean reverse) {
+        reversed = reverse;
     }
 
     /**
@@ -356,7 +400,8 @@ public abstract class Transition {
      * Tell if the theme has transitions enabled.<br> Usually this means that (if false) any
      * effect/transition will not be drawn.
      *
-     * @return true if enabled (default), false otherwise
+     * @return {@code true} if enabled (default), {@code false} otherwise.
+     * @see Theme#isTransitionEnabled
      */
     protected boolean themeHasTransitionEnabled() {
         return Theme.getTheme().isTransitionEnabled();

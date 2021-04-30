@@ -20,13 +20,23 @@ package org.apache.pivot.charts.content;
  * Represents value data for interval chart views.
  */
 public class Interval extends Point {
+    /**
+     * The interval data.
+     */
     private float width = 0;
 
+    /**
+     * @return The data value.
+     */
     public float getWidth() {
         return width;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
+    /**
+     * Set the data value.
+     * @param newWidth The new data value.
+     */
+    public void setWidth(final float newWidth) {
+        width = newWidth;
     }
 }

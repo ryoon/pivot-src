@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.pivot.annotations.UnsupportedOperation;
 import org.apache.pivot.util.ListenerList;
+import org.apache.pivot.util.StringUtils;
 import org.apache.pivot.util.Utils;
 
 /**
@@ -41,7 +42,11 @@ import org.apache.pivot.util.Utils;
 public class EnumList<E extends Enum<E>> extends ReadOnlySequence<E> implements List<E>, Serializable {
     private static final long serialVersionUID = 5104856822133576300L;
 
+    /**
+     * Iterator over the list items.
+     */
     private class ItemIterator implements Iterator<E> {
+        /** Index into the array of elements. */
         private int i = 0;
 
         @Override
@@ -65,21 +70,36 @@ public class EnumList<E extends Enum<E>> extends ReadOnlySequence<E> implements 
         }
     }
 
+
+    /**
+     * The enum class of the elements.
+     */
     private Class<E> enumClass;
+    /**
+     * The set items.
+     */
     private E[] items;
 
+    /**
+     * The listeners for changes in this set (which will never actually get called,
+     * since the set never changes).
+     */
     private transient ListListenerList<E> listListeners = new ListListenerList<>();
+
 
     /**
      * Construct the full list populated by the enum constants of the given class.
      *
-     * @param enumClass The enum class whose constant values are used to fully populate the list.
+     * @param enumClassValue The enum class whose constant values are used to fully populate the list.
      */
-    public EnumList(final Class<E> enumClass) {
-        this.enumClass = enumClass;
+    public EnumList(final Class<E> enumClassValue) {
+        enumClass = enumClassValue;
         items = enumClass.getEnumConstants();
     }
 
+    /**
+     * @return The class of the elements in this set.
+     */
     public Class<E> getEnumClass() {
         return enumClass;
     }
@@ -112,6 +132,9 @@ public class EnumList<E extends Enum<E>> extends ReadOnlySequence<E> implements 
         return items.length;
     }
 
+    /**
+     * @return An array of the elements in this set.
+     */
     public E[] toArray() {
         return Arrays.copyOf(items, items.length);
     }
@@ -149,22 +172,8 @@ public class EnumList<E extends Enum<E>> extends ReadOnlySequence<E> implements 
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(getClass().getName());
-        sb.append(" [");
-
-        for (int i = 0; i < items.length; i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-
-            sb.append(items[i]);
-        }
-
-        sb.append("]");
-
-        return sb.toString();
+        StringBuilder sb = new StringBuilder(getClass().getName());
+        return StringUtils.append(sb, items).toString();
     }
 
     @Override

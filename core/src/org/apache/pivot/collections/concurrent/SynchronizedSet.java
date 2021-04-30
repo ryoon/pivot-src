@@ -27,51 +27,70 @@ import org.apache.pivot.util.Utils;
 
 /**
  * Synchronized implementation of the {@link Set} interface.
+ *
+ * @param <E> Type of element contained in this set.
  */
 public class SynchronizedSet<E> implements Set<E> {
+    /**
+     * A synchronized wrapper around {@link SetListener.Listeners}.
+     *
+     * @param <E> The type of element stored in the set.
+     */
     private static class SynchronizedSetListenerList<E> extends SetListener.Listeners<E> {
         @Override
-        public synchronized void add(SetListener<E> listener) {
+        public synchronized void add(final SetListener<E> listener) {
             super.add(listener);
         }
 
         @Override
-        public synchronized void remove(SetListener<E> listener) {
+        public synchronized void remove(final SetListener<E> listener) {
             super.remove(listener);
         }
 
         @Override
-        public synchronized void elementAdded(Set<E> set, E element) {
+        public synchronized void elementAdded(final Set<E> set, final E element) {
             super.elementAdded(set, element);
         }
 
         @Override
-        public synchronized void elementRemoved(Set<E> set, E element) {
+        public synchronized void elementRemoved(final Set<E> set, final E element) {
             super.elementRemoved(set, element);
         }
 
         @Override
-        public synchronized void setCleared(Set<E> set) {
+        public synchronized void setCleared(final Set<E> set) {
             super.setCleared(set);
         }
 
         @Override
-        public synchronized void comparatorChanged(Set<E> set, Comparator<E> previousComparator) {
+        public synchronized void comparatorChanged(final Set<E> set, final Comparator<E> previousComparator) {
             super.comparatorChanged(set, previousComparator);
         }
     }
 
+    /**
+     * The underlying set we are wrapping.
+     */
     private Set<E> set;
+    /**
+     * The synchronized listeners on this set.
+     */
     private SynchronizedSetListenerList<E> setListeners = new SynchronizedSetListenerList<>();
 
-    public SynchronizedSet(Set<E> set) {
-        Utils.checkNull(set, "set");
+    /**
+     * Wrap the given set with this synchronized version.
+     *
+     * @param wrappedSet The unsynchronized set to be wrapped by this one.
+     * @throws IllegalArgumentException if the given set is {@code null}.
+     */
+    public SynchronizedSet(final Set<E> wrappedSet) {
+        Utils.checkNull(wrappedSet, "set");
 
-        this.set = set;
+        set = wrappedSet;
     }
 
     @Override
-    public synchronized boolean add(E element) {
+    public synchronized boolean add(final E element) {
         boolean added = false;
 
         if (!contains(element)) {
@@ -85,7 +104,7 @@ public class SynchronizedSet<E> implements Set<E> {
     }
 
     @Override
-    public synchronized boolean remove(E element) {
+    public synchronized boolean remove(final E element) {
         boolean removed = false;
 
         if (contains(element)) {
@@ -99,7 +118,7 @@ public class SynchronizedSet<E> implements Set<E> {
     }
 
     @Override
-    public synchronized boolean contains(E element) {
+    public synchronized boolean contains(final E element) {
         return set.contains(element);
     }
 
@@ -127,7 +146,7 @@ public class SynchronizedSet<E> implements Set<E> {
     }
 
     @Override
-    public synchronized void setComparator(Comparator<E> comparator) {
+    public synchronized void setComparator(final Comparator<E> comparator) {
         Comparator<E> previousComparator = getComparator();
         set.setComparator(comparator);
         setListeners.comparatorChanged(this, previousComparator);

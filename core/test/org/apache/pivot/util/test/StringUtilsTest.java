@@ -28,15 +28,28 @@ import org.apache.pivot.util.StringUtils;
  * Test the methods in {@link StringUtils}.
  */
 public class StringUtilsTest {
+    /**
+     * Our (tiny) test case.
+     */
     private static String[] values = {
-        "a", "b", "c", "d", "e", "f", "g"
+        "b", "c", "d", "e", "f", "g"
     };
 
+    /**
+     * Run some basic tests.
+     */
     @Test
     public void test1() {
         List<String> list = new ArrayList<>();
-        list.addAll(values);
         String output = StringUtils.toString(list);
+        assertEquals("[]", output);
+
+        list.add("a");
+        output = StringUtils.toString(list);
+        assertEquals("[a]", output);
+
+        list.addAll(values);
+        output = StringUtils.toString(list);
         System.out.println("list " + output);
         assertEquals("[a, b, c, d, e, f, g]", output);
     }

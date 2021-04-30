@@ -19,6 +19,7 @@ package org.apache.pivot.wtk.skin;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Optional;
 
 import org.apache.pivot.collections.EnumSet;
 import org.apache.pivot.util.Utils;
@@ -64,7 +65,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
     ComponentKeyListener, ComponentTooltipListener {
 
     /** The component to which this skin is attached. */
-    private Component installedComponent = null;
+    private Optional<Component> installedComponent = Optional.empty();
 
     /** This component's current full width (usually calculated during layout). */
     private int width = 0;
@@ -137,7 +138,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      */
     @Override
     public void install(final Component component) {
-        assert (this.installedComponent == null)
+        assert (!installedComponent.isPresent())
             : "This " + getClass().getSimpleName() + " is already installed on a component.";
 
         component.getComponentListeners().add(this);
@@ -148,7 +149,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
         component.getComponentKeyListeners().add(this);
         component.getComponentTooltipListeners().add(this);
 
-        this.installedComponent = component;
+        installedComponent = Optional.ofNullable(component);
     }
 
     /**
@@ -157,7 +158,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      */
     @Override
     public final Component getComponent() {
-        return installedComponent;
+        return installedComponent.orElse(null);
     }
 
     /**
@@ -399,16 +400,15 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
         }
     }
 
-    // Utility methods
     /**
      * Mark the component's entire size as invalid, to be repainted when
      * the event queue is empty.
      */
     protected void invalidateComponent() {
-        if (installedComponent != null) {
-            installedComponent.invalidate();
-            installedComponent.repaint();
-        }
+        installedComponent.ifPresent(component -> {
+            component.invalidate();
+            component.repaint();
+        });
     }
 
     /**
@@ -424,9 +424,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * @param immediate {@code true} to repaint the entire component now.
      */
     protected void repaintComponent(final boolean immediate) {
-        if (installedComponent != null) {
-            installedComponent.repaint(immediate);
-        }
+        installedComponent.ifPresent(component -> component.repaint(immediate));
     }
 
     /**
@@ -436,9 +434,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
     protected void repaintComponent(final Bounds area) {
         assert (area != null) : "area is null.";
 
-        if (installedComponent != null) {
-            installedComponent.repaint(area.x, area.y, area.width, area.height);
-        }
+        installedComponent.ifPresent(component -> component.repaint(area.x, area.y, area.width, area.height));
     }
 
     /**
@@ -450,9 +446,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * @param areaHeight The height of the area to repaint.
      */
     protected void repaintComponent(final int x, final int y, final int areaWidth, final int areaHeight) {
-        if (installedComponent != null) {
-            installedComponent.repaint(x, y, areaWidth, areaHeight);
-        }
+        installedComponent.ifPresent(component -> component.repaint(x, y, areaWidth, areaHeight));
     }
 
     /**
@@ -466,9 +460,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      */
     protected void repaintComponent(final int x, final int y, final int areaWidth, final int areaHeight,
         final boolean immediate) {
-        if (installedComponent != null) {
-            installedComponent.repaint(x, y, areaWidth, areaHeight, immediate);
-        }
+        installedComponent.ifPresent(component -> component.repaint(x, y, areaWidth, areaHeight, immediate));
     }
 
     /**
@@ -680,8 +672,7 @@ public abstract class ComponentSkin implements Skin, ComponentListener, Componen
      * <p> Should be overridden by any component's skin that wants
      * to handle Input Method events (such as {@code TextInput}).
      *
-     * @return The input method listener (if any) for this
-     * component.
+     * @return The input method listener (if any) for this component.
      */
     public TextInputMethodListener getTextInputMethodListener() {
         return null;

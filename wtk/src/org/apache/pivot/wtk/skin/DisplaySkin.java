@@ -24,16 +24,19 @@ import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.Window;
 
 /**
- * Display skin.
+ * Skin for the {@link Display} component.
  */
 public class DisplaySkin extends ContainerSkin {
+    /**
+     * Default constructor; sets default background color.
+     */
     public DisplaySkin() {
         super();
         setBackgroundColor(Color.LIGHT_GRAY);
     }
 
     @Override
-    public void install(Component component) {
+    public void install(final Component component) {
         if (!(component instanceof Display)) {
             throw new IllegalArgumentException(
                 "DisplaySkin can only be installed on instances of Display.");
@@ -56,6 +59,8 @@ public class DisplaySkin extends ContainerSkin {
                 } else {
                     Dimensions preferredSize = window.getPreferredSize();
 
+                    // Don't use "window.getSize()" so that we can optimize by only
+                    // calculating the window height if the width differs.
                     if (window.getWidth() != preferredSize.width
                         || window.getHeight() != preferredSize.height) {
                         window.setSize(preferredSize.width, preferredSize.height);

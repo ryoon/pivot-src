@@ -21,17 +21,22 @@ import java.math.BigInteger;
 
 
 /**
- * A set of static methods that perform various string manipulation
- * functions.
+ * A set of static methods that perform various string manipulation functions.
  */
 public final class StringUtils {
+    /**
+     * Maximum length of string constructed by {@link #fromNChars} (arbitrary).
+     */
+    private static final int MAX_STRING_SIZE = Integer.MAX_VALUE >> 2;
+
+
     /** Private constructor since this is a utility class. */
     private StringUtils() {
     }
 
     /**
      * Make a string the consists of "n" copies of the given character.
-     * <p> Note: "n" must be positive and less than 512K (arbitrary).
+     * <p> Note: "n" must be positive and less than {@link #MAX_STRING_SIZE}.
      *
      * @param ch The character to copy.
      * @param n  The number of times to copy this character.
@@ -41,7 +46,7 @@ public final class StringUtils {
         if (n == 0) {
             return "";
         }
-        if (n < 0 || n > Integer.MAX_VALUE / 4) {
+        if (n < 0 || n > MAX_STRING_SIZE) {
            throw new IllegalArgumentException("Requested string size " + n + " is out of range.");
         }
 
@@ -214,6 +219,39 @@ public final class StringUtils {
 
             sb.append(item);
             i++;
+        }
+
+        sb.append(']');
+
+        return sb;
+    }
+
+    /**
+     * Given an array of items, construct a string representation of the array
+     * that looks like:
+     * <p><code>[<i>item1</i>, <i>item2</i>, ...]</code></p>
+     * appending the results to the given string builder for further use.
+     * <p> If the {@link StringBuilder} has any preceding text (that is, {@code length > 0})
+     * then append a blank before the list representation.
+     *
+     * @param <T> The type of items in the array.
+     * @param sb The {@link StringBuilder} already in progress.
+     * @param arr The array of items.
+     * @return The input {@code StringBuilder} for further use.
+     */
+    public static <T> StringBuilder append(final StringBuilder sb, final T[] arr) {
+        // Separate this text from any preceding text
+        if (sb.length() > 0) {
+            sb.append(' ');
+        }
+        sb.append('[');
+
+        for (int i = 0; i < arr.length; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+
+            sb.append(arr[i]);
         }
 
         sb.append(']');

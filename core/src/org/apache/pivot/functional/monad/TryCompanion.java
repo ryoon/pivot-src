@@ -25,6 +25,9 @@ import java.util.Objects;
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class TryCompanion<T> {
+    /**
+     * The singleton (static) instance.
+     */
     private static final TryCompanion INSTANCE = new TryCompanion<>();
 
     /**

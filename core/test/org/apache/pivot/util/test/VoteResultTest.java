@@ -26,7 +26,14 @@ import org.apache.pivot.util.Vote;
 import org.apache.pivot.util.VoteResult;
 
 
+/**
+ * Tests of the {@link VoteResult} class; used for tabulating votes
+ * inside of lambda functions.
+ */
 public class VoteResultTest {
+    /**
+     * Run the basic tests.
+     */
     @Test
     public void test1() {
         ArrayList<Vote> votes = new ArrayList<>();
