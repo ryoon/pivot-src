@@ -22,17 +22,16 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Text input selection listener interface.
  */
+@FunctionalInterface
 public interface TextInputSelectionListener {
     /**
      * Text input selection listener listeners list.
      */
-    public static class Listeners extends ListenerList<TextInputSelectionListener>
+    class Listeners extends ListenerList<TextInputSelectionListener>
             implements TextInputSelectionListener {
         @Override
-        public void selectionChanged(TextInput textInput, int previousSelectionStart,
-            int previousSelectionLength) {
-            forEach(listener -> listener.selectionChanged(textInput, previousSelectionStart,
-                    previousSelectionLength));
+        public void selectionChanged(final TextInput textInput, final int previousStart, final int previousLength) {
+            forEach(listener -> listener.selectionChanged(textInput, previousStart, previousLength));
         }
     }
 
@@ -46,7 +45,5 @@ public interface TextInputSelectionListener {
      * @param previousSelectionLength If the selection changed directly, the
      * previous selection length. Otherwise, the current selection length.
      */
-    default void selectionChanged(TextInput textInput, int previousSelectionStart,
-        int previousSelectionLength) {
-    }
+    void selectionChanged(TextInput textInput, int previousSelectionStart, int previousSelectionLength);
 }
