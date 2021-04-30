@@ -16,8 +16,9 @@
  */
 package org.apache.pivot.wtk;
 
-import java.awt.event.InputEvent;
+import static java.awt.event.InputEvent.*;
 import java.awt.event.KeyEvent;
+import static java.awt.event.KeyEvent.*;
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -41,10 +42,10 @@ public final class Keyboard {
      * Enumeration representing keyboard modifiers.
      */
     public enum Modifier {
-        SHIFT(InputEvent.SHIFT_DOWN_MASK),
-        CTRL(InputEvent.CTRL_DOWN_MASK),
-        ALT(InputEvent.ALT_DOWN_MASK),
-        META(InputEvent.META_DOWN_MASK);
+        SHIFT(SHIFT_DOWN_MASK),
+        CTRL(CTRL_DOWN_MASK),
+        ALT(ALT_DOWN_MASK),
+        META(META_DOWN_MASK);
 
         /**
          * The AWT modifier value.
@@ -63,7 +64,7 @@ public final class Keyboard {
          */
         Modifier(final int modifier) {
             awtModifier = modifier;
-            keySymbol = InputEvent.getModifiersExText(modifier);
+            keySymbol = getModifiersExText(modifier);
         }
 
         /**
@@ -117,6 +118,35 @@ public final class Keyboard {
         }
 
         /**
+         * Determine the complete set of our modifier masks that are represented by the
+         * given AWT modifiers set.
+         *
+         * @param awtModifiers The set of modifiers returned by {@link KeyEvent#getModifiersEx}.
+         * @param keyLocation  Where the key event originated (used to modify/ignore some modifiers).
+         * @return             The complete mask of the our modifiers represented by the input.
+         */
+        public static int getModifiers(final int awtModifiers, final int keyLocation) {
+            int modifiers = 0;
+
+            for (Modifier m : values()) {
+                if (m == CTRL) {
+                    // Ignore CTRL when Alt-Graphics is pressed
+                    if ((awtModifiers & m.awtModifier) > 0
+                     && ((awtModifiers & ALT.awtModifier) == 0
+                      || keyLocation == KEY_LOCATION_RIGHT)) {
+                         modifiers |= m.getMask();
+                     }
+                 } else {
+                     if ((awtModifiers & m.awtModifier) > 0) {
+                         modifiers |= m.getMask();
+                     }
+                 }
+            }
+
+            return modifiers;
+        }
+
+        /**
          * The set of all possible keyboard modifiers (for use with {@link #isPressed},
          * or {@link Modifier#getMask(Set)}, {@link #areAllPressed(Set)}, or
          * {@link #areAnyPressed(Set)}).
@@ -155,7 +185,45 @@ public final class Keyboard {
      * Enumeration representing key locations.
      */
     public enum KeyLocation {
-        STANDARD, LEFT, RIGHT, KEYPAD
+        /** The "standard" location; in the regular key location. */
+        STANDARD(KEY_LOCATION_STANDARD),
+        /** On the left side of the keyboard. */
+        LEFT(KEY_LOCATION_LEFT),
+        /** On the right side of the keyboard. */
+        RIGHT(KEY_LOCATION_RIGHT),
+        /** On the numeric keypad. */
+        KEYPAD(KEY_LOCATION_NUMPAD);
+
+        /**
+         * The native key location we are mapping.
+         */
+        private final int nativeLocation;
+
+        /**
+         * Construct given the native key location we represent.
+         * @param keyLocation The native location value.
+         */
+        KeyLocation(final int keyLocation) {
+            nativeLocation = keyLocation;
+        }
+
+        /**
+         * Translate the given native AWT key location constant into one of our values.
+         * @param awtKeyLocation The native location.
+         * @return The corresponding one of our values.
+         */
+        public static KeyLocation fromAWTLocation(final int awtKeyLocation) {
+            KeyLocation keyLocation = null;
+
+            for (KeyLocation loc : values()) {
+                if (awtKeyLocation == loc.nativeLocation) {
+                    keyLocation = loc;
+                    break;
+                }
+            }
+
+            return keyLocation;
+        }
     }
 
     /**
@@ -169,7 +237,7 @@ public final class Keyboard {
 
         /**
          * Pattern to recognize modifiers and key values. Note: this supports the "current" Unicode symbols used
-         * on OSX to display keystrokes (and what is returned by {@link InputEvent#getModifiersExText})
+         * on OSX to display keystrokes (and what is returned by {@link java.awt.event.InputEvent#getModifiersExText})
          * but could, potentially, be subject to change.
          * <p> Supported patterns include: <code>F12</code> (key by itself), <code>Cmd+A</code> ("Cmd" modifier,
          * which is platform-specific, using "+" separator), <code>Ctrl-Shift-Alt-Left</code> (multiple modifiers,
@@ -236,11 +304,11 @@ public final class Keyboard {
 
             if (awtModifiers != 0x00) {
                 String sep = Platform.getKeyStrokeModifierSeparator();
-                return InputEvent.getModifiersExText(awtModifiers).replace("+", sep)
-                    + sep + KeyEvent.getKeyText(keyCode);
+                return getModifiersExText(awtModifiers).replace("+", sep)
+                    + sep + getKeyText(keyCode);
             }
 
-            return KeyEvent.getKeyText(keyCode);
+            return getKeyText(keyCode);
         }
 
         /**
@@ -304,106 +372,106 @@ public final class Keyboard {
      * Contains a set of key code constants that are common to all locales.
      */
     public static final class KeyCode {
-        public static final int A = KeyEvent.VK_A;
-        public static final int B = KeyEvent.VK_B;
-        public static final int C = KeyEvent.VK_C;
-        public static final int D = KeyEvent.VK_D;
-        public static final int E = KeyEvent.VK_E;
-        public static final int F = KeyEvent.VK_F;
-        public static final int G = KeyEvent.VK_G;
-        public static final int H = KeyEvent.VK_H;
-        public static final int I = KeyEvent.VK_I;
-        public static final int J = KeyEvent.VK_J;
-        public static final int K = KeyEvent.VK_K;
-        public static final int L = KeyEvent.VK_L;
-        public static final int M = KeyEvent.VK_M;
-        public static final int N = KeyEvent.VK_N;
-        public static final int O = KeyEvent.VK_O;
-        public static final int P = KeyEvent.VK_P;
-        public static final int Q = KeyEvent.VK_Q;
-        public static final int R = KeyEvent.VK_R;
-        public static final int S = KeyEvent.VK_S;
-        public static final int T = KeyEvent.VK_T;
-        public static final int U = KeyEvent.VK_U;
-        public static final int V = KeyEvent.VK_V;
-        public static final int W = KeyEvent.VK_W;
-        public static final int X = KeyEvent.VK_X;
-        public static final int Y = KeyEvent.VK_Y;
-        public static final int Z = KeyEvent.VK_Z;
+        public static final int A = VK_A;
+        public static final int B = VK_B;
+        public static final int C = VK_C;
+        public static final int D = VK_D;
+        public static final int E = VK_E;
+        public static final int F = VK_F;
+        public static final int G = VK_G;
+        public static final int H = VK_H;
+        public static final int I = VK_I;
+        public static final int J = VK_J;
+        public static final int K = VK_K;
+        public static final int L = VK_L;
+        public static final int M = VK_M;
+        public static final int N = VK_N;
+        public static final int O = VK_O;
+        public static final int P = VK_P;
+        public static final int Q = VK_Q;
+        public static final int R = VK_R;
+        public static final int S = VK_S;
+        public static final int T = VK_T;
+        public static final int U = VK_U;
+        public static final int V = VK_V;
+        public static final int W = VK_W;
+        public static final int X = VK_X;
+        public static final int Y = VK_Y;
+        public static final int Z = VK_Z;
 
-        public static final int N0 = KeyEvent.VK_0;
-        public static final int N1 = KeyEvent.VK_1;
-        public static final int N2 = KeyEvent.VK_2;
-        public static final int N3 = KeyEvent.VK_3;
-        public static final int N4 = KeyEvent.VK_4;
-        public static final int N5 = KeyEvent.VK_5;
-        public static final int N6 = KeyEvent.VK_6;
-        public static final int N7 = KeyEvent.VK_7;
-        public static final int N8 = KeyEvent.VK_8;
-        public static final int N9 = KeyEvent.VK_9;
+        public static final int N0 = VK_0;
+        public static final int N1 = VK_1;
+        public static final int N2 = VK_2;
+        public static final int N3 = VK_3;
+        public static final int N4 = VK_4;
+        public static final int N5 = VK_5;
+        public static final int N6 = VK_6;
+        public static final int N7 = VK_7;
+        public static final int N8 = VK_8;
+        public static final int N9 = VK_9;
 
-        public static final int PERIOD = KeyEvent.VK_PERIOD;
+        public static final int PERIOD = VK_PERIOD;
 
-        public static final int TAB = KeyEvent.VK_TAB;
-        public static final int SPACE = KeyEvent.VK_SPACE;
-        public static final int ENTER = KeyEvent.VK_ENTER;
-        public static final int ESCAPE = KeyEvent.VK_ESCAPE;
-        public static final int BACKSPACE = KeyEvent.VK_BACK_SPACE;
-        public static final int DELETE = KeyEvent.VK_DELETE;
-        public static final int INSERT = KeyEvent.VK_INSERT;
+        public static final int TAB = VK_TAB;
+        public static final int SPACE = VK_SPACE;
+        public static final int ENTER = VK_ENTER;
+        public static final int ESCAPE = VK_ESCAPE;
+        public static final int BACKSPACE = VK_BACK_SPACE;
+        public static final int DELETE = VK_DELETE;
+        public static final int INSERT = VK_INSERT;
 
-        public static final int UP = KeyEvent.VK_UP;
-        public static final int DOWN = KeyEvent.VK_DOWN;
-        public static final int LEFT = KeyEvent.VK_LEFT;
-        public static final int RIGHT = KeyEvent.VK_RIGHT;
+        public static final int UP = VK_UP;
+        public static final int DOWN = VK_DOWN;
+        public static final int LEFT = VK_LEFT;
+        public static final int RIGHT = VK_RIGHT;
 
-        public static final int PAGE_UP = KeyEvent.VK_PAGE_UP;
-        public static final int PAGE_DOWN = KeyEvent.VK_PAGE_DOWN;
+        public static final int PAGE_UP = VK_PAGE_UP;
+        public static final int PAGE_DOWN = VK_PAGE_DOWN;
 
-        public static final int HOME = KeyEvent.VK_HOME;
-        public static final int END = KeyEvent.VK_END;
+        public static final int HOME = VK_HOME;
+        public static final int END = VK_END;
 
-        public static final int KEYPAD_0 = KeyEvent.VK_NUMPAD0;
-        public static final int KEYPAD_1 = KeyEvent.VK_NUMPAD1;
-        public static final int KEYPAD_2 = KeyEvent.VK_NUMPAD2;
-        public static final int KEYPAD_3 = KeyEvent.VK_NUMPAD3;
-        public static final int KEYPAD_4 = KeyEvent.VK_NUMPAD4;
-        public static final int KEYPAD_5 = KeyEvent.VK_NUMPAD5;
-        public static final int KEYPAD_6 = KeyEvent.VK_NUMPAD6;
-        public static final int KEYPAD_7 = KeyEvent.VK_NUMPAD7;
-        public static final int KEYPAD_8 = KeyEvent.VK_NUMPAD8;
-        public static final int KEYPAD_9 = KeyEvent.VK_NUMPAD9;
-        public static final int KEYPAD_UP = KeyEvent.VK_KP_UP;
-        public static final int KEYPAD_DOWN = KeyEvent.VK_KP_DOWN;
-        public static final int KEYPAD_LEFT = KeyEvent.VK_KP_LEFT;
-        public static final int KEYPAD_RIGHT = KeyEvent.VK_KP_RIGHT;
+        public static final int KEYPAD_0 = VK_NUMPAD0;
+        public static final int KEYPAD_1 = VK_NUMPAD1;
+        public static final int KEYPAD_2 = VK_NUMPAD2;
+        public static final int KEYPAD_3 = VK_NUMPAD3;
+        public static final int KEYPAD_4 = VK_NUMPAD4;
+        public static final int KEYPAD_5 = VK_NUMPAD5;
+        public static final int KEYPAD_6 = VK_NUMPAD6;
+        public static final int KEYPAD_7 = VK_NUMPAD7;
+        public static final int KEYPAD_8 = VK_NUMPAD8;
+        public static final int KEYPAD_9 = VK_NUMPAD9;
+        public static final int KEYPAD_UP = VK_KP_UP;
+        public static final int KEYPAD_DOWN = VK_KP_DOWN;
+        public static final int KEYPAD_LEFT = VK_KP_LEFT;
+        public static final int KEYPAD_RIGHT = VK_KP_RIGHT;
 
-        public static final int PLUS = KeyEvent.VK_PLUS;
-        public static final int MINUS = KeyEvent.VK_MINUS;
-        public static final int EQUALS = KeyEvent.VK_EQUALS;
+        public static final int PLUS = VK_PLUS;
+        public static final int MINUS = VK_MINUS;
+        public static final int EQUALS = VK_EQUALS;
 
-        public static final int ADD = KeyEvent.VK_ADD;
-        public static final int SUBTRACT = KeyEvent.VK_SUBTRACT;
-        public static final int MULTIPLY = KeyEvent.VK_MULTIPLY;
-        public static final int DIVIDE = KeyEvent.VK_DIVIDE;
+        public static final int ADD = VK_ADD;
+        public static final int SUBTRACT = VK_SUBTRACT;
+        public static final int MULTIPLY = VK_MULTIPLY;
+        public static final int DIVIDE = VK_DIVIDE;
 
-        public static final int SLASH = KeyEvent.VK_SLASH;
-        public static final int ASTERISK = KeyEvent.VK_ASTERISK;
+        public static final int SLASH = VK_SLASH;
+        public static final int ASTERISK = VK_ASTERISK;
 
-        public static final int F1 = KeyEvent.VK_F1;
-        public static final int F2 = KeyEvent.VK_F2;
-        public static final int F3 = KeyEvent.VK_F3;
-        public static final int F4 = KeyEvent.VK_F4;
-        public static final int F5 = KeyEvent.VK_F5;
-        public static final int F6 = KeyEvent.VK_F6;
-        public static final int F7 = KeyEvent.VK_F7;
-        public static final int F8 = KeyEvent.VK_F8;
-        public static final int F9 = KeyEvent.VK_F9;
-        public static final int F10 = KeyEvent.VK_F10;
-        public static final int F11 = KeyEvent.VK_F11;
-        public static final int F12 = KeyEvent.VK_F12;
+        public static final int F1 = VK_F1;
+        public static final int F2 = VK_F2;
+        public static final int F3 = VK_F3;
+        public static final int F4 = VK_F4;
+        public static final int F5 = VK_F5;
+        public static final int F6 = VK_F6;
+        public static final int F7 = VK_F7;
+        public static final int F8 = VK_F8;
+        public static final int F9 = VK_F9;
+        public static final int F10 = VK_F10;
+        public static final int F11 = VK_F11;
+        public static final int F12 = VK_F12;
 
-        public static final int UNDEFINED = KeyEvent.VK_UNDEFINED;
+        public static final int UNDEFINED = VK_UNDEFINED;
     }
 
     /**
@@ -530,6 +598,7 @@ public final class Keyboard {
      * Returns the current drop action.
      *
      * @return The drop action corresponding to the currently pressed modifier keys.
+     * @see DropAction#getDropAction
      */
     public static DropAction getDropAction() {
         DropAction dropAction = null;

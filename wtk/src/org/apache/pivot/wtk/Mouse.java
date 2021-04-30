@@ -17,6 +17,8 @@
 package org.apache.pivot.wtk;
 
 import java.awt.MouseInfo;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
 
 import org.apache.pivot.util.Utils;
 
@@ -34,10 +36,73 @@ public final class Mouse {
      * Enumeration representing mouse buttons.
      */
     public enum Button {
-        LEFT, RIGHT, MIDDLE;
+        /** The left mouse button (typically the "main" button for clicks, etc). */
+        LEFT(InputEvent.BUTTON1_DOWN_MASK, MouseEvent.BUTTON1),
+        /** The right mouse button (typically for popup menus and such). */
+        RIGHT(InputEvent.BUTTON3_DOWN_MASK, MouseEvent.BUTTON3),
+        /** The middle mouse button (not used much here). */
+        MIDDLE(InputEvent.BUTTON2_DOWN_MASK, MouseEvent.BUTTON2);
 
+        /**
+         * The AWT modifier value.
+         */
+        private final int awtModifier;
+
+        /**
+         * The {@link MouseEvent} button value.
+         */
+        private final int awtButton;
+
+        /**
+         * Construct, setting the AWT equivalents for our values.
+         *
+         * @param modifier The AWT event modifier mask.
+         * @param button   The AWT button identifier.
+         */
+        Button(final int modifier, final int button) {
+            awtModifier = modifier;
+            awtButton = button;
+        }
+
+        /**
+         * @return The one-bit mask for this button, which is
+         * {@code 2**ordinal}.
+         */
         public int getMask() {
             return 1 << ordinal();
+        }
+
+        /**
+         * Figure out the complete mask of our button values, given an AWT
+         * input event set of mouse button modifiers.
+         *
+         * @param modifiers The set of {@link InputEvent} modifiers.
+         * @return          The corresponding mask of our own button values.
+         */
+        public static int getButtons(final int modifiers) {
+            int buttonsMask = 0;
+            for (Button b : values()) {
+                if ((modifiers & b.awtModifier) > 0) {
+                    buttonsMask |= b.getMask();
+                }
+            }
+            return buttonsMask;
+        }
+
+        /**
+         * Translate the AWT mouse event button to our own button value.
+         *
+         * @param eventButton The {@link MouseEvent} button value.
+         * @return            The corresponding enum value, or {@code null}
+         *                    if there is no correspondence (should never happen).
+         */
+        public static Button getButton(final int eventButton) {
+            for (Button b : values()) {
+                if (eventButton == b.awtButton) {
+                    return b;
+                }
+            }
+            return null;
         }
     }
 
@@ -45,11 +110,21 @@ public final class Mouse {
      * Enumeration defining supported scroll types.
      */
     public enum ScrollType {
-        UNIT, BLOCK
+        /** Mouse wheel scrolling by units. */
+        UNIT,
+        /** Mouse wheel scrolling in blocks. */
+        BLOCK
     }
 
+    /**
+     * The current set of mouse buttons that are pressed.
+     */
     private static int buttons = 0;
+    /**
+     * The component that currently has the mouse captured (if any).
+     */
     private static Component capturer = null;
+
 
     /**
      * @return A bitfield representing the mouse buttons that are currently
@@ -59,12 +134,19 @@ public final class Mouse {
         return buttons;
     }
 
-    protected static void setButtons(final int buttons) {
-        Mouse.buttons = buttons;
+    /**
+     * Set the current bitmask of the buttons that are pressed (only callable
+     * from this package).
+     *
+     * @param pressedButtons The current button bitmask.
+     * @see Button#getButtons
+     */
+    protected static void setButtons(final int pressedButtons) {
+        buttons = pressedButtons;
     }
 
     /**
-     * Tests the pressed state of a button.
+     * Tests the pressed state of a mouse button.
      *
      * @param button The button to test.
      * @return {@code true} if the button is pressed; {@code false}, otherwise.
@@ -84,21 +166,21 @@ public final class Mouse {
      * "Captures" the mouse, causing all mouse input to be delegated to the
      * given component rather than propagating down the component hierarchy.
      *
-     * @param capturerArgument The component that wants to capture the mouse.
+     * @param capturerComponent The component that wants to capture the mouse.
      * The mouse pointer must currently be over the component.
      */
-    public static void capture(final Component capturerArgument) {
-        Utils.checkNull(capturerArgument, "capturer");
+    public static void capture(final Component capturerComponent) {
+        Utils.checkNull(capturerComponent, "capturer");
 
-        if (!capturerArgument.isMouseOver()) {
+        if (!capturerComponent.isMouseOver()) {
             throw new IllegalArgumentException("Mouse pointer is not currently over capturer.");
         }
 
-        if (Mouse.capturer != null) {
+        if (capturer != null) {
             throw new IllegalStateException("Mouse is already captured.");
         }
 
-        Mouse.capturer = capturerArgument;
+        capturer = capturerComponent;
     }
 
     /**

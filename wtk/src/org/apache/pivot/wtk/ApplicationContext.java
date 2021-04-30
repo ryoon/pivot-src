@@ -22,7 +22,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.PrintGraphics;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.dnd.DnDConstants;
@@ -44,7 +43,6 @@ import java.awt.event.InputMethodEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.font.TextHitInfo;
 import java.awt.im.InputMethodRequests;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
@@ -56,7 +54,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.AttributedCharacterIterator;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Timer;
@@ -70,7 +67,7 @@ import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.json.JSONSerializer;
 import org.apache.pivot.serialization.SerializationException;
-import org.apache.pivot.util.Utils;
+import org.apache.pivot.util.ExceptionUtils;
 import org.apache.pivot.util.Version;
 import org.apache.pivot.wtk.Component.DecoratorSequence;
 import org.apache.pivot.wtk.effects.Decorator;
@@ -99,7 +96,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
 
         private MenuPopup menuPopup = null;
 
-        private double scale = 1;
+        private double scale = 1.0;
 
         private boolean debugPaint = false;
 
@@ -115,7 +112,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
 
         private transient DropTargetListener dropTargetListener = new DropTargetListener() {
             @Override
-            public void dragEnter(DropTargetDragEvent event) {
+            public void dragEnter(final DropTargetDragEvent event) {
                 if (dragDescendant != null) {
                     throw new IllegalStateException("Local drag already in progress.");
                 }
@@ -150,7 +147,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             }
 
             @Override
-            public void dragExit(DropTargetEvent event) {
+            public void dragExit(final DropTargetEvent event) {
                 // Clear drag location and state
                 dragLocation = null;
                 dragManifest = null;
@@ -169,7 +166,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             }
 
             @Override
-            public void dragOver(DropTargetDragEvent event) {
+            public void dragOver(final DropTargetDragEvent event) {
                 java.awt.Point location = event.getLocation();
 
                 // Get the previous and current drop descendant and call
@@ -220,7 +217,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             }
 
             @Override
-            public void dropActionChanged(DropTargetDragEvent event) {
+            public void dropActionChanged(final DropTargetDragEvent event) {
                 userDropAction = getDropAction(event.getDropAction());
 
                 DropAction dropAction = null;
@@ -251,7 +248,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             }
 
             @Override
-            public void drop(DropTargetDropEvent event) {
+            public void drop(final DropTargetDropEvent event) {
                 java.awt.Point location = event.getLocation();
                 dropDescendant = getDropDescendant(location.x, location.y);
 
@@ -304,99 +301,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             }
         };
 
-        private transient TextInputMethodListener textInputMethodListener = new TextInputMethodListener() {
-
-            private TextInputMethodListener getCurrentListener() {
-                Component focusedComponent = Component.getFocusedComponent();
-                if (focusedComponent != null) {
-                    return focusedComponent.getTextInputMethodListener();
-                }
-                return null;
-            }
-
-            @Override
-            public AttributedCharacterIterator cancelLatestCommittedText(
-                    AttributedCharacterIterator.Attribute[] attributes) {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    return listener.cancelLatestCommittedText(attributes);
-                }
-                return null;
-            }
-
-            @Override
-            public AttributedCharacterIterator getCommittedText(int beginIndex, int endIndex,
-                    AttributedCharacterIterator.Attribute[] attributes) {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    return listener.getCommittedText(beginIndex, endIndex, attributes);
-                }
-                return null;
-            }
-
-            @Override
-            public int getCommittedTextLength() {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    return listener.getCommittedTextLength();
-                }
-                return 0;
-            }
-
-            @Override
-            public int getInsertPositionOffset() {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    return listener.getInsertPositionOffset();
-                }
-                return 0;
-            }
-
-            @Override
-            public TextHitInfo getLocationOffset(int x, int y) {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    return listener.getLocationOffset(x, y);
-                }
-                return null;
-            }
-
-            @Override
-            public AttributedCharacterIterator getSelectedText(
-                    AttributedCharacterIterator.Attribute[] attributes) {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    return listener.getSelectedText(attributes);
-                }
-                return null;
-            }
-
-            @Override
-            public Rectangle getTextLocation(TextHitInfo offset) {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    return listener.getTextLocation(offset);
-                }
-                return new Rectangle();
-            }
-
-            @Override
-            public void inputMethodTextChanged(InputMethodEvent event) {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    listener.inputMethodTextChanged(event);
-                }
-            }
-
-            @Override
-            public void caretPositionChanged(InputMethodEvent event) {
-                TextInputMethodListener listener = getCurrentListener();
-                if (listener != null) {
-                    listener.caretPositionChanged(event);
-                }
-            }
-
-        };
+        private transient TextInputMethodListener textInputMethodListener = new ComponentTextInputMethodListener();
 
         @Override
         public InputMethodRequests getInputMethodRequests() {
@@ -404,37 +309,29 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         public DisplayHost() {
-            enableEvents(AWTEvent.COMPONENT_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK
-                | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK
-                | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK);
+            enableEvents(
+                  AWTEvent.COMPONENT_EVENT_MASK
+                | AWTEvent.FOCUS_EVENT_MASK
+                | AWTEvent.MOUSE_EVENT_MASK
+                | AWTEvent.MOUSE_MOTION_EVENT_MASK
+                | AWTEvent.MOUSE_WHEEL_EVENT_MASK
+                | AWTEvent.KEY_EVENT_MASK);
             enableInputMethods(true);
             addInputMethodListener(textInputMethodListener);
 
             try {
                 System.setProperty("sun.awt.noerasebackground", "true");
                 System.setProperty("sun.awt.erasebackgroundonresize", "false");
-            } catch (SecurityException exception) {
-                // No-op
-            }
 
-            try {
                 if (Boolean.getBoolean("org.apache.pivot.wtk.disablevolatilebuffer")) {
                     volatileImagePaintEnabled = false;
                 }
-            } catch (SecurityException ex) {
-                // No-op
-            }
 
-            try {
                 debugPaint = Boolean.getBoolean("org.apache.pivot.wtk.debugpaint");
                 if (debugPaint) {
                     random = new Random();
                 }
-            } catch (SecurityException ex) {
-                // No-op
-            }
 
-            try {
                 boolean debugFocus = Boolean.getBoolean("org.apache.pivot.wtk.debugfocus");
 
                 if (debugFocus) {
@@ -442,20 +339,20 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
 
                     ComponentClassListener focusChangeListener = new ComponentClassListener() {
                         @Override
-                        public void focusedComponentChanged(Component previousFocusedComponent) {
+                        public void focusedComponentChanged(final Component previousFocusedComponent) {
                             if (previousFocusedComponent != null
                                 && previousFocusedComponent.getDecorators().indexOf(focusDecorator) > -1) {
                                 previousFocusedComponent.getDecorators().remove(focusDecorator);
                             }
 
-                            Component focusedComponentLocal = Component.getFocusedComponent();
-                            if (focusedComponentLocal != null
-                                && focusedComponentLocal.getDecorators().indexOf(focusDecorator) == -1) {
-                                focusedComponentLocal.getDecorators().add(focusDecorator);
+                            Component currentFocusedComponent = Component.getFocusedComponent();
+                            if (currentFocusedComponent != null
+                                && currentFocusedComponent.getDecorators().indexOf(focusDecorator) == -1) {
+                                currentFocusedComponent.getDecorators().add(focusDecorator);
                             }
 
                             System.out.println("focusedComponentChanged():\n  from = "
-                                + previousFocusedComponent + "\n  to = " + focusedComponentLocal);
+                                + previousFocusedComponent + "\n  to = " + currentFocusedComponent);
                         }
                     };
 
@@ -467,8 +364,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
 
             // Add native drop support
             @SuppressWarnings("unused")
-            java.awt.dnd.DropTarget dropTarget = new java.awt.dnd.DropTarget(this,
-                dropTargetListener);
+            java.awt.dnd.DropTarget dropTarget = new java.awt.dnd.DropTarget(this, dropTargetListener);
 
             setFocusTraversalKeysEnabled(false);
         }
@@ -490,21 +386,26 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             return scale;
         }
 
+        private int scaleValue(final int value) {
+            return Math.max((int) Math.ceil((double) value / scale), 0);
+        }
+
         /**
          * Use this method to scale up or down (that is zoom in or out)
          * the entire application's display.
-         * <p> For the main application window, a {@link org.apache.pivot.wtk.effects.ScaleDecorator}
-         * cannot be used.  This method (and related ones) must be used instead.
-         * @param scale The new scale (zoom) factor for the entire display.
+         * <p> For the main application window, use this (and related) methods to scale the display,
+         * but for any contained windows a {@link org.apache.pivot.wtk.effects.ScaleDecorator} must
+         * be used instead.
+         *
+         * @param newScale The new scale (zoom) factor for the entire display.
          * @see #scaleUp
          * @see #scaleDown
          * @see #getScale
          */
-        public void setScale(double scale) {
-            if (scale != this.scale) {
-                this.scale = scale;
-                display.setSize(Math.max((int) Math.ceil(getWidth() / scale), 0),
-                    Math.max((int) Math.ceil(getHeight() / scale), 0));
+        public void setScale(final double newScale) {
+            if (newScale != scale) {
+                scale = newScale;
+                display.setSize(scaleValue(getWidth()), scaleValue(getHeight()));
                 display.repaint();
             }
         }
@@ -568,7 +469,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
          * volatile buffering can reduce performance.
          * @param enabled Whether or not to use volatile image painting.
          */
-        public void setVolatileImagePaintEnabled(boolean enabled) {
+        public void setVolatileImagePaintEnabled(final boolean enabled) {
             volatileImagePaintEnabled = enabled;
             if (enabled) {
                 bufferedImage = null;
@@ -579,7 +480,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             }
         }
 
-        public void setBufferedImagePaintEnabled(boolean enabled) {
+        public void setBufferedImagePaintEnabled(final boolean enabled) {
             bufferedImagePaintEnabled = enabled;
             if (!enabled) {
                 bufferedImage = null;
@@ -588,40 +489,40 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        public void repaint(int x, int y, int width, int height) {
-            int xMutable = x;
-            int yMutable = y;
-            int widthMutable = width;
-            int heightMutable = height;
+        public void repaint(final int x, final int y, final int width, final int height) {
+            int xValue = x;
+            int yValue = y;
+            int widthValue = width;
+            int heightValue = height;
 
             // Ensure that the repaint call is properly bounded (some
             // implementations of AWT do not properly clip the repaint call
             // when x or y is negative: the negative value is converted to 0,
             // but the width/height is not adjusted)
-            if (xMutable < 0) {
-                widthMutable = Math.max(widthMutable + xMutable, 0);
-                xMutable = 0;
+            if (xValue < 0) {
+                widthValue = Math.max(widthValue + xValue, 0);
+                xValue = 0;
             }
 
-            if (yMutable < 0) {
-                heightMutable = Math.max(heightMutable + yMutable, 0);
-                yMutable = 0;
+            if (yValue < 0) {
+                heightValue = Math.max(heightValue + yValue, 0);
+                yValue = 0;
             }
 
-            if (widthMutable > 0 && heightMutable > 0) {
+            if (widthValue > 0 && heightValue > 0) {
                 if (scale == 1) {
-                    super.repaint(xMutable, yMutable, widthMutable, heightMutable);
+                    super.repaint(xValue, yValue, widthValue, heightValue);
                 } else {
-                    super.repaint((int) Math.floor(xMutable * scale),
-                        (int) Math.floor(yMutable * scale),
-                        (int) Math.ceil(widthMutable * scale) + 1,
-                        (int) Math.ceil(heightMutable * scale) + 1);
+                    super.repaint((int) Math.floor(xValue * scale),
+                        (int) Math.floor(yValue * scale),
+                        (int) Math.ceil(widthValue * scale) + 1,
+                        (int) Math.ceil(heightValue * scale) + 1);
                 }
             }
         }
 
         @Override
-        public void paint(Graphics graphics) {
+        public void paint(final Graphics graphics) {
             // Intersect the clip region with the bounds of this component
             // (for some reason, AWT does not do this automatically)
             graphics.clipRect(0, 0, getWidth(), getHeight());
@@ -658,12 +559,12 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        public void update(Graphics graphics) {
+        public void update(final Graphics graphics) {
             paint(graphics);
         }
 
         @Override
-        public void print(Graphics graphics) {
+        public void print(final Graphics graphics) {
             // TODO: verify if/how we have to re-scale output in this case ...
 
             // Intersect the clip region with the bounds of this component
@@ -673,8 +574,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             java.awt.Rectangle clipBounds = graphics.getClipBounds();
             if (clipBounds != null && !clipBounds.isEmpty()) {
                 try {
-                    // When printing, there is no point in using offscreen
-                    // buffers.
+                    // When printing, there is no point in using offscreen buffers.
                     paintDisplay((Graphics2D) graphics);
                 } catch (RuntimeException exception) {
                     System.err.println("Exception thrown during print(): " + exception);
@@ -690,7 +590,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
          * @return {@code true} if the display was painted using the offscreen
          * buffer; {@code false}, otherwise.
          */
-        private boolean paintBuffered(Graphics2D graphics) {
+        private boolean paintBuffered(final Graphics2D graphics) {
             boolean painted = false;
 
             // Paint the display into an offscreen buffer
@@ -731,7 +631,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
          * @return {@code true} if the display was painted using the offscreen
          * buffer; {@code false}, otherwise.
          */
-        private boolean paintVolatileBuffered(Graphics2D graphics) {
+        private boolean paintVolatileBuffered(final Graphics2D graphics) {
             boolean painted = false;
 
             // Paint the display into a volatile offscreen buffer
@@ -752,7 +652,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             int valid = volatileImage.validate(gc);
 
             if (valid == java.awt.image.VolatileImage.IMAGE_OK
-                || valid == java.awt.image.VolatileImage.IMAGE_RESTORED) {
+             || valid == java.awt.image.VolatileImage.IMAGE_RESTORED) {
                 java.awt.Rectangle clipBounds = graphics.getClipBounds();
                 Graphics2D volatileImageGraphics = volatileImage.createGraphics();
                 volatileImageGraphics.setClip(clipBounds.x, clipBounds.y, clipBounds.width,
@@ -783,7 +683,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
          *
          * @param graphics The graphics to paint into.
          */
-        private void paintDisplay(Graphics2D graphics) {
+        private void paintDisplay(final Graphics2D graphics) {
             if (scale != 1) {
                 graphics.scale(scale, scale);
             }
@@ -797,8 +697,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                 decoratedGraphics = decorator.prepare(display, decoratedGraphics);
             }
 
-            graphics.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_SPEED);
+            graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
             display.paint(graphics);
 
             for (int i = 0; i < n; i++) {
@@ -834,18 +733,18 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             }
         }
 
-        private Component getDropDescendant(int x, int y) {
-            Component dropDescendantLocal = display.getDescendantAt(x, y);
+        private Component getDropDescendant(final int x, final int y) {
+            Component descendant = display.getDescendantAt(x, y);
 
-            while (dropDescendantLocal != null && dropDescendantLocal.getDropTarget() == null) {
-                dropDescendantLocal = dropDescendantLocal.getParent();
+            while (descendant != null && descendant.getDropTarget() == null) {
+                descendant = descendant.getParent();
             }
 
-            if (dropDescendantLocal != null && dropDescendantLocal.isBlocked()) {
-                dropDescendantLocal = null;
+            if (descendant != null && descendant.isBlocked()) {
+                descendant = null;
             }
 
-            return dropDescendantLocal;
+            return descendant;
         }
 
         private void startNativeDrag(final DragSource dragSource,
@@ -864,21 +763,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
 
                 @Override
                 public synchronized int getSourceActions() {
-                    int awtSourceActions = 0;
-
-                    if (DropAction.COPY.isSelected(supportedDropActions)) {
-                        awtSourceActions |= DnDConstants.ACTION_COPY;
-                    }
-
-                    if (DropAction.MOVE.isSelected(supportedDropActions)) {
-                        awtSourceActions |= DnDConstants.ACTION_MOVE;
-                    }
-
-                    if (DropAction.LINK.isSelected(supportedDropActions)) {
-                        awtSourceActions |= DnDConstants.ACTION_LINK;
-                    }
-
-                    return awtSourceActions;
+                    return DropAction.getSourceActions(supportedDropActions);
                 }
 
                 @Override
@@ -895,10 +780,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             java.util.List<InputEvent> inputEvents = new java.util.ArrayList<>();
             inputEvents.add(mouseEvent);
 
-            // TODO If current user drop action is supported by drag source, use
-            // it
-            // as initial action - otherwise, select MOVE, COPY, LINK in that
-            // order
+            // TODO If current user drop action is supported by drag source, use it
+            // as initial action - otherwise, select MOVE, COPY, LINK in that order
             java.awt.Point location = new java.awt.Point(mouseEvent.getX(), mouseEvent.getY());
             DragGestureEvent trigger = new DragGestureEvent(dragGestureRecognizer,
                 DnDConstants.ACTION_MOVE, location, inputEvents);
@@ -909,31 +792,31 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             awtDragSource.startDrag(trigger, java.awt.Cursor.getDefaultCursor(), null, null,
                 localManifestAdapter, new DragSourceListener() {
                     @Override
-                    public void dragEnter(DragSourceDragEvent event) {
+                    public void dragEnter(final DragSourceDragEvent event) {
                         DragSourceContext context = event.getDragSourceContext();
                         context.setCursor(getDropCursor(getDropAction(event.getDropAction())));
                     }
 
                     @Override
-                    public void dragExit(DragSourceEvent event) {
+                    public void dragExit(final DragSourceEvent event) {
                         DragSourceContext context = event.getDragSourceContext();
                         context.setCursor(java.awt.Cursor.getDefaultCursor());
                     }
 
                     @Override
-                    public void dragOver(DragSourceDragEvent event) {
+                    public void dragOver(final DragSourceDragEvent event) {
                         DragSourceContext context = event.getDragSourceContext();
                         context.setCursor(getDropCursor(getDropAction(event.getDropAction())));
                     }
 
                     @Override
-                    public void dropActionChanged(DragSourceDragEvent event) {
+                    public void dropActionChanged(final DragSourceDragEvent event) {
                         DragSourceContext context = event.getDragSourceContext();
                         context.setCursor(getDropCursor(getDropAction(event.getDropAction())));
                     }
 
                     @Override
-                    public void dragDropEnd(DragSourceDropEvent event) {
+                    public void dragDropEnd(final DragSourceDropEvent event) {
                         DragSourceContext context = event.getDragSourceContext();
                         context.setCursor(java.awt.Cursor.getDefaultCursor());
                         dragSource.endDrag(dragDescendantArgument,
@@ -943,18 +826,19 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        protected void processEvent(AWTEvent event) {
+        protected void processEvent(final AWTEvent event) {
             currentAWTEvent = event;
-
-            super.processEvent(event);
-
-            currentAWTEvent = null;
+            try {
+                super.processEvent(event);
+            } finally {
+                currentAWTEvent = null;
+            }
 
             display.validate();
         }
 
         @Override
-        protected void processComponentEvent(ComponentEvent event) {
+        protected void processComponentEvent(final ComponentEvent event) {
             super.processComponentEvent(event);
 
             switch (event.getID()) {
@@ -973,7 +857,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        protected void processFocusEvent(FocusEvent event) {
+        protected void processFocusEvent(final FocusEvent event) {
             super.processFocusEvent(event);
 
             switch (event.getID()) {
@@ -995,53 +879,23 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        protected void processInputMethodEvent(InputMethodEvent event) {
+        protected void processInputMethodEvent(final InputMethodEvent event) {
             super.processInputMethodEvent(event);
         }
 
         @Override
-        protected void processMouseEvent(MouseEvent event) {
+        protected void processMouseEvent(final MouseEvent event) {
             super.processMouseEvent(event);
 
             int x = (int) Math.round(event.getX() / scale);
             int y = (int) Math.round(event.getY() / scale);
 
             // Set the mouse button state
-            int mouseButtons = 0x00;
-
-            int modifiersEx = event.getModifiersEx();
-            if ((modifiersEx & InputEvent.BUTTON1_DOWN_MASK) > 0) {
-                mouseButtons |= Mouse.Button.LEFT.getMask();
-            }
-
-            if ((modifiersEx & InputEvent.BUTTON2_DOWN_MASK) > 0) {
-                mouseButtons |= Mouse.Button.MIDDLE.getMask();
-            }
-
-            if ((modifiersEx & InputEvent.BUTTON3_DOWN_MASK) > 0) {
-                mouseButtons |= Mouse.Button.RIGHT.getMask();
-            }
-
+            int mouseButtons = Mouse.Button.getButtons(event.getModifiersEx());
             Mouse.setButtons(mouseButtons);
 
             // Get the button associated with this event
-            Mouse.Button button = null;
-            switch (event.getButton()) {
-                case MouseEvent.BUTTON1:
-                    button = Mouse.Button.LEFT;
-                    break;
-
-                case MouseEvent.BUTTON2:
-                    button = Mouse.Button.MIDDLE;
-                    break;
-
-                case MouseEvent.BUTTON3:
-                    button = Mouse.Button.RIGHT;
-                    break;
-
-                default:
-                    break;
-            }
+            Mouse.Button button = Mouse.Button.getButton(event.getButton());
 
             // Process the event
             int eventID = event.getID();
@@ -1093,8 +947,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
 
                             if (button == Mouse.Button.LEFT) {
                                 dragLocation = new Point(x, y);
-                            } else if (menuPopup == null && button == Mouse.Button.RIGHT
-                                && !consumed) {
+                            } else if (menuPopup == null && button == Mouse.Button.RIGHT && !consumed) {
                                 // Instantiate a context menu
                                 Menu menu = new Menu();
 
@@ -1133,8 +986,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                                     menuPopup.getWindowStateListeners().add(
                                         new WindowStateListener() {
                                             @Override
-                                            public void windowClosed(Window window,
-                                                Display displayArgument, Window owner) {
+                                            public void windowClosed(final Window window,
+                                                final Display displayArgument, final Window owner) {
                                                 menuPopup.getMenu().getSections().clear();
                                                 menuPopup = null;
                                                 window.getWindowStateListeners().remove(this);
@@ -1148,9 +1001,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                                         window = mouseOwner.getWindow();
                                     }
 
-                                    Display displayLocal = window.getDisplay();
-                                    Point location = mouseOwner.mapPointToAncestor(displayLocal, x,
-                                        y);
+                                    Display windowDisplay = window.getDisplay();
+                                    Point location = mouseOwner.mapPointToAncestor(windowDisplay, x, y);
                                     menuPopup.open(window, location);
                                 }
                             }
@@ -1209,7 +1061,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        protected void processMouseMotionEvent(MouseEvent event) {
+        protected void processMouseMotionEvent(final MouseEvent event) {
             super.processMouseMotionEvent(event);
 
             int x = (int) Math.round(event.getX() / scale);
@@ -1377,7 +1229,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        protected void processMouseWheelEvent(MouseWheelEvent event) {
+        protected void processMouseWheelEvent(final MouseWheelEvent event) {
             super.processMouseWheelEvent(event);
 
             // Get the event coordinates
@@ -1448,61 +1300,22 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        protected void processKeyEvent(KeyEvent event) {
+        protected void processKeyEvent(final KeyEvent event) {
             super.processKeyEvent(event);
 
             int modifiersEx = event.getModifiersEx();
             int awtKeyLocation = event.getKeyLocation();
 
             // Set the keyboard modifier state
-            int keyboardModifiers = 0;
-            if ((modifiersEx & InputEvent.SHIFT_DOWN_MASK) > 0) {
-                keyboardModifiers |= Keyboard.Modifier.SHIFT.getMask();
-            }
-
-            // Ignore Control when Alt-Graphics is pressed
-            if ((modifiersEx & InputEvent.CTRL_DOWN_MASK) > 0
-             && ((modifiersEx & InputEvent.ALT_DOWN_MASK) == 0
-               || awtKeyLocation == KeyEvent.KEY_LOCATION_RIGHT)) {
-                keyboardModifiers |= Keyboard.Modifier.CTRL.getMask();
-            }
-
-            if ((modifiersEx & InputEvent.ALT_DOWN_MASK) > 0) {
-                keyboardModifiers |= Keyboard.Modifier.ALT.getMask();
-            }
-
-            if ((modifiersEx & InputEvent.META_DOWN_MASK) > 0) {
-                keyboardModifiers |= Keyboard.Modifier.META.getMask();
-            }
-
+            int keyboardModifiers = Keyboard.Modifier.getModifiers(modifiersEx, awtKeyLocation);
             Keyboard.setModifiers(keyboardModifiers);
 
             // Get the key location
-            Keyboard.KeyLocation keyLocation = null;
-            switch (awtKeyLocation) {
-                case KeyEvent.KEY_LOCATION_STANDARD:
-                    keyLocation = Keyboard.KeyLocation.STANDARD;
-                    break;
-
-                case KeyEvent.KEY_LOCATION_LEFT:
-                    keyLocation = Keyboard.KeyLocation.LEFT;
-                    break;
-
-                case KeyEvent.KEY_LOCATION_RIGHT:
-                    keyLocation = Keyboard.KeyLocation.RIGHT;
-                    break;
-
-                case KeyEvent.KEY_LOCATION_NUMPAD:
-                    keyLocation = Keyboard.KeyLocation.KEYPAD;
-                    break;
-
-                default:
-                    break;
-            }
+            Keyboard.KeyLocation keyLocation = Keyboard.KeyLocation.fromAWTLocation(awtKeyLocation);
 
             if (dragDescendant == null) {
                 // Process the event
-                Component focusedComponentLocal = Component.getFocusedComponent();
+                Component currentFocusedComponent = Component.getFocusedComponent();
 
                 boolean consumed = false;
                 int keyCode;
@@ -1524,7 +1337,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                         }
 
                         try {
-                            if (focusedComponentLocal == null) {
+                            if (currentFocusedComponent == null) {
                                 for (Application application : applications) {
                                     if (application instanceof Application.UnprocessedKeyHandler) {
                                         Application.UnprocessedKeyHandler unprocessedKeyHandler =
@@ -1533,8 +1346,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                                     }
                                 }
                             } else {
-                                if (!focusedComponentLocal.isBlocked()) {
-                                    consumed = focusedComponentLocal.keyPressed(keyCode,
+                                if (!currentFocusedComponent.isBlocked()) {
+                                    consumed = currentFocusedComponent.keyPressed(keyCode,
                                         keyLocation);
                                 }
                             }
@@ -1545,14 +1358,13 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                         if (consumed) {
                             event.consume();
                         }
-
                         break;
 
                     case KeyEvent.KEY_RELEASED:
                         keyCode = event.getKeyCode();
 
                         try {
-                            if (focusedComponentLocal == null) {
+                            if (currentFocusedComponent == null) {
                                 for (Application application : applications) {
                                     if (application instanceof Application.UnprocessedKeyHandler) {
                                         Application.UnprocessedKeyHandler unprocessedKeyHandler =
@@ -1561,8 +1373,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                                     }
                                 }
                             } else {
-                                if (!focusedComponentLocal.isBlocked()) {
-                                    consumed = focusedComponentLocal.keyReleased(keyCode,
+                                if (!currentFocusedComponent.isBlocked()) {
+                                    consumed = currentFocusedComponent.keyReleased(keyCode,
                                         keyLocation);
                                 }
                             }
@@ -1573,14 +1385,13 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                         if (consumed) {
                             event.consume();
                         }
-
                         break;
 
                     case KeyEvent.KEY_TYPED:
                         char keyChar = event.getKeyChar();
 
                         try {
-                            if (focusedComponentLocal == null) {
+                            if (currentFocusedComponent == null) {
                                 for (Application application : applications) {
                                     if (application instanceof Application.UnprocessedKeyHandler) {
                                         Application.UnprocessedKeyHandler unprocessedKeyHandler =
@@ -1589,8 +1400,8 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                                     }
                                 }
                             } else {
-                                if (!focusedComponentLocal.isBlocked()) {
-                                    consumed = focusedComponentLocal.keyTyped(keyChar);
+                                if (!currentFocusedComponent.isBlocked()) {
+                                    consumed = currentFocusedComponent.keyTyped(keyChar);
                                 }
                             }
                         } catch (Throwable exception) {
@@ -1600,7 +1411,6 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                         if (consumed) {
                             event.consume();
                         }
-
                         break;
 
                     default:
@@ -1637,10 +1447,10 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
     }
 
     /**
-     * Resource cache dictionary implementation. <p> Note that this
-     * implementation does not have a way to limiting the number of elements to
-     * contain, so the cache continues to grow; to keep it small you have to
-     * manually remove old elements from it when they are no more necessary.
+     * Resource cache dictionary implementation.
+     * <p> Note that this implementation does not have a way to limit the number of elements
+     * it contains, so the cache continues to grow. To keep it small you have to
+     * manually remove old elements from it when they are no longer necessary.
      */
     public static final class ResourceCacheDictionary implements Dictionary<URL, Object>,
         Iterable<URL> {
@@ -1648,7 +1458,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        public synchronized Object get(URL key) {
+        public synchronized Object get(final URL key) {
             try {
                 return resourceCache.get(key.toURI());
             } catch (URISyntaxException exception) {
@@ -1657,7 +1467,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        public synchronized Object put(URL key, Object value) {
+        public synchronized Object put(final URL key, final Object value) {
             try {
                 return resourceCache.put(key.toURI(), value);
             } catch (URISyntaxException exception) {
@@ -1666,7 +1476,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        public synchronized Object remove(URL key) {
+        public synchronized Object remove(final URL key) {
             try {
                 return resourceCache.remove(key.toURI());
             } catch (URISyntaxException exception) {
@@ -1675,7 +1485,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
 
         @Override
-        public synchronized boolean containsKey(URL key) {
+        public synchronized boolean containsKey(final URL key) {
             try {
                 return resourceCache.containsKey(key.toURI());
             } catch (URISyntaxException exception) {
@@ -1719,11 +1529,11 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * Class representing a scheduled callback.
      */
     public static final class ScheduledCallback extends TimerTask {
-        private Runnable callback;
+        private Runnable runnable;
         private QueuedCallback queuedCallback = null;
 
-        private ScheduledCallback(Runnable callback) {
-            this.callback = callback;
+        private ScheduledCallback(final Runnable callback) {
+            runnable = callback;
         }
 
         @Override
@@ -1732,7 +1542,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                 queuedCallback.cancel();
             }
 
-            queuedCallback = queueCallback(callback);
+            queuedCallback = queueCallback(runnable);
         }
 
         @Override
@@ -1749,21 +1559,20 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * Class representing a queued callback.
      */
     public static final class QueuedCallback implements Runnable {
-        private Runnable callback;
+        private Runnable runnable;
         private volatile boolean executed = false;
         private volatile boolean cancelled = false;
 
-        private QueuedCallback(Runnable callback) {
-            this.callback = callback;
+        private QueuedCallback(final Runnable callback) {
+            runnable = callback;
         }
 
         @Override
         public void run() {
             if (!cancelled) {
                 try {
-                    callback.run();
+                    runnable.run();
                 } catch (Throwable exception) {
-                    exception.printStackTrace();
                     handleUncaughtException(exception);
                 }
 
@@ -1781,28 +1590,6 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
     }
 
-    /**
-     * Added so that any unexpected version string formats that might cause an error
-     * will not also cause the application to fail to start.
-     *
-     * @param versionString A potential version string to parse/decode.
-     * @return The parsed version information (if possible), or an empty version
-     * (that will look like: "0.0.0_00") if there was a parsing problem of any kind.
-     */
-    private static Version safelyDecodeVersion(String versionString) {
-        if (!Utils.isNullOrEmpty(versionString)) {
-            try {
-                return Version.decode(versionString);
-            } catch (Throwable ex) {
-                String exMsg = Utils.isNullOrEmpty(ex.getMessage())
-                        ? ex.getClass().getSimpleName()
-                        : ex.getMessage();
-                System.err.println("Error decoding version string \"" + versionString + "\": " + exMsg);
-            }
-        }
-        return new Version(0, 0, 0, 0);
-    }
-
 
     protected static URL origin = null;
     protected static ArrayList<Display> displays = new ArrayList<>();
@@ -1813,18 +1600,16 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
     private static HashMap<URI, Object> resourceCache = new HashMap<>();
     private static ResourceCacheDictionary resourceCacheDictionary = new ResourceCacheDictionary();
 
-    private static final Package CURRENT_PACKAGE = ApplicationContext.class.getPackage();
-    private static Version jvmVersion = null;
-    private static Version javaVersion = null;
-    private static Version pivotVersion = null;
+    private static final Package CURRENT_PACKAGE;
+    private static final Version JVM_VERSION;
+    private static final Version JAVA_VERSION;
+    private static final Version PIVOT_VERSION;
 
     static {
-        // Get the JVM & Java runtime versions
-        jvmVersion = safelyDecodeVersion(System.getProperty("java.vm.version"));
-        javaVersion = safelyDecodeVersion(System.getProperty("java.runtime.version"));
-
-        // Get the Pivot version
-        pivotVersion = safelyDecodeVersion(CURRENT_PACKAGE.getImplementationVersion());
+        CURRENT_PACKAGE = ApplicationContext.class.getPackage();
+        JVM_VERSION = Version.safelyDecode(System.getProperty("java.vm.version"));
+        JAVA_VERSION = Version.safelyDecode(System.getProperty("java.runtime.version"));
+        PIVOT_VERSION = Version.safelyDecode(CURRENT_PACKAGE.getImplementationVersion());
     }
 
     /**
@@ -1852,7 +1637,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      *
      * @param resourceName The resource name of the stylesheet to apply.
      */
-    public static void applyStylesheet(String resourceName) {
+    public static void applyStylesheet(final String resourceName) {
         applyStylesheet(resourceName, false);
     }
 
@@ -1864,7 +1649,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * @param allowMacros Whether or not there will be macros in the stylesheet.
      */
     @SuppressWarnings("unchecked")
-    public static void applyStylesheet(String resourceName, boolean allowMacros) {
+    public static void applyStylesheet(final String resourceName, final boolean allowMacros) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         URL stylesheetLocation = classLoader.getResource(resourceName.substring(1));
@@ -1901,9 +1686,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
                     Component.getNamedStyles().put(name, styles);
                 }
             }
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        } catch (SerializationException exception) {
+        } catch (IOException | SerializationException exception) {
             throw new RuntimeException(exception);
         }
     }
@@ -1916,7 +1699,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * determined (that is, "0.0.0_00").
      */
     public static Version getJVMVersion() {
-        return jvmVersion;
+        return JVM_VERSION;
     }
 
     /**
@@ -1927,7 +1710,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * determined (that is, "0.0.0_00").
      */
     public static Version getJavaVersion() {
-        return javaVersion;
+        return JAVA_VERSION;
     }
 
     /**
@@ -1937,34 +1720,55 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * an "empty" version if it can't be determined (that is, "0.0.0_00").
      */
     public static Version getPivotVersion() {
-        return pivotVersion;
+        return PIVOT_VERSION;
     }
 
     /**
-     * Schedules a task for one-time execution. The task will be executed on the
-     * UI thread.
+     * Helper method to schedule a task for one-time or recurring execution.
+     * The task will be executed on the UI thread.
      *
      * @param callback The task to execute.
-     * @param delay The length of time to wait before executing the task (in
-     * milliseconds).
+     * @param delay The length of time to wait before executing the task (in milliseconds).
+     * @param period The interval at which the task will be repeated (also in milliseconds)
+     * (0 = non-recurring).
      * @return The callback object.
      */
-    public static ScheduledCallback scheduleCallback(Runnable callback, long delay) {
+    private static ScheduledCallback timerSchedule(final Runnable callback, final long delay,
+        final long period) {
         ScheduledCallback scheduledCallback = new ScheduledCallback(callback);
 
         // TODO This is a workaround for a potential OS X bug; revisit
         try {
             try {
-                timer.schedule(scheduledCallback, delay);
+                if (period == 0L) {
+                    timer.schedule(scheduledCallback, delay);
+                } else {
+                    timer.schedule(scheduledCallback, delay, period);
+                }
             } catch (IllegalStateException exception) {
                 createTimer();
-                timer.schedule(scheduledCallback, delay);
+                if (period == 0L) {
+                    timer.schedule(scheduledCallback, delay);
+                } else {
+                    timer.schedule(scheduledCallback, delay, period);
+                }
             }
         } catch (Throwable throwable) {
             System.err.println("Unable to schedule callback: " + throwable);
         }
 
         return scheduledCallback;
+    }
+
+    /**
+     * Schedules a task for one-time execution. The task will be executed on the UI thread.
+     *
+     * @param callback The task to execute.
+     * @param delay The length of time to wait before executing the task (in milliseconds).
+     * @return The callback object.
+     */
+    public static ScheduledCallback scheduleCallback(final Runnable callback, final long delay) {
+        return timerSchedule(callback, delay, 0L);
     }
 
     /**
@@ -1972,55 +1776,36 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * UI thread and will begin executing immediately.
      *
      * @param callback The task to execute.
-     * @param period The interval at which the task will be repeated (in
-     * milliseconds).
+     * @param period The interval at which the task will be repeated (in milliseconds).
      * @return The callback object.
      */
-    public static ScheduledCallback scheduleRecurringCallback(Runnable callback, long period) {
-        return scheduleRecurringCallback(callback, 0, period);
+    public static ScheduledCallback scheduleRecurringCallback(final Runnable callback, final long period) {
+        return timerSchedule(callback, 0L, period);
     }
 
     /**
-     * Schedules a task for repeated execution. The task will be executed on the
-     * UI thread.
+     * Schedules a task for repeated execution. The task will be executed on the UI thread.
      *
      * @param callback The task to execute.
      * @param delay The length of time to wait before the first execution of the
-     * task (milliseconds).
-     * @param period The interval at which the task will be repeated (also in
-     * milliseconds).
+     * task (milliseconds) (can be 0).
+     * @param period The interval at which the task will be repeated (also in milliseconds).
      * @return The callback object.
      */
-    public static ScheduledCallback scheduleRecurringCallback(Runnable callback, long delay,
-        long period) {
-        ScheduledCallback scheduledCallback = new ScheduledCallback(callback);
-
-        // TODO This is a workaround for a potential OS X bug; revisit
-        try {
-            try {
-                timer.schedule(scheduledCallback, delay, period);
-            } catch (IllegalStateException exception) {
-                createTimer();
-                timer.schedule(scheduledCallback, delay, period);
-            }
-        } catch (Throwable throwable) {
-            System.err.println("Unable to schedule callback: " + throwable);
-        }
-
-        return scheduledCallback;
+    public static ScheduledCallback scheduleRecurringCallback(final Runnable callback, final long delay,
+        final long period) {
+        return timerSchedule(callback, delay, period);
     }
 
     /**
      * Runs a task and then schedules it for repeated execution.
-     * The task will be executed on the UI thread and will begin
-     * executing immediately.
+     * The task will be executed on the UI thread and will begin executing immediately.
      *
      * @param callback The task to execute.
-     * @param period The interval at which the task will be repeated (in
-     * milliseconds).
+     * @param period The interval at which the task will be repeated (in milliseconds).
      * @return The callback object.
      */
-    public static ScheduledCallback runAndScheduleRecurringCallback(Runnable callback, long period) {
+    public static ScheduledCallback runAndScheduleRecurringCallback(final Runnable callback, final long period) {
         return runAndScheduleRecurringCallback(callback, 0, period);
     }
 
@@ -2030,28 +1815,14 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * effect, with recurring execution after that.
      *
      * @param callback The task to execute.
-     * @param delay The length of time to wait before the next execution of the
-     * task (milliseconds).
-     * @param period The interval at which the task will be repeated (also in
-     * milliseconds).
+     * @param delay The length of time to wait before the next execution of the task (milliseconds).
+     * @param period The interval at which the task will be repeated (also in milliseconds).
      * @return The callback object.
      */
-    public static ScheduledCallback runAndScheduleRecurringCallback(Runnable callback, long delay,
-        long period) {
+    public static ScheduledCallback runAndScheduleRecurringCallback(final Runnable callback, final long delay,
+        final long period) {
 
-        ScheduledCallback scheduledCallback = new ScheduledCallback(callback);
-
-        // TODO This is a workaround for a potential OS X bug; revisit
-        try {
-            try {
-                timer.schedule(scheduledCallback, delay, period);
-            } catch (IllegalStateException exception) {
-                createTimer();
-                timer.schedule(scheduledCallback, delay, period);
-            }
-        } catch (Throwable throwable) {
-            System.err.println("Unable to schedule callback: " + throwable);
-        }
+        ScheduledCallback scheduledCallback = timerSchedule(callback, delay, period);
 
         // Before returning, run the task once to start things off
         callback.run();
@@ -2066,7 +1837,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * @param callback The task to execute.
      * @return The callback object (used to manipulate or wait for the task).
      */
-    public static QueuedCallback queueCallback(Runnable callback) {
+    public static QueuedCallback queueCallback(final Runnable callback) {
         return queueCallback(callback, false);
     }
 
@@ -2079,7 +1850,7 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
      * executed. Otherwise, returns immediately.
      * @return The callback object (used to manipulate or wait for the task).
      */
-    public static QueuedCallback queueCallback(Runnable callback, boolean wait) {
+    public static QueuedCallback queueCallback(final Runnable callback, final boolean wait) {
         QueuedCallback queuedCallback = new QueuedCallback(callback);
 
         // TODO This is a workaround for a potential OS X bug; revisit
@@ -2121,123 +1892,27 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         }
     }
 
-    private static DropAction getUserDropAction(InputEvent event) {
-        DropAction userDropAction;
-
-        if ((event.isControlDown() && event.isShiftDown())
-            || (event.isAltDown() && event.isMetaDown())) {
-            userDropAction = DropAction.LINK;
-        } else if (event.isControlDown() || (event.isAltDown())) {
-            userDropAction = DropAction.COPY;
-        } else if (event.isShiftDown()) {
-            userDropAction = DropAction.MOVE;
-        } else {
-            userDropAction = null;
-        }
-
-        return userDropAction;
+    private static DropAction getUserDropAction(final InputEvent event) {
+        return DropAction.getDropAction(event);
     }
 
-    private static DropAction getDropAction(int nativeDropAction) {
-        DropAction dropAction = null;
-
-        switch (nativeDropAction) {
-            case DnDConstants.ACTION_COPY:
-                dropAction = DropAction.COPY;
-                break;
-
-            case DnDConstants.ACTION_MOVE:
-                dropAction = DropAction.MOVE;
-                break;
-
-            case DnDConstants.ACTION_LINK:
-                dropAction = DropAction.LINK;
-                break;
-
-            default:
-                break;
-        }
-
-        return dropAction;
+    private static DropAction getDropAction(final int nativeDropAction) {
+        return DropAction.getDropAction(nativeDropAction);
     }
 
-    private static int getSupportedDropActions(int sourceActions) {
-        int dropActions = 0;
-
-        if ((sourceActions & DnDConstants.ACTION_COPY) > 0) {
-            dropActions |= DropAction.COPY.getMask();
-        }
-
-        if ((sourceActions & DnDConstants.ACTION_MOVE) > 0) {
-            dropActions |= DropAction.MOVE.getMask();
-        }
-
-        if ((sourceActions & DnDConstants.ACTION_LINK) > 0) {
-            dropActions |= DropAction.LINK.getMask();
-        }
-
-        return dropActions;
+    private static int getSupportedDropActions(final int sourceActions) {
+        return DropAction.getSupportedDropActions(sourceActions);
     }
 
-    private static int getNativeDropAction(DropAction dropAction) {
-        int nativeDropAction = 0;
-
-        if (dropAction != null) {
-            switch (dropAction) {
-                case COPY:
-                    nativeDropAction = DnDConstants.ACTION_COPY;
-                    break;
-
-                case MOVE:
-                    nativeDropAction = DnDConstants.ACTION_MOVE;
-                    break;
-
-                case LINK:
-                    nativeDropAction = DnDConstants.ACTION_LINK;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        return nativeDropAction;
+    private static int getNativeDropAction(final DropAction dropAction) {
+        return (dropAction == null ? 0 : dropAction.getNativeDropAction());
     }
 
-    private static java.awt.Cursor getDropCursor(DropAction dropAction) {
-        // Update the drop cursor
-        java.awt.Cursor cursor = java.awt.Cursor.getDefaultCursor();
-
-        if (dropAction != null) {
-            // Show the cursor for the drop action returned by the
-            // drop target
-            switch (dropAction) {
-                case COPY:
-                    cursor = java.awt.dnd.DragSource.DefaultCopyDrop;
-                    break;
-
-                case MOVE:
-                    cursor = java.awt.dnd.DragSource.DefaultMoveDrop;
-                    break;
-
-                case LINK:
-                    cursor = java.awt.dnd.DragSource.DefaultLinkDrop;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        return cursor;
+    private static java.awt.Cursor getDropCursor(final DropAction dropAction) {
+        return (dropAction == null ? java.awt.Cursor.getDefaultCursor() : dropAction.getNativeCursor());
     }
 
-    @Override
-    public void uncaughtException(Thread thread, Throwable exception) {
-        handleUncaughtException(thread, exception);
-    }
-
-    public static void defaultUncaughtExceptionHandler(Thread thread, Throwable exception) {
+    public static void defaultUncaughtExceptionHandler(final Thread thread, final Throwable exception) {
         exception.printStackTrace();
 
         Display display = (displays.getLength() > 0) ? displays.get(0) : null;
@@ -2245,13 +1920,15 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
             return;
         }
 
-        String message = String.format("%1$s on Thread %2$s:",
-                exception.getClass().getName(), thread.getName());
+        String message = String.format("%1$s on Thread %2$s",
+                exception.getClass().getSimpleName(), thread.getName());
 
         TextArea body = null;
-        String bodyText = exception.getMessage();
+        String bodyText = ExceptionUtils.toString(exception);
         if (bodyText != null && bodyText.length() > 0) {
             body = new TextArea();
+            body.setPreferredWidth(400);
+            body.putStyle(Style.wrapText, true);
             body.setText(bodyText);
             body.setEditable(false);
         }
@@ -2260,22 +1937,28 @@ public abstract class ApplicationContext implements Application.UncaughtExceptio
         alert.open(display);
     }
 
-    public static void handleUncaughtException(Throwable exception) {
+    @Override
+    public void uncaughtException(final Thread thread, final Throwable exception) {
+        handleUncaughtException(thread, exception);
+    }
+
+    public static void handleUncaughtException(final Throwable exception) {
         handleUncaughtException(Thread.currentThread(), exception);
     }
 
-    public static void handleUncaughtException(Thread thread, Throwable exception) {
-        int n = 0;
+    public static void handleUncaughtException(final Thread thread, final Throwable exception) {
+        boolean handled = false;
+
         for (Application application : applications) {
             if (application instanceof Application.UncaughtExceptionHandler) {
                 Application.UncaughtExceptionHandler uncaughtExceptionHandler =
                         (Application.UncaughtExceptionHandler) application;
                 uncaughtExceptionHandler.uncaughtException(thread, exception);
-                n++;
+                handled = true;
             }
         }
 
-        if (n == 0) {
+        if (!handled) {
             defaultUncaughtExceptionHandler(thread, exception);
         }
     }
