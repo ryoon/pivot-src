@@ -1099,8 +1099,12 @@ limitations under the License.
         <cs:checkstyle config="pivot_style_checks.xml" failOnViolation="false">
             <fileset dir=".">
                 <include name="StyleChecks.java"/>
-                <include name="**/src/org/**/*.java"/>
-                <include name="**/test/org/**/*.java"/>
+                <include name="charts/src/**/*.java"/>
+                <include name="core/src/**/*.java"/>
+                <include name="web-server/src/**/*.java"/>
+                <include name="web/src/**/*.java"/>
+                <include name="wtk-terra/src/**/*.java"/>
+                <include name="wtk/src/**/*.java"/>
             </fileset>
             <cs:formatter type="plain" toFile="${style.checks.log}"/>
         </cs:checkstyle>
