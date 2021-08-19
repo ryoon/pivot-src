@@ -193,6 +193,61 @@ public final class FontUtilities {
     }
 
     /**
+     * Decode a font specification, choosing the first font in the list capable of displaying
+     * the given characters. If only one font name is given, that font will be selected
+     * regardless of its ability to display the test string of characters. If no fonts in the
+     * list are capable of displaying the characters then the default system font (<code>DIALOG</code>)
+     * will be returned.
+     * <p> This is the same as {@link Font#decode(String)} except that we will allow multiple
+     * font/family names separated by commas as the <code><i>fontname</i></code> part of the
+     * spec (much the same as CSS allows), with the proviso that any font chosen from the list must be
+     * capable of displaying all the given characters.
+     * <p>The list of allowed formats is:
+     * <ul><li><i>fontname-style-pointsize</i></li>
+     * <li><i>fontname-pointsize</i></li>
+     * <li><i>fontname-style</i></li>
+     * <li><i>fontname</i></li>
+     * <li><i>fontname style pointsize</i></li>
+     * <li><i>fontname pointsize</i></li>
+     * <li><i>fontname style</i></li>
+     * <li><i>fontname</i></li>
+     * </ul>
+     * where <i>fontname</i> can be <i>fontname</i>[,<i>fontname</i>]*.
+     *
+     * @param str        The font specification as above.
+     * @param testString The characters that must have glyphs available to display (can be <code>null</code>
+     *                   to skip the "capable" test) (only applicable if multiple font names are given to
+     *                   choose from).
+     * @return           The font according to the desired specification as much as possible.
+     * @see              Font#decode(String)
+     */
+    public static Font decodeCapable(final String str, final String testString) {
+        if (Utils.isNullOrEmpty(str)) {
+            return Font.decode(str);
+        }
+
+        if (str.indexOf(',') > 0) {
+            String name = getFontName(str);
+            int pos     = name.length();
+            String spec = pos < str.length() ? str.substring(pos) : "";
+
+            String[] names = name.split("\\s*,\\s*");
+            for (String nm : names) {
+                Font f = Font.decode(nm + spec);
+                if (f.getName().equalsIgnoreCase(nm) || f.getFamily().equalsIgnoreCase(nm)) {
+                    if (testString == null || f.canDisplayUpTo(testString) < 0) {
+                        return f;
+                    }
+                }
+            }
+
+            // No names matched in the list, so use the default name
+            return Font.decode(Font.DIALOG + spec);
+        }
+
+        return Font.decode(str);
+    }
+    /**
      * Get a new font with the given name, style, and size.
      * <p> The {@code name} can be a comma-separated list of names, and the first one matched will be used.
      *
