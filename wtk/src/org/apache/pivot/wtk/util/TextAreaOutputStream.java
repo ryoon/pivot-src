@@ -37,7 +37,7 @@ public final class TextAreaOutputStream extends OutputStream {
     private TextArea textArea;
 
     /** Default line buffer size (can be overridden through a constructor). */
-    private static final int DEFAULT_BUFFER_SIZE = 256;
+    private static final int DEFAULT_BUFFER_SIZE = 2_048;
 
     /** Buffer size to use for incoming lines of text. */
     private int lineBufferSize;
@@ -49,7 +49,8 @@ public final class TextAreaOutputStream extends OutputStream {
     private ByteArrayOutputStream lineBuffer;
 
     /**
-     * Simple constructor given the {@link TextArea} to stream to.
+     * Simple constructor given the {@link TextArea} to stream to; uses the system
+     * default charset for conversion, and the default buffer size.
      *
      * @param textAreaToUse The TextArea to use for output.
      */
@@ -59,7 +60,7 @@ public final class TextAreaOutputStream extends OutputStream {
 
     /**
      * Constructor given the {@link TextArea} to stream to, and the
-     * non-default line buffer size to use.
+     * non-default line buffer size to use; uses the system default charset.
      *
      * @param textAreaToUse The TextArea to use for output.
      * @param lineBufferSizeToUse The non-default size for the input line buffer.
@@ -70,7 +71,7 @@ public final class TextAreaOutputStream extends OutputStream {
 
     /**
      * Constructor given the {@link TextArea} to stream to, and the charset to use
-     * for decoding the incoming bytes into characters.
+     * for decoding the incoming bytes into characters; uses the default line buffer size.
      *
      * @param textAreaToUse The TextArea to use for output.
      * @param charsetToUse The charset used to convert incoming bytes to characters
@@ -91,10 +92,10 @@ public final class TextAreaOutputStream extends OutputStream {
      */
     public TextAreaOutputStream(final TextArea textAreaToUse, final Charset charsetToUse,
         final int lineBufferSizeToUse) {
-        this.textArea        = textAreaToUse;
-        this.incomingCharset = (charsetToUse == null) ? Charset.defaultCharset() : charsetToUse;
-        this.lineBufferSize  = lineBufferSizeToUse;
-        this.lineBuffer      = new ByteArrayOutputStream(lineBufferSize);
+        textArea        = textAreaToUse;
+        incomingCharset = (charsetToUse == null) ? Charset.defaultCharset() : charsetToUse;
+        lineBufferSize  = lineBufferSizeToUse;
+        lineBuffer      = new ByteArrayOutputStream(lineBufferSize);
     }
 
     /**
@@ -136,8 +137,14 @@ public final class TextAreaOutputStream extends OutputStream {
                     textArea.insertText("\n", newLength++);
                 }
 
-                Bounds lastCharBounds = textArea.getCharacterBounds(newLength);
-                textArea.scrollAreaToVisible(lastCharBounds);
+                final int lastCharPos = newLength;
+
+                // In order to allow time for the skin to render the latest additions,
+                // queue the actual scrolling until that is done
+                ApplicationContext.queueCallback(() -> {
+                    Bounds lastCharBounds = textArea.getCharacterBounds(lastCharPos);
+                    textArea.scrollAreaToVisible(lastCharBounds);
+                });
             });
         }
     }
@@ -145,9 +152,9 @@ public final class TextAreaOutputStream extends OutputStream {
     @Override
     public void close() throws IOException {
         flush();
-        this.textArea        = null;
-        this.incomingCharset = null;
-        this.lineBuffer      = null;
+        textArea        = null;
+        incomingCharset = null;
+        lineBuffer      = null;
     }
 
     @Override
