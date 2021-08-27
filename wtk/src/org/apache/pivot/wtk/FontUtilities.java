@@ -42,9 +42,15 @@ public final class FontUtilities {
     /**
      * A list of monospaced fonts, useful for text editing areas for code, where
      * column position must be consistent.
+     * <p> Note: this list is adapted from the list at
+     * <a href="https://en.wikipedia.org/wiki/List_of_monospaced_typefaces">
+     * https://en.wikipedia.org/wiki/List_of_monospaced_typefaces</a> with the most-popular or
+     * readily available ones listed here.
      */
     public static final String MONOSPACED_FONTS =
-        "Courier, Courier New, Andale Mono, Monaco, Menlo, Monospaced";
+        "Courier New, Andale Mono, Cascadia Code, Consolas, Courier, DejaVu Sans Mono, "
+      + "Droid Sans Mono, FreeMono, Inconsolata, Letter Gothic, Liberation Mono, "
+      + "Lucida Console, Menlo, Monaco, Noto Mono, Overpass Mono, Monospaced";
 
 
     /** The obvious factor needed to convert a number to a percentage value. */
@@ -235,14 +241,18 @@ public final class FontUtilities {
             for (String nm : names) {
                 Font f = Font.decode(nm + spec);
                 if (f.getName().equalsIgnoreCase(nm) || f.getFamily().equalsIgnoreCase(nm)) {
-                    if (testString == null || f.canDisplayUpTo(testString) < 0) {
+                    if (testString == null || testString.isEmpty() || f.canDisplayUpTo(testString) < 0) {
                         return f;
                     }
                 }
             }
 
-            // No names matched in the list, so use the default name
-            return Font.decode(Font.DIALOG + spec);
+            // No names matched in the list, so use the default name (either monospaced or not)
+            if (str.indexOf("Mono") >= 0) {
+                return Font.decode(Font.MONOSPACED + spec);
+            } else {
+                return Font.decode(Font.DIALOG + spec);
+            }
         }
 
         return Font.decode(str);
