@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -150,9 +151,17 @@ public final class StyleChecks {
         String getName() {
             return fileName;
         }
+        /** @return The name only in this object. */
+        String getNameOnly() {
+            return fileNameOnly(fileName);
+        }
         /** @return The count for this object. */
         int getCount() {
             return count;
+        }
+        @Override
+        public String toString() {
+            return fileName;
         }
     }
 
@@ -174,6 +183,46 @@ public final class StyleChecks {
     };
 
     /**
+     * Our file name lists have "short" names that are all relative to
+     * the {@link ORG_APACHE_PIVOT} path. But to report names properly
+     * that may be duplicates in the name, but not in the full path
+     * we need to decide if there are any such duplicates before beginning
+     * to print. That's what we do here.
+     *
+     * @param strings The set of strings we are preparing to print.
+     * @return        Whether there are any duplicates in name only.
+     */
+    private static boolean anyDuplicateNames(final Iterable<String> strings) {
+        Set<String> nonDuplicateNames = new HashSet<>();
+        // The strategy is to take the name only and put into the non-duplicate
+        // set, which will eliminate duplicate names. If the final size of that
+        // set is less than the original list size, then there are duplicate
+        // names in the original list.
+        int count = 0;
+        for (String s : strings) {
+            count++;
+            nonDuplicateNames.add(fileNameOnly(s));
+        }
+        return nonDuplicateNames.size() < count;
+    }
+
+    /**
+     * Search for duplicate names in a list of {@link FileInfo} objects.
+     *
+     * @param infos The set of info objects.
+     * @return      Whether or not there are duplicate names.
+     */
+    private static boolean anyDuplicateInfos(final Iterable<FileInfo> infos) {
+        Set<String> nonDuplicateNames = new HashSet<>();
+        int count = 0;
+        for (FileInfo info : infos) {
+            count++;
+            nonDuplicateNames.add(fileNameOnly(info.getName()));
+        }
+        return nonDuplicateNames.size() < count;
+    }
+
+    /**
      * Get a list of strings as a parenthesized list.
      * @param strings The set of strings to traverse.
      * @return A nicely formatted list.
@@ -190,6 +239,90 @@ public final class StyleChecks {
         buf.append(')');
         return buf.toString();
     }
+
+    /**
+     * Get a list of the short form of strings as a parenthesized list,
+     * using the names only if there are no duplicates, otherwise show
+     * the full names to disambiguate the duplicates.
+     *
+     * @param strings The set of strings to traverse.
+     * @return A nicely formatted list.
+     */
+    private static String listShortName(final Iterable<String> strings) {
+        boolean duplicates = anyDuplicateNames(strings);
+        StringBuilder buf = new StringBuilder("(");
+        int i = 0;
+        for (String s : strings) {
+            if (i++ > 0) {
+                buf.append(", ");
+            }
+            buf.append(duplicates ? s : fileNameOnly(s));
+        }
+        buf.append(')');
+        return buf.toString();
+    }
+
+    /**
+     * Find a file by name if it exists starting at the given directory location.
+     * <p> This is used to ensure that the <code>"-f"</code> file names actually exist,
+     * and aren't not found because the name is a typo.
+     *
+     * @param file   The starting directory to search.
+     * @param search The file name to search for.
+     * @return       {@code true} or {@code false} depending on whether the file is
+     *               found anywhere in the directory hierarchy.
+     */
+    private static boolean findFile(final File file, final String search) {
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                if (findFile(f, search)) {
+                    return true;
+                }
+            }
+        } else {
+            if (search.equals(file.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Look for the file starting under the {@link #CURRENT_DIR_FILE} and if found, add it to
+     * the file name filter list, otherwise print an error.
+     *
+     * @param fileName The file name to potentially add to the file name filter list.
+     * @return         Whether or not the file name was valid.
+     * @see #filterFileNames
+     */
+    private static boolean addToFileNameList(final String fileName) {
+        if (findFile(CURRENT_DIR_FILE, fileName)) {
+            filterFileNames.add(fileName);
+            return true;
+        } else {
+            error("The '%1$s' file wasn't found!", fileName);
+            return false;
+        }
+    }
+
+    /**
+     * Lookup the given category name in the list of valid ones and add to the category filter
+     * list if found, otherwise print an error.
+     *
+     * @param categoryName The category to potentially add to the filter list.
+     * @return             Whether or not the category name was valid.
+     * @see #filterCategories
+     */
+    private static boolean addToCategoriesList(final String categoryName) {
+        if (Arrays.binarySearch(VALID_CATEGORIES, categoryName.toLowerCase()) >= 0) {
+            filterCategories.add(categoryName);
+            return true;
+        } else {
+            error("The '[%1$s]' category wasn't found!", categoryName);
+            return false;
+        }
+    }
+
 
     /** Default name of the input file if none is given on the command line. */
     private static final String DEFAULT_INPUT_FILE = "style_checks.log";
@@ -231,6 +364,8 @@ public final class StyleChecks {
     private static final String CATEGORY = "----------------------------";
     /** Format string for the file vs problem count report. */
     private static final String FORMAT4 = "    %1$-42s %2$5d%n";
+    /** Alternate format string for the file vs problem count report. */
+    private static final String FORMAT4A = "    %1$-48s %2$5d%n";
     /** The set of unique file names found in the list. */
     private static Set<String> fileNameSet = new HashSet<>();
     /** The set of unique file names with warnings in the list. */
@@ -253,8 +388,10 @@ public final class StyleChecks {
     private static final boolean ON_WINDOWS = System.getProperty("os.name").startsWith("Windows");
     /** The system file separator string. */
     private static final String SEPARATOR = System.getProperty("file.separator");
+    /** The starting directory location. */
+    private static final File CURRENT_DIR_FILE = new File(System.getProperty("user.dir"));
     /** The starting directory (used to strip off the leading part of the file paths). */
-    private static final String CURRENT_DIR = new File(System.getProperty("user.dir")).getPath() + SEPARATOR;
+    private static final String CURRENT_DIR = CURRENT_DIR_FILE.getPath() + SEPARATOR;
     /** Our package name prefix. */
     private static final String PACKAGE_PREFIX = "org.apache.pivot";
     /** Whether to report all the file problem counts, or just the least/most. */
@@ -288,6 +425,33 @@ public final class StyleChecks {
     private static List<Pattern> categoryFilterPatterns;
     /** The list of filter packages converted to regular expression patterns for matching. */
     private static List<Pattern> packageFilterPatterns;
+
+    /** The standard path. */
+    private static final String ORG_APACHE_PIVOT = "org/apache/pivot/";
+
+    /**
+     * A list of the possible checkstyle categories we can filter on.
+     * <p> Note: these are the "module" entries in our "pivot_style_checks.xml".
+     */
+    private static final String[] VALID_CATEGORIES = {
+        "arraytypestyle", "avoidinlineconditionals", "avoidnestedblocks",
+        "avoidstarimport", "constantname", "designforextension", "emptyblock",
+        "emptyforiteratorpad", "emptystatement", "equalshashcode", "finalclass",
+        "finalparameters", "genericwhitespace", "hiddenfield",
+        "hideutilityclassconstructor", "illegalimport", "illegalinstantiation",
+        "innerassignment", "interfaceistype", "javadocmethod", "javadocstyle",
+        "javadoctype", "javadocvariable", "leftcurly", "linelength",
+        "localfinalvariablename", "localvariablename", "magicnumber", "membername",
+        "methodlength", "methodname", "methodparampad", "missingswitchdefault",
+        "modifierorder", "needbraces", "nowhitespaceafter", "nowhitespacebefore",
+        "operatorwrap", "packagename", "parametername", "parameternumber", "parenpad",
+        "redundantimport", "redundantmodifier", "rightcurly",
+        "simplifybooleanexpression", "simplifybooleanreturn", "staticvariablename",
+        "todocomment", "typename", "typecastparenpad", "unusedimports", "upperell",
+        "visibilitymodifier", "whitespaceafter", "whitespacearound", "filelength",
+        "filetabcharacter", "javadocpackage", "newlineatendoffile", "regexpsingleline",
+        "translation"
+    };
 
     /**
      * Output a formatted error message to {@link System#err}.
@@ -365,7 +529,7 @@ public final class StyleChecks {
                     info.getCount(), size);
         } else {
             System.out.format(FORMAT2, num, info.getSeverity(), info.getProblemCategory(),
-                    info.getCount(), list(fileSet));
+                    info.getCount(), listShortName(fileSet));
         }
     }
 
@@ -400,9 +564,13 @@ public final class StyleChecks {
     /**
      * Process all the command-line arguments.
      * @param files The list of actual files to process (to add to).
-     * @param args The command line arguments to process.
+     * @param args  The command line arguments to process.
+     * @return      <code>true</code> if everything was fine, but <code>false</code>
+     *              if there was a problem with the arguments.
      */
-    private static void processArguments(final List<File> files, final String[] args) {
+    private static boolean processArguments(final List<File> files, final String[] args) {
+        boolean result;
+
         // Process options and save the straight file names
         for (String arg : args) {
             if (arg.startsWith("--")) {
@@ -417,11 +585,14 @@ public final class StyleChecks {
                     String[] values = arg.split("[;,]");
                     for (String value : values) {
                         if (value.endsWith(".java")) {
-                            filterFileNames.add(value);
+                            result = addToFileNameList(value);
                         } else if (value.indexOf(".") >= 0) {
-                            filterFileNames.add(value);
+                            result = addToFileNameList(value);
                         } else {
-                            filterFileNames.add(value + ".java");
+                            result = addToFileNameList(value + ".java");
+                        }
+                        if (!result) {
+                            return false;
                         }
                     }
                     filter = false;
@@ -430,9 +601,12 @@ public final class StyleChecks {
                     String[] values = arg.split("[;,]");
                     for (String value : values) {
                         if (value.startsWith("[") && value.endsWith("]")) {
-                            filterCategories.add(value.substring(1, value.length() - 1));
+                            result = addToCategoriesList(value.substring(1, value.length() - 1));
                         } else {
-                            filterCategories.add(value);
+                            result = addToCategoriesList(value);
+                        }
+                        if (!result) {
+                            return false;
                         }
                     }
                     category = false;
@@ -462,6 +636,8 @@ public final class StyleChecks {
         fileNameFilterPatterns = makePatterns(filterFileNames);
         categoryFilterPatterns = makePatterns(filterCategories);
         packageFilterPatterns  = makePatterns(filterPackages);
+
+        return true;
     }
 
     /**
@@ -540,6 +716,35 @@ public final class StyleChecks {
     }
 
     /**
+     * Get a unique, but short file name with only the part after <code>org/apache/pivot</code> saved.
+     *
+     * @param fullFileName The full (but still relative to the base directory)
+     *                     file name (in OS-specific form).
+     * @return             The abbreviated form, which should be unique.
+     */
+    private static String shortFileName(final String fullFileName) {
+        // First, translate the path separators to a canonical form
+        String canonicalName = fullFileName.replaceAll("[\\\\/]", "/");
+        int ix = canonicalName.lastIndexOf(ORG_APACHE_PIVOT);
+        if (ix > 0) {
+            return canonicalName.substring(ix + ORG_APACHE_PIVOT.length());
+        } else {
+            return canonicalName;
+        }
+    }
+
+    /**
+     * Get the file name only from a short file name.
+     *
+     * @param shortFileName The result of {@link #shortFileName}.
+     * @return              The name-only part.
+     */
+    private static String fileNameOnly(final String shortFileName) {
+        int ix = shortFileName.lastIndexOf('/');
+        return ix < 0 ? shortFileName : shortFileName.substring(ix + 1);
+    }
+
+    /**
      * The main method, executed from the command line, which reads through each file
      * and processes it.
      * @param args The command line arguments.
@@ -547,7 +752,9 @@ public final class StyleChecks {
     public static void main(final String[] args) {
         List<File> files = new ArrayList<>(args.length);
 
-        processArguments(files, args);
+        if (!processArguments(files, args)) {
+            System.exit(1);
+        }
 
         // Try to process the default error log if none was specified on the command line
         if (files.isEmpty()) {
@@ -599,11 +806,12 @@ public final class StyleChecks {
                         }
                         String relativeFileName = f.getPath().replace(CURRENT_DIR, "");
                         fileNameSet.add(relativeFileName);
+                        String shortFileName = shortFileName(relativeFileName);
                         Info info = workingSet.get(problemCategory);
                         if (info == null) {
-                            workingSet.put(problemCategory, new Info(problemCategory, severity, nameOnly));
+                            workingSet.put(problemCategory, new Info(problemCategory, severity, shortFileName));
                         } else {
-                            info.addFile(nameOnly);
+                            info.addFile(shortFileName);
                         }
                         total++;
                         if (severity.equals(SEV_ERROR)) {
@@ -614,13 +822,13 @@ public final class StyleChecks {
                             fileNameWarnSet.add(relativeFileName);
                             totalWarn++;
                         }
-                        if (nameOnly.equals(currentFileName)) {
+                        if (shortFileName.equals(currentFileName)) {
                             totalForThisFile++;
                         } else {
                             if (currentFileName != null) {
                                 fileCounts.put(currentFileName, Integer.valueOf(totalForThisFile));
                             }
-                            currentFileName = nameOnly;
+                            currentFileName = shortFileName;
                             totalForThisFile = 1;
                         }
                     } else if (line.equals("Starting audit...") || line.equals("Audit done.")) {
@@ -651,18 +859,21 @@ public final class StyleChecks {
                 StringBuilder buf = new StringBuilder("No results");
                 boolean anyFilters = false;
                 if (filteredByFile) {
-                    buf.append(anyFilters ? " or " : " for ");
-                    buf.append("the filtered files ").append(list(filterFileNames));
+                    buf.append(anyFilters ? " or" : " for").append(" the filtered ");
+                    buf.append(filterFileNames.size() == 1 ? "file " : "files ");
+                    buf.append(list(filterFileNames));
                     anyFilters = true;
                 }
                 if (filteredByCategory) {
-                    buf.append(anyFilters ? " or " : " for ");
-                    buf.append("the filtered categories ").append(list(filterCategories));
+                    buf.append(anyFilters ? " or" : " for").append(" the filtered ");
+                    buf.append(filterCategories.size() == 1 ? "category " : "categories ");
+                    buf.append(list(filterCategories));
                     anyFilters = true;
                 }
                 if (filteredByPackage) {
-                    buf.append(anyFilters ? " or " : " for ");
-                    buf.append("the filtered packages ").append(list(filterPackages));
+                    buf.append(anyFilters ? " or" : " for").append(" the filtered ");
+                    buf.append(filterPackages.size() == 1 ? "package " : "packages ");
+                    buf.append(list(filterPackages));
                     anyFilters = true;
                 }
                 if (!anyFilters) {
@@ -697,6 +908,9 @@ public final class StyleChecks {
             }
 
             if (fileCountList.size() > 1) {
+                boolean duplicates = anyDuplicateInfos(fileCountList);
+                String format4 = duplicates ? FORMAT4A : FORMAT4;
+
                 int remaining = fileCountList.size() - NUMBER_OF_FILES_TO_REPORT;
                 int leastRemaining = Math.min(remaining, NUMBER_OF_FILES_TO_REPORT);
                 boolean twoReports = !verbose && remaining > NUMBER_OF_FILES_TO_REPORT;
@@ -707,7 +921,8 @@ public final class StyleChecks {
                 System.out.println(twoReports ? "-----------------------------" : "--------------------");
                 int num = 1;
                 for (FileInfo info : fileCountList) {
-                    System.out.format(FORMAT4, info.getName(), info.getCount());
+                    String name = duplicates ? info.getName() : info.getNameOnly();
+                    System.out.format(format4, name, info.getCount());
                     if (twoReports && num++ >= NUMBER_OF_FILES_TO_REPORT) {
                         break;
                     }
@@ -722,7 +937,8 @@ public final class StyleChecks {
                         System.out.println("-------------------------------");
                         for (int i = leastRemaining; i > 0; i--) {
                             FileInfo info = fileCountList.get(i - 1);
-                            System.out.format(FORMAT4, info.getName(), info.getCount());
+                            String name = duplicates ? info.getName() : info.getNameOnly();
+                            System.out.format(format4, name, info.getCount());
                         }
                         System.out.println();
                     }
