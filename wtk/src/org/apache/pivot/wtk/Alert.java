@@ -315,6 +315,10 @@ public class Alert extends Dialog {
         alert(messageType, message, null, null, owner, null);
     }
 
+    public static void alert(MessageType messageType, String message, String title, Window owner) {
+        alert(messageType, message, title, null, owner, null);
+    }
+
     public static void alert(MessageType messageType, String message, Window owner,
         DialogCloseListener dialogCloseListener) {
         alert(messageType, message, null, null, owner, dialogCloseListener);
