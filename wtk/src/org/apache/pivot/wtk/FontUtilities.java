@@ -17,6 +17,11 @@
 package org.apache.pivot.wtk;
 
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Locale;
 
 import org.apache.pivot.collections.Dictionary;
@@ -352,5 +357,53 @@ public final class FontUtilities {
         }
     }
 
+    /**
+     * Install a new font for use by this program (only).
+     *
+     * @param fullFontFilePath The complete path (on disk) to the local font file
+     *                         (must be a TrueType font in this case).
+     * @return The newly created / registered font if successful, <code>null</code> otherwise.
+     * @throws IOException if there was a problem reading the font from the file.
+     * @throws FontFormatException if the font file itself was malformed.
+     */
+    public static Font registerFont(final File fullFontFilePath)
+        throws IOException, FontFormatException
+    {
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Font f = Font.createFont(Font.TRUETYPE_FONT, fullFontFilePath);
+            if (ge.registerFont(f)) {
+                return f;
+            }
+            return null;
+        } catch (IOException | FontFormatException ex) {
+            throw ex;
+        }
+    }
+
+    /**
+     * Install a new font for use by this program (only).
+     *
+     * @param fontInputStream The stream of bytes describing this font
+     *                        (must be a TrueType font in this case). Also note that the
+     *                        caller is responsible for closing this input stream.
+     * @return The newly created / registered font if successful, <code>null</code> otherwise.
+     * @throws IOException if there was a problem reading the font from the file.
+     * @throws FontFormatException if the font file itself was malformed.
+     */
+    public static Font registerFont(final InputStream fontInputStream)
+        throws IOException, FontFormatException
+    {
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Font f = Font.createFont(Font.TRUETYPE_FONT, fontInputStream);
+            if (ge.registerFont(f)) {
+                return f;
+            }
+            return null;
+        } catch (IOException | FontFormatException ex) {
+            throw ex;
+        }
+    }
 
 }
