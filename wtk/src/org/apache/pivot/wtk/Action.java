@@ -43,41 +43,41 @@ public abstract class Action {
         }
 
         @Override
-        public Action get(final String id) {
-            return namedActions.get(id);
+        public Action get(final String actionName) {
+            return namedActions.get(actionName);
         }
 
         @Override
-        public Action put(final String id, final Action action) {
+        public Action put(final String actionName, final Action action) {
             Utils.checkNull(action, "action");
 
-            boolean update = containsKey(id);
-            Action previousAction = namedActions.put(id, action);
+            boolean update = containsKey(actionName);
+            Action previousAction = namedActions.put(actionName, action);
 
             if (update) {
-                actionClassListeners.actionUpdated(id, previousAction);
+                actionClassListeners.actionUpdated(actionName, previousAction);
             } else {
-                actionClassListeners.actionAdded(id);
+                actionClassListeners.actionAdded(actionName);
             }
 
             return previousAction;
         }
 
         @Override
-        public Action remove(final String id) {
+        public Action remove(final String actionName) {
             Action removedAction = null;
 
-            if (containsKey(id)) {
-                removedAction = namedActions.remove(id);
-                actionClassListeners.actionRemoved(id, removedAction);
+            if (containsKey(actionName)) {
+                removedAction = namedActions.remove(actionName);
+                actionClassListeners.actionRemoved(actionName, removedAction);
             }
 
             return removedAction;
         }
 
         @Override
-        public boolean containsKey(final String id) {
-            return namedActions.containsKey(id);
+        public boolean containsKey(final String actionName) {
+            return namedActions.containsKey(actionName);
         }
 
         @Override
@@ -136,7 +136,7 @@ public abstract class Action {
      */
     private static HashMap<String, Action> namedActions = new HashMap<>();
     /**
-     * The global dictionary associating action ids with their implementations.
+     * The global dictionary associating action names with their implementations.
      */
     private static NamedActionDictionary namedActionDictionary = new NamedActionDictionary();
 
@@ -205,12 +205,13 @@ public abstract class Action {
      * <p> This is the equivalent of
      * <code>Action.getNamedActions().get(<i>actionName</i>).perform(<i>comp</i>)</code>.
      *
+     * @param <E>        Enum type that gives the action name.
      * @param actionName An enum value whose <code>toString()</code> value is used as the action name.
      * @param comp       The component initiating the action.
      * @throws IllegalArgumentException if the actionName is {@code null} or if there is
      * no action with that name.
      */
-    public static void performAction(final Enum<? extends Enum> actionName, final Component comp) {
+    public static <E extends Enum<E>> void performAction(final E actionName, final Component comp) {
         Utils.checkNull(actionName, "action name");
         performAction(actionName.toString(), comp);
     }
@@ -247,52 +248,54 @@ public abstract class Action {
 
     /**
      * Add this action to the named action dictionary.
-     * <p> This is equivalent to <code>getNamedActions().put(<i>id</i>, <i>action</i>)</code>
+     * <p> This is equivalent to <code>getNamedActions().put(<i>actionName</i>, <i>action</i>)</code>
      *
-     * @param id     The name to store this action under (can be referenced from button actions, etc.)
-     * @param action The action to be performed under this name.
-     * @return       The previous action (if any) listed under this name.
+     * @param actionName The name to store this action under (can be referenced from button actions, etc.)
+     * @param action     The action to be performed under this name.
+     * @return           The previous action (if any) listed under this name.
      */
-    public static Action addNamedAction(final String id, final Action action) {
-        return namedActionDictionary.put(id, action);
+    public static Action addNamedAction(final String actionName, final Action action) {
+        return namedActionDictionary.put(actionName, action);
     }
 
     /**
      * Add this action to the named action dictionary.
-     * <p> This is equivalent to <code>getNamedActions().put(<i>id</i>, <i>action</i>)</code>
+     * <p> This is equivalent to <code>getNamedActions().put(<i>actionName</i>, <i>action</i>)</code>
      *
+     * @param <E>        Enum type that gives the action name.
      * @param actionName An enum whose <code>toString()</code> value is used as the ID for the action.
      * @param action     The action to be performed under this name.
      * @return           The previous action (if any) listed under this name.
      * @throws IllegalArgumentException if the actionName is {@code null}.
      */
-    public static Action addNamedAction(final Enum<? extends Enum> actionName, final Action action) {
+    public static <E extends Enum<E>> Action addNamedAction(final E actionName, final Action action) {
         Utils.checkNull(actionName, "action name");
         return addNamedAction(actionName.toString(), action);
     }
 
     /**
      * Get the named action from the dictionary.
-     * <p> This is the equivalent of <code>getNamedActions().get(<i>id</i>)</code>
+     * <p> This is the equivalent of <code>getNamedActions().get(<i>actionName</i>)</code>
      *
-     * @param id The name this action was stored under in the dictionary.
-     * @return   The action currently associated with this id (or {@code null} if
-     *           there is no saved action with that id value).
+     * @param actionName The name this action was stored under in the dictionary.
+     * @return           The action currently associated with this name (or {@code null} if
+     *                   there is no saved action with that name value).
      */
-    public static Action getNamedAction(final String id) {
-        return namedActionDictionary.get(id);
+    public static Action getNamedAction(final String actionName) {
+        return namedActionDictionary.get(actionName);
     }
 
     /**
      * Get the named action from the dictionary.
-     * <p> This is the equivalent of <code>getNamedActions().get(<i>id</i>)</code>
+     * <p> This is the equivalent of <code>getNamedActions().get(<i>actionName</i>)</code>
      *
+     * @param <E>        Enum type that gives the action name.
      * @param actionName An enum whose <code>toString()</code> method is used as the ID for the action.
-     * @return           The action currently associated with this id (or {@code null} if
-     *                   there is no saved action with that id value).
+     * @return           The action currently associated with this name (or {@code null} if
+     *                   there is no saved action with that name value).
      * @throws IllegalArgumentException if the actionName is {@code null}.
      */
-    public static Action getNamedAction(final Enum<? extends Enum> actionName) {
+    public static <E extends Enum<E>> Action getNamedAction(final E actionName) {
         Utils.checkNull(actionName, "action name");
         return getNamedAction(actionName.toString());
     }
