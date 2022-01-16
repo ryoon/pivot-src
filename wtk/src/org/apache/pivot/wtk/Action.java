@@ -201,6 +201,21 @@ public abstract class Action {
     }
 
     /**
+     * Perform the named action, unless the action is disabled.
+     * <p> This is the equivalent of
+     * <code>Action.getNamedActions().get(<i>actionName</i>).perform(<i>comp</i>)</code>.
+     *
+     * @param actionName An enum value whose <code>toString()</code> value is used as the action name.
+     * @param comp       The component initiating the action.
+     * @throws IllegalArgumentException if the actionName is {@code null} or if there is
+     * no action with that name.
+     */
+    public static void performAction(final Enum<? extends Enum> actionName, final Component comp) {
+        Utils.checkNull(actionName, "action name");
+        performAction(actionName.toString(), comp);
+    }
+
+    /**
      * Check if this action is currently enabled.
      *
      * @return Whether or not this action is currently enabled.
@@ -243,6 +258,20 @@ public abstract class Action {
     }
 
     /**
+     * Add this action to the named action dictionary.
+     * <p> This is equivalent to <code>getNamedActions().put(<i>id</i>, <i>action</i>)</code>
+     *
+     * @param actionName An enum whose <code>toString()</code> value is used as the ID for the action.
+     * @param action     The action to be performed under this name.
+     * @return           The previous action (if any) listed under this name.
+     * @throws IllegalArgumentException if the actionName is {@code null}.
+     */
+    public static Action addNamedAction(final Enum<? extends Enum> actionName, final Action action) {
+        Utils.checkNull(actionName, "action name");
+        return addNamedAction(actionName.toString(), action);
+    }
+
+    /**
      * Get the named action from the dictionary.
      * <p> This is the equivalent of <code>getNamedActions().get(<i>id</i>)</code>
      *
@@ -252,6 +281,20 @@ public abstract class Action {
      */
     public static Action getNamedAction(final String id) {
         return namedActionDictionary.get(id);
+    }
+
+    /**
+     * Get the named action from the dictionary.
+     * <p> This is the equivalent of <code>getNamedActions().get(<i>id</i>)</code>
+     *
+     * @param actionName An enum whose <code>toString()</code> method is used as the ID for the action.
+     * @return           The action currently associated with this id (or {@code null} if
+     *                   there is no saved action with that id value).
+     * @throws IllegalArgumentException if the actionName is {@code null}.
+     */
+    public static Action getNamedAction(final Enum<? extends Enum> actionName) {
+        Utils.checkNull(actionName, "action name");
+        return getNamedAction(actionName.toString());
     }
 
     /**
