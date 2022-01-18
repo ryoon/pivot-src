@@ -411,16 +411,18 @@ public final class StyleChecks {
     private static final String FORMAT3A = "    %1$5s %2$-30s%3$,6d (%4$,d)%n";
     /** Format string used to print the underlines. */
     private static final String UNDER_FORMAT = "%1$3s %2$5s %3$-30s%4$6s %5$s%n";
-    /** Three character underline. */
-    private static final String THREE = "---";
-    /** Five character underline. */
-    private static final String FIVE = "-----";
-    /** Six character underline. */
-    private static final String SIX = "------";
-    /** File name underline. */
-    private static final String FILE = "-------------------";
-    /** Category name underline. */
-    private static final String CATEGORY = "----------------------------";
+
+    /** First column header: number. */
+    private static final String HDR_NUMBER = " # ";
+    /** Second column header: severity. */
+    private static final String HDR_SEVERITY =  " Sev ";
+    /** Third column header: category. */
+    private static final String HDR_CATEGORY =  "Category";
+    /** Fourth column header: count. */
+    private static final String HDR_COUNT =  " Count";
+    /** Last column header: file list. */
+    private static final String HDR_FILES =  "File(s)";
+
     /** Format string for the file vs problem count report. */
     private static final String FORMAT4 = "    %1$-42s %2$,6d%n";
     /** Alternate format string for the file vs problem count report. */
@@ -513,21 +515,40 @@ public final class StyleChecks {
     };
 
 
-    /** Upper-left corner character (double line). */
-    private static final char ULC = '\u2554';
-    /** Upper-right corner character (double line). */
-    private static final char URC = '\u2557';
-    /** Horizontal line character (double line). */
-    private static final char HZL = '\u2550';
-    /** Vertical line character (double line). */
-    private static final char VTL = '\u2551';
-    /** Lower-left corner character (double line). */
-    private static final char LLC = '\u255A';
-    /** Lower-right corner character (double line). */
-    private static final char LRC = '\u255D';
+    /** Upper-left rounded corner character (single line). */
+    private static final char ULC = '\u256D';
+    /** Upper-right rounded corner character (single line). */
+    private static final char URC = '\u256E';
+    /** Horizontal line character (single line). */
+    private static final char HZL = '\u2500';
+    /** Vertical line character (single line). */
+    private static final char VTL = '\u2502';
+    /** Lower-left rounded corner character (single line). */
+    private static final char LLC = '\u2570';
+    /** Lower-right rounded corner character (single line). */
+    private static final char LRC = '\u256F';
 
     /** Width of our banner (pretty arbitrary). */
-    private static final int WIDTH = 57;
+    private static final int WIDTH = 66;
+    /** Width of the Category column. */
+    private static final int CATEGORY_WIDTH = 28;
+    /** Width of the File(s) column. */
+    private static final int FILES_WIDTH = 19;
+
+
+    /**
+     * Line types.
+     */
+    private enum LineType {
+        /** The top border of the banner box. */
+        TOP,
+        /** The bottom border of the banner box. */
+        BOTTOM,
+        /** One of the middle lines of the banner box. */
+        MIDDLE,
+        /** A line under a heading. */
+        UNDER
+    }
 
 
     /**
@@ -537,39 +558,44 @@ public final class StyleChecks {
      * @param message  message for type 2
      * @return Constructed line to print.
      */
-    private static String constructBoxLine(final int lineType, final int width, final String message) {
+    private static String constructBoxLine(final LineType lineType, final int width, final String message) {
         char[] chars = new char[width];
 
         switch (lineType) {
-            case 0:
+            case TOP:
                 chars[0] = ULC;
                 chars[width - 1] = URC;
                 break;
-            case 1:
+            case BOTTOM:
                 chars[0] = LLC;
                 chars[width - 1] = LRC;
                 break;
-            case 2:
+            case MIDDLE:
                 chars[0] = VTL;
                 chars[width - 1] = VTL;
+                break;
+            case UNDER:
+                chars[0] = HZL;
+                chars[width - 1] = HZL;
                 break;
             default:
                 break;
         }
 
         switch (lineType) {
-            case 0:
-            case 1:
+            case TOP:
+            case BOTTOM:
+            case UNDER:
                 Arrays.fill(chars, 1, width - 1, HZL);
                 break;
-            case 2:
+            case MIDDLE:
                 Arrays.fill(chars, 1, width - 1, ' ');
                 break;
             default:
                 break;
         }
 
-        if (lineType == 2 && message != null) {
+        if (lineType == LineType.MIDDLE && message != null) {
             int startPos = (width + 1 - message.length() * 2) / 2;
             for (int i = 0, pos = startPos; i < message.length(); i++, pos += 2) {
                 chars[pos] = message.charAt(i);
@@ -577,6 +603,16 @@ public final class StyleChecks {
         }
 
         return new String(chars);
+    }
+
+    /**
+     * Output a header message with an underline of the same length.
+     *
+     * @param message The (header) message to output.
+     */
+    private static void underlinedMessage(final String message) {
+        System.out.println(message);
+        System.out.println(constructBoxLine(LineType.UNDER, message.length(), null));
     }
 
     /**
@@ -861,11 +897,17 @@ public final class StyleChecks {
      * @param total      Total number of warnings plus errors.
      */
     private static void displayReport(final int totalWarn, final int totalError, final int total) {
-        System.out.println(constructBoxLine(0, WIDTH, null));
-        System.out.println(constructBoxLine(2, WIDTH, null));
-        System.out.println(constructBoxLine(2, WIDTH, "STYLE CHECK RESULTS"));
-        System.out.println(constructBoxLine(2, WIDTH, null));
-        System.out.println(constructBoxLine(1, WIDTH, null));
+        String numberLine   = constructBoxLine(LineType.UNDER, HDR_NUMBER.length(), null);
+        String severityLine = constructBoxLine(LineType.UNDER, HDR_SEVERITY.length(), null);
+        String countLine    = constructBoxLine(LineType.UNDER, HDR_COUNT.length(), null);
+        String filesLine    = constructBoxLine(LineType.UNDER, FILES_WIDTH, null);
+        String categoryLine = constructBoxLine(LineType.UNDER, CATEGORY_WIDTH, null);
+
+        System.out.println(constructBoxLine(LineType.TOP,    WIDTH, null));
+        System.out.println(constructBoxLine(LineType.MIDDLE, WIDTH, null));
+        System.out.println(constructBoxLine(LineType.MIDDLE, WIDTH, "STYLE CHECK RESULTS"));
+        System.out.println(constructBoxLine(LineType.MIDDLE, WIDTH, null));
+        System.out.println(constructBoxLine(LineType.BOTTOM, WIDTH, null));
         System.out.println();
 
         if (sortedList.isEmpty()) {
@@ -908,14 +950,16 @@ public final class StyleChecks {
             }
 
             // Output the final summary report for this input file
-            System.out.format(UNDER_FORMAT, " # ", " Sev ", "Category", " Count", "File(s)");
-            System.out.format(UNDER_FORMAT, THREE, FIVE, CATEGORY, SIX, FILE);
+            System.out.format(UNDER_FORMAT, HDR_NUMBER, HDR_SEVERITY, HDR_CATEGORY, HDR_COUNT, HDR_FILES);
+            System.out.format(UNDER_FORMAT, numberLine, severityLine, categoryLine, countLine, filesLine);
+
             int categoryNo = 0;
             for (Info info : sortedList) {
                 reportInfo(++categoryNo, info, !duplicates);
             }
 
-            System.out.format(UNDER_FORMAT, THREE, FIVE, CATEGORY, SIX, FILE);
+            System.out.format(UNDER_FORMAT, numberLine, severityLine, categoryLine, countLine, filesLine);
+
             System.out.format(FORMAT3A, SEV_WARN, TOTAL, totalWarn, fileNameWarnSet.size());
             System.out.format(FORMAT3A, SEV_ERROR, TOTAL, totalError, fileNameErrorSet.size());
             System.out.format(FORMAT3, "Total of All", total, fileNameSet.size());
@@ -938,8 +982,9 @@ public final class StyleChecks {
 
             // The list is sorted by count, with highest count first
             fileCountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
-            System.out.println(twoReports ? "Files with the most problems:" : "File problem counts:");
-            System.out.println(twoReports ? "-----------------------------" : "--------------------");
+
+            underlinedMessage(twoReports ? "Files With the Most Problems" : "File Problem Counts");
+
             int num = 1;
             for (FileInfo info : fileCountList) {
                 String name = duplicates ? info.getName() : info.getNameOnly();
@@ -954,8 +999,9 @@ public final class StyleChecks {
                 if (leastRemaining > 0) {
                     // The list is sorted by count, with lowest count first
                     fileCountList.sort((o1, o2) -> o1.getCount() - o2.getCount());
-                    System.out.println("Files with the fewest problems:");
-                    System.out.println("-------------------------------");
+
+                    underlinedMessage("Files With the Fewest Problems");
+
                     for (int i = leastRemaining; i > 0; i--) {
                         FileInfo info = fileCountList.get(i - 1);
                         String name = duplicates ? info.getName() : info.getNameOnly();
