@@ -337,7 +337,7 @@ public class Window extends Container {
         for (int i = index, n = index + count; i < n; i++) {
             Component component = get(i);
             if (component == content) {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Window content cannot be removed.");
             }
         }
 
