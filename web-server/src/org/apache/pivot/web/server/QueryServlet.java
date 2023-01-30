@@ -42,7 +42,10 @@ import org.apache.pivot.web.QueryDictionary;
 import org.apache.pivot.web.QueryException;
 
 /**
- * Abstract base class for query servlets.
+ * Abstract base class for query servlets.<br/>
+ *
+ * Note that for better security, you should only use BinarySerializer in QueryServlet
+ * if you're sure the incoming requests will only come from trusted sources.
  */
 public abstract class QueryServlet extends HttpServlet {
     /**
