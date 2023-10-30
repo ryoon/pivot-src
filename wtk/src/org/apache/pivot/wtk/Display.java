@@ -25,17 +25,31 @@ import org.apache.pivot.wtk.skin.DisplaySkin;
  * Container that serves as the root of a component hierarchy.
  */
 public final class Display extends Container {
+    /**
+     * The display host (bridge to AWT) that really implements this display.
+     */
     private ApplicationContext.DisplayHost displayHost;
 
-    public Display(ApplicationContext.DisplayHost displayHost) {
-        this.displayHost = displayHost;
+    /**
+     * Construct a display on the given {@link ApplicationContext.DisplayHost}.
+     *
+     * @param host The display host that implements this display.
+     */
+    public Display(final ApplicationContext.DisplayHost host) {
+        displayHost = host;
         super.setSkin(new DisplaySkin());
     }
 
+    /**
+     * @return The display host attached to this display.
+     */
     public ApplicationContext.DisplayHost getDisplayHost() {
         return displayHost;
     }
 
+    /**
+     * @return The AWT host window of this display.
+     */
     public java.awt.Window getHostWindow() {
         java.awt.Container parent = displayHost.getParent();
         while (parent != null && !(parent instanceof java.awt.Window)) {
@@ -51,41 +65,41 @@ public final class Display extends Container {
 
     @Override
     @UnsupportedOperation
-    protected void setSkin(Skin skin) {
+    protected void setSkin(final Skin skin) {
         throw new UnsupportedOperationException("Can't replace Display skin.");
     }
 
     @Override
     @UnsupportedOperation
-    protected void setParent(Container parent) {
+    protected void setParent(final Container parent) {
         throw new UnsupportedOperationException("Display can't have a parent.");
     }
 
     @Override
     @UnsupportedOperation
-    public void setLocation(int x, int y) {
+    public void setLocation(final int x, final int y) {
         throw new UnsupportedOperationException("Can't change the location of the display.");
     }
 
     @Override
     @UnsupportedOperation
-    public void setVisible(boolean visible) {
+    public void setVisible(final boolean visible) {
         throw new UnsupportedOperationException("Can't change the visibility of the display.");
     }
 
     @Override
     @UnsupportedOperation
-    public void setTooltipText(String tooltipText) {
+    public void setTooltipText(final String tooltipText) {
         throw new UnsupportedOperationException("Can't set a tooltip on the display.");
     }
 
     @Override
-    public void repaint(int x, int y, int width, int height, boolean immediate) {
+    public void repaint(final int x, final int y, final int width, final int height, final boolean immediate) {
         if (immediate) {
             Graphics2D graphics = (Graphics2D) displayHost.getGraphics();
 
-            // If the display host has been made non-displayable (as will
-            // happen when the native peer closes), graphics will be null
+            // If the display host has been made non-displayable (as will happen when the native peer closes),
+            // graphics will be null
             if (graphics != null) {
                 double scale = displayHost.getScale();
                 if (scale == 1) {
@@ -104,9 +118,9 @@ public final class Display extends Container {
     }
 
     @Override
-    public void insert(Component component, int index) {
+    public void insert(final Component component, final int index) {
         if (!(component instanceof Window)) {
-            throw new IllegalArgumentException("component must be an instance " + "of "
+            throw new IllegalArgumentException("component must be an instance of "
                 + Window.class);
         }
 
@@ -114,7 +128,7 @@ public final class Display extends Container {
     }
 
     @Override
-    protected void descendantAdded(Component descendant) {
+    protected void descendantAdded(final Component descendant) {
         super.descendantAdded(descendant);
 
         String automationID = descendant.getAutomationID();
@@ -125,7 +139,7 @@ public final class Display extends Container {
     }
 
     @Override
-    protected void descendantRemoved(Component descendant) {
+    protected void descendantRemoved(final Component descendant) {
         super.descendantRemoved(descendant);
 
         String automationID = descendant.getAutomationID();

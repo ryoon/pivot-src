@@ -29,6 +29,14 @@ public final class CharUtils {
     }
 
     /**
+     * @return Whether the given character is one of the line-ending chars.
+     * @param ch The character to check.
+     */
+    private static boolean isLineEnding(final char ch) {
+        return (ch == '\r' || ch == '\n');
+    }
+
+    /**
      * Return a {@link CharSpan} describing a "word" which contains the given
      * starting location in the character sequence.
      * <p> "Words" are defined as sequences of "Unicode Identifier Part" characters
@@ -48,7 +56,6 @@ public final class CharUtils {
         }
 
         int adjustedStart = start;
-        char ch;
 
         // Adjust the start position to put it within the sequence length
         // and skip any trailing line endings at that point
@@ -57,7 +64,7 @@ public final class CharUtils {
             if (adjustedStart < 0) {
                 return null;
             }
-            while ((ch = sequence.charAt(adjustedStart)) == '\r' || ch == '\n') {
+            while (isLineEnding(sequence.charAt(adjustedStart))) {
                 adjustedStart--;
             }
         }
@@ -67,7 +74,7 @@ public final class CharUtils {
 
         int selectionStart = adjustedStart;
         int selectionLength = 1;
-        ch = sequence.charAt(selectionStart);
+        char ch = sequence.charAt(selectionStart);
         if (Character.isWhitespace(ch)) {
             // Move backward to beginning of whitespace block
             // but not before the beginning of the text.

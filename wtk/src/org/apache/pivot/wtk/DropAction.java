@@ -17,8 +17,12 @@
 package org.apache.pivot.wtk;
 
 import java.awt.Cursor;
-import static java.awt.dnd.DnDConstants.*;
-import static java.awt.dnd.DragSource.*;
+import static java.awt.dnd.DnDConstants.ACTION_COPY;
+import static java.awt.dnd.DnDConstants.ACTION_LINK;
+import static java.awt.dnd.DnDConstants.ACTION_MOVE;
+import static java.awt.dnd.DragSource.DefaultCopyDrop;
+import static java.awt.dnd.DragSource.DefaultLinkDrop;
+import static java.awt.dnd.DragSource.DefaultMoveDrop;
 import java.awt.event.InputEvent;
 
 

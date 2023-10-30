@@ -367,8 +367,7 @@ public final class FontUtilities {
      * @throws FontFormatException if the font file itself was malformed.
      */
     public static Font registerFont(final File fullFontFilePath)
-        throws IOException, FontFormatException
-    {
+        throws IOException, FontFormatException {
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             Font f = Font.createFont(Font.TRUETYPE_FONT, fullFontFilePath);
@@ -392,8 +391,7 @@ public final class FontUtilities {
      * @throws FontFormatException if the font file itself was malformed.
      */
     public static Font registerFont(final InputStream fontInputStream)
-        throws IOException, FontFormatException
-    {
+        throws IOException, FontFormatException {
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             Font f = Font.createFont(Font.TRUETYPE_FONT, fontInputStream);
