@@ -31,24 +31,30 @@ import org.apache.pivot.util.Utils;
 public class ArrayAdapter<T> extends ReadOnlySequence<T> implements Serializable {
     private static final long serialVersionUID = 1143706808122308239L;
 
-    private T[] array;
+    /** The underlying array we are wrapping with this adapter. */
+    private T[] wrappedArray;
 
+    /**
+     * Wrap a Java array with this adapter.
+     *
+     * @param array Standard array of objects to be wrapped.
+     */
     @SuppressWarnings({ "unchecked" })
     public ArrayAdapter(final T... array) {
         Utils.checkNull(array, "array");
 
-        this.array = array;
+        wrappedArray = array;
     }
 
     @Override
     public T get(final int index) {
-        return array[index];
+        return wrappedArray[index];
     }
 
     @Override
     public int indexOf(final T item) {
-        for (int index = 0; index < array.length; index++) {
-            if ((item == null && array[index] == null) || item.equals(array[index])) {
+        for (int index = 0; index < wrappedArray.length; index++) {
+            if ((item == null && wrappedArray[index] == null) || item.equals(wrappedArray[index])) {
                 return index;
             }
         }
@@ -58,6 +64,6 @@ public class ArrayAdapter<T> extends ReadOnlySequence<T> implements Serializable
 
     @Override
     public int getLength() {
-        return array.length;
+        return wrappedArray.length;
     }
 }

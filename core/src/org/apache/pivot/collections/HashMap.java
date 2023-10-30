@@ -27,29 +27,49 @@ import org.apache.pivot.util.ImmutableIterator;
 import org.apache.pivot.util.ListenerList;
 import org.apache.pivot.util.Utils;
 
+
 /**
  * Implementation of the {@link Map} interface that is backed by a hash table.
+ * <p> Differs from the standard Java {@link java.util.HashMap} because it notifies
+ * its listeners for changes. This allows automatic updates of the UI whenever the
+ * underlying data in this structure changes.
+ *
+ * @param <K> Type of the key for elements in this map.
+ * @param <V> Type of value elements in the map.
  */
 public class HashMap<K, V> implements Map<K, V>, Serializable {
     private static final long serialVersionUID = -7079717428744528670L;
 
+    /**
+     * Iterator over the keys of this map.
+     */
     private class KeyIterator implements Iterator<K> {
+        /** Index of the bucket we are currently traversing. */
         private int bucketIndex;
+        /** The iterator over the current bucket. */
         private Iterator<Pair<K, V>> entryIterator;
-        private int countLocal;
+        /** Local modification count to detect changes to the map while iterating. */
+        private int localIteratorCount;
 
+        /** Current entry while iterating. */
         private Pair<K, V> entry = null;
 
-        public KeyIterator() {
+        /**
+         * Begin the iteration over the map keys.
+         */
+        KeyIterator() {
             bucketIndex = 0;
             entryIterator = getBucketIterator(bucketIndex);
 
-            countLocal = HashMap.this.count;
+            localIteratorCount = HashMap.this.count;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean hasNext() {
-            if (countLocal != HashMap.this.count) {
+            if (localIteratorCount != HashMap.this.count) {
                 throw new ConcurrentModificationException();
             }
 
@@ -62,6 +82,9 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
             return (entryIterator != null);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public K next() {
             if (!hasNext()) {
@@ -72,6 +95,9 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
             return entry.key;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void remove() {
             if (entry == null || entryIterator == null) {
@@ -79,7 +105,7 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
             }
 
             entryIterator.remove();
-            countLocal--;
+            localIteratorCount--;
             HashMap.this.count--;
 
             if (mapListeners != null) {
@@ -89,65 +115,142 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
             entry = null;
         }
 
-        private Iterator<Pair<K, V>> getBucketIterator(int bucketIndexArgument) {
-            LinkedList<Pair<K, V>> bucket = buckets.get(bucketIndexArgument);
+        /**
+         * Retrieve an iterator over the given bucket.
+         *
+         * @param index Index of the bucket to iterate over.
+         * @return      The iterator over that bucket.
+         */
+        private Iterator<Pair<K, V>> getBucketIterator(final int index) {
+            LinkedList<Pair<K, V>> bucket = buckets.get(index);
 
             return (bucket == null) ? new EmptyIterator<Pair<K, V>>() : bucket.iterator();
         }
     }
 
+    /**
+     * The hash buckets for this map.
+     */
     private ArrayList<LinkedList<Pair<K, V>>> buckets;
+    /**
+     * The desired load factor for this map.
+     */
     private float loadFactor;
 
+    /**
+     * The current number of elements in this map.
+     */
     private int count = 0;
+    /**
+     * The current list of keys in this map if we're sorting by them.
+     */
     private ArrayList<K> keys = null;
 
+    /**
+     * The list of listeners for changes in this map.
+     */
     private transient MapListener.Listeners<K, V> mapListeners = null;
 
+    /**
+     * The default initial capacity of this map.
+     */
     public static final int DEFAULT_CAPACITY = 16;
+    /**
+     * The default load factor for this map.
+     */
     public static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    /**
+     * A hash multiiplier for computing the hash code for this map.
+     */
+    private static final int HASH_MULTIPLIER = 31;
 
+
+    /**
+     * Default constructor using default capacity and load factor.
+     */
     public HashMap() {
         this(DEFAULT_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
-    public HashMap(int capacity) {
+    /**
+     * Construct a map sized for the given capacity, and using the default
+     * load factor.
+     *
+     * @param capacity The desired initial capacity of the map.
+     */
+    public HashMap(final int capacity) {
         this(capacity, DEFAULT_LOAD_FACTOR);
     }
 
-    public HashMap(int capacity, float loadFactor) {
-        this.loadFactor = loadFactor;
+    /**
+     * Construct a map sized to the given capacity, using the given load factor.
+     *
+     * @param capacity The desired initial capacity of the map.
+     * @param load     Desired load factor for scaling the capacity.
+     */
+    public HashMap(final int capacity, final float load) {
+        loadFactor = load;
 
         rehash(capacity);
     }
 
-    @SafeVarargs
-    public HashMap(Pair<K, V>... entries) {
-        this(Math.max((int) (entries.length / DEFAULT_LOAD_FACTOR) + 1, DEFAULT_CAPACITY));
+    /**
+     * Calculate an appropriate capacity, given the default load factor and the
+     * given number of initial entries to insert.
+     *
+     * @param size Size of an external map we are going to copy into this new one.
+     * @return     An appropriate capacity for that size, given the default load factor.
+     */
+    private static int capacityForSize(final int size) {
+        return Math.max((int) (size / DEFAULT_LOAD_FACTOR) + 1, DEFAULT_CAPACITY);
+    }
 
-        for (int i = 0; i < entries.length; i++) {
-            Pair<K, V> entry = entries[i];
+    /**
+     * Construct a new map with the given initial entries.
+     *
+     * @param entries The initial map entries.
+     */
+    @SafeVarargs
+    public HashMap(final Pair<K, V>... entries) {
+        this(capacityForSize(entries.length));
+
+        for (Pair<K, V> entry : entries) {
             put(entry.key, entry.value);
         }
     }
 
-    public HashMap(Map<K, V> map) {
-        this(Math.max((int) (map.getCount() / DEFAULT_LOAD_FACTOR) + 1, DEFAULT_CAPACITY));
+    /**
+     * Construct a duplicate map from the given one.
+     *
+     * @param map The other map to copy into this one.
+     */
+    public HashMap(final Map<K, V> map) {
+        this(capacityForSize(map.getCount()));
 
         for (K key : map) {
             put(key, map.get(key));
         }
     }
 
-    public HashMap(java.util.Map<K, V> map) {
-        this(Math.max((int) (map.size() / DEFAULT_LOAD_FACTOR) + 1, DEFAULT_CAPACITY));
+    /**
+     * Construct a duplicate map from the given standard map structure.
+     *
+     * @param map A standard {@link java.util.Map} to copy.
+     */
+    public HashMap(final java.util.Map<K, V> map) {
+        this(capacityForSize(map.size()));
 
         for (K key : map.keySet()) {
             put(key, map.get(key));
         }
     }
 
-    public HashMap(Comparator<K> comparator) {
+    /**
+     * Construct an ordered map using the given comparator.
+     *
+     * @param comparator Comparator used to sort the map keys.
+     */
+    public HashMap(final Comparator<K> comparator) {
         this();
 
         setComparator(comparator);
@@ -159,7 +262,7 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
      * @throws IllegalArgumentException If {@code key} is {@literal null}.
      */
     @Override
-    public V get(K key) {
+    public V get(final K key) {
         Utils.checkNull(key, "key");
 
         V value = null;
@@ -186,11 +289,22 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
      * @throws IllegalArgumentException If {@code key} is {@literal null}.
      */
     @Override
-    public V put(K key, V value) {
+    public V put(final K key, final V value) {
         return put(key, value, true);
     }
 
-    private V put(K key, V value, boolean notifyListeners) {
+    /**
+     * Put an entry into this map, with or without notifying the listeners.
+     * <p> Not notifying will only happen during {@link #rehash} because nothing
+     * is changing during that process.
+     *
+     * @param key             Key of the new entry.
+     * @param value           Value for that key.
+     * @param notifyListeners Whether to notify the listeners of this change.
+     * @return                The previous value (if any) for the key.
+     * @throws IllegalArgumentException if the key is {@literal null}.
+     */
+    private V put(final K key, final V value, final boolean notifyListeners) {
         Utils.checkNull(key, "key");
 
         V previousValue = null;
@@ -248,7 +362,7 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
      * @throws IllegalArgumentException If {@code key} is {@literal null}.
      */
     @Override
-    public V remove(K key) {
+    public V remove(final K key) {
         Utils.checkNull(key, "key");
 
         V value = null;
@@ -283,6 +397,9 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         if (count > 0) {
@@ -312,7 +429,7 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
      * @throws IllegalArgumentException If {@code key} is {@literal null}.
      */
     @Override
-    public boolean containsKey(K key) {
+    public boolean containsKey(final K key) {
         Utils.checkNull(key, "key");
 
         // Locate the entry
@@ -333,25 +450,41 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
         return (i < bucket.getLength());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEmpty() {
         return (count == 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getCount() {
         return count;
     }
 
+    /**
+     * Retrieve the capacity of the map (that is, the number of buckets).
+     *
+     * @return The map's capacity.
+     */
     public int getCapacity() {
         return buckets.getLength();
     }
 
-    private void rehash(int capacity) {
+    /**
+     * Rebuild the map to the new capacity by rehashing the keys into the new set of buckets.
+     *
+     * @param newCapacity The enlarged new capacity of the map.
+     */
+    private void rehash(final int newCapacity) {
         ArrayList<LinkedList<Pair<K, V>>> previousBuckets = this.buckets;
-        buckets = new ArrayList<>(capacity);
+        buckets = new ArrayList<>(newCapacity);
 
-        for (int i = 0; i < capacity; i++) {
+        for (int i = 0; i < newCapacity; i++) {
             buckets.add(null);
         }
 
@@ -372,7 +505,13 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
         }
     }
 
-    private LinkedList<Pair<K, V>> getBucket(K key) {
+    /**
+     * Get the appropriate bucket for the given key.
+     *
+     * @param key Map key to be looked at.
+     * @return    The currently correct map bucket for this key.
+     */
+    private LinkedList<Pair<K, V>> getBucket(final K key) {
         int hashCode = key.hashCode();
         int bucketIndex = Math.abs(hashCode % getCapacity());
 
@@ -385,13 +524,19 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
         return bucket;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Comparator<K> getComparator() {
         return (keys == null) ? null : keys.getComparator();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void setComparator(Comparator<K> comparator) {
+    public void setComparator(final Comparator<K> comparator) {
         Comparator<K> previousComparator = getComparator();
 
         if (comparator == null) {
@@ -415,11 +560,17 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterator<K> iterator() {
         return (keys == null) ? new KeyIterator() : new ImmutableIterator<>(keys.iterator());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ListenerList<MapListener<K, V>> getMapListeners() {
         if (mapListeners == null) {
@@ -429,9 +580,12 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
         return mapListeners;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         boolean equals = false;
 
         if (this == o) {
@@ -459,36 +613,42 @@ public class HashMap<K, V> implements Map<K, V>, Serializable {
         return equals;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         int hashCode = 1;
 
         for (K key : this) {
-            hashCode = 31 * hashCode + key.hashCode();
+            hashCode = HASH_MULTIPLIER * hashCode + key.hashCode();
         }
 
         return hashCode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(getClass().getName());
+        sb.append(getClass().getSimpleName());
         sb.append(" {");
 
         int i = 0;
         for (K key : this) {
-            if (i > 0) {
+            if (i++ > 0) {
                 sb.append(", ");
             }
 
-            sb.append(key + ":" + get(key));
-            i++;
+            sb.append(key).append(": ").append(get(key));
         }
 
         sb.append("}");
 
         return sb.toString();
     }
+
 }

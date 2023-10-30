@@ -37,6 +37,9 @@ import org.apache.pivot.util.Utils;
 public class LinkedList<T> implements List<T>, Serializable {
     private static final long serialVersionUID = 2100691224732602812L;
 
+    /**
+     * One node in the list, has the reference to the object as well as the links.
+     */
     private static class Node<T> implements Serializable {
         private static final long serialVersionUID = -848937850230412572L;
 
@@ -44,13 +47,16 @@ public class LinkedList<T> implements List<T>, Serializable {
         private Node<T> next;
         private T item;
 
-        public Node(final Node<T> previous, final Node<T> next, final T item) {
-            this.previous = previous;
-            this.next = next;
-            this.item = item;
+        public Node(final Node<T> previousNode, final Node<T> nextNode, final T listItem) {
+            this.previous = previousNode;
+            this.next = nextNode;
+            this.item = listItem;
         }
     }
 
+    /**
+     * Iterator over the items in the list.
+     */
     private class LinkedListItemIterator implements ItemIterator<T> {
         private int index = 0;
         private Node<T> current = null;
@@ -139,7 +145,7 @@ public class LinkedList<T> implements List<T>, Serializable {
                 if (index == 0) {
                     // Insert at head
                     next = first;
-                    // previous = null; // previous has already this value
+                    // previous = null; // previous already has this value
                 } else if (index < length) {
                     if (forward) {
                         // Insert after current
@@ -152,7 +158,7 @@ public class LinkedList<T> implements List<T>, Serializable {
                     }
                 } else {
                     // Insert at tail
-                    // next = null; // next has already this value
+                    // next = null; // next already has this value
                     previous = last;
                 }
 
@@ -227,7 +233,6 @@ public class LinkedList<T> implements List<T>, Serializable {
 
             if (listListeners != null) {
                 @SuppressWarnings("unchecked")
-                // or it will generate a warning during build with Java 7
                 LinkedList<T> removed = new LinkedList<>(item);
 
                 listListeners.itemsRemoved(LinkedList.this, index, removed);
@@ -244,13 +249,26 @@ public class LinkedList<T> implements List<T>, Serializable {
     private transient int modificationCount = 0;
     private transient ListListenerList<T> listListeners;
 
+    /**
+     * Default constructor of an empty unordered list.
+     */
     public LinkedList() {
     }
 
-    public LinkedList(final Comparator<T> comparator) {
-        this.comparator = comparator;
+    /**
+     * Construct a new ordered list using the given comparator to do the ordering.
+     *
+     * @param newComparator Comparator to use for ordering this new list.
+     */
+    public LinkedList(final Comparator<T> newComparator) {
+        this.comparator = newComparator;
     }
 
+    /**
+     * Construct a new list with the given initial items.
+     *
+     * @param items The initial set of items to add to the list.
+     */
     @SafeVarargs
     public LinkedList(final T... items) {
         for (T item : items) {
@@ -258,6 +276,11 @@ public class LinkedList<T> implements List<T>, Serializable {
         }
     }
 
+    /**
+     * Construct a new list with the given initial sequence of items.
+     *
+     * @param items The initial sequence of items for this list.
+     */
     public LinkedList(final Sequence<T> items) {
         Utils.checkNull(items, "items");
 
@@ -326,6 +349,15 @@ public class LinkedList<T> implements List<T>, Serializable {
         }
     }
 
+    /**
+     * Insert this item into the list between the two nodes.
+     *
+     * @param item     The new list item to insert.
+     * @param previous The node before this new one, can be {@literal null}.
+     * @param next     Node after this new one, which can also be {@literal null}.
+     * @see #first
+     * @see #last
+     */
     private void insert(final T item, final Node<T> previous, final Node<T> next) {
         Node<T> node = new Node<>(previous, next, item);
 
@@ -366,6 +398,15 @@ public class LinkedList<T> implements List<T>, Serializable {
         return previousItem;
     }
 
+    /**
+     * For an ordered list (one having a comparator set) verify that the given item is in the
+     * proper place in the list, according to the comparator.
+     *
+     * @param item     The new item to check.
+     * @param previous The proposed previous element in the list.
+     * @param next     The proposed next element in the list.
+     * @throws IllegalArgumentException if the comparator is set and the item doesn't fit between these nodes.
+     */
     private void verifyLocation(final T item, final Node<T> previous, final Node<T> next) {
         if (comparator != null) {
             // Ensure that the new item is greater or equal to its
@@ -473,6 +514,17 @@ public class LinkedList<T> implements List<T>, Serializable {
         return node.item;
     }
 
+    /**
+     * Get the node at the given 0-based index location in the list.
+     * <p> Searches for the item from either the head or the tail of
+     * the list, depending on whether {@code index} is closer to 0 or
+     * the length of the list.
+     *
+     * @param index The index location.
+     * @return      The node at the given index location in the list.
+     * @see #first
+     * @see #last
+     */
     private Node<T> getNode(final int index) {
         Node<T> node;
         if (index == 0) {
