@@ -17,16 +17,25 @@
 package org.apache.pivot.functional.monad;
 
 /**
- * Definition of a generic Monad.
+ * Definition of a generic Monad, which is a type that wraps another type and
+ * gives some form of quality to the underlying type (see
+ * <a href="https://en.wikipedia.org/wiki/Monad_(functional_programming)">
+ * https://en.wikipedia.org/wiki/Monad_(functional_programming)</a>).
+ *
  * @param <T> The underlying type wrapped by this Monad.
  */
 public abstract class Monad<T> implements MonadicOperations<T> {
 
-    /** Default constructor. */
+    /**
+     * Default constructor.
+     */
     protected Monad() {
         // no-op
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "Monad(" + getClass().getTypeParameters()[0].getName() + ")";

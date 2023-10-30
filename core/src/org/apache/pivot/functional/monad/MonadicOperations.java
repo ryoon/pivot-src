@@ -18,13 +18,12 @@ package org.apache.pivot.functional.monad;
 
 /**
  * Definition of generic Monadic methods.
+ * <p> For future development: check on adding other abstract (generic, typical of Monads:
+ * apply, unit, map, flatten, etc) methods here and see what to implement in Option and in Try ...)
  *
  * @param <T> The wrapped type to which this operation is to be applied.
  */
 @SuppressWarnings("unused")
 public interface MonadicOperations<T> {
-
-// TODO: check if add other abstract (generic, typical of Monads: apply, unit, map, flatten, etc)
-//       methods here (MonadicInterface), and see what to implement in Option and in Try ...
 
 }
