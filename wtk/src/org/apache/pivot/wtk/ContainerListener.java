@@ -26,26 +26,27 @@ public interface ContainerListener {
     /**
      * Container listeners.
      */
-    public static class Listeners extends ListenerList<ContainerListener> implements
+    class Listeners extends ListenerList<ContainerListener> implements
         ContainerListener {
         @Override
-        public void componentInserted(Container container, int index) {
+        public void componentInserted(final Container container, final int index) {
             forEach(listener -> listener.componentInserted(container, index));
         }
 
         @Override
-        public void componentsRemoved(Container container, int index, Sequence<Component> components) {
+        public void componentsRemoved(final Container container, final int index,
+            final Sequence<Component> components) {
             forEach(listener -> listener.componentsRemoved(container, index, components));
         }
 
         @Override
-        public void componentMoved(Container container, int from, int to) {
+        public void componentMoved(final Container container, final int from, final int to) {
             forEach(listener -> listener.componentMoved(container, from, to));
         }
 
         @Override
-        public void focusTraversalPolicyChanged(Container container,
-            FocusTraversalPolicy previousFocusTraversalPolicy) {
+        public void focusTraversalPolicyChanged(final Container container,
+            final FocusTraversalPolicy previousFocusTraversalPolicy) {
             forEach(listener -> listener.focusTraversalPolicyChanged(container, previousFocusTraversalPolicy));
         }
     }
@@ -55,25 +56,25 @@ public interface ContainerListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements ContainerListener {
+    class Adapter implements ContainerListener {
         @Override
-        public void componentInserted(Container container, int index) {
+        public void componentInserted(final Container container, final int index) {
             // empty block
         }
 
         @Override
-        public void componentsRemoved(Container container, int index, Sequence<Component> removed) {
+        public void componentsRemoved(final Container container, final int index, final Sequence<Component> removed) {
             // empty block
         }
 
         @Override
-        public void componentMoved(Container container, int from, int to) {
+        public void componentMoved(final Container container, final int from, final int to) {
             // empty block
         }
 
         @Override
-        public void focusTraversalPolicyChanged(Container container,
-            FocusTraversalPolicy previousFocusTraversalPolicy) {
+        public void focusTraversalPolicyChanged(final Container container,
+            final FocusTraversalPolicy previousFocusTraversalPolicy) {
             // empty block
         }
     }

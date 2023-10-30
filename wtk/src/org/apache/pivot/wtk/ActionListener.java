@@ -22,14 +22,14 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Action listener interface.
  */
+@FunctionalInterface
 public interface ActionListener {
     /**
      * Action listener listeners list.
      */
-    public static class Listeners extends ListenerList<ActionListener>
-        implements ActionListener {
+    class Listeners extends ListenerList<ActionListener> implements ActionListener {
         @Override
-        public void enabledChanged(Action action) {
+        public void enabledChanged(final Action action) {
             forEach(listener -> listener.enabledChanged(action));
         }
     }
@@ -39,5 +39,5 @@ public interface ActionListener {
      *
      * @param action The action that has been enabled/disabled.
      */
-    public void enabledChanged(Action action);
+    void enabledChanged(Action action);
 }

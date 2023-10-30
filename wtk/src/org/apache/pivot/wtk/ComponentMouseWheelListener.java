@@ -22,15 +22,15 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Component mouse wheel listener interface.
  */
+@FunctionalInterface
 public interface ComponentMouseWheelListener {
     /**
      * Mouse wheel listeners.
      */
-    public static class Listeners extends ListenerList<ComponentMouseWheelListener>
-        implements ComponentMouseWheelListener {
+    class Listeners extends ListenerList<ComponentMouseWheelListener> implements ComponentMouseWheelListener {
         @Override
-        public boolean mouseWheel(Component component, Mouse.ScrollType scrollType,
-            int scrollAmount, int wheelRotation, int x, int y) {
+        public boolean mouseWheel(final Component component, final Mouse.ScrollType scrollType,
+            final int scrollAmount, final int wheelRotation, final int x, final int y) {
             BooleanResult consumed = new BooleanResult();
 
             forEach(listener -> consumed.or(listener.mouseWheel(component, scrollType, scrollAmount, wheelRotation,
@@ -52,6 +52,6 @@ public interface ComponentMouseWheelListener {
      * @return {@code true} to consume the event; {@code false} to allow it to
      * propagate.
      */
-    public boolean mouseWheel(Component component, Mouse.ScrollType scrollType, int scrollAmount,
+    boolean mouseWheel(Component component, Mouse.ScrollType scrollType, int scrollAmount,
         int wheelRotation, int x, int y);
 }

@@ -26,19 +26,19 @@ public interface MenuListener {
     /**
      * Menu listeners.
      */
-    public static class Listeners extends ListenerList<MenuListener> implements MenuListener {
+    class Listeners extends ListenerList<MenuListener> implements MenuListener {
         @Override
-        public void sectionInserted(Menu menu, int index) {
+        public void sectionInserted(final Menu menu, final int index) {
             forEach(listener -> listener.sectionInserted(menu, index));
         }
 
         @Override
-        public void sectionsRemoved(Menu menu, int index, Sequence<Menu.Section> removed) {
+        public void sectionsRemoved(final Menu menu, final int index, final Sequence<Menu.Section> removed) {
             forEach(listener -> listener.sectionsRemoved(menu, index, removed));
         }
 
         @Override
-        public void activeItemChanged(Menu menu, Menu.Item previousActiveItem) {
+        public void activeItemChanged(final Menu menu, final Menu.Item previousActiveItem) {
             forEach(listener -> listener.activeItemChanged(menu, previousActiveItem));
         }
     }
@@ -48,19 +48,19 @@ public interface MenuListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements MenuListener {
+    class Adapter implements MenuListener {
         @Override
-        public void sectionInserted(Menu menu, int index) {
+        public void sectionInserted(final Menu menu, final int index) {
             // empty block
         }
 
         @Override
-        public void sectionsRemoved(Menu menu, int index, Sequence<Menu.Section> removed) {
+        public void sectionsRemoved(final Menu menu, final int index, final Sequence<Menu.Section> removed) {
             // empty block
         }
 
         @Override
-        public void activeItemChanged(Menu menu, Menu.Item previousActiveItem) {
+        public void activeItemChanged(final Menu menu, final Menu.Item previousActiveItem) {
             // empty block
         }
     }

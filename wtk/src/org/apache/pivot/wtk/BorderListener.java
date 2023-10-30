@@ -25,14 +25,14 @@ public interface BorderListener {
     /**
      * Border listeners.
      */
-    public static class Listeners extends ListenerList<BorderListener> implements BorderListener {
+    class Listeners extends ListenerList<BorderListener> implements BorderListener {
         @Override
-        public void titleChanged(Border border, String previousTitle) {
+        public void titleChanged(final Border border, final String previousTitle) {
             forEach(listener -> listener.titleChanged(border, previousTitle));
         }
 
         @Override
-        public void contentChanged(Border border, Component previousContent) {
+        public void contentChanged(final Border border, final Component previousContent) {
             forEach(listener -> listener.contentChanged(border, previousContent));
         }
     }
@@ -42,14 +42,14 @@ public interface BorderListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements BorderListener {
+    class Adapter implements BorderListener {
         @Override
-        public void titleChanged(Border border, String previousTitle) {
+        public void titleChanged(final Border border, final String previousTitle) {
             // empty block
         }
 
         @Override
-        public void contentChanged(Border border, Component previousContent) {
+        public void contentChanged(final Border border, final Component previousContent) {
             // empty block
         }
     }

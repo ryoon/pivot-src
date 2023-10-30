@@ -19,6 +19,7 @@ package org.apache.pivot.beans;
 /**
  * Java bean property change listener.
  */
+@FunctionalInterface
 public interface PropertyChangeListener {
     /**
      * Called when a Java bean property has changed.

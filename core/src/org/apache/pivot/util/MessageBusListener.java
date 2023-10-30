@@ -21,6 +21,7 @@ package org.apache.pivot.util;
  *
  * @param <T> The type of message being sent.
  */
+@FunctionalInterface
 public interface MessageBusListener<T> {
     /**
      * Called when a message has been sent via

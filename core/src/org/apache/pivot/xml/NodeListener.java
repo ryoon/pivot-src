@@ -21,6 +21,7 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Node listener interface.
  */
+@FunctionalInterface
 public interface NodeListener {
     /**
      * Node listeners.

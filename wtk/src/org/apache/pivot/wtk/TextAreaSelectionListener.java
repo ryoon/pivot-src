@@ -21,16 +21,15 @@ import org.apache.pivot.util.ListenerList;
 /**
  * Text area selection listener interface.
  */
+@FunctionalInterface
 public interface TextAreaSelectionListener {
     /**
      * Text area selection listeners.
      */
-    public static class Listeners extends ListenerList<TextAreaSelectionListener>
-        implements TextAreaSelectionListener {
+    class Listeners extends ListenerList<TextAreaSelectionListener> implements TextAreaSelectionListener {
         @Override
-        public void selectionChanged(TextArea textArea, int previousSelectionStart,
-            int previousSelectionLength) {
-            forEach(listener -> listener.selectionChanged(textArea, previousSelectionStart, previousSelectionLength));
+        public void selectionChanged(final TextArea textArea, final int previousStart, final int previousLength) {
+            forEach(listener -> listener.selectionChanged(textArea, previousStart, previousLength));
         }
     }
 
@@ -41,6 +40,5 @@ public interface TextAreaSelectionListener {
      * @param previousSelectionStart Where the selection used to start.
      * @param previousSelectionLength The previous selection length.
      */
-    public void selectionChanged(TextArea textArea, int previousSelectionStart,
-        int previousSelectionLength);
+    void selectionChanged(TextArea textArea, int previousSelectionStart, int previousSelectionLength);
 }

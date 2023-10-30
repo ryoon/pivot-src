@@ -63,7 +63,7 @@ public final class MessageBus {
         ListenerList<MessageBusListener<?>> topicListeners = messageTopics.get(topic);
 
         if (topicListeners == null) {
-            throw new IllegalArgumentException(topic.getName() + " does not exist.");
+            throw new IllegalArgumentException(String.format("'%1$s' topic does not exist.", topic.getName()));
         }
 
         topicListeners.remove(messageListener);
