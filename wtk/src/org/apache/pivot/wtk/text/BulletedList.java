@@ -27,9 +27,9 @@ public class BulletedList extends List {
      * List bullet styles.
      */
     public enum Style {
-        /** unicode character 0x2022 aka. "BULLET" */
+        /** Unicode character 0x2022 aka "BULLET". */
         CIRCLE,
-        /** unicode character 0x25e6 aka. "WHITE BULLET" */
+        /** Unicode character 0x25e6 aka "WHITE BULLET". */
         CIRCLE_OUTLINE
     }
 
@@ -41,7 +41,7 @@ public class BulletedList extends List {
         super();
     }
 
-    public BulletedList(BulletedList bulletedList, boolean recursive) {
+    public BulletedList(final BulletedList bulletedList, final boolean recursive) {
         super(bulletedList, recursive);
         this.style = bulletedList.style;
     }
@@ -50,18 +50,18 @@ public class BulletedList extends List {
         return style;
     }
 
-    public void setStyle(Style style) {
-        Utils.checkNull(style, "style");
+    public void setStyle(final Style newStyle) {
+        Utils.checkNull(newStyle, "style");
 
         Style previousStyle = this.style;
-        if (previousStyle != style) {
-            this.style = style;
+        if (previousStyle != newStyle) {
+            this.style = newStyle;
             bulletedListListeners.styleChanged(this, previousStyle);
         }
     }
 
     @Override
-    public BulletedList duplicate(boolean recursive) {
+    public BulletedList duplicate(final boolean recursive) {
         return new BulletedList(this, recursive);
     }
 

@@ -16,6 +16,8 @@
  */
 package org.apache.pivot.wtk.text;
 
+import org.apache.pivot.util.Utils;
+
 /**
  * Abstract base class for list elements. <p> TODO Add indent and item spacing
  * properties.
@@ -25,44 +27,65 @@ public abstract class List extends Block {
      * Element representing a list item.
      */
     public static class Item extends Element {
+        /**
+         * Default constructor.
+         */
         public Item() {
             super();
         }
 
-        public Item(Item item, boolean recursive) {
+        /**
+         * Copy constructor with option to copy the children also.
+         *
+         * @param item      Item to copy.
+         * @param recursive Whether to copy the children as well.
+         */
+        public Item(final Item item, final boolean recursive) {
             super(item, recursive);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
-        public void insert(Node node, int index) {
-            if (!(node instanceof Block)) {
-                throw new IllegalArgumentException("Child node must be an instance of "
-                    + Block.class.getName());
-            }
+        public void insert(final Node node, final int index) {
+            Utils.notInstanceOf("Child node", node, Block.class);
 
             super.insert(node, index);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
-        public Item duplicate(boolean recursive) {
+        public Item duplicate(final boolean recursive) {
             return new Item(this, recursive);
         }
     }
 
+    /**
+     * Default constructor.
+     */
     public List() {
         super();
     }
 
-    public List(List list, boolean recursive) {
+    /**
+     * Copy constructor with option to copy the children.
+     *
+     * @param list      List element to copy.
+     * @param recursive Option to copy the children as well.
+     */
+    public List(final List list, final boolean recursive) {
         super(list, recursive);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void insert(Node node, int index) {
-        if (!(node instanceof Item)) {
-            throw new IllegalArgumentException("Child node must be an instance of "
-                + Item.class.getName());
-        }
+    public void insert(final Node node, final int index) {
+        Utils.notInstanceOf("Child node", node, Item.class);
 
         super.insert(node, index);
     }

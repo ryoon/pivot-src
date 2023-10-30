@@ -37,7 +37,7 @@ import org.apache.pivot.wtk.GraphicsUtilities;
 public abstract class Element extends Node implements Sequence<Node>, Iterable<Node> {
     private int characterCount = 0;
     private ArrayList<Node> nodes = new ArrayList<>();
-    private java.awt.Font font;
+    private Font font;
     private Color foregroundColor;
     private Color backgroundColor;
     private boolean underline;

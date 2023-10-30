@@ -28,12 +28,12 @@ public interface NodeListener {
      */
     public static class Listeners extends ListenerList<NodeListener> implements NodeListener {
         @Override
-        public void parentChanged(Node node, Element previousParent) {
+        public void parentChanged(final Node node, final Element previousParent) {
             forEach(listener -> listener.parentChanged(node, previousParent));
         }
 
         @Override
-        public void offsetChanged(Node node, int previousOffset) {
+        public void offsetChanged(final Node node, final int previousOffset) {
             forEach(listener -> listener.offsetChanged(node, previousOffset));
         }
 
@@ -41,7 +41,7 @@ public interface NodeListener {
          * @param offset Offset relative to this node.
          */
         @Override
-        public void nodeInserted(Node node, int offset) {
+        public void nodeInserted(final Node node, final int offset) {
             forEach(listener -> listener.nodeInserted(node, offset));
         }
 
@@ -49,7 +49,7 @@ public interface NodeListener {
          * @param offset Offset relative to this node.
          */
         @Override
-        public void nodesRemoved(Node node, Sequence<Node> removed, int offset) {
+        public void nodesRemoved(final Node node, final Sequence<Node> removed, final int offset) {
             forEach(listener -> listener.nodesRemoved(node, removed, offset));
         }
 
@@ -57,7 +57,7 @@ public interface NodeListener {
          * @param offset Offset relative to this node.
          */
         @Override
-        public void rangeInserted(Node node, int offset, int characterCount) {
+        public void rangeInserted(final Node node, final int offset, final int characterCount) {
             forEach(listener -> listener.rangeInserted(node, offset, characterCount));
         }
 
@@ -65,7 +65,8 @@ public interface NodeListener {
          * @param offset Offset relative to this node.
          */
         @Override
-        public void rangeRemoved(Node node, int offset, int characterCount, CharSequence removedChars) {
+        public void rangeRemoved(final Node node, final int offset, final int characterCount,
+            final CharSequence removedChars) {
             forEach(listener -> listener.rangeRemoved(node, offset, characterCount, removedChars));
         }
     }
@@ -77,22 +78,22 @@ public interface NodeListener {
     @Deprecated
     public class Adapter implements NodeListener {
         @Override
-        public void offsetChanged(Node node, int previousOffset) {
+        public void offsetChanged(final Node node, final int previousOffset) {
             // empty block
         }
 
         @Override
-        public void parentChanged(Node node, Element previousParent) {
+        public void parentChanged(final Node node, final Element previousParent) {
             // empty block
         }
 
         @Override
-        public void nodeInserted(Node node, int offset) {
+        public void nodeInserted(final Node node, final int offset) {
             // empty block
         }
 
         @Override
-        public void nodesRemoved(Node node, Sequence<Node> removed, int offset) {
+        public void nodesRemoved(final Node node, final Sequence<Node> removed, final int offset) {
             // empty block
         }
 

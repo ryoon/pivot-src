@@ -27,41 +27,84 @@ public class NumberedList extends List {
      * List numbering styles.
      */
     public enum Style {
-        DECIMAL, LOWER_ALPHA, UPPER_ALPHA, LOWER_ROMAN, UPPER_ROMAN
+        /** Decimal numbers, such as <code>1</code>, <code>2</code>, or <code>3</code>. */
+        DECIMAL,
+        /** Lower case alphabetic, such as <code>a</code>, <code>b</code>, or <code>c</code>. */
+        LOWER_ALPHA,
+        /** Upper case alphabetic, such as <code>A</code>, <code>B</code>, or <code>C</code>. */
+        UPPER_ALPHA,
+        /** Lower case Roman numerals, such as <code>i</code>, <code>ii</code>, <code>iii</code>. */
+        LOWER_ROMAN,
+        /** Upper case Roman numerals, such as <code>I</code>, <code>II</code>, <code>III</code>. */
+        UPPER_ROMAN
     }
 
+    /**
+     * The numbering style for this list.
+     */
     private Style style = Style.DECIMAL;
 
+    /**
+     * The list of listeners of this list (mostly the skin classes).
+     */
     private NumberedListListener.Listeners numberedListListeners = new NumberedListListener.Listeners();
 
+    /**
+     * Default constructor using the default numbering style.
+     */
     public NumberedList() {
         super();
     }
 
-    public NumberedList(NumberedList numberedList, boolean recursive) {
+    /**
+     * "Copy" constructor using the style of the given list, and whether the copy is recursive
+     * (also copying all child elements).
+     *
+     * @param numberedList Element to copy from.
+     * @param recursive    Whether to copy all children as well.
+     */
+    public NumberedList(final NumberedList numberedList, final boolean recursive) {
         super(numberedList, recursive);
         this.style = numberedList.style;
     }
 
+    /**
+     * Access the number style of this list.
+     *
+     * @return The list's number style.
+     */
     public Style getStyle() {
         return style;
     }
 
-    public void setStyle(Style style) {
-        Utils.checkNull(style, "style");
+    /**
+     * Set the new numbering style for this list.
+     *
+     * @param newStyle The updated numbering style for this list.
+     */
+    public void setStyle(final Style newStyle) {
+        Utils.checkNull(newStyle, "style");
 
-        Style previousStyle = this.style;
-        if (previousStyle != style) {
-            this.style = style;
+        Style previousStyle = style;
+        if (previousStyle != newStyle) {
+            style = newStyle;
             numberedListListeners.styleChanged(this, previousStyle);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public NumberedList duplicate(boolean recursive) {
+    public NumberedList duplicate(final boolean recursive) {
         return new NumberedList(this, recursive);
     }
 
+    /**
+     * Access the list of listeners for changes to this element.
+     *
+     * @return The list of listeners.
+     */
     public ListenerList<NumberedListListener> getNumberedListListeners() {
         return numberedListListeners;
     }
