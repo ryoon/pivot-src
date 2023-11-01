@@ -54,5 +54,23 @@ public class StringUtilsTest {
         assertEquals("[a, b, c, d, e, f, g]", output);
     }
 
+    /**
+     * Run tests of {@link StringUtils#fromNChars}.
+     */
+    @Test
+    public void test2() {
+        String actual1 = StringUtils.fromNChars(' ', 0);
+        assertEquals("", actual1);
+
+        String actual2 = StringUtils.fromNChars('\0', 10);
+        assertEquals("\0\0\0\0\0\0\0\0\0\0", actual2);
+
+        String actual3 = StringUtils.fromNChars(' ', 8);
+        assertEquals("        ", actual3);
+
+        String actual4 = StringUtils.fromNChars('\u2022', 6);
+        assertEquals("••••••", actual4);
+    }
+
 }
 

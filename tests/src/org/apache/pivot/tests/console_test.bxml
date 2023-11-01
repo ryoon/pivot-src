@@ -26,12 +26,12 @@ limitations under the License.
       <TablePane.Column width="1*"/>
     </columns>
     <rows>
-      <TablePane.Row height="3*">
+      <TablePane.Row height="1*">
         <FlowPane>
           <PushButton bxml:id="logMessageButton" buttonData="Log Message"/>
         </FlowPane>
       </TablePane.Row>
-      <TablePane.Row height="1*">
+      <TablePane.Row height="3*">
         <Border title="Console">
           <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="auto">
             <TextArea bxml:id="consoleArea" editable="false" styles="{wrapText:true}"/>

@@ -35,6 +35,9 @@ public class DisplaySkin extends ContainerSkin {
         setBackgroundColor(Color.LIGHT_GRAY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void install(final Component component) {
         if (!(component instanceof Display)) {
@@ -45,6 +48,9 @@ public class DisplaySkin extends ContainerSkin {
         super.install(component);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void layout() {
         Display display = (Display) getComponent();

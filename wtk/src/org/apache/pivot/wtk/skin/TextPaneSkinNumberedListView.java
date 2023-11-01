@@ -22,15 +22,18 @@ import org.apache.pivot.wtk.text.NumberedList;
 import org.apache.pivot.wtk.text.NumberedList.Style;
 import org.apache.pivot.wtk.text.NumberedListListener;
 
+/**
+ * Skin implementation of the {@link NumberedList} elements.
+ */
 class TextPaneSkinNumberedListView extends TextPaneSkinListView implements NumberedListListener {
 
     private static class RomanValue {
         public final int integerVal;
         public final String romanNumeral;
 
-        public RomanValue(int integerVal, String romanNumeral) {
-            this.integerVal = integerVal;
-            this.romanNumeral = romanNumeral;
+        public RomanValue(final int intVal, final String roman) {
+            integerVal = intVal;
+            romanNumeral = roman;
         }
     }
 
@@ -50,7 +53,7 @@ class TextPaneSkinNumberedListView extends TextPaneSkinListView implements Numbe
         new RomanValue(1, "I")
     };
 
-    private static String int2roman(int n) {
+    private static String int2roman(final int n) {
         int num = n;
         StringBuffer result = new StringBuffer(10);
 
@@ -65,8 +68,8 @@ class TextPaneSkinNumberedListView extends TextPaneSkinListView implements Numbe
         return result.toString();
     }
 
-    private static String int2alpha(int n) {
-        return (char) ('A' + n - 1) + "";
+    private static String int2alpha(final int n) {
+        return Character.toString((char) (n - 1 + 'A'));
     }
 
     public TextPaneSkinNumberedListView(TextPaneSkin textPaneSkin, NumberedList numberedList) {

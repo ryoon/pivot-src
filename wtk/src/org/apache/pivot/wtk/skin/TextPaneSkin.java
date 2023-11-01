@@ -1071,6 +1071,73 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
         return consumed;
     }
 
+    private boolean navigateHome(final TextPane textPane, final Document document,
+        final boolean commandPressed, final boolean shiftPressed) {
+        int selectionStart = textPane.getSelectionStart();
+        int selectionLength = textPane.getSelectionLength();
+
+        int start;
+        if (commandPressed) {
+            // Move the caret to the beginning of the text
+            start = 0;
+        } else {
+            // Move the caret to the beginning of the line
+            start = getRowOffset(document, selectionStart);
+        }
+
+        if (shiftPressed) {
+            // TODO: if last direction was left, then extend further left
+            // but if right, then reverse selection from the pivot point
+            selectionLength += selectionStart - start;
+        } else {
+            selectionLength = 0;
+        }
+
+        if (start >= 0) {
+            textPane.setSelection(start, selectionLength);
+            scrollCharacterToVisible(start);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean navigateEnd(final TextPane textPane, final Document document,
+        final boolean commandPressed, final boolean shiftPressed) {
+        int selectionStart = textPane.getSelectionStart();
+        int selectionLength = textPane.getSelectionLength();
+
+        int end;
+        int index = selectionStart + selectionLength;
+
+        if (commandPressed) {
+            // Move the caret to end of the text
+            end = textPane.getCharacterCount() - 1;
+        } else {
+            // Move the caret to the end of the line
+            int rowOffset = getRowOffset(document, index);
+            int rowLength = getRowLength(document, index);
+            end = rowOffset + rowLength;
+        }
+
+        if (shiftPressed) {
+            // TODO: if last direction was right, then extend further right
+            // but if left, then reverse selection from the pivot point
+            selectionLength += end - index;
+        } else {
+            selectionStart = end;
+            selectionLength = 0;
+        }
+
+        if (selectionStart + selectionLength <= textPane.getCharacterCount()) {
+            textPane.setSelection(selectionStart, selectionLength);
+            scrollCharacterToVisible(selectionStart + selectionLength);
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public boolean keyPressed(final Component component, final int keyCode,
         final Keyboard.KeyLocation keyLocation) {
@@ -1097,57 +1164,10 @@ org.apache.pivot.util.Console.getDefault().logMethod("****",
                 consumed = commandKey(textPane, document, keyCode, isEditable, shiftPressed);
             } else if (keyCode == Keyboard.KeyCode.HOME
                    || (keyCode == Keyboard.KeyCode.LEFT && metaPressed)) {
-                int start;
-                if (commandPressed) {
-                    // Move the caret to the beginning of the text
-                    start = 0;
-                } else {
-                    // Move the caret to the beginning of the line
-                    start = getRowOffset(document, selectionStart);
-                }
-
-                if (shiftPressed) {
-                    // TODO: if last direction was left, then extend further left
-                    // but if right, then reverse selection from the pivot point
-                    selectionLength += selectionStart - start;
-                } else {
-                    selectionLength = 0;
-                }
-
-                if (start >= 0) {
-                    textPane.setSelection(start, selectionLength);
-                    scrollCharacterToVisible(start);
-                    consumed = true;
-                }
+                consumed = navigateHome(textPane, document, commandPressed, shiftPressed);
             } else if (keyCode == Keyboard.KeyCode.END
                    || (keyCode == Keyboard.KeyCode.RIGHT && metaPressed)) {
-                int end;
-                int index = selectionStart + selectionLength;
-
-                if (commandPressed) {
-                    // Move the caret to end of the text
-                    end = textPane.getCharacterCount() - 1;
-                } else {
-                    // Move the caret to the end of the line
-                    int rowOffset = getRowOffset(document, index);
-                    int rowLength = getRowLength(document, index);
-                    end = rowOffset + rowLength;
-                }
-
-                if (shiftPressed) {
-                    // TODO: if last direction was right, then extend further right
-                    // but if left, then reverse selection from the pivot point
-                    selectionLength += end - index;
-                } else {
-                    selectionStart = end;
-                    selectionLength = 0;
-                }
-
-                if (selectionStart + selectionLength <= textPane.getCharacterCount()) {
-                    textPane.setSelection(selectionStart, selectionLength);
-                    scrollCharacterToVisible(selectionStart + selectionLength);
-                    consumed = true;
-                }
+                consumed = navigateEnd(textPane, document, commandPressed, shiftPressed);
             } else if (keyCode == Keyboard.KeyCode.LEFT) {
                 if (wordNavPressed) {
                     // Move the caret to the start of the next word to our left

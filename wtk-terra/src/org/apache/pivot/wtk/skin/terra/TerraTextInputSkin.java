@@ -1178,23 +1178,22 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         return consumed;
     }
 
-    private boolean handleLeftRightKeys(final TextInput textInput, final int keyCode, final boolean isShiftPressed,
-        final int selStart, final int selLength) {
+    private boolean handleLeftRightKeys(final TextInput textInput, final int keyCode,
+        final Keyboard.Modifiers mods, final int selStart, final int selLength) {
         boolean consumed = false;
         int start = selStart, length = selLength;
-        Modifier wordNavigationModifier = Platform.getWordNavigationModifier();
 
         // Sometimes while selecting we need to make the opposite end visible
         if (keyCode == KeyCode.LEFT) {
             SelectDirection visiblePosition = SelectDirection.LEFT;
 
-            if (Keyboard.isPressed(wordNavigationModifier)) {
+            if (mods.wordNavPressed) {
                 int wordStart = (selectDirection == SelectDirection.RIGHT) ? start + length : start;
                 // Find the start of the next word to the left
                 if (wordStart > 0) {
                     wordStart = CharUtils.findPriorWord(textInput.getCharacters(), wordStart);
 
-                    if (isShiftPressed) {
+                    if (mods.shiftPressed) {
                         if (wordStart >= start) {
                             // We've just reduced the previous right selection, so leave the anchor alone
                             length = wordStart - start;
@@ -1217,7 +1216,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
                     start = wordStart;
                 }
-            } else if (isShiftPressed) {
+            } else if (mods.shiftPressed) {
                 // If the previous direction was LEFT, then increase the selection
                 // else decrease the selection back to the anchor.
                 if (selectDirection != null) {
@@ -1287,13 +1286,13 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         } else if (keyCode == KeyCode.RIGHT) {
             SelectDirection visiblePosition = SelectDirection.RIGHT;
 
-            if (Keyboard.isPressed(wordNavigationModifier)) {
+            if (mods.wordNavPressed) {
                 int wordStart = (selectDirection == SelectDirection.LEFT) ? start : start + length;
                 // Find the start of the next word to the right
                 if (wordStart < textInput.getCharacterCount()) {
                     wordStart = CharUtils.findNextWord(textInput.getCharacters(), wordStart);
 
-                    if (isShiftPressed) {
+                    if (mods.shiftPressed) {
                         if (wordStart <= start + length) {
                             // We've just reduced the previous left selection, so leave the anchor alone
                             length -= wordStart - start;
@@ -1316,7 +1315,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
                         selectDirection = null;
                     }
                 }
-            } else if (isShiftPressed) {
+            } else if (mods.shiftPressed) {
                 // If the previous direction was RIGHT, then increase the selection
                 // else decrease the selection back to the anchor.
                 if (selectDirection != null) {
@@ -1439,8 +1438,7 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
         int start = textInput.getSelectionStart();
         int length = textInput.getSelectionLength();
 
-        boolean isMetaPressed = Keyboard.isPressed(Modifier.META);
-        boolean isShiftPressed = Keyboard.isPressed(Modifier.SHIFT);
+        Keyboard.Modifiers mods = Keyboard.pressed();
 
         if (keyCode == KeyCode.DELETE && isEditable) {
             if (start < textInput.getCharacterCount()) {
@@ -1457,8 +1455,8 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
                 textInput.removeText(start, length);
                 consumed = true;
             }
-        } else if (keyCode == KeyCode.HOME || (keyCode == KeyCode.LEFT && isMetaPressed)) {
-            if (isShiftPressed) {
+        } else if (keyCode == KeyCode.HOME || (keyCode == KeyCode.LEFT && mods.metaPressed)) {
+            if (mods.shiftPressed) {
                 // Select from the beginning of the text to the current pivot position
                 if (selectDirection == SelectDirection.LEFT) {
                     textInput.setSelection(0, start + length);
@@ -1475,10 +1473,10 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
             scrollCharacterToVisible(0);
 
             consumed = true;
-        } else if (keyCode == KeyCode.END || (keyCode == KeyCode.RIGHT && isMetaPressed)) {
+        } else if (keyCode == KeyCode.END || (keyCode == KeyCode.RIGHT && mods.metaPressed)) {
             int n = textInput.getCharacterCount();
 
-            if (isShiftPressed) {
+            if (mods.shiftPressed) {
                 // Select from current pivot position to the end of the text
                 if (selectDirection == SelectDirection.LEFT) {
                     start += length;
@@ -1495,10 +1493,10 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
 
             consumed = true;
         } else if (keyCode == KeyCode.LEFT) {
-            consumed = handleLeftRightKeys(textInput, keyCode, isShiftPressed, start, length);
+            consumed = handleLeftRightKeys(textInput, keyCode, mods, start, length);
         } else if (keyCode == KeyCode.RIGHT) {
-            consumed = handleLeftRightKeys(textInput, keyCode, isShiftPressed, start, length);
-        } else if (Keyboard.isPressed(Platform.getCommandModifier())) {
+            consumed = handleLeftRightKeys(textInput, keyCode, mods, start, length);
+        } else if (mods.cmdPressed) {
             if (keyCode == KeyCode.A) {
                 textInput.setSelection(0, textInput.getCharacterCount());
                 consumed = true;
@@ -1522,14 +1520,14 @@ public class TerraTextInputSkin extends ComponentSkin implements TextInput.Skin,
                 textInput.paste();
                 consumed = true;
             } else if (keyCode == KeyCode.Z && isEditable) {
-                if (!isShiftPressed) {
+                if (!mods.shiftPressed) {
                     textInput.undo();
                 }
 
                 consumed = true;
             }
         } else if (keyCode == KeyCode.INSERT) {
-            if (isShiftPressed && isEditable) {
+            if (mods.shiftPressed && isEditable) {
                 textInput.paste();
                 consumed = true;
             }

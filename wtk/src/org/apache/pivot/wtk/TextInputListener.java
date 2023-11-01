@@ -28,44 +28,44 @@ public interface TextInputListener {
      * @deprecated Since 2.1 and Java 8 the interface itself has default implementations.
      */
     @Deprecated
-    public static class Adapter implements TextInputListener {
+    class Adapter implements TextInputListener {
         @Override
-        public void textSizeChanged(TextInput textInput, int previousTextSize) {
+        public void textSizeChanged(final TextInput textInput, final int previousTextSize) {
             // empty block
         }
 
         @Override
-        public void maximumLengthChanged(TextInput textInput, int previousMaximumLength) {
+        public void maximumLengthChanged(final TextInput textInput, final int previousMaximumLength) {
             // empty block
         }
 
         @Override
-        public void passwordChanged(TextInput textInput) {
+        public void passwordChanged(final TextInput textInput) {
             // empty block
         }
 
         @Override
-        public void promptChanged(TextInput textInput, String previousPrompt) {
+        public void promptChanged(final TextInput textInput, final String previousPrompt) {
             // empty block
         }
 
         @Override
-        public void textValidatorChanged(TextInput textInput, Validator previousValidator) {
+        public void textValidatorChanged(final TextInput textInput, final Validator previousValidator) {
             // empty block
         }
 
         @Override
-        public void strictValidationChanged(TextInput textInput) {
+        public void strictValidationChanged(final TextInput textInput) {
             // empty block
         }
 
         @Override
-        public void textValidChanged(TextInput textInput) {
+        public void textValidChanged(final TextInput textInput) {
             // empty block
         }
 
         @Override
-        public void editableChanged(TextInput textInput) {
+        public void editableChanged(final TextInput textInput) {
             // empty block
         }
     }
@@ -73,44 +73,44 @@ public interface TextInputListener {
     /**
      * Text input listener listeners list.
      */
-    public static class Listeners extends ListenerList<TextInputListener> implements TextInputListener {
+    class Listeners extends ListenerList<TextInputListener> implements TextInputListener {
         @Override
-        public void textSizeChanged(TextInput textInput, int previousTextSize) {
+        public void textSizeChanged(final TextInput textInput, final int previousTextSize) {
             forEach(listener -> listener.textSizeChanged(textInput, previousTextSize));
         }
 
         @Override
-        public void maximumLengthChanged(TextInput textInput, int previousMaximumLength) {
+        public void maximumLengthChanged(final TextInput textInput, final int previousMaximumLength) {
             forEach(listener -> listener.maximumLengthChanged(textInput, previousMaximumLength));
         }
 
         @Override
-        public void passwordChanged(TextInput textInput) {
+        public void passwordChanged(final TextInput textInput) {
             forEach(listener -> listener.passwordChanged(textInput));
         }
 
         @Override
-        public void promptChanged(TextInput textInput, String previousPrompt) {
+        public void promptChanged(final TextInput textInput, final String previousPrompt) {
             forEach(listener -> listener.promptChanged(textInput, previousPrompt));
         }
 
         @Override
-        public void textValidatorChanged(TextInput textInput, Validator previousValidator) {
+        public void textValidatorChanged(final TextInput textInput, final Validator previousValidator) {
             forEach(listener -> listener.textValidatorChanged(textInput, previousValidator));
         }
 
         @Override
-        public void strictValidationChanged(TextInput textInput) {
+        public void strictValidationChanged(final TextInput textInput) {
             forEach(listener -> listener.strictValidationChanged(textInput));
         }
 
         @Override
-        public void textValidChanged(TextInput textInput) {
+        public void textValidChanged(final TextInput textInput) {
             forEach(listener -> listener.textValidChanged(textInput));
         }
 
         @Override
-        public void editableChanged(TextInput textInput) {
+        public void editableChanged(final TextInput textInput) {
             forEach(listener -> listener.editableChanged(textInput));
         }
     }
@@ -121,7 +121,7 @@ public interface TextInputListener {
      * @param textInput        The source of this event.
      * @param previousTextSize The previous text size for the control
      */
-    default void textSizeChanged(TextInput textInput, int previousTextSize) {
+    default void textSizeChanged(final TextInput textInput, final int previousTextSize) {
     }
 
     /**
@@ -130,7 +130,7 @@ public interface TextInputListener {
      * @param textInput             The source of this event.
      * @param previousMaximumLength The previous maximum text length.
      */
-    default void maximumLengthChanged(TextInput textInput, int previousMaximumLength) {
+    default void maximumLengthChanged(final TextInput textInput, final int previousMaximumLength) {
     }
 
     /**
@@ -138,7 +138,7 @@ public interface TextInputListener {
      *
      * @param textInput The source of this event.
      */
-    default void passwordChanged(TextInput textInput) {
+    default void passwordChanged(final TextInput textInput) {
     }
 
     /**
@@ -147,7 +147,7 @@ public interface TextInputListener {
      * @param textInput      The source of this event.
      * @param previousPrompt The previous prompt string.
      */
-    default void promptChanged(TextInput textInput, String previousPrompt) {
+    default void promptChanged(final TextInput textInput, final String previousPrompt) {
     }
 
     /**
@@ -156,7 +156,7 @@ public interface TextInputListener {
      * @param textInput         The source of this event.
      * @param previousValidator The previous validator for the text.
      */
-    default void textValidatorChanged(TextInput textInput, Validator previousValidator) {
+    default void textValidatorChanged(final TextInput textInput, final Validator previousValidator) {
     }
 
     /**
@@ -164,7 +164,7 @@ public interface TextInputListener {
      *
      * @param textInput The text input that has changed.
      */
-    default void strictValidationChanged(TextInput textInput) {
+    default void strictValidationChanged(final TextInput textInput) {
     }
 
     /**
@@ -172,7 +172,7 @@ public interface TextInputListener {
      *
      * @param textInput The text input that has been changed.
      */
-    default void textValidChanged(TextInput textInput) {
+    default void textValidChanged(final TextInput textInput) {
     }
 
     /**
@@ -180,7 +180,7 @@ public interface TextInputListener {
      *
      * @param textInput The text input whose state has changed.
      */
-    default void editableChanged(TextInput textInput) {
+    default void editableChanged(final TextInput textInput) {
     }
 
 }

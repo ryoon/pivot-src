@@ -22,11 +22,19 @@ package org.apache.pivot.util.concurrent;
 public class TimeoutException extends RuntimeException {
     private static final long serialVersionUID = 7512511291820426011L;
 
+    /**
+     * Construct the exception with no message.
+     */
     public TimeoutException() {
         super();
     }
 
-    public TimeoutException(String message) {
+    /**
+     * Construct the exception with the given message.
+     *
+     * @param message Message associated with this exception.
+     */
+    public TimeoutException(final String message) {
         super(message);
     }
 }

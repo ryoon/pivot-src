@@ -18,6 +18,7 @@ package org.apache.pivot.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 
 /**
@@ -50,16 +51,10 @@ public final class StringUtils {
            throw new IllegalArgumentException("Requested string size " + n + " is out of range.");
         }
 
-        // Nothing fancy here, but allocate the space and set length upfront
-        // because we know how big the result should be.
-        StringBuilder builder = new StringBuilder(n);
-        builder.setLength(n);
-        if (ch != '\0') {
-            for (int i = 0; i < n; i++) {
-                builder.setCharAt(i, ch);
-            }
-        }
-        return builder.toString();
+        char[] chars = new char[n];
+        Arrays.fill(chars, ch);
+
+        return new String(chars);
     }
 
     /**

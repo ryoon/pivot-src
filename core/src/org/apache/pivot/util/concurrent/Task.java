@@ -31,63 +31,110 @@ import org.apache.pivot.util.Utils;
  */
 public abstract class Task<V> {
     /**
-     * Task execution callback that is posted to the executor service.
+     * Task execution callback that is posted to the executor service; responsible
+     * for running the background task from the {@link #run} method, where it
+     * invokes the {@link Task#execute} method (abstract here, so it must be
+     * implemented in the subclass).
      */
     private class ExecuteCallback implements Runnable {
         @Override
         public void run() {
-            V resultLocal = null;
-            Throwable faultLocal = null;
+            V taskResult = null;
+            Throwable taskFault = null;
 
             synchronized (Task.this) {
                 Task.this.taskThread = new WeakReference<Thread>(Thread.currentThread());
             }
 
             try {
-                resultLocal = execute();
+                taskResult = execute();
             } catch (Throwable throwable) {
-                faultLocal = throwable;
+                taskFault = throwable;
             }
 
-            TaskListener<V> taskListenerLocal;
+            TaskListener<V> localListener;
             synchronized (Task.this) {
-                Task.this.result = resultLocal;
-                Task.this.fault = faultLocal;
+                Task.this.result = taskResult;
+                Task.this.fault = taskFault;
 
                 abort = false;
 
-                taskListenerLocal = Task.this.taskListener;
+                localListener = Task.this.taskListener;
                 Task.this.taskListener = null;
             }
 
-            if (faultLocal == null) {
-                taskListenerLocal.taskExecuted(Task.this);
+            if (taskFault == null) {
+                localListener.taskExecuted(Task.this);
             } else {
-                taskListenerLocal.executeFailed(Task.this);
+                localListener.executeFailed(Task.this);
             }
         }
     }
 
+    /**
+     * The executor service used to launch this background task.
+     */
     private ExecutorService executorService;
 
+    /**
+     * The result of this task's execution. Not valid until and unless the task
+     * finishes successfully.
+     */
     private V result = null;
+    /**
+     * The reason for the task's failure, if any. Not valid until and unless the
+     * task's {@link #execute} method throws an exception.
+     */
     private Throwable fault = null;
+    /**
+     * Listener attached to this task which is notified when the task finishes
+     * either successfully, or with an exception.
+     */
     private TaskListener<V> taskListener = null;
+    /**
+     * Weak reference to the thread actually executing the task. Provided as a
+     * convenience if needed. Not valid until the task's {@link #execute} method
+     * is called. "Weak" so that garbage collection can recover all this task's
+     * resources once this thread finishes.
+     */
     private WeakReference<Thread> taskThread = null;
 
+    /**
+     * Timeout value, which can be used to ensure the task finishes even if something
+     * untoward happens. Must be implemented and respected by the subclass.
+     */
     protected volatile long timeout = Long.MAX_VALUE;
+    /**
+     * Flag used to signal that the task should be / has been aborted.  Implemented and
+     * respected by the subclass.
+     */
     protected volatile boolean abort = false;
 
+    /**
+     * Default executor service used to launch tasks if no other is provided. The default is a
+     * cached thread pool.
+     */
     public static final ExecutorService DEFAULT_EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
+
+    /**
+     * Construct this task using the default executor service to launch it.
+     */
     public Task() {
         this(DEFAULT_EXECUTOR_SERVICE);
     }
 
-    public Task(ExecutorService executorService) {
-        Utils.checkNull(executorService, "executorService");
+    /**
+     * Construct this task using the given executor service to launch it.
+     *
+     * @param execService The service to use to execute this background task (must not
+     *                    be <code>null</code>).
+     * @throws IllegalArgumentException if the executor service is {@code null}.
+     */
+    public Task(final ExecutorService execService) {
+        Utils.checkNull(execService, "executorService");
 
-        this.executorService = executorService;
+        executorService = execService;
     }
 
     /**
@@ -100,39 +147,42 @@ public abstract class Task<V> {
     public abstract V execute() throws TaskExecutionException;
 
     /**
-     * Asynchronously executes the task. The caller is notified of the task's
-     * completion via the listener argument. Note that the listener will be
-     * notified on the task's worker thread, not on the thread that executed the
-     * task.
+     * Asynchronously executes the task using the executor service specified
+     * at construction time.. The caller is notified of the task's completion
+     * via the listener argument. Note that the listener will be notified on
+     * the task's worker thread, not on the thread that requested the task
+     * execution.
      *
-     * @param taskListenerArgument The listener to be notified when the task
-     * completes.
+     * @param taskListenerValue The listener to be notified when the task
+     * completes or throws an exception.
+     * @throws IllegalThreadStateException if this task is already scheduled / running.
      */
-    public synchronized void execute(TaskListener<V> taskListenerArgument) {
-        execute(taskListenerArgument, executorService);
+    public synchronized void execute(final TaskListener<V> taskListenerValue) {
+        execute(taskListenerValue, executorService);
     }
 
     /**
      * Asynchronously executes the task. The caller is notified of the task's
      * completion via the listener argument. Note that the listener will be
-     * notified on the task's worker thread, not on the thread that executed the
-     * task.
+     * notified on the task's background worker thread, not on the thread that
+     * requested the task execution.
      *
-     * @param taskListenerArgument The listener to be notified when the task
-     * completes.
-     * @param executorServiceArgument The service to submit the task to,
-     * overriding the Task's own ExecutorService.
+     * @param taskListenerValue The listener to be notified when the task
+     * completes or throws an exception.
+     * @param execServiceOverride The service to submit the task to (which may be
+     * an override of the Task's own <code>ExecutorService</code>).
+     * @throws IllegalThreadStateException if this task is already scheduled / running.
      */
-    public synchronized void execute(TaskListener<V> taskListenerArgument,
-        ExecutorService executorServiceArgument) {
-        Utils.checkNull(taskListenerArgument, "taskListener");
-        Utils.checkNull(executorServiceArgument, "executorService");
+    public synchronized void execute(final TaskListener<V> taskListenerValue,
+        final ExecutorService execServiceOverride) {
+        Utils.checkNull(taskListenerValue, "taskListener");
+        Utils.checkNull(execServiceOverride, "executorService");
 
-        if (this.taskListener != null) {
+        if (taskListener != null) {
             throw new IllegalThreadStateException("Task is already pending.");
         }
 
-        this.taskListener = taskListenerArgument;
+        taskListener = taskListenerValue;
 
         result = null;
         fault = null;
@@ -140,8 +190,7 @@ public abstract class Task<V> {
         abort = false;
 
         // Create a new execute callback and post it to the executor service
-        ExecuteCallback executeCallback = new ExecuteCallback();
-        executorServiceArgument.submit(executeCallback);
+        execServiceOverride.submit(new ExecuteCallback());
     }
 
     /**
@@ -155,9 +204,10 @@ public abstract class Task<V> {
      * Returns the result of executing the task.
      *
      * @return The task result, or {@code null} if the task is still executing
-     * or has failed. The result itself may also be {@code null}; callers
-     * should call {@link #isPending()} and {@link #getFault()} to distinguish
-     * between these cases.
+     * or has failed. The result itself may also be {@code null}, especially
+     * for a {@code Task<Void>}, or just if the task execution resulted in that.
+     * Callers should call {@link #isPending()} and {@link #getFault()} to
+     * distinguish between these cases.
      */
     public synchronized V getResult() {
         return result;
@@ -208,11 +258,12 @@ public abstract class Task<V> {
      * Sets the timeout value for this task. It is the responsibility of the
      * implementing class to respect this value.
      *
-     * @param timeout The time by which the task must complete execution. If the
-     * timeout is exceeded, a {@link TimeoutException} will be thrown.
+     * @param timeoutValue The time by which the task must complete execution. If the
+     * timeout is exceeded, a {@link TimeoutException} must be thrown (again, the
+     * responsibility of the implementing class).
      */
-    public synchronized void setTimeout(long timeout) {
-        this.timeout = timeout;
+    public synchronized void setTimeout(final long timeoutValue) {
+        timeout = timeoutValue;
     }
 
     /**

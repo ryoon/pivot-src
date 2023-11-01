@@ -35,7 +35,7 @@ public class HashSet<E> implements Set<E>, Serializable {
 
         private E element = null;
 
-        public ElementIterator(Iterator<E> iterator) {
+        public ElementIterator(final Iterator<E> iterator) {
             Utils.checkNull(iterator, "iterator");
 
             this.iterator = iterator;
@@ -79,25 +79,25 @@ public class HashSet<E> implements Set<E>, Serializable {
     public HashSet() {
     }
 
-    public HashSet(Set<E> set) {
+    public HashSet(final Set<E> set) {
         for (E element : set) {
             add(element);
         }
     }
 
     @SafeVarargs
-    public HashSet(E... elements) {
+    public HashSet(final E... elements) {
         for (E element : elements) {
             add(element);
         }
     }
 
-    public HashSet(Comparator<E> comparator) {
+    public HashSet(final Comparator<E> comparator) {
         setComparator(comparator);
     }
 
     @Override
-    public boolean add(E element) {
+    public boolean add(final E element) {
         boolean added = false;
 
         if (!hashMap.containsKey(element)) {
@@ -113,7 +113,7 @@ public class HashSet<E> implements Set<E>, Serializable {
     }
 
     @Override
-    public boolean remove(E element) {
+    public boolean remove(final E element) {
         boolean removed = false;
 
         if (hashMap.containsKey(element)) {
@@ -140,7 +140,7 @@ public class HashSet<E> implements Set<E>, Serializable {
     }
 
     @Override
-    public boolean contains(E element) {
+    public boolean contains(final E element) {
         return hashMap.containsKey(element);
     }
 
@@ -160,7 +160,7 @@ public class HashSet<E> implements Set<E>, Serializable {
     }
 
     @Override
-    public void setComparator(Comparator<E> comparator) {
+    public void setComparator(final Comparator<E> comparator) {
         Comparator<E> previousComparator = getComparator();
 
         hashMap.setComparator(comparator);
@@ -186,7 +186,7 @@ public class HashSet<E> implements Set<E>, Serializable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         boolean equals = false;
 
         if (this == o) {
@@ -224,7 +224,7 @@ public class HashSet<E> implements Set<E>, Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(getClass().getName());
+        sb.append(getClass().getSimpleName());
         sb.append(" (");
 
         int i = 0;

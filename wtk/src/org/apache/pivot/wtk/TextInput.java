@@ -41,14 +41,14 @@ public class TextInput extends Component {
          *
          * @param x The X-position (of the mouse probably).
          */
-        public int getInsertionPoint(int x);
+        int getInsertionPoint(int x);
 
         /**
          * @return The bounds of the character at a given index.
          *
          * @param index The location to check.
          */
-        public Bounds getCharacterBounds(int index);
+        Bounds getCharacterBounds(int index);
     }
 
     /**
@@ -62,7 +62,7 @@ public class TextInput extends Component {
          * @param value The value retrieved from the bound object.
          * @return A text representation of this value for display.
          */
-        public String toString(Object value);
+        String toString(Object value);
 
         /**
          * Converts a text string to a value to be stored in the bind context
@@ -71,14 +71,14 @@ public class TextInput extends Component {
          * @param text The current text from the control.
          * @return A value suitable for storage in the bound object.
          */
-        public Object valueOf(String text);
+        Object valueOf(String text);
     }
 
     /**
      * Interface for a text operation that can be undone.
      */
     private interface Edit {
-        public void undo();
+        void undo();
     }
 
     /**
@@ -88,8 +88,8 @@ public class TextInput extends Component {
         private final int index;
         private final int count;
 
-        public InsertTextEdit(final CharSequence text, final int index) {
-            this.index = index;
+        InsertTextEdit(final CharSequence text, final int insertIndex) {
+            this.index = insertIndex;
             count = text.length();
         }
 
@@ -106,9 +106,9 @@ public class TextInput extends Component {
         private final int index;
         private final String text;
 
-        public RemoveTextEdit(final int index, final int count) {
-            this.index = index;
-            text = getText(index, index + count);
+        RemoveTextEdit(final int removeIndex, final int count) {
+            this.index = removeIndex;
+            text = getText(removeIndex, removeIndex + count);
         }
 
         @Override
@@ -181,17 +181,17 @@ public class TextInput extends Component {
     }
 
     public void setText(final String text) {
-        setText(text);
+        setText((CharSequence) text);
     }
 
-    public void setText(final CharSequence text) {
+    public void setText(final CharSequence newText) {
+        CharSequence text = newText;
+
         Utils.checkNull(text, "text");
+        Utils.checkTextMaximumLength(-1, text.length(), maximumLength);
 
-        if (text.length() > maximumLength) {
-            throw new IllegalArgumentException("Text length is greater than maximum length.");
-        }
-
-        characters = new StringBuilder(text);
+        characters.setLength(0);
+        characters.append(text);
 
         // Update selection
         int previousSelectionStart = selectionStart;
@@ -222,12 +222,11 @@ public class TextInput extends Component {
         insertText(text, index, true);
     }
 
-    private void insertText(final CharSequence text, final int index, final boolean addToEditHistory) {
-        Utils.checkNull(text, "text");
+    private void insertText(final CharSequence newText, final int index, final boolean addToEditHistory) {
+        Utils.checkNull(newText, "text");
+        Utils.checkTextMaximumLength(characters.length(), newText.length(), maximumLength);
 
-        if (characters.length() + text.length() > maximumLength) {
-            throw new IllegalArgumentException("Insertion of text would exceed maximum length.");
-        }
+        CharSequence text = newText;
 
         if (text.length() > 0) {
             Vote vote = textInputContentListeners.previewInsertText(this, text, index);
@@ -335,11 +334,11 @@ public class TextInput extends Component {
      * composed text (that is, the text currently being composed into something
      * meaningful).
      *
-     * @param composedText The current composed text (which can be {@code null}
+     * @param currentComposedText The current composed text (which can be {@code null}
      * for many different reasons).
      */
-    public void setComposedText(final AttributedStringCharacterIterator composedText) {
-        this.composedText = composedText;
+    public void setComposedText(final AttributedStringCharacterIterator currentComposedText) {
+        this.composedText = currentComposedText;
     }
 
     /**
@@ -468,23 +467,24 @@ public class TextInput extends Component {
      * Sets the selection. The sum of the selection start and length must be
      * less than the length of the text input's content.
      *
-     * @param selectionStart The starting index of the selection.
-     * @param selectionLength The length of the selection.
+     * @param newStart The starting index of the selection.
+     * @param newLength The length of the selection.
      */
-    public final void setSelection(final int selectionStart, final int selectionLength) {
-        Utils.checkNonNegative(selectionLength, "selectionLength");
+    public final void setSelection(final int newStart, final int newLength) {
+        int start = newStart;
+        int length = newLength;
+
+        Utils.checkNonNegative(length, "selectionLength");
 
         int composedTextLength = composedText != null ? (composedText.getEndIndex() - composedText.getBeginIndex()) : 0;
-        if (selectionStart < 0 || selectionStart + selectionLength > characters.length() + composedTextLength) {
-            throw new IndexOutOfBoundsException("Selection value is out of bounds.");
-        }
+        Utils.checkIndexBounds(start, length, 0, characters.length() + composedTextLength);
 
-        int previousSelectionStart = this.selectionStart;
-        int previousSelectionLength = this.selectionLength;
+        int previousSelectionStart = selectionStart;
+        int previousSelectionLength = selectionLength;
 
-        if (previousSelectionStart != selectionStart || previousSelectionLength != selectionLength) {
-            this.selectionStart = selectionStart;
-            this.selectionLength = selectionLength;
+        if (previousSelectionStart != start || previousSelectionLength != length) {
+            selectionStart = start;
+            selectionLength = length;
 
             textInputSelectionListeners.selectionChanged(this, previousSelectionStart,
                 previousSelectionLength);
@@ -552,16 +552,16 @@ public class TextInput extends Component {
     /**
      * Sets the text size.
      *
-     * @param textSize The number of characters to display in the text input.
+     * @param textSizeValue The number of characters to display in the text input.
      * @throws IllegalArgumentException if the size value is negative.
      */
-    public final void setTextSize(final int textSize) {
-        Utils.checkNonNegative(textSize, "textSize");
+    public final void setTextSize(final int textSizeValue) {
+        Utils.checkNonNegative(textSizeValue, "textSize");
 
-        int previousTextSize = this.textSize;
+        int previousTextSize = textSize;
 
-        if (previousTextSize != textSize) {
-            this.textSize = textSize;
+        if (previousTextSize != textSizeValue) {
+            textSize = textSizeValue;
             textInputListeners.textSizeChanged(this, previousTextSize);
         }
     }
@@ -578,16 +578,16 @@ public class TextInput extends Component {
     /**
      * Sets the maximum length of the text input's text content.
      *
-     * @param maximumLength The maximum length of the text input's text content.
+     * @param newMaximumLength The maximum length of the text input's text content.
      * @throws IllegalArgumentException if the length value is negative.
      */
-    public final void setMaximumLength(final int maximumLength) {
-        Utils.checkNonNegative(maximumLength, "maximumLength");
+    public final void setMaximumLength(final int newMaximumLength) {
+        Utils.checkNonNegative(newMaximumLength, "maximumLength");
 
-        int previousMaximumLength = this.maximumLength;
+        int previousMaximumLength = maximumLength;
 
-        if (previousMaximumLength != maximumLength) {
-            this.maximumLength = maximumLength;
+        if (previousMaximumLength != newMaximumLength) {
+            maximumLength = newMaximumLength;
 
             // Truncate the text, if necessary (do not allow listeners to vote on this change)
             int length = characters.length();
@@ -617,12 +617,12 @@ public class TextInput extends Component {
      * Sets or clears the password flag. If the password flag is set, the text
      * input will visually mask its contents.
      *
-     * @param password {@code true} if this is a password text input;
+     * @param passwordValue {@code true} if this is a password text input;
      * {@code false}, otherwise.
      */
-    public final void setPassword(final boolean password) {
-        if (this.password != password) {
-            this.password = password;
+    public final void setPassword(final boolean passwordValue) {
+        if (password != passwordValue) {
+            password = passwordValue;
             textInputListeners.passwordChanged(this);
         }
     }
@@ -637,13 +637,13 @@ public class TextInput extends Component {
     /**
      * Sets the text input's prompt.
      *
-     * @param prompt The prompt text, or {@code null} for no prompt.
+     * @param promptText The prompt text, or {@code null} for no prompt.
      */
-    public final void setPrompt(final String prompt) {
-        String previousPrompt = this.prompt;
+    public final void setPrompt(final String promptText) {
+        String previousPrompt = prompt;
 
-        if (previousPrompt != prompt) {
-            this.prompt = prompt;
+        if (previousPrompt != promptText) {
+            prompt = promptText;
             textInputListeners.promptChanged(this, previousPrompt);
         }
     }
@@ -660,13 +660,13 @@ public class TextInput extends Component {
     /**
      * Sets the text input's text key.
      *
-     * @param textKey The text key, or {@code null} to clear the binding.
+     * @param newTextKey The text key, or {@code null} to clear the binding.
      */
-    public final void setTextKey(final String textKey) {
-        String previousTextKey = this.textKey;
+    public final void setTextKey(final String newTextKey) {
+        String previousTextKey = textKey;
 
-        if (previousTextKey != textKey) {
-            this.textKey = textKey;
+        if (previousTextKey != newTextKey) {
+            textKey = newTextKey;
             textInputBindingListeners.textKeyChanged(this, previousTextKey);
         }
     }
@@ -675,13 +675,13 @@ public class TextInput extends Component {
         return textBindType;
     }
 
-    public final void setTextBindType(final BindType textBindType) {
-        Utils.checkNull(textBindType, "textBindType");
+    public final void setTextBindType(final BindType newTextBindType) {
+        Utils.checkNull(newTextBindType, "textBindType");
 
-        BindType previousTextBindType = this.textBindType;
+        BindType previousTextBindType = textBindType;
 
-        if (previousTextBindType != textBindType) {
-            this.textBindType = textBindType;
+        if (previousTextBindType != newTextBindType) {
+            textBindType = newTextBindType;
             textInputBindingListeners.textBindTypeChanged(this, previousTextBindType);
         }
     }
@@ -690,11 +690,11 @@ public class TextInput extends Component {
         return textBindMapping;
     }
 
-    public final void setTextBindMapping(final TextBindMapping textBindMapping) {
-        TextBindMapping previousTextBindMapping = this.textBindMapping;
+    public final void setTextBindMapping(final TextBindMapping newTextBindMapping) {
+        TextBindMapping previousTextBindMapping = textBindMapping;
 
-        if (previousTextBindMapping != textBindMapping) {
-            this.textBindMapping = textBindMapping;
+        if (previousTextBindMapping != newTextBindMapping) {
+            textBindMapping = newTextBindMapping;
             textInputBindingListeners.textBindMappingChanged(this, previousTextBindMapping);
         }
     }
@@ -750,14 +750,14 @@ public class TextInput extends Component {
     /**
      * Sets the validator associated with this text input.
      *
-     * @param validator The validator to use, or {@code null} to use no
+     * @param newValidator The validator to use, or {@code null} to use no
      * validator.
      */
-    public final void setValidator(final Validator validator) {
+    public final void setValidator(final Validator newValidator) {
         Validator previousValidator = this.validator;
 
-        if (validator != previousValidator) {
-            this.validator = validator;
+        if (newValidator != previousValidator) {
+            this.validator = newValidator;
 
             // Store previous text valid flag
             boolean previousTextValid = textValid;
@@ -785,11 +785,11 @@ public class TextInput extends Component {
      * Sets the text input's strict validation flag. When enabled, only valid
      * text will be accepted by the text input.
      *
-     * @param strictValidation The new flag setting.
+     * @param strictValidationValue The new flag setting.
      */
-    public final void setStrictValidation(final boolean strictValidation) {
-        if (this.strictValidation != strictValidation) {
-            this.strictValidation = strictValidation;
+    public final void setStrictValidation(final boolean strictValidationValue) {
+        if (strictValidation != strictValidationValue) {
+            strictValidation = strictValidationValue;
             textInputListeners.strictValidationChanged(this);
         }
     }
@@ -815,17 +815,17 @@ public class TextInput extends Component {
     /**
      * Sets the text area's editable flag.
      *
-     * @param editable The new flag setting.
+     * @param editableValue The new flag setting.
      */
-    public final void setEditable(final boolean editable) {
-        if (this.editable != editable) {
-            if (!editable) {
+    public final void setEditable(final boolean editableValue) {
+        if (editable != editableValue) {
+            if (!editableValue) {
                 if (isFocused()) {
                     clearFocus();
                 }
             }
 
-            this.editable = editable;
+            editable = editableValue;
 
             textInputListeners.editableChanged(this);
         }

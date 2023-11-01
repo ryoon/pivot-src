@@ -145,11 +145,8 @@ public abstract class Button extends Component {
     private DataRenderer dataRenderer = null;
 
     private Action action = null;
-    private ActionListener actionListener = new ActionListener() {
-        @Override
-        public void enabledChanged(Action actionArgument) {
-            setEnabled(actionArgument.isEnabled());
-        }
+    private ActionListener actionListener = (buttonAction) -> {
+        setEnabled(buttonAction.isEnabled());
     };
 
     private State state = State.UNSELECTED;

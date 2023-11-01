@@ -21,15 +21,26 @@ import java.util.Iterator;
 import org.apache.pivot.wtk.text.List;
 import org.apache.pivot.wtk.text.TextNode;
 
+/**
+ * View (which includes layout) for list items inside a <code>TextPane</code>.
+ */
 class TextPaneSkinListItemView extends TextPaneSkinVerticalElementView {
 
+    /** The included text node for the index for this list item. */
     private TextNode indexTextNode;
+    /** The view for the index text node. */
     private TextPaneSkinTextNodeView indexTextNodeView;
 
-    public TextPaneSkinListItemView(TextPaneSkin textPaneSkin, List.Item listItem) {
+    /**
+     * Construct one of these from the model references.
+     *
+     * @param textPaneSkin Skin of the entire <code>TextPane</code> component.
+     * @param listItem     The list item we represent, which has the data to layout and display.
+     */
+    TextPaneSkinListItemView(final TextPaneSkin textPaneSkin, final List.Item listItem) {
         super(textPaneSkin, listItem);
 
-        this.indexTextNode = new TextNode("");
+        indexTextNode = new TextNode("");
     }
 
     @Override
@@ -42,13 +53,18 @@ class TextPaneSkinListItemView extends TextPaneSkinVerticalElementView {
         insert(indexTextNodeView, 0);
     }
 
-    public void setIndexText(String indexText) {
+    /**
+     * Set the text for this item's index.
+     *
+     * @param indexText The new text for this item's index.
+     */
+    public void setIndexText(final String indexText) {
         indexTextNode.setText(indexText);
         indexTextNodeView.invalidateUpTree();
     }
 
     @Override
-    protected void childLayout(int breakWidth) {
+    protected void childLayout(final int breakWidth) {
         int bw = breakWidth;
         indexTextNodeView.layout(bw);
 
@@ -76,6 +92,11 @@ class TextPaneSkinListItemView extends TextPaneSkinVerticalElementView {
         setSize(width, height);
     }
 
+    /**
+     * Calculate and return the width of our index text.
+     *
+     * @return Width of our index text.
+     */
     public int getIndexTextWidth() {
         return indexTextNodeView.getWidth();
     }

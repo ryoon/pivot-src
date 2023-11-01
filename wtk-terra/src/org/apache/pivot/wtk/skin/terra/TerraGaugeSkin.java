@@ -147,7 +147,7 @@ public class TerraGaugeSkin<T extends Number> extends ComponentSkin implements G
     public void paint(final Graphics2D graphics) {
         @SuppressWarnings("unchecked")
         Gauge<T> gauge = (Gauge<T>) getComponent();
-        // NOTE: sanity check:  warning level > min && < max, warning < critical if both set
+        // NOTE: warning level > min && < max, warning < critical if both set
         // also critical > main && < max, critical > warning if both set
 
         String text = gauge.getText();

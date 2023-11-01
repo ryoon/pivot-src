@@ -450,5 +450,19 @@ public final class Utils {
         }
     }
 
+    /**
+     * Check and throw an exception if the given object is not of the given class.
+     *
+     * @param nm  A suitable object name for the object.
+     * @param obj The object whose class must be checked.
+     * @param cls The required class of the object.
+     * @throws    IllegalArgumentException if the object is NOT the required class.
+     */
+    public static void notInstanceOf(final String nm, final Object obj, final Class<?> cls) {
+        if (!cls.isInstance(obj)) {
+            throw new IllegalArgumentException(nm + " (" + obj.getClass().getSimpleName() + ") "
+                + "must be an instance of " + cls.getSimpleName() + ".");
+        }
+    }
 
 }

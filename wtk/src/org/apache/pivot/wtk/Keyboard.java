@@ -16,9 +16,12 @@
  */
 package org.apache.pivot.wtk;
 
-import static java.awt.event.InputEvent.*;
-import java.awt.event.KeyEvent;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.InputEvent.META_DOWN_MASK;
+import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -179,6 +182,24 @@ public final class Keyboard {
 
              throw new IllegalArgumentException("Illegal input to Modifier.decode: '" + input + "'");
         }
+    }
+
+    /**
+     * A tuple class to return in one swoop the current set of modifiers being pressed.
+     */
+    public static class Modifiers {
+        /** Is the platform-specified {@code Cmd} key pressed? */
+        public boolean cmdPressed;
+        /** Is the platform-specific word navigation key pressed? */
+        public boolean wordNavPressed;
+        /** Is the {@link Modifier#SHIFT} key pressed? */
+        public boolean shiftPressed;
+        /** Is the {@link Modifier#CTRL} key pressed? */
+        public boolean ctrlPressed;
+        /** Is the {@link Modifier#ALT} key pressed? */
+        public boolean altPressed;
+        /** Is the {@link Modifier#META} key prssed? */
+        public boolean metaPressed;
     }
 
     /**
@@ -592,6 +613,38 @@ public final class Keyboard {
      */
     public static boolean isCmdPressed() {
         return isPressed(Platform.getCommandModifier());
+    }
+
+    /**
+     * Shortcut method to test if the {@link Platform#getWordNavigationModifier} is pressed.
+     *
+     * @return The result of {@code isPressed(Platform.getWordNavigationModifier())}.
+     */
+    public static boolean isWordNavPressed() {
+        return isPressed(Platform.getWordNavigationModifier());
+    }
+
+    /**
+     * Return a standardized set of flags to say which modifiers are currently pressed.
+     * <p> This is for convenience in keypress handlers that typically need to know all
+     * these states, and have to deal with the platform differences as well.  So,
+     * consolidate that logic here for "one-stop shopping".
+     *
+     * @return The platform-specific set of flags as to which modifiers are currently
+     *         pressed by the user.
+     */
+    public static Modifiers pressed() {
+        Modifiers mods = new Modifiers();
+
+        mods.cmdPressed = isCmdPressed();
+        mods.wordNavPressed = isWordNavPressed();
+
+        mods.shiftPressed = isPressed(Modifier.SHIFT);
+        mods.ctrlPressed = isPressed(Modifier.CTRL);
+        mods.altPressed = isPressed(Modifier.ALT);
+        mods.metaPressed = isPressed(Modifier.META);
+
+        return mods;
     }
 
     /**
