@@ -45,6 +45,10 @@ public class VersionTest {
         System.out.format("JVM Version: %1$s%n", jvmVersion.toString());
         Version pivotVersion = null;
         Package corePackage = Version.class.getPackage();
+        if (corePackage == null) {
+            System.out.format("Unable to get current package: %s", corePackage);
+            return;
+        }
 
         // Get the Java runtime version
         Version javaVersion = Version.decode(System.getProperty("java.version"));
@@ -52,10 +56,15 @@ public class VersionTest {
 
         // Get the Pivot version
         String version = corePackage.getImplementationVersion();
-        if (version == null) {
+        System.out.format("Package implementation Version: %s", version);
+        if (version == null || version.trim().isEmpty()) {
             pivotVersion = new Version(0, 0, 0, 0);
             assertEquals("default Pivot version", "0.0.0_00", pivotVersion.toString());
         } else {
+            if (version.contains("${lastchangedrev}")) {
+                System.out.format("Skip, build-related not filled property");
+                return;
+            }
             pivotVersion = Version.decode(version);
             System.out.format("Pivot Version: %1$s%n", pivotVersion);
         }
@@ -142,7 +151,7 @@ public class VersionTest {
         Version jvmVersionExplicit = new Version(8, 1, 28, 0, PIVOT_996_SUFFIX);
         String parsedToString = jvmVersionParsed.toString();
 
-        System.out.println("Information only: our version = " + Version.implementationVersion());
+        // System.out.println("Information only: our version = " + Version.implementationVersion());
 
         assertEquals("PIVOT-996 test case", jvmVersionExplicit, jvmVersionParsed);
         System.out.format("PIVOT-996 parsed/toString: %1$s, expected: %2$s%n",
