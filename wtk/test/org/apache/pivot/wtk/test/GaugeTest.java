@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.apache.pivot.wtk.Gauge;
 import org.apache.pivot.wtk.GaugeListener;
 import org.apache.pivot.wtk.Origin;
-
+import org.apache.pivot.wtk.ThemeNotFoundException;
 
 public final class GaugeTest implements GaugeListener<Integer> {
     private int originChangeCount = 0;
@@ -76,48 +76,52 @@ public final class GaugeTest implements GaugeListener<Integer> {
 
     @Test
     public void testListeners() {
-        Gauge<Integer> gauge = new Gauge<>();
-        gauge.getGaugeListeners().add(this);
+        try {
+            Gauge<Integer> gauge = new Gauge<>();
+            gauge.getGaugeListeners().add(this);
 
-        // Test all the listeners getting fired as they should
-        gauge.setOrigin(Origin.NORTH);  // no change here
-        gauge.setOrigin(Origin.SOUTH);
-        gauge.setOrigin(Origin.SOUTH);  // again, no change
-        gauge.setOrigin(Origin.EAST);
-        gauge.setOrigin(Origin.WEST);
-        gauge.setOrigin(Origin.NORTH);
+            // Test all the listeners getting fired as they should
+            gauge.setOrigin(Origin.NORTH);  // no change here
+            gauge.setOrigin(Origin.SOUTH);
+            gauge.setOrigin(Origin.SOUTH);  // again, no change
+            gauge.setOrigin(Origin.EAST);
+            gauge.setOrigin(Origin.WEST);
+            gauge.setOrigin(Origin.NORTH);
 
-        gauge.setMinValue(0);
-        gauge.setMaxValue(100);
-        gauge.setMinValue(0);
-        gauge.setMaxValue(100);
+            gauge.setMinValue(0);
+            gauge.setMaxValue(100);
+            gauge.setMinValue(0);
+            gauge.setMaxValue(100);
 
-        gauge.setWarningLevel(10);
-        gauge.setWarningLevel(80);
-        gauge.setWarningLevel(80);
-        gauge.setCriticalLevel(10);
-        gauge.setCriticalLevel(10);
-        gauge.setCriticalLevel(90);
+            gauge.setWarningLevel(10);
+            gauge.setWarningLevel(80);
+            gauge.setWarningLevel(80);
+            gauge.setCriticalLevel(10);
+            gauge.setCriticalLevel(10);
+            gauge.setCriticalLevel(90);
 
-        gauge.setText(null);
-        gauge.setText("");
-        gauge.setText("");
-        gauge.setText("20%");
-        gauge.setText("20%");
-        gauge.setText("100%");
-        gauge.setText(null);
-        gauge.setText("100%");
+            gauge.setText(null);
+            gauge.setText("");
+            gauge.setText("");
+            gauge.setText("20%");
+            gauge.setText("20%");
+            gauge.setText("100%");
+            gauge.setText(null);
+            gauge.setText("100%");
 
-        gauge.setValue(0);
-        gauge.setValue(2);
-        gauge.setValue(10);
-        gauge.setValue(0);
+            gauge.setValue(0);
+            gauge.setValue(2);
+            gauge.setValue(10);
+            gauge.setValue(0);
 
-        // Now check for proper listener event counts
-        assertEquals(originChangeCount, 4);
-        assertEquals(minMaxChangeCount, 2);
-        assertEquals(warningCriticalChangeCount, 4);
-        assertEquals(textChangeCount, 5);
-        assertEquals(valueChangeCount, 4);
+            // Now check for proper listener event counts
+            assertEquals(originChangeCount, 4);
+            assertEquals(minMaxChangeCount, 2);
+            assertEquals(warningCriticalChangeCount, 4);
+            assertEquals(textChangeCount, 5);
+            assertEquals(valueChangeCount, 4);
+        } catch (org.apache.pivot.wtk.ThemeNotFoundException e) {
+            System.out.println("Tests on Gauge skipped because: " + e.getMessage());
+        }
     }
 }
